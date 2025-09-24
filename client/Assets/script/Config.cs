@@ -54,5 +54,6 @@ public class Config : MonoBehaviour
     private static float bottom;
     private float sceneLimit = 0.2f;
 
-    public string serverIP = "127.0.0.1";
+    public string serverIP;
+    public ushort port;
 }

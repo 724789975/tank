@@ -140,6 +140,7 @@ GameObject:
   m_Component:
   - component: {fileID: 152211668}
   - component: {fileID: 152211669}
+  - component: {fileID: 152211670}
   m_Layer: 0
   m_Name: client
   m_TagString: Untagged
@@ -178,6 +179,18 @@ MonoBehaviour:
   speed: 0.05
   tankPrefab: {fileID: 2393737808766837703, guid: 80e8b0f5f4bbf304d86ce370dd7e5ddb,
     type: 3}
+--- !u!114 &152211670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152211667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 040b017692be10e40b0f2d68f997a00e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &355975816
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,6 +933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0d9e9c617708f4fa81f7ab6923c280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cfg: {fileID: 1919893560}
 --- !u!4 &1919893559
 Transform:
   m_ObjectHideFlags: 0
@@ -949,6 +963,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 789c98925be85274f9f53099c231077b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverIP: 127.0.0.1
+  port: 0
 --- !u!114 &1919893561
 MonoBehaviour:
   m_ObjectHideFlags: 0

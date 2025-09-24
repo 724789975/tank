@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,19 +15,29 @@ public class TankManager : MonoBehaviour
 #else
         Debug.Log("client model");
 #endif
+		instance = this;
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(delegate (string pData, int dwLen)
 			{
 				Debug.Log(pData);
 			}
 		);
+
+
 	}
 
 	// Update is called once per frame
 	void Update()
     {
-        
-    }
+	
+	}
 
-    public Config cfg;
+	public static TankManager Instance
+	{
+		get { return instance; }
+	}
+
+	static TankManager instance;
+
+	public Config cfg;
 }

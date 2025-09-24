@@ -4,14 +4,6 @@ using UnityEngine;
 
 public class Singleton<T> where T : class, new()
 {
-    public Singleton()
-    {
-		if (_instance == null)
-		{
-			_instance = new T();
-		}
-    }
-
     private static T _instance;
     public static T Instance
     {

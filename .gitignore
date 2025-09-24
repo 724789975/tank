@@ -30,3 +30,14 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+Library
+.vs
+.vscode
+.vsconfig
+*.csproj
+client/build
+client/Temp
+client/Logs
+client/obj
+client/*.sln

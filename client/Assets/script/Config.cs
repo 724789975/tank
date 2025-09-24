@@ -47,10 +47,12 @@ public class Config : MonoBehaviour
         return bottom;
     }
 
+
     private static float left;
     private static float right;
     private static float top;
     private static float bottom;
-
     private float sceneLimit = 0.2f;
+
+    public string serverIP = "127.0.0.1";
 }

@@ -11,6 +11,12 @@ public class NetServer : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
+		DLLImport.StartIOModule();
+		DLLImport.SetLogCallback(delegate (string pData, int dwLen)
+			{
+				Debug.Log(pData);
+			}
+		);
 		DLLImport.CreateSessionMake(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 		DLLImport.TcpListen("0.0.0.0", TankManager.Instance.cfg.port);
 		DLLImport.UdpListen("0.0.0.0", TankManager.Instance.cfg.port);
@@ -19,6 +25,7 @@ public class NetServer : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+		DLLImport.ProcessIOModule();
 	}
 
 	static void OnRecvCallback(IntPtr pConnector, string pData, uint nLen)

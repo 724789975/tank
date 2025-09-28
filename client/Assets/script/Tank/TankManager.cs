@@ -16,12 +16,6 @@ public class TankManager : MonoBehaviour
         Debug.Log("client model");
 #endif
 		instance = this;
-		DLLImport.StartIOModule();
-		DLLImport.SetLogCallback(delegate (string pData, int dwLen)
-			{
-				Debug.Log(pData);
-			}
-		);
 
 
 	}
@@ -29,7 +23,6 @@ public class TankManager : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		DLLImport.ProcessIOModule();
 	}
 
 	public static TankManager Instance

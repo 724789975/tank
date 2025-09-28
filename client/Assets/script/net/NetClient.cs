@@ -17,7 +17,6 @@ public class NetClient : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		DLLImport.ProcessIOModule();
 	}
 
 	static void OnRecvCallback(IntPtr pConnector, string pData, uint nLen)

@@ -29,7 +29,7 @@ public class TankManager : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-	
+		DLLImport.ProcessIOModule();
 	}
 
 	public static TankManager Instance

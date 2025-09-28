@@ -41,3 +41,5 @@ client/Temp
 client/Logs
 client/obj
 client/*.sln
+
+3rdpkg/*/*

@@ -20,18 +20,18 @@ public class NetClient : MonoBehaviour
 		DLLImport.ProcessIOModule();
 	}
 
-	void OnRecvCallback(IntPtr pConnector, string pData, uint nLen)
+	static void OnRecvCallback(IntPtr pConnector, string pData, uint nLen)
 	{ }
-	void OnConnectedCallback(IntPtr pConnector)
+	static void OnConnectedCallback(IntPtr pConnector)
 	{
 		Debug.LogFormat("{0} connected", pConnector);
 	}
-	void OnErrorCallback(IntPtr pConnector, IntPtr nLen)
+	static void OnErrorCallback(IntPtr pConnector, IntPtr nLen)
 	{
 		Debug.LogFormat("connector destroy {0}", pConnector);
 	}
 
-	void OnCloseCallback(IntPtr pConnector)
+	static void OnCloseCallback(IntPtr pConnector)
 	{
 		Debug.Log("connector destroy");
 		DLLImport.DestroyConnector(pConnector);

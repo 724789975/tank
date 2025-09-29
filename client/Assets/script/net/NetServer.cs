@@ -12,6 +12,7 @@ public class NetServer : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
+		instance = this;
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(delegate (byte[] pData, int dwLen)
 			{
@@ -32,14 +33,10 @@ public class NetServer : MonoBehaviour
 
 	static void OnRecvCallback(IntPtr pConnector, byte[] pData, uint nLen)
 	{
-			try
+		try
 		{
-			// 假设 pData 是经过编码的 protobuf 消息
-			// 这里根据实际的消息格式进行解析，示例中假设是 Ping 消息
 			Any anyMessage = Any.Parser.ParseFrom(pData, 0, (int)nLen);
-
-			// 可以在这里处理转换后的 Any 类型消息
-			Debug.Log("Received message converted to Any type: " + anyMessage.TypeUrl);
+			MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
 		}
 		catch (Exception e)
 		{
@@ -49,13 +46,6 @@ public class NetServer : MonoBehaviour
 	static void OnConnectedCallback(IntPtr pConnector)
 	{
 		Debug.LogFormat("{0} connected", pConnector);
-
-		// 连接成功后，可以向服务器发送消息
-		// 这里假设要发送一个 Ping 消息
-		TankGame.Ping pingMessage = new TankGame.Ping();
-		pingMessage.Ts = DateTime.Now.Ticks;
-		byte[] messageBytes = Any.Pack(pingMessage).ToByteArray();
-		DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
 	}
 	static void OnErrorCallback(IntPtr pConnector, IntPtr nLen)
 	{
@@ -68,5 +58,14 @@ public class NetServer : MonoBehaviour
 		DLLImport.DestroyConnector(pConnector);
 	}
 
+	public static NetServer Instance
+	{
+		get
+		{
+			return instance;
+		}
+	}
 
+
+	static NetServer instance;
 }

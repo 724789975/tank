@@ -12,6 +12,7 @@ public class NetClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		instance = this;
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(delegate (byte[] pData, int dwLen)
 			{
@@ -19,9 +20,8 @@ public class NetClient : MonoBehaviour
 				Debug.Log(logMessage);
 			}
 		);
-		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 
-		DLLImport.TcpConnect(connector, TankManager.Instance.cfg.serverIP, TankManager.Instance.cfg.port);
+		Connect();
 	}
 
 	// Update is called once per frame
@@ -34,12 +34,8 @@ public class NetClient : MonoBehaviour
 	{
 		try
 		{
-			// 假设 pData 是经过编码的 protobuf 消息
-			// 这里根据实际的消息格式进行解析，示例中假设是 Ping 消息
 			Any anyMessage = Any.Parser.ParseFrom(pData, 0, (int)nLen);
-			
-			// 可以在这里处理转换后的 Any 类型消息
-			Debug.Log("Received message converted to Any type: " + anyMessage.TypeUrl);
+			MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
 		}
 		catch (Exception e)
 		{
@@ -50,8 +46,6 @@ public class NetClient : MonoBehaviour
 	{
 		Debug.LogFormat("{0} connected", pConnector);
 
-		// 连接成功后，可以向服务器发送消息
-		// 这里假设要发送一个 Ping 消息
 		TankGame.Ping pingMessage = new TankGame.Ping();
 		pingMessage.Ts = DateTime.Now.Ticks;
 		byte[] messageBytes = Any.Pack(pingMessage).ToByteArray();
@@ -68,5 +62,33 @@ public class NetClient : MonoBehaviour
 		DLLImport.DestroyConnector(pConnector);
 	}
 
-	IntPtr connector;
+	public void Connect()
+	{
+		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
+
+		DLLImport.TcpConnect(connector, TankManager.Instance.cfg.serverIP, TankManager.Instance.cfg.port);
+	}
+
+	public void SendMessage(Any message)
+	{
+		if (connector == IntPtr.Zero)
+		{
+			Debug.LogError("connector is null");
+			return;
+		}
+		byte[] messageBytes = Any.Pack(message).ToByteArray();
+		DLLImport.Send(connector, messageBytes, (uint)messageBytes.Length);
+	}
+
+	public static NetClient Instance
+	{
+		get
+		{
+			return instance;
+		}
+	}
+
+	IntPtr connector = IntPtr.Zero;
+
+	static NetClient instance;
 }

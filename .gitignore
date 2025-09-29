@@ -41,5 +41,8 @@ client/Temp
 client/Logs
 client/obj
 client/*.sln
+client/buildc
+client/builds
+
 
 3rdpkg/*/*

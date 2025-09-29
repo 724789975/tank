@@ -25,6 +25,15 @@ public class TankManager : MonoBehaviour
     {
 	}
 
+	public void AddTank(string id)
+	{
+		GameObject tankInstance = Instantiate(tankPrefab);
+		tankInstance.GetComponent<TankInstance>().ID = id;
+		tankInstance.transform.position = new Vector3(0, 0, 0);
+
+		instanceMap.Add(id, tankInstance.GetComponent<TankInstance>());
+	}
+
 	public static TankManager Instance
 	{
 		get { return instance; }
@@ -33,4 +42,8 @@ public class TankManager : MonoBehaviour
 	static TankManager instance;
 
 	public Config cfg;
+
+	public GameObject tankPrefab;
+	public Dictionary<string, TankInstance> instanceMap = new Dictionary<string, TankInstance>();
+
 }

@@ -37,9 +37,10 @@ public class ClientMsg : MonoBehaviour
     {
         TankGame.PlayerApperanceNtf playerApperanceNtf = anyMessage.Unpack<TankGame.PlayerApperanceNtf>();
         Debug.Log($"OnPlayerApperanceNtf {playerApperanceNtf.Id} {playerApperanceNtf.Name}");
-        if (PlayerManager.Instance.AddPlayer(playerApperanceNtf.Id, new OtherPlayer() { Id = playerApperanceNtf.Id, Name = playerApperanceNtf.Name }))
+        if (PlayerManager.Instance.AddPlayer(playerApperanceNtf.Id, new PlayerData() { Id = playerApperanceNtf.Id, Name = playerApperanceNtf.Name }))
         {
             Debug.Log($"添加玩家 {playerApperanceNtf.Id} {playerApperanceNtf.Name} 成功");
+            TankManager.Instance.AddTank(playerApperanceNtf.Id);
         }
         else
         {

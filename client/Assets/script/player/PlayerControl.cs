@@ -25,7 +25,7 @@ public class PlayerControl : MonoBehaviour
 		TankGame.LoginReq req = new TankGame.LoginReq();
         req.Name = nameText.text;
         req.Id = idText.text;
-		NetClient.Instance.SendMessage(Any.Pack(req));
+		NetClient.Instance.SendMessage(req);
     }
 
     public static PlayerControl Instance

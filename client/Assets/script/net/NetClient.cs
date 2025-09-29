@@ -69,7 +69,7 @@ public class NetClient : MonoBehaviour
 		DLLImport.TcpConnect(connector, TankManager.Instance.cfg.serverIP, TankManager.Instance.cfg.port);
 	}
 
-	public void SendMessage(Any message)
+	public void SendMessage(Google.Protobuf.IMessage message)
 	{
 		if (connector == IntPtr.Zero)
 		{

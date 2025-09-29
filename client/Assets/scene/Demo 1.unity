@@ -403,7 +403,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 1404395644}
   idText: {fileID: 784051040}
-  netClient: {fileID: 152211670}
 --- !u!1 &229731770
 GameObject:
   m_ObjectHideFlags: 0
@@ -2477,6 +2476,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cfg: {fileID: 1919893560}
+  tankPrefab: {fileID: 2393737808766837703, guid: 80e8b0f5f4bbf304d86ce370dd7e5ddb,
+    type: 3}
 --- !u!4 &1919893559
 Transform:
   m_ObjectHideFlags: 0

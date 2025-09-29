@@ -7,12 +7,6 @@ public class TankControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		GameObject tankInstance = Instantiate(tankPrefab);
-		tankInstance.GetComponent<TankInstance>().ID = "0";
-		tankInstance.transform.position = new Vector3(0, 0, 0);
-
-		TankDataManager.Instance.instanceMap.Add("0", tankInstance.GetComponent<TankInstance>());
-
 	}
 
 	// Update is called once per frame
@@ -25,7 +19,8 @@ public class TankControl : MonoBehaviour
         }
 
         timer -= UPDATE_INTERVAL;
-        TankDataManager.Instance.instanceMap.TryGetValue(tankID, out TankInstance tankInstance);
+        TankInstance tankInstance = TankManager.Instance.GetTank(PlayerControl.Instance.PlayerId);
+
         if (tankInstance != null)
         {
             Vector2 dir = Terresquall.VirtualJoystick.GetAxis(0);
@@ -41,27 +36,16 @@ public class TankControl : MonoBehaviour
 
     public void Shoot()
     {
-        TankInstance tankInstance = GetTankInstance();
-        if (tankInstance == null)
+        TankInstance tankInstance = TankManager.Instance.GetTank(PlayerControl.Instance.PlayerId);
+		if (tankInstance == null)
         {
             return;
         }
         tankInstance.Shoot();
     }
 
-    TankInstance GetTankInstance()
-    {
-        TankDataManager.Instance.instanceMap.TryGetValue(tankID, out TankInstance tankInstance);
-        return tankInstance;
-    }
-
-    public string tankID;
-
     public float speed;
 
     private float timer = 0f;
     private const float UPDATE_INTERVAL = 0.03f;
-
-	public GameObject tankPrefab;
-
 }

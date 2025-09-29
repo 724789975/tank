@@ -53,6 +53,8 @@ public class ServerMsg : MonoBehaviour
 			playerApperanceNtf.Name = loginReq.Name;
 			messageBytes = Any.Pack(playerApperanceNtf).ToByteArray();
 			DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
+
+			TankManager.Instance.AddTank(loginReq.Id);
 		}
 		else
 		{

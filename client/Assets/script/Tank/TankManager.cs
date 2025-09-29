@@ -34,6 +34,24 @@ public class TankManager : MonoBehaviour
 		instanceMap.Add(id, tankInstance.GetComponent<TankInstance>());
 	}
 
+	public void RemoveTank(string id)
+	{
+		if (instanceMap.ContainsKey(id))
+		{
+			Destroy(instanceMap[id].gameObject);
+			instanceMap.Remove(id);
+		}
+	}
+
+	public TankInstance GetTank(string id)
+	{
+		if (instanceMap.ContainsKey(id))
+		{
+			return instanceMap[id];
+		}
+		return null;
+	}
+
 	public static TankManager Instance
 	{
 		get { return instance; }

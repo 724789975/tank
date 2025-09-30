@@ -9,4 +9,7 @@ public class PlayerData
 {
     public string Id = "";
     public string Name = "";
+#if UNITY_SERVER
+    public IntPtr session = IntPtr.Zero;
+#endif
 }

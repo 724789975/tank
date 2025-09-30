@@ -56,6 +56,7 @@ public class NetServer : MonoBehaviour
 	{
 		Debug.Log("connector destroy");
 		DLLImport.DestroyConnector(pConnector);
+		PlayerManager.Instance.AfterCloseCallback(pConnector);
 	}
 
 	public static NetServer Instance

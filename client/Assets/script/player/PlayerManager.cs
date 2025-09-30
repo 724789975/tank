@@ -1,3 +1,5 @@
+using fxnetlib.dllimport;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,12 +48,51 @@ public class PlayerManager : Singleton<PlayerManager>
     /// <returns>是否移除成功</returns>
     public bool RemovePlayer(string id)
     {
+        Debug.Log($"移除玩家ID {id} 的数据。");
         if (players.ContainsKey(id))
         {
+#if UNITY_SERVER
+            if (players[id].session!= IntPtr.Zero)
+            {
+				DLLImport.Close(players[id].session);
+				players[id].session = IntPtr.Zero;
+				sessions.Remove(players[id].session);
+            }
+#endif
             return players.Remove(id);
         }
-        Debug.LogWarning($"未找到玩家ID {id} 的数据，无法移除。");
+        Debug.Log($"未找到玩家ID {id} 的数据，无法移除。");
         return false;
     }
+
+    public delegate void PlayerAction(PlayerData data);
+    public void ForEach(PlayerAction action)
+    {
+        foreach (PlayerData data in players.Values)
+        {
+            action(data);
+        }
+    }
+
+
+    public void AfterCloseCallback(IntPtr pConnector)
+    {
+#if UNITY_SERVER
+        sessions.TryGetValue(pConnector, out string id);
+        if (id != null)
+        {
+            players.TryGetValue(id, out PlayerData data);
+            if (data!= null)
+            {
+                data.session = IntPtr.Zero;
+            }
+        }
+        sessions.Remove(pConnector);
+#endif
+    }
+
 	Dictionary<string, PlayerData> players = new Dictionary<string, PlayerData>();
+#if UNITY_SERVER
+    Dictionary<IntPtr, string> sessions = new Dictionary<IntPtr, string>();
+#endif
 }

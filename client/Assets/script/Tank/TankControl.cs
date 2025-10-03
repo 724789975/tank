@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,32 +8,58 @@ public class TankControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        float t = Time.time;
+        lastUpdateTime = t;
+        lastSyncTime = t;
 	}
 
 	// Update is called once per frame
 	void Update()
     {
-        timer += Time.deltaTime;
-        if (timer < UPDATE_INTERVAL)
+        float t = Time.time;
+        if (t - lastUpdateTime < UPDATE_INTERVAL)
         {
             return;
         }
 
-        timer -= UPDATE_INTERVAL;
+        lastUpdateTime = t;
         TankInstance tankInstance = TankManager.Instance.GetTank(PlayerControl.Instance.PlayerId);
-
-        if (tankInstance != null)
+        if (tankInstance == null)
         {
-            Vector2 dir = Terresquall.VirtualJoystick.GetAxis(0);
-            Vector2 pos = new Vector2(dir.x * speed, dir.y * speed);
-            // Debug.Log("dir: " + dir + " pos: " + pos);
-            tankInstance.AddPos(pos);
-            if (dir.magnitude > 0.1f)
-            {
-                tankInstance.SetDir(dir.normalized);
-            }
+            return;
+		}
+
+		Vector2 dir = Terresquall.VirtualJoystick.GetAxis(0);
+		if (dir.magnitude > 0.1f)
+        {
+			tankInstance.AddPos(dir * tankInstance.speed * UPDATE_INTERVAL);
+			tankInstance.SetDir(dir.normalized);
+
+            syncFlag = true;
         }
-    }
+
+        if (t - lastSyncTime > 0.125f)
+        {
+			TankGame.PlayerStateSyncReq playerStateSyncReq = new TankGame.PlayerStateSyncReq();
+			playerStateSyncReq.DeltaMs = (int)((t - lastSyncTime) * 1000);
+            if (syncFlag)
+            {
+                playerStateSyncReq.Transform = new TankCommon.Transform();
+                playerStateSyncReq.Transform.Position = new TankCommon.Vector3();
+                playerStateSyncReq.Transform.Position.X = tankInstance.transform.position.x;
+                playerStateSyncReq.Transform.Position.Y = tankInstance.transform.position.y;
+                playerStateSyncReq.Transform.Position.Z = tankInstance.transform.position.z;
+                playerStateSyncReq.Transform.Rotation = new TankCommon.Quaternion();
+                playerStateSyncReq.Transform.Rotation.X = tankInstance.transform.rotation.x;
+                playerStateSyncReq.Transform.Rotation.Y = tankInstance.transform.rotation.y;
+                playerStateSyncReq.Transform.Rotation.Z = tankInstance.transform.rotation.z;
+                playerStateSyncReq.Transform.Rotation.W = tankInstance.transform.rotation.w;
+                syncFlag = false;
+			}
+			lastSyncTime = t;
+            NetClient.Instance.SendMessage(playerStateSyncReq);
+		}
+	}
 
     public void Shoot()
     {
@@ -44,8 +71,8 @@ public class TankControl : MonoBehaviour
         tankInstance.Shoot();
     }
 
-    public float speed;
-
-    private float timer = 0f;
-    private const float UPDATE_INTERVAL = 0.03f;
+    bool syncFlag = false;
+    float lastUpdateTime = 0f;
+    float lastSyncTime = 0f;
+    const float UPDATE_INTERVAL = 0.03f;
 }

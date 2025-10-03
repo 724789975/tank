@@ -21,14 +21,28 @@ public class NetServer : MonoBehaviour
 			}
 		);
 		DLLImport.CreateSessionMake(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
-		DLLImport.TcpListen("0.0.0.0", TankManager.Instance.cfg.port);
-		DLLImport.UdpListen("0.0.0.0", TankManager.Instance.cfg.port);
+		DLLImport.TcpListen("0.0.0.0", Config.Instance.port);
+		DLLImport.UdpListen("0.0.0.0", Config.Instance.port);
 	}
 
 	// Update is called once per frame
 	void Update()
     {
 		DLLImport.ProcessIOModule();
+		// 使用 for 循环遍历 msgs 列表并执行其中的委托
+		int count = msgs.Count;
+		for (int i = 0; i < count; i++)
+		{
+			try
+			{
+				msgs[i]();
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"Error executing message processing delegate: {e.Message}\n{e.StackTrace}");
+			}
+		}
+		msgs.Clear();
 	}
 
 	static void OnRecvCallback(IntPtr pConnector, byte[] pData, uint nLen)
@@ -36,11 +50,15 @@ public class NetServer : MonoBehaviour
 		try
 		{
 			Any anyMessage = Any.Parser.ParseFrom(pData, 0, (int)nLen);
-			MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
+			instance.msgs.Add(delegate ()
+			{
+				MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
+			});
+			//MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
 		}
 		catch (Exception e)
 		{
-			Debug.LogError("Failed to parse message: " + e.Message);
+			Debug.LogError($"Failed to parse message: {e.Message}\n{e.StackTrace}");
 		}
 	}
 	static void OnConnectedCallback(IntPtr pConnector)
@@ -67,6 +85,8 @@ public class NetServer : MonoBehaviour
 		}
 	}
 
-
+	
 	static NetServer instance;
+	List<P> msgs = new List<P>();
+	delegate void P();
 }

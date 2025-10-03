@@ -7,6 +7,7 @@ public class Config : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		instance = this;
         // 获取屏幕左下角坐标
         Vector3 screenBottomLeft = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
         // 获取屏幕右上角坐标
@@ -27,33 +28,42 @@ public class Config : MonoBehaviour
     {
     }
 
-    public static float GetLeft()
+    public float GetLeft()
     {
         return left;
     }
 
-    public static float GetRight()
+    public float GetRight()
     {
         return right;
     }
 
-    public static float GetTop()
+    public float GetTop()
     {
         return top;
     }
 
-    public static float GetBottom()
+    public float GetBottom()
     {
         return bottom;
     }
 
+    static Config instance;
+    public static Config Instance
+    {
+        get
+        {
+            return instance;
+        }
+	}
 
-    private static float left;
-    private static float right;
-    private static float top;
-    private static float bottom;
+	private float left;
+    private float right;
+    private float top;
+    private float bottom;
     private float sceneLimit = 0.2f;
 
     public string serverIP;
     public ushort port;
+    public float speed;
 }

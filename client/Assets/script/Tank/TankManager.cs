@@ -16,8 +16,6 @@ public class TankManager : MonoBehaviour
         Debug.Log("client model");
 #endif
 		instance = this;
-
-
 	}
 
 	// Update is called once per frame
@@ -25,13 +23,19 @@ public class TankManager : MonoBehaviour
     {
 	}
 
-	public void AddTank(string id)
+	public TankInstance AddTank(string id)
 	{
+		if (GetTank(id))
+		{
+			Debug.LogWarning($"already in map {id}");
+			return GetTank(id);
+		}
 		GameObject tankInstance = Instantiate(tankPrefab);
 		tankInstance.GetComponent<TankInstance>().ID = id;
 		tankInstance.transform.position = new Vector3(0, 0, 0);
 
 		instanceMap.Add(id, tankInstance.GetComponent<TankInstance>());
+		return instanceMap[id];
 	}
 
 	public void RemoveTank(string id)
@@ -45,11 +49,8 @@ public class TankManager : MonoBehaviour
 
 	public TankInstance GetTank(string id)
 	{
-		if (instanceMap.ContainsKey(id))
-		{
-			return instanceMap[id];
-		}
-		return null;
+		instanceMap.TryGetValue(id, out TankInstance ti);
+		return ti;
 	}
 
 	public static TankManager Instance
@@ -58,8 +59,6 @@ public class TankManager : MonoBehaviour
 	}
 
 	static TankManager instance;
-
-	public Config cfg;
 
 	public GameObject tankPrefab;
 	public Dictionary<string, TankInstance> instanceMap = new Dictionary<string, TankInstance>();

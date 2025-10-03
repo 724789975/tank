@@ -4,6 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_SERVER
+using PLAYERDATA = ServerPlayer;
+#else
+using PLAYERDATA = ClientPlayer;
+#endif
+
 public class ClientMsg : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -37,14 +43,68 @@ public class ClientMsg : MonoBehaviour
     {
         TankGame.PlayerApperanceNtf playerApperanceNtf = anyMessage.Unpack<TankGame.PlayerApperanceNtf>();
         Debug.Log($"OnPlayerApperanceNtf {playerApperanceNtf.Id} {playerApperanceNtf.Name}");
-        if (PlayerManager.Instance.AddPlayer(playerApperanceNtf.Id, new PlayerData() { Id = playerApperanceNtf.Id, Name = playerApperanceNtf.Name }))
+        if (PlayerManager.Instance.AddPlayer(playerApperanceNtf.Id, new PLAYERDATA() { Id = playerApperanceNtf.Id, Name = playerApperanceNtf.Name }))
         {
-            Debug.Log($"添加玩家 {playerApperanceNtf.Id} {playerApperanceNtf.Name} 成功");
-            TankManager.Instance.AddTank(playerApperanceNtf.Id);
+            Debug.Log($"Player added successfully: {playerApperanceNtf.Id}");
+            TankInstance tankInstance = TankManager.Instance.AddTank(playerApperanceNtf.Id);
+            if (playerApperanceNtf.Transform != null)
+            {
+                if (playerApperanceNtf.Transform.Position != null)
+                {
+                    tankInstance.transform.position = new Vector3(playerApperanceNtf.Transform.Position.X, playerApperanceNtf.Transform.Position.Y, playerApperanceNtf.Transform.Position.Z);
+				}
+                if (playerApperanceNtf.Transform.Rotation != null)
+                {
+                    tankInstance.transform.rotation = new Quaternion(playerApperanceNtf.Transform.Rotation.X, playerApperanceNtf.Transform.Rotation.Y, playerApperanceNtf.Transform.Rotation.Z, playerApperanceNtf.Transform.Rotation.W);
+                }
+            }
         }
         else
         {
-            Debug.LogWarning($"添加玩家 {playerApperanceNtf.Id} {playerApperanceNtf.Name} 失败，ID已存在");
+            Debug.LogWarning($"Failed to add player {playerApperanceNtf.Id} {playerApperanceNtf.Name}, ID already exists");
         }
     }
+
+    [RpcHandler("tank_game.PlayerStateNtf")]
+    static void PlayerStateNtf(IntPtr pConnection, Any anyMessage)
+    {
+#if !UNITY_SERVER
+		TankGame.PlayerStateNtf playerStateNtf = anyMessage.Unpack<TankGame.PlayerStateNtf>();
+        PLAYERDATA playerData = PlayerManager.Instance.GetPlayer(playerStateNtf.Id);
+        if (playerData == null)
+        {
+            Debug.LogWarning($"Player data not found: {playerStateNtf.Id}");
+            return;
+		}
+
+        if (playerStateNtf.Transform != null)
+        {
+            playerData.syncs.Add(playerStateNtf);
+        }
+#endif
+	}
+
+    [RpcHandler("tank_game.PlayerShootNtf")]
+    static void PlayerShootNtf(IntPtr pConnection, Any anyMessage)
+    {
+#if !UNITY_SERVER
+		TankGame.PlayerShootNtf playerStateNtf = anyMessage.Unpack<TankGame.PlayerShootNtf>();
+		PLAYERDATA playerData = PlayerManager.Instance.GetPlayer(playerStateNtf.Id);
+		if (playerData == null)
+		{
+			Debug.LogWarning($"Player data not found: {playerStateNtf.Id}");
+			return;
+		}
+
+        TankInstance tankInstance = TankManager.Instance.GetTank(playerData.Id);
+        if (tankInstance == null)
+        {
+            Debug.LogWarning($"Tank instance not found: {playerData.Id}");
+            return;
+		}
+        tankInstance.Shoot(new Vector3(playerStateNtf.Transform.Position.X, playerStateNtf.Transform.Position.Y, playerStateNtf.Transform.Position.Z), new Quaternion(playerStateNtf.Transform.Rotation.X, playerStateNtf.Transform.Rotation.Y, playerStateNtf.Transform.Rotation.Z, playerStateNtf.Transform.Rotation.W), playerStateNtf.Speed);
+#endif
+	}
+
 }
+

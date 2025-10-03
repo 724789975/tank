@@ -28,6 +28,19 @@ public class NetClient : MonoBehaviour
 	void Update()
     {
 		DLLImport.ProcessIOModule();
+		int count = msgs.Count;
+		for (int i = 0; i < count; i++)
+		{
+			try
+			{
+				msgs[i]();
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"error on update: {e.Message}\n{e.StackTrace}");
+			}
+		}
+		msgs.Clear();
 	}
 
 	static void OnRecvCallback(IntPtr pConnector, byte[] pData, uint nLen)
@@ -35,11 +48,15 @@ public class NetClient : MonoBehaviour
 		try
 		{
 			Any anyMessage = Any.Parser.ParseFrom(pData, 0, (int)nLen);
-			MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
+			instance.msgs.Add(delegate ()
+			{
+				MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
+			});
+			//MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
 		}
 		catch (Exception e)
 		{
-			Debug.LogError("Failed to parse message: " + e.Message);
+			Debug.LogError($"Failed to parse message: {e.Message}\n{e.StackTrace}");
 		}
 	}
 	static void OnConnectedCallback(IntPtr pConnector)
@@ -66,7 +83,7 @@ public class NetClient : MonoBehaviour
 	{
 		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 
-		DLLImport.TcpConnect(connector, TankManager.Instance.cfg.serverIP, TankManager.Instance.cfg.port);
+		DLLImport.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
 	}
 
 	public void SendMessage(Google.Protobuf.IMessage message)
@@ -91,4 +108,6 @@ public class NetClient : MonoBehaviour
 	IntPtr connector = IntPtr.Zero;
 
 	static NetClient instance;
+	List<P> msgs = new List<P>();
+	delegate void P();
 }

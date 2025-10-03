@@ -361,10 +361,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e255ee8d632bf4c8d251a94b78f648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tankID: 0
-  speed: 0.05
-  tankPrefab: {fileID: 2393737808766837703, guid: 80e8b0f5f4bbf304d86ce370dd7e5ddb,
-    type: 3}
 --- !u!114 &152211670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2475,7 +2471,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0d9e9c617708f4fa81f7ab6923c280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cfg: {fileID: 1919893560}
   tankPrefab: {fileID: 2393737808766837703, guid: 80e8b0f5f4bbf304d86ce370dd7e5ddb,
     type: 3}
 --- !u!4 &1919893559
@@ -2509,6 +2504,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverIP: 127.0.0.1
   port: 10085
+  speed: 3
 --- !u!114 &1919893561
 MonoBehaviour:
   m_ObjectHideFlags: 0

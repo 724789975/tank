@@ -24,24 +24,35 @@ namespace TankGame {
     static TankGameReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChVwcm90by90YW5rX2dhbWUucHJvdG8SCXRhbmtfZ2FtZSISCgRQaW5nEgoK",
-            "AnRzGAEgASgDIhIKBFBvbmcSCgoCdHMYASABKAMiJAoITG9naW5SZXESDAoE",
-            "bmFtZRgBIAEoCRIKCgJpZBgCIAEoCSI7CghMb2dpblJzcBIiCgRjb2RlGAEg",
-            "ASgOMhQudGFua19nYW1lLkVycm9yQ29kZRILCgNtc2cYAiABKAkiLgoSUGxh",
-            "eWVyQXBwZXJhbmNlTnRmEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkiHAoO",
-            "UGxheWVyU3RhdGVOdGYSCgoCaWQYASABKAkiIAoSUGxheWVyRGlzYXBwZWFy",
-            "TnRmEgoKAmlkGAEgASgJKh8KCUVycm9yQ29kZRIGCgJPaxAAEgoKBkZhaWxl",
-            "ZBABYgZwcm90bzM="));
+            "ChVwcm90by90YW5rX2dhbWUucHJvdG8SCXRhbmtfZ2FtZRoXcHJvdG8vdGFu",
+            "a19jb21tb24ucHJvdG8iEgoEUGluZxIKCgJ0cxgBIAEoAyISCgRQb25nEgoK",
+            "AnRzGAEgASgDIiQKCExvZ2luUmVxEgwKBG5hbWUYASABKAkSCgoCaWQYAiAB",
+            "KAkiOwoITG9naW5Sc3ASIgoEY29kZRgBIAEoDjIULnRhbmtfZ2FtZS5FcnJv",
+            "ckNvZGUSCwoDbXNnGAIgASgJIlkKElBsYXllckFwcGVyYW5jZU50ZhIKCgJp",
+            "ZBgBIAEoCRIMCgRuYW1lGAIgASgJEikKCXRyYW5zZm9ybRgDIAEoCzIWLnRh",
+            "bmtfY29tbW9uLlRyYW5zZm9ybSJZCg5QbGF5ZXJTdGF0ZU50ZhIKCgJpZBgB",
+            "IAEoCRIQCghzeW5jVGltZRgCIAEoBRIpCgl0cmFuc2Zvcm0YAyABKAsyFi50",
+            "YW5rX2NvbW1vbi5UcmFuc2Zvcm0iIAoSUGxheWVyRGlzYXBwZWFyTnRmEgoK",
+            "AmlkGAEgASgJIlEKElBsYXllclN0YXRlU3luY1JlcRIQCghkZWx0YV9tcxgC",
+            "IAEoBRIpCgl0cmFuc2Zvcm0YAyABKAsyFi50YW5rX2NvbW1vbi5UcmFuc2Zv",
+            "cm0iOwoOUGxheWVyU2hvb3RSZXESKQoJdHJhbnNmb3JtGAEgASgLMhYudGFu",
+            "a19jb21tb24uVHJhbnNmb3JtIlYKDlBsYXllclNob290TnRmEgoKAmlkGAEg",
+            "ASgJEikKCXRyYW5zZm9ybRgCIAEoCzIWLnRhbmtfY29tbW9uLlRyYW5zZm9y",
+            "bRINCgVzcGVlZBgDIAEoAiofCglFcnJvckNvZGUSBgoCT2sQABIKCgZGYWls",
+            "ZWQQAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { },
+          new pbr::FileDescriptor[] { global::TankCommon.TankCommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::TankGame.ErrorCode), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.Ping), global::TankGame.Ping.Parser, new[]{ "Ts" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.Pong), global::TankGame.Pong.Parser, new[]{ "Ts" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.LoginReq), global::TankGame.LoginReq.Parser, new[]{ "Name", "Id" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.LoginRsp), global::TankGame.LoginRsp.Parser, new[]{ "Code", "Msg" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerApperanceNtf), global::TankGame.PlayerApperanceNtf.Parser, new[]{ "Id", "Name" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerStateNtf), global::TankGame.PlayerStateNtf.Parser, new[]{ "Id" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerDisappearNtf), global::TankGame.PlayerDisappearNtf.Parser, new[]{ "Id" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerApperanceNtf), global::TankGame.PlayerApperanceNtf.Parser, new[]{ "Id", "Name", "Transform" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerStateNtf), global::TankGame.PlayerStateNtf.Parser, new[]{ "Id", "SyncTime", "Transform" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerDisappearNtf), global::TankGame.PlayerDisappearNtf.Parser, new[]{ "Id" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerStateSyncReq), global::TankGame.PlayerStateSyncReq.Parser, new[]{ "DeltaMs", "Transform" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerShootReq), global::TankGame.PlayerShootReq.Parser, new[]{ "Transform" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerShootNtf), global::TankGame.PlayerShootNtf.Parser, new[]{ "Id", "Transform", "Speed" }, null, null, null, null)
           }));
     }
     #endregion
@@ -928,6 +939,7 @@ namespace TankGame {
     public PlayerApperanceNtf(PlayerApperanceNtf other) : this() {
       id_ = other.id_;
       name_ = other.name_;
+      transform_ = other.transform_ != null ? other.transform_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -961,6 +973,18 @@ namespace TankGame {
       }
     }
 
+    /// <summary>Field number for the "transform" field.</summary>
+    public const int TransformFieldNumber = 3;
+    private global::TankCommon.Transform transform_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::TankCommon.Transform Transform {
+      get { return transform_; }
+      set {
+        transform_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -978,6 +1002,7 @@ namespace TankGame {
       }
       if (Id != other.Id) return false;
       if (Name != other.Name) return false;
+      if (!object.Equals(Transform, other.Transform)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -987,6 +1012,7 @@ namespace TankGame {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (transform_ != null) hash ^= Transform.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1013,6 +1039,10 @@ namespace TankGame {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
+      if (transform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Transform);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1031,6 +1061,10 @@ namespace TankGame {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
+      if (transform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Transform);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1046,6 +1080,9 @@ namespace TankGame {
       }
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (transform_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Transform);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1064,6 +1101,12 @@ namespace TankGame {
       }
       if (other.Name.Length != 0) {
         Name = other.Name;
+      }
+      if (other.transform_ != null) {
+        if (transform_ == null) {
+          Transform = new global::TankCommon.Transform();
+        }
+        Transform.MergeFrom(other.Transform);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1088,6 +1131,13 @@ namespace TankGame {
             Name = input.ReadString();
             break;
           }
+          case 26: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
         }
       }
     #endif
@@ -1109,6 +1159,13 @@ namespace TankGame {
           }
           case 18: {
             Name = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
             break;
           }
         }
@@ -1153,6 +1210,8 @@ namespace TankGame {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public PlayerStateNtf(PlayerStateNtf other) : this() {
       id_ = other.id_;
+      syncTime_ = other.syncTime_;
+      transform_ = other.transform_ != null ? other.transform_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1174,6 +1233,30 @@ namespace TankGame {
       }
     }
 
+    /// <summary>Field number for the "syncTime" field.</summary>
+    public const int SyncTimeFieldNumber = 2;
+    private int syncTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int SyncTime {
+      get { return syncTime_; }
+      set {
+        syncTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "transform" field.</summary>
+    public const int TransformFieldNumber = 3;
+    private global::TankCommon.Transform transform_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::TankCommon.Transform Transform {
+      get { return transform_; }
+      set {
+        transform_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1190,6 +1273,8 @@ namespace TankGame {
         return true;
       }
       if (Id != other.Id) return false;
+      if (SyncTime != other.SyncTime) return false;
+      if (!object.Equals(Transform, other.Transform)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1198,6 +1283,8 @@ namespace TankGame {
     public override int GetHashCode() {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (SyncTime != 0) hash ^= SyncTime.GetHashCode();
+      if (transform_ != null) hash ^= Transform.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1220,6 +1307,14 @@ namespace TankGame {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
+      if (SyncTime != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SyncTime);
+      }
+      if (transform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Transform);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1234,6 +1329,14 @@ namespace TankGame {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
+      if (SyncTime != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SyncTime);
+      }
+      if (transform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Transform);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1246,6 +1349,12 @@ namespace TankGame {
       int size = 0;
       if (Id.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (SyncTime != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SyncTime);
+      }
+      if (transform_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Transform);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1261,6 +1370,15 @@ namespace TankGame {
       }
       if (other.Id.Length != 0) {
         Id = other.Id;
+      }
+      if (other.SyncTime != 0) {
+        SyncTime = other.SyncTime;
+      }
+      if (other.transform_ != null) {
+        if (transform_ == null) {
+          Transform = new global::TankCommon.Transform();
+        }
+        Transform.MergeFrom(other.Transform);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1281,6 +1399,17 @@ namespace TankGame {
             Id = input.ReadString();
             break;
           }
+          case 16: {
+            SyncTime = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
         }
       }
     #endif
@@ -1298,6 +1427,17 @@ namespace TankGame {
             break;
           case 10: {
             Id = input.ReadString();
+            break;
+          }
+          case 16: {
+            SyncTime = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
             break;
           }
         }
@@ -1487,6 +1627,711 @@ namespace TankGame {
             break;
           case 10: {
             Id = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class PlayerStateSyncReq : pb::IMessage<PlayerStateSyncReq>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PlayerStateSyncReq> _parser = new pb::MessageParser<PlayerStateSyncReq>(() => new PlayerStateSyncReq());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PlayerStateSyncReq> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::TankGame.TankGameReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerStateSyncReq() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerStateSyncReq(PlayerStateSyncReq other) : this() {
+      deltaMs_ = other.deltaMs_;
+      transform_ = other.transform_ != null ? other.transform_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerStateSyncReq Clone() {
+      return new PlayerStateSyncReq(this);
+    }
+
+    /// <summary>Field number for the "delta_ms" field.</summary>
+    public const int DeltaMsFieldNumber = 2;
+    private int deltaMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int DeltaMs {
+      get { return deltaMs_; }
+      set {
+        deltaMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "transform" field.</summary>
+    public const int TransformFieldNumber = 3;
+    private global::TankCommon.Transform transform_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::TankCommon.Transform Transform {
+      get { return transform_; }
+      set {
+        transform_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerStateSyncReq);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PlayerStateSyncReq other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DeltaMs != other.DeltaMs) return false;
+      if (!object.Equals(Transform, other.Transform)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DeltaMs != 0) hash ^= DeltaMs.GetHashCode();
+      if (transform_ != null) hash ^= Transform.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (DeltaMs != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(DeltaMs);
+      }
+      if (transform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Transform);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (DeltaMs != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(DeltaMs);
+      }
+      if (transform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Transform);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (DeltaMs != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DeltaMs);
+      }
+      if (transform_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Transform);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PlayerStateSyncReq other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DeltaMs != 0) {
+        DeltaMs = other.DeltaMs;
+      }
+      if (other.transform_ != null) {
+        if (transform_ == null) {
+          Transform = new global::TankCommon.Transform();
+        }
+        Transform.MergeFrom(other.Transform);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 16: {
+            DeltaMs = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 16: {
+            DeltaMs = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class PlayerShootReq : pb::IMessage<PlayerShootReq>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PlayerShootReq> _parser = new pb::MessageParser<PlayerShootReq>(() => new PlayerShootReq());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PlayerShootReq> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::TankGame.TankGameReflection.Descriptor.MessageTypes[8]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerShootReq() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerShootReq(PlayerShootReq other) : this() {
+      transform_ = other.transform_ != null ? other.transform_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerShootReq Clone() {
+      return new PlayerShootReq(this);
+    }
+
+    /// <summary>Field number for the "transform" field.</summary>
+    public const int TransformFieldNumber = 1;
+    private global::TankCommon.Transform transform_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::TankCommon.Transform Transform {
+      get { return transform_; }
+      set {
+        transform_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerShootReq);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PlayerShootReq other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Transform, other.Transform)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (transform_ != null) hash ^= Transform.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (transform_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Transform);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (transform_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Transform);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (transform_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Transform);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PlayerShootReq other) {
+      if (other == null) {
+        return;
+      }
+      if (other.transform_ != null) {
+        if (transform_ == null) {
+          Transform = new global::TankCommon.Transform();
+        }
+        Transform.MergeFrom(other.Transform);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class PlayerShootNtf : pb::IMessage<PlayerShootNtf>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PlayerShootNtf> _parser = new pb::MessageParser<PlayerShootNtf>(() => new PlayerShootNtf());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PlayerShootNtf> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::TankGame.TankGameReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerShootNtf() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerShootNtf(PlayerShootNtf other) : this() {
+      id_ = other.id_;
+      transform_ = other.transform_ != null ? other.transform_.Clone() : null;
+      speed_ = other.speed_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PlayerShootNtf Clone() {
+      return new PlayerShootNtf(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private string id_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Id {
+      get { return id_; }
+      set {
+        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "transform" field.</summary>
+    public const int TransformFieldNumber = 2;
+    private global::TankCommon.Transform transform_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::TankCommon.Transform Transform {
+      get { return transform_; }
+      set {
+        transform_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "speed" field.</summary>
+    public const int SpeedFieldNumber = 3;
+    private float speed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float Speed {
+      get { return speed_; }
+      set {
+        speed_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerShootNtf);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PlayerShootNtf other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (!object.Equals(Transform, other.Transform)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Speed, other.Speed)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (transform_ != null) hash ^= Transform.GetHashCode();
+      if (Speed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Speed);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (transform_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Transform);
+      }
+      if (Speed != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Speed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (transform_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Transform);
+      }
+      if (Speed != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Speed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (transform_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Transform);
+      }
+      if (Speed != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PlayerShootNtf other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id.Length != 0) {
+        Id = other.Id;
+      }
+      if (other.transform_ != null) {
+        if (transform_ == null) {
+          Transform = new global::TankCommon.Transform();
+        }
+        Transform.MergeFrom(other.Transform);
+      }
+      if (other.Speed != 0F) {
+        Speed = other.Speed;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
+          case 29: {
+            Speed = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (transform_ == null) {
+              Transform = new global::TankCommon.Transform();
+            }
+            input.ReadMessage(Transform);
+            break;
+          }
+          case 29: {
+            Speed = input.ReadFloat();
             break;
           }
         }

@@ -3,7 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+#if UNITY_SERVER
+using PLAYERDATA = ServerPlayer;
+#else
+using PLAYERDATA = ClientPlayer;
+#endif
 public class PlayerManager : Singleton<PlayerManager>
 {
     /// <summary>
@@ -12,18 +16,26 @@ public class PlayerManager : Singleton<PlayerManager>
     /// <param name="id">玩家ID</param>
     /// <param name="data">玩家数据</param>
     /// <returns>是否添加成功</returns>
-    public bool AddPlayer(string id, PlayerData data)
+    public bool AddPlayer(string id, PLAYERDATA data)
     {
         if (!players.ContainsKey(id))
         {
             players.Add(id, data);
-            return true;
         }
         else
         {
-            Debug.LogWarning($"玩家ID {id} 已存在，无法重复添加。");
+            Debug.LogWarning($"Player ID {id} already exists, cannot add again.");
         }
-        return false;
+#if UNITY_SERVER
+        if(data.session != IntPtr.Zero)
+        {
+            if (!sessions.ContainsKey(data.session))
+            {
+                sessions.Add(data.session, data.Id);
+            }
+        }
+#endif
+		return true;
     }
 
     /// <summary>
@@ -31,24 +43,36 @@ public class PlayerManager : Singleton<PlayerManager>
     /// </summary>
     /// <param name="id">玩家ID</param>
     /// <returns>玩家数据，如果未找到则返回null</returns>
-    public PlayerData GetPlayer(string id)
+    public PLAYERDATA GetPlayer(string id)
     {
-        if (players.TryGetValue(id, out PlayerData data))
+        if (players.TryGetValue(id, out PLAYERDATA data))
         {
             return data;
         }
-        Debug.LogWarning($"未找到玩家ID {id} 的数据。");
+        Debug.LogWarning($"Player data with ID {id} not found.");
         return null;
     }
 
-    /// <summary>
-    /// 移除玩家数据
-    /// </summary>
-    /// <param name="id">玩家ID</param>
-    /// <returns>是否移除成功</returns>
-    public bool RemovePlayer(string id)
+#if UNITY_SERVER
+    public PLAYERDATA GetPlayerBySession(IntPtr pConnector)
+	{
+        sessions.TryGetValue(pConnector, out string id);
+        if (id != null)
+        {
+            return GetPlayer(id);
+		}
+        return null;
+	}
+#endif
+
+	/// <summary>
+	/// 移除玩家数据
+	/// </summary>
+	/// <param name="id">玩家ID</param>
+	/// <returns>是否移除成功</returns>
+	public bool RemovePlayer(string id)
     {
-        Debug.Log($"移除玩家ID {id} 的数据。");
+        Debug.Log($"Removing player data with ID {id}.");
         if (players.ContainsKey(id))
         {
 #if UNITY_SERVER
@@ -61,19 +85,18 @@ public class PlayerManager : Singleton<PlayerManager>
 #endif
             return players.Remove(id);
         }
-        Debug.Log($"未找到玩家ID {id} 的数据，无法移除。");
+        Debug.Log($"Player data with ID {id} not found, cannot remove.");
         return false;
     }
 
-    public delegate void PlayerAction(PlayerData data);
+    public delegate void PlayerAction(PLAYERDATA data);
     public void ForEach(PlayerAction action)
     {
-        foreach (PlayerData data in players.Values)
+        foreach (PLAYERDATA data in players.Values)
         {
             action(data);
         }
     }
-
 
     public void AfterCloseCallback(IntPtr pConnector)
     {
@@ -81,7 +104,7 @@ public class PlayerManager : Singleton<PlayerManager>
         sessions.TryGetValue(pConnector, out string id);
         if (id != null)
         {
-            players.TryGetValue(id, out PlayerData data);
+            players.TryGetValue(id, out PLAYERDATA data);
             if (data!= null)
             {
                 data.session = IntPtr.Zero;
@@ -91,7 +114,7 @@ public class PlayerManager : Singleton<PlayerManager>
 #endif
     }
 
-	Dictionary<string, PlayerData> players = new Dictionary<string, PlayerData>();
+	Dictionary<string, PLAYERDATA> players = new Dictionary<string, PLAYERDATA>();
 #if UNITY_SERVER
     Dictionary<IntPtr, string> sessions = new Dictionary<IntPtr, string>();
 #endif

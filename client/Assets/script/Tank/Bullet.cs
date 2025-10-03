@@ -24,7 +24,7 @@ public class Bullet : MonoBehaviour
 		// 检查是否超出屏幕边界
 		CheckScreenBounds();
 	}
-
+    
 	// 检查屏幕边界
 	private void CheckScreenBounds()
     {

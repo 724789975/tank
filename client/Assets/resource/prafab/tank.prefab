@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7265739778355030024}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: bullet_pos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 943139049852432613}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.0211877, y: 0, z: -0.7824774}
+  m_LocalPosition: {x: 1.0211877, y: 0, z: 0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 1823740058891951170}
   - component: {fileID: 8500003925351686887}
   - component: {fileID: 6945539554923124399}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 7097889538361090765}
   - component: {fileID: 2571910087664654717}
   - component: {fileID: 5025408137420946275}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 6066324771273473470}
   - component: {fileID: 1929180992232744043}
   - component: {fileID: 6099888494092573896}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: tank
   m_TagString: Tank
   m_Icon: {fileID: 0}
@@ -338,7 +338,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7265739778355030024}
   - {fileID: 7102659115303780944}
@@ -419,7 +419,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: -1.053, z: 1}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6099888494092573896
 MonoBehaviour:
@@ -452,7 +452,7 @@ GameObject:
   - component: {fileID: 6909512613983445009}
   - component: {fileID: 5078527514323636280}
   - component: {fileID: 4235188365037274816}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

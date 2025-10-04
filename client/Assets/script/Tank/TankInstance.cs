@@ -59,17 +59,7 @@ public class TankInstance : MonoBehaviour
 #endif
 	}
 
-	public void SetPos(Vector2 pos)
-    {
-        transform.position = new Vector3(pos.x, pos.y, 0);
-    }
-
-    public void SetPos(Vector3 pos)
-    {
-        transform.position = pos;
-    }
-
-    public void SetDir(Vector2 dir)
+    public void SetDir(Vector3 dir)
     {
         transform.right = dir;
     }
@@ -87,16 +77,14 @@ public class TankInstance : MonoBehaviour
         transform.position = p;
     }
 
-    public void Shoot(Vector3 pos, Quaternion rot, float speed)
+    public void Shoot(string Id, Vector3 pos, Quaternion rot, float speed)
     {
-        GameObject bullet = Instantiate(bulletPrefab, pos, rot);
-        bullet.GetComponent<Bullet>().ownerId = ID;
-        bullet.GetComponent<Bullet>().speed = speed;
+		Bullet bullet = BulletManager.Instance.AddBullet(pos, rot, Id, speed);
 	}
+
     public void Shoot()
     {
-        GameObject bullet = Instantiate(bulletPrefab, bulletPos.transform.position, bulletPos.transform.rotation);
-        bullet.GetComponent<Bullet>().ownerId = ID;
+        Bullet bullet = BulletManager.Instance.AddBullet(bulletPos.transform.position, bulletPos.transform.rotation, ID, Config.Instance.speed);
 
         TankGame.PlayerShootReq playerShootReq = new TankGame.PlayerShootReq();
         playerShootReq.Transform = new TankCommon.Transform();

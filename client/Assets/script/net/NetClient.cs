@@ -52,7 +52,6 @@ public class NetClient : MonoBehaviour
 			{
 				MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
 			});
-			//MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
 		}
 		catch (Exception e)
 		{

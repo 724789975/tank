@@ -1,14 +1,13 @@
+using Google.Protobuf.WellKnownTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using fxnetlib.dllimport;
+using Google.Protobuf;
 
 public class Bullet : MonoBehaviour
 {
-    // 子弹速度
-    public float speed;
-
-    public string ownerId;
-
 
 	// Start is called before the first frame update
 	void Start()
@@ -26,7 +25,7 @@ public class Bullet : MonoBehaviour
 	}
     
 	// 检查屏幕边界
-	private void CheckScreenBounds()
+	void CheckScreenBounds()
     {
         Vector3 position = transform.position;
         
@@ -39,25 +38,43 @@ public class Bullet : MonoBehaviour
         // 如果子弹超出屏幕边界，销毁子弹
         if (position.x < left || position.x > right || position.y < bottom || position.y > top)
         {
-            Destroy(gameObject);
+            BulletManager.Instance.RemoveBullet(bulletId);
         }
     }
 
     // 碰撞检测
-    private void OnTriggerEnter(Collider other)
-    {
+	void OnCollisionEnter(Collision collision)
+	{
 #if UNITY_SERVER
-        // 检测是否碰撞到坦克
-        if (other.CompareTag("Tank"))
+        TankGame.BulletDestoryNtf bulletDestoryNtf = new TankGame.BulletDestoryNtf();
+        bulletDestoryNtf.Id = bulletId;
+        bulletDestoryNtf.Pos = new TankCommon.Vector3() {X = collision.transform.position.x, Y = collision.transform.position.y, Z = collision.transform.position.z};
+		byte[] messageBytes = Any.Pack(bulletDestoryNtf).ToByteArray();
+		PlayerManager.Instance.ForEach((p) =>
         {
+            if (p.session != IntPtr.Zero)
+            {
+                DLLImport.Send(p.session, messageBytes, (uint)messageBytes.Length);
+            }
+        });
+        // 检测是否碰撞到坦克
+        if (collision.gameObject.CompareTag("Tank"))
+        {
+            Debug.Log($"Bullet hit tank {collision.gameObject.name} ");
             // 销毁子弹
             Destroy(gameObject);
-            
-            // 这里可以添加对坦克的伤害逻辑
-            // 例如：other.GetComponent<Tank>().TakeDamage(damage);
         }
+
+        BulletManager.Instance.RemoveBullet(bulletId);
 #endif
     }
+
+    // 子弹速度
+    public float speed;
+
+    public string ownerId;
+
+    public UInt32 bulletId;
 
 }
 

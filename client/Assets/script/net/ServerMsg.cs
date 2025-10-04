@@ -57,6 +57,7 @@ public class ServerMsg : MonoBehaviour
 			DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
 
 			TankInstance tankInstance = TankManager.Instance.AddTank(loginReq.Id);
+			tankInstance.name = "tank:" + loginReq.Id;
 
 			TankGame.PlayerApperanceNtf playerApperanceNtf = new TankGame.PlayerApperanceNtf();
 			playerApperanceNtf.Id = loginReq.Id;
@@ -184,7 +185,7 @@ public class ServerMsg : MonoBehaviour
 			Debug.LogWarning($"Tank instance not found: {playerData.Id}");
 			return;
 		}
-		tankInstance.Shoot(new Vector3(playerShootReq.Transform.Position.X, playerShootReq.Transform.Position.Y, playerShootReq.Transform.Position.Z), new Quaternion(playerShootReq.Transform.Rotation.X, playerShootReq.Transform.Rotation.Y, playerShootReq.Transform.Rotation.Z, playerShootReq.Transform.Rotation.W), Config.Instance.speed);
+		tankInstance.Shoot(playerData.Id, new Vector3(playerShootReq.Transform.Position.X, playerShootReq.Transform.Position.Y, playerShootReq.Transform.Position.Z), new Quaternion(playerShootReq.Transform.Rotation.X, playerShootReq.Transform.Rotation.Y, playerShootReq.Transform.Rotation.Z, playerShootReq.Transform.Rotation.W), Config.Instance.speed);
 		TankGame.PlayerShootNtf playerShootNtf = new TankGame.PlayerShootNtf();
 		playerShootNtf.Id = playerData.Id;
 		playerShootNtf.Speed = Config.Instance.speed;

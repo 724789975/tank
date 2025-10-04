@@ -58,3 +58,8 @@ message PlayerShootNtf {
     tank_common.Transform transform = 2;
     float speed = 3;
 }
+
+message BulletDestoryNtf {
+    uint32 id = 1;
+    tank_common.Vector3 pos = 2;
+}

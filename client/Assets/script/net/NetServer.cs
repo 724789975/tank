@@ -77,6 +77,27 @@ public class NetServer : MonoBehaviour
 		PlayerManager.Instance.AfterCloseCallback(pConnector);
 	}
 
+	public void SendMessage(IntPtr pSession, Google.Protobuf.IMessage message)
+	{
+		if (pSession == IntPtr.Zero)
+		{
+			Debug.LogError("connector is null");
+			return;
+		}
+		byte[] messageBytes = Any.Pack(message).ToByteArray();
+		DLLImport.Send(pSession, messageBytes, (uint)messageBytes.Length);
+	}
+
+	public void SendMessage(IntPtr pSession, byte[] messageBytes)
+	{
+		if (pSession == IntPtr.Zero)
+		{
+			Debug.LogError("connector is null");
+			return;
+		}
+		DLLImport.Send(pSession, messageBytes, (uint)messageBytes.Length);
+	}
+
 	public static NetServer Instance
 	{
 		get

@@ -48,6 +48,8 @@ public class ClientMsg : MonoBehaviour
         Debug.Log($"OnPlayerApperanceNtf {playerApperanceNtf.Id} {playerApperanceNtf.Name}");
 		TankInstance tankInstance = TankManager.Instance.AddTank(playerApperanceNtf.Id);
         tankInstance.name = "tank:" + playerApperanceNtf.Id;
+        tankInstance.ID = playerApperanceNtf.Id;
+        tankInstance.HP = playerApperanceNtf.Hp;
         if (PlayerManager.Instance.AddPlayer(playerApperanceNtf.Id, new PLAYERDATA() { Id = playerApperanceNtf.Id, Name = playerApperanceNtf.Name }))
         {
             Debug.Log($"Player added successfully: {playerApperanceNtf.Id}");
@@ -116,9 +118,25 @@ public class ClientMsg : MonoBehaviour
 #if !UNITY_SERVER
         TankGame.BulletDestoryNtf bulletDestoryNtf = anyMessage.Unpack<TankGame.BulletDestoryNtf>();
         BulletManager.Instance.RemoveBullet(bulletDestoryNtf.Id);
-        Instantiate(instance.boomPrefab, new Vector3(bulletDestoryNtf.Pos.X, bulletDestoryNtf.Pos.Y, bulletDestoryNtf.Pos.Z), Quaternion.identity);
+        Instantiate(instance.boomPrefab, new Vector3(bulletDestoryNtf.Pos.X, bulletDestoryNtf.Pos.Y, bulletDestoryNtf.Pos.Z - 5), Quaternion.identity);
 #endif
     }
-    public GameObject boomPrefab;
+
+    [RpcHandler("tank_game.TankHpSyncNtf")]
+    static void TankHpSyncNtf(IntPtr pConnection, Any anyMessage)
+    {
+#if !UNITY_SERVER
+        TankGame.TankHpSyncNtf tankHpSyncNtf = anyMessage.Unpack<TankGame.TankHpSyncNtf>();
+        TankInstance tankInstance = TankManager.Instance.GetTank(tankHpSyncNtf.Id);
+        if (tankInstance == null)
+        {
+            Debug.LogWarning($"Tank instance not found: {tankHpSyncNtf.Id}");
+            return;
+        }
+        tankInstance.HP = tankHpSyncNtf.Hp;
+#endif
+    }
+
+	public GameObject boomPrefab;
 }
 

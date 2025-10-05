@@ -62,6 +62,7 @@ public class ServerMsg : MonoBehaviour
 			TankGame.PlayerApperanceNtf playerApperanceNtf = new TankGame.PlayerApperanceNtf();
 			playerApperanceNtf.Id = loginReq.Id;
 			playerApperanceNtf.Name = loginReq.Name;
+			playerApperanceNtf.Hp = Config.Instance.maxHp;
 			playerApperanceNtf.Transform = new TankCommon.Transform();
 			playerApperanceNtf.Transform.Position = new TankCommon.Vector3() { X = tankInstance.transform.position.x, Y = tankInstance.transform.position.y, Z = tankInstance.transform.position.z};
 			playerApperanceNtf.Transform.Rotation = new TankCommon.Quaternion() { X = tankInstance.transform.rotation.x, Y = tankInstance.transform.rotation.y, Z = tankInstance.transform.rotation.z, W = tankInstance.transform.rotation.w};

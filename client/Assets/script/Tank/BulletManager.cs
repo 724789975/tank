@@ -53,3 +53,4 @@ public class BulletManager : MonoBehaviour
 	Dictionary<UInt32, Bullet> bullets = new Dictionary<UInt32, Bullet>();
 	public GameObject bulletPrefab;
 }
+

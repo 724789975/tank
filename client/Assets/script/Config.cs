@@ -66,4 +66,6 @@ public class Config : MonoBehaviour
     public string serverIP;
     public ushort port;
     public float speed;
+    public int maxHp;
+    public float rebornProtectionTime;
 }

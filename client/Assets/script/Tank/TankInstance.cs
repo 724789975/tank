@@ -56,6 +56,8 @@ public class TankInstance : MonoBehaviour
             syncTime = sync.SyncTime;
         }
 
+        rebornTime -= Time.deltaTime;
+
 #endif
 	}
 
@@ -93,10 +95,23 @@ public class TankInstance : MonoBehaviour
         NetClient.Instance.SendMessage(playerShootReq);
     }
 
+
+
     /// <summary>
     /// 坦克血量
     /// </summary>
-    public int HP;
+    public int HP
+    {
+        get { return (int)(hpSlider.value * 100); }
+        set
+        {
+			hpSlider.value = value / 100.0f;
+            float colorValue = hpSlider.value - 0.2f;
+            if (colorValue < 0) colorValue = 0;
+            colorValue = colorValue / 0.8f;
+            hpSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red, Color.green, colorValue);
+		}
+	}
 
 	/// <summary>
 	/// 坦克ID
@@ -109,6 +124,10 @@ public class TankInstance : MonoBehaviour
 
     public TextMeshPro idText;
     public float speed;
+
+    public Slider hpSlider;
+
+    public float rebornTime = 3.0f;
 
 #if !UNITY_SERVER
 	float syncTime = 0;

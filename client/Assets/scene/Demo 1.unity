@@ -1694,10 +1694,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u53D1\u5C04"
+  m_text: "\u5C04\u51FB"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 77d7d04eda266504f9da28be5b6226d1, type: 2}
+  m_sharedMaterial: {fileID: -1265039355344610869, guid: 77d7d04eda266504f9da28be5b6226d1,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1721,8 +1722,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -2508,6 +2509,8 @@ MonoBehaviour:
   serverIP: 127.0.0.1
   port: 10085
   speed: 3
+  maxHp: 100
+  rebornProtectionTime: 3
 --- !u!114 &1919893561
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -46,9 +46,58 @@ public class Bullet : MonoBehaviour
 	void OnCollisionEnter(Collision collision)
 	{
 #if UNITY_SERVER
+        // 检测是否碰撞到坦克
+        if (collision.gameObject.CompareTag("Tank"))
+        {
+            TankInstance tankInstance = collision.gameObject.GetComponent<TankInstance>();
+            if (tankInstance == null)
+            {
+                Debug.LogWarning("find tankinstance error");
+            }
+            else
+            {
+                if (tankInstance.rebornTime > 0)
+                {
+                    // 坦克处于重生保护时间，不受伤害
+                    Debug.Log($"Tank {tankInstance.ID} is in reborn protection.");
+                    return;
+				}
+				tankInstance.HP -= 10;
+                TankGame.TankHpSyncNtf ntf = new TankGame.TankHpSyncNtf() { Id = tankInstance.ID, Hp = tankInstance.HP};
+                byte[] hpBytes = Any.Pack(ntf).ToByteArray();
+
+				PlayerManager.Instance.ForEach((p) =>
+                {
+                    if (p.session != IntPtr.Zero)
+                    {
+                        DLLImport.Send(p.session, hpBytes, (uint)hpBytes.Length);
+                    }
+                });
+
+                if (tankInstance.HP <= 0)
+                {
+                    // 坦克死亡处理
+                    Debug.Log($"Tank {tankInstance.ID} is destroyed!");
+                    TankGame.PlayerDieNtf dieNtf = new TankGame.PlayerDieNtf() { KilledId = tankInstance.ID, KillerId = ownerId};
+                    byte[] dieBytes = Any.Pack(dieNtf).ToByteArray();
+                    PlayerManager.Instance.ForEach((p) =>
+                    {
+                        DLLImport.Send(p.session, dieBytes, (uint)dieBytes.Length);
+                    });
+                    tankInstance.rebornTime = Config.Instance.rebornProtectionTime;
+				}
+            }
+                Debug.Log($"Bullet hit tank {collision.gameObject.name} ");
+            // 销毁子弹
+            Destroy(gameObject);
+        }
+
         TankGame.BulletDestoryNtf bulletDestoryNtf = new TankGame.BulletDestoryNtf();
         bulletDestoryNtf.Id = bulletId;
-        bulletDestoryNtf.Pos = new TankCommon.Vector3() {X = collision.transform.position.x, Y = collision.transform.position.y, Z = collision.transform.position.z};
+        Vector3 pos = collision.collider.ClosestPoint(collision.transform.position);
+
+		bulletDestoryNtf.Pos = new TankCommon.Vector3() {X = pos.x, Y = pos.y, Z = pos.z};
+
 		byte[] messageBytes = Any.Pack(bulletDestoryNtf).ToByteArray();
 		PlayerManager.Instance.ForEach((p) =>
         {
@@ -57,13 +106,6 @@ public class Bullet : MonoBehaviour
                 DLLImport.Send(p.session, messageBytes, (uint)messageBytes.Length);
             }
         });
-        // 检测是否碰撞到坦克
-        if (collision.gameObject.CompareTag("Tank"))
-        {
-            Debug.Log($"Bullet hit tank {collision.gameObject.name} ");
-            // 销毁子弹
-            Destroy(gameObject);
-        }
 
         BulletManager.Instance.RemoveBullet(bulletId);
 #endif

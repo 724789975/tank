@@ -62,10 +62,6 @@ public class NetClient : MonoBehaviour
 	{
 		Debug.LogFormat("{0} connected", pConnector);
 
-		TankGame.Ping pingMessage = new TankGame.Ping();
-		pingMessage.Ts = DateTime.Now.Ticks;
-		byte[] messageBytes = Any.Pack(pingMessage).ToByteArray();
-		DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
 	}
 	static void OnErrorCallback(IntPtr pConnector, IntPtr nLen)
 	{

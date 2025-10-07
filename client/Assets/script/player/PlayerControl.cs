@@ -1,4 +1,7 @@
+using fxnetlib.dllimport;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TankGame;
@@ -22,11 +25,15 @@ public class PlayerControl : MonoBehaviour
 
     public void StartGame()
     {
+		TankGame.Ping pingMessage = new TankGame.Ping();
+		pingMessage.Ts = Time.time;
+		NetClient.Instance.SendMessage(pingMessage);
+
 		TankGame.LoginReq req = new TankGame.LoginReq();
         req.Name = nameText.text;
         req.Id = idText.text;
 		NetClient.Instance.SendMessage(req);
-    }
+	}
 
     public static PlayerControl Instance
     {

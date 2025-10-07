@@ -31,8 +31,9 @@ public class ClientMsg : MonoBehaviour
     static void Pong(IntPtr pConnection, Any anyMessage)
     {
         TankGame.Pong pong = anyMessage.Unpack<TankGame.Pong>();
-        Debug.Log($"OnPong {pong.Ts}");
-    }
+        Debug.Log($"OnPong {pong.ToString()} latency {Time.time - pong.Ts}");
+        ClientFrame.Instance.CorrectFrame(pong.CurrentTime, Time.time - pong.Ts);
+	}
 
     [RpcHandler("tank_game.LoginRsp")]
     static void LoginRsp(IntPtr pConnection, Any anyMessage)
@@ -45,11 +46,12 @@ public class ClientMsg : MonoBehaviour
     static void PlayerApperanceNtf(IntPtr pConnection, Any anyMessage)
     {
         TankGame.PlayerApperanceNtf playerApperanceNtf = anyMessage.Unpack<TankGame.PlayerApperanceNtf>();
-        Debug.Log($"OnPlayerApperanceNtf {playerApperanceNtf.Id} {playerApperanceNtf.Name}");
-		TankInstance tankInstance = TankManager.Instance.AddTank(playerApperanceNtf.Id);
+		TankInstance tankInstance = TankManager.Instance.AddTank(playerApperanceNtf.Id, out bool isAdd);
         tankInstance.name = "tank:" + playerApperanceNtf.Id;
         tankInstance.ID = playerApperanceNtf.Id;
         tankInstance.HP = playerApperanceNtf.Hp;
+        tankInstance.rebornTime = playerApperanceNtf.RebornProtectTime - ClientFrame.Instance.CurrentTime;
+        Debug.Log($"OnPlayerApperanceNtf {playerApperanceNtf.ToString()} {tankInstance.rebornTime} {ClientFrame.Instance.CurrentTime}");
         if (PlayerManager.Instance.AddPlayer(playerApperanceNtf.Id, new PLAYERDATA() { Id = playerApperanceNtf.Id, Name = playerApperanceNtf.Name }))
         {
             Debug.Log($"Player added successfully: {playerApperanceNtf.Id}");
@@ -134,6 +136,21 @@ public class ClientMsg : MonoBehaviour
             return;
         }
         tankInstance.HP = tankHpSyncNtf.Hp;
+#endif
+    }
+
+	[RpcHandler("tank_game.PlayerDieNtf")]
+	static void PlayerDieNtf(IntPtr pConnection, Any anyMessage)
+    {
+#if !UNITY_SERVER
+        TankGame.PlayerDieNtf playerDieNtf = anyMessage.Unpack<TankGame.PlayerDieNtf>();
+        TankInstance tankInstance = TankManager.Instance.GetTank(playerDieNtf.KilledId);
+        if (tankInstance == null)
+        {
+            Debug.LogWarning($"Tank instance not found: {playerDieNtf.KilledId}");
+            return;
+        }
+        tankInstance.rebornTime = playerDieNtf.RebornProtectTime - ClientFrame.Instance.CurrentTime;
 #endif
     }
 

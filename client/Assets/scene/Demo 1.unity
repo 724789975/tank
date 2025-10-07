@@ -327,6 +327,7 @@ GameObject:
   - component: {fileID: 152211670}
   - component: {fileID: 152211671}
   - component: {fileID: 152211672}
+  - component: {fileID: 152211673}
   m_Layer: 0
   m_Name: client
   m_TagString: Untagged
@@ -401,6 +402,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 1404395644}
   idText: {fileID: 784051040}
+--- !u!114 &152211673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152211667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ddefca5fdd2fd479c2dbe0580d1474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncRate: 0
 --- !u!1 &229731770
 GameObject:
   m_ObjectHideFlags: 0
@@ -2397,6 +2411,7 @@ GameObject:
   - component: {fileID: 1901427912}
   - component: {fileID: 1901427913}
   - component: {fileID: 1901427914}
+  - component: {fileID: 1901427915}
   m_Layer: 0
   m_Name: server
   m_TagString: Untagged
@@ -2441,6 +2456,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5e331d14a28a00e4197d542390400054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901427915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901427911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8510840893a5b8e40af2d03dd0e1a773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1919893557
@@ -2510,7 +2537,7 @@ MonoBehaviour:
   port: 10085
   speed: 3
   maxHp: 100
-  rebornProtectionTime: 3
+  rebornProtectionTime: 5
 --- !u!114 &1919893561
 MonoBehaviour:
   m_ObjectHideFlags: 0

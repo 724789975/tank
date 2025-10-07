@@ -23,11 +23,12 @@ public class TankManager : MonoBehaviour
     {
 	}
 
-	public TankInstance AddTank(string id)
+	public TankInstance AddTank(string id, out bool isAdd)
 	{
 		if (GetTank(id))
 		{
 			Debug.LogWarning($"already in map {id}");
+			isAdd = false;
 			return GetTank(id);
 		}
 		GameObject tankInstance = Instantiate(tankPrefab);
@@ -35,6 +36,7 @@ public class TankManager : MonoBehaviour
 		tankInstance.transform.position = new Vector3(0, 0, 0);
 
 		instanceMap.Add(id, tankInstance.GetComponent<TankInstance>());
+		isAdd = true;
 		return instanceMap[id];
 	}
 

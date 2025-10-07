@@ -79,19 +79,35 @@ public class Bullet : MonoBehaviour
                     // 坦克死亡处理
                     Debug.Log($"Tank {tankInstance.ID} is destroyed!");
                     TankGame.PlayerDieNtf dieNtf = new TankGame.PlayerDieNtf() { KilledId = tankInstance.ID, KillerId = ownerId};
+                    dieNtf.RebornProtectTime = ServerFrame.Instance.CurrentTime + Config.Instance.rebornProtectionTime;
                     byte[] dieBytes = Any.Pack(dieNtf).ToByteArray();
                     PlayerManager.Instance.ForEach((p) =>
                     {
                         DLLImport.Send(p.session, dieBytes, (uint)dieBytes.Length);
                     });
+                    tankInstance.HP = Config.Instance.maxHp;
+                    TankGame.TankHpSyncNtf tankHpSyncNtf = new TankGame.TankHpSyncNtf() { Id = tankInstance.ID, Hp = tankInstance.HP };
+                    byte[] tankHpBytes = Any.Pack(tankHpSyncNtf).ToByteArray();
+                    PlayerManager.Instance.ForEach((p) =>
+                    {
+                        if (p.session != IntPtr.Zero)
+                        {
+                            DLLImport.Send(p.session, tankHpBytes, (uint)tankHpBytes.Length);
+                        }
+                    });
                     tankInstance.rebornTime = Config.Instance.rebornProtectionTime;
+                    Debug.Log($"Tank {tankInstance.ID} will be in reborn protection until {tankInstance.rebornTime}");
+                    tankInstance.GetComponent<BoxCollider>().enabled = false;
 				}
+
+                Debug.Log($"Tank {tankInstance.ID} hit, current HP: {tankInstance.HP}");
             }
-                Debug.Log($"Bullet hit tank {collision.gameObject.name} ");
+            Debug.Log($"Bullet hit tank {collision.gameObject.name} ");
             // 销毁子弹
             Destroy(gameObject);
         }
 
+        Debug.Log($"Bullet {bulletId} collided with {collision.gameObject.name} tag {collision.gameObject.tag}, destroying bullet.");
         TankGame.BulletDestoryNtf bulletDestoryNtf = new TankGame.BulletDestoryNtf();
         bulletDestoryNtf.Id = bulletId;
         Vector3 pos = collision.collider.ClosestPoint(collision.transform.position);

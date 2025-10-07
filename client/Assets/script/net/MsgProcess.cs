@@ -11,7 +11,7 @@ public class MsgProcess : Singleton<MsgProcess>
 	public void ProcessMessage(IntPtr pConnector, Any msg)
 	{
 		string name = Any.GetTypeName(msg.TypeUrl);
-		UnityEngine.Debug.Log($"ProcessMessage: {name}, {pConnector}");
+		//UnityEngine.Debug.Log($"ProcessMessage: {name}, {pConnector}");
 		if (handlerDict.ContainsKey(name))
 		{
 			var method = handlerDict[name];

@@ -10,8 +10,10 @@ public class TankInstance : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        HP = 100;
         idText.text = ID;
+#if !UNITY_SERVER
+        GetComponent<BoxCollider>().enabled = false;
+#endif
     }
 
     // Update is called once per frame
@@ -26,11 +28,28 @@ public class TankInstance : MonoBehaviour
             return;
         }
 
+        if (rebornTime > 0)
+        {
+            isDead = true;
+			rebornTime -= Time.deltaTime;
+            gameObject.GetComponentInChildren<MeshRenderer>().enabled = (int)(rebornTime * 10) % 2 == 0 ? false : true;
+		}
+        else
+        {
+            if (isDead)
+            {
+                isDead = false;
+                rebornTime = 0;
+                gameObject.GetComponentInChildren<MeshRenderer>().enabled = true;
+                Debug.Log($"Tank {ID} reborn protection ended.");
+            }
+		}
+        
         if (clientPlayer.syncs.Count == 0)
         {
             return;
         }
-        while(clientPlayer.syncs.Count > 1 && clientPlayer.syncs[1].SyncTime <= syncTime)
+        while(clientPlayer.syncs.Count > 1 && clientPlayer.syncs[1].SyncTime <= ClientFrame.Instance.CurrentTime)
         {
             clientPlayer.syncs.RemoveAt(0);
         }
@@ -40,28 +59,39 @@ public class TankInstance : MonoBehaviour
             TankGame.PlayerStateNtf sync1 = clientPlayer.syncs[0];
             TankGame.PlayerStateNtf sync2 = clientPlayer.syncs[1];
 
-			float s = Mathf.Clamp((syncTime - sync1.SyncTime) / (sync2.SyncTime - sync1.SyncTime), 0, 1);
+			float s = Mathf.Clamp((ClientFrame.Instance.CurrentTime - sync1.SyncTime) / (sync2.SyncTime - sync1.SyncTime), 0, 1);
 
             transform.position = Vector3.Lerp(new Vector3(sync1.Transform.Position.X, sync1.Transform.Position.Y, sync1.Transform.Position.Z), new Vector3(sync2.Transform.Position.X, sync2.Transform.Position.Y, sync2.Transform.Position.Z), s);
 
             transform.rotation = Quaternion.Slerp(new Quaternion(sync1.Transform.Rotation.X, sync1.Transform.Rotation.Y, sync1.Transform.Rotation.Z, sync1.Transform.Rotation.W), new Quaternion(sync2.Transform.Rotation.X, sync2.Transform.Rotation.Y, sync2.Transform.Rotation.Z, sync2.Transform.Rotation.W), s);
-			syncTime += Time.deltaTime * 1000;
         }
         else
         {
             TankGame.PlayerStateNtf sync = clientPlayer.syncs[0];
             transform.position = new Vector3(sync.Transform.Position.X, sync.Transform.Position.Y, sync.Transform.Position.Z);
             transform.rotation = new Quaternion(sync.Transform.Rotation.X, sync.Transform.Rotation.Y, sync.Transform.Rotation.Z, sync.Transform.Rotation.W);
-
-            syncTime = sync.SyncTime;
         }
 
-        rebornTime -= Time.deltaTime;
-
+#else
+        if (rebornTime > 0)
+        {
+            rebornTime -= Time.deltaTime;
+            isDead = true;
+        }
+        else
+        {
+            if (isDead)
+            {
+				rebornTime = 0;
+				GetComponent<BoxCollider>().enabled = true;
+				Debug.Log($"Tank {ID} reborn protection ended.");
+                isDead = false;
+			}
+        }
 #endif
 	}
 
-    public void SetDir(Vector3 dir)
+	public void SetDir(Vector3 dir)
     {
         transform.right = dir;
     }
@@ -95,17 +125,16 @@ public class TankInstance : MonoBehaviour
         NetClient.Instance.SendMessage(playerShootReq);
     }
 
-
-
     /// <summary>
     /// 坦克血量
     /// </summary>
     public int HP
     {
-        get { return (int)(hpSlider.value * 100); }
+        get { return hp; }
         set
         {
-			hpSlider.value = value / 100.0f;
+            hp = value;
+			hpSlider.value = hp / 100.0f;
             float colorValue = hpSlider.value - 0.2f;
             if (colorValue < 0) colorValue = 0;
             colorValue = colorValue / 0.8f;
@@ -127,9 +156,8 @@ public class TankInstance : MonoBehaviour
 
     public Slider hpSlider;
 
-    public float rebornTime = 3.0f;
+    public float rebornTime = 0f;
+    bool isDead = false;
+    int hp = 0;
 
-#if !UNITY_SERVER
-	float syncTime = 0;
-#endif
 }

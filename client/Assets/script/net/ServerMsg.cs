@@ -26,13 +26,13 @@ public class ServerMsg : MonoBehaviour
 	static void Ping(IntPtr pConnector, Any anyMessage)
 	{
 		TankGame.Ping ping = anyMessage.Unpack<TankGame.Ping>();
-		Debug.Log($"OnPing {ping.Ts}");
 
 		// 回复 Ping 消息
 		TankGame.Pong pongMessage = new TankGame.Pong();
-		pongMessage.Ts = DateTime.Now.Ticks;
-		byte[] messageBytes = Any.Pack(pongMessage).ToByteArray();
-		DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
+		pongMessage.Ts = ping.Ts;
+		pongMessage.CurrentTime = ServerFrame.Instance.CurrentTime;
+		Debug.Log($"OnPing {ping.ToString()}, {pongMessage.ToString()}");
+		NetServer.Instance.SendMessage(pConnector, pongMessage);
 	}
 
 	[RpcHandler("tank_game.LoginReq")]
@@ -56,16 +56,24 @@ public class ServerMsg : MonoBehaviour
 			byte[] messageBytes = Any.Pack(loginRspMessage).ToByteArray();
 			DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
 
-			TankInstance tankInstance = TankManager.Instance.AddTank(loginReq.Id);
+			TankInstance tankInstance = TankManager.Instance.AddTank(loginReq.Id, out bool isAdd);
 			tankInstance.name = "tank:" + loginReq.Id;
 
 			TankGame.PlayerApperanceNtf playerApperanceNtf = new TankGame.PlayerApperanceNtf();
 			playerApperanceNtf.Id = loginReq.Id;
 			playerApperanceNtf.Name = loginReq.Name;
-			playerApperanceNtf.Hp = Config.Instance.maxHp;
+			if (isAdd)
+			{
+				tankInstance.HP = Config.Instance.maxHp;
+				tankInstance.transform.position = new Vector3(UnityEngine.Random.Range(Config.Instance.GetLeft() + 10, Config.Instance.GetRight() - 10), UnityEngine.Random.Range(Config.Instance.GetTop() - 10, Config.Instance.GetBottom() + 10), 0);
+				tankInstance.transform.right = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0).normalized;
+				tankInstance.rebornTime = Config.Instance.rebornProtectionTime;
+			}
+			playerApperanceNtf.Hp = tankInstance.HP;
 			playerApperanceNtf.Transform = new TankCommon.Transform();
 			playerApperanceNtf.Transform.Position = new TankCommon.Vector3() { X = tankInstance.transform.position.x, Y = tankInstance.transform.position.y, Z = tankInstance.transform.position.z};
 			playerApperanceNtf.Transform.Rotation = new TankCommon.Quaternion() { X = tankInstance.transform.rotation.x, Y = tankInstance.transform.rotation.y, Z = tankInstance.transform.rotation.z, W = tankInstance.transform.rotation.w};
+			playerApperanceNtf.RebornProtectTime = tankInstance.rebornTime + ServerFrame.Instance.CurrentTime;
 
 			byte[] messageBytes2 = Any.Pack(playerApperanceNtf).ToByteArray();
 			DLLImport.Send(pConnector, messageBytes2, (uint)messageBytes2.Length);
@@ -84,6 +92,7 @@ public class ServerMsg : MonoBehaviour
 						TankInstance otherTankInstance = TankManager.Instance.GetTank(playerData.Id);
 						if (otherTankInstance != null)
 						{
+							playerJoinNtf.Hp = otherTankInstance.HP;
 							playerJoinNtf.Transform = new TankCommon.Transform();
 							playerJoinNtf.Transform.Position = new TankCommon.Vector3() { X = otherTankInstance.transform.position.x, Y = otherTankInstance.transform.position.y, Z = otherTankInstance.transform.position.z };
 							playerJoinNtf.Transform.Rotation = new TankCommon.Quaternion() { X = otherTankInstance.transform.rotation.x, Y = otherTankInstance.transform.rotation.y, Z = otherTankInstance.transform.rotation.z, W = otherTankInstance.transform.rotation.w };
@@ -123,15 +132,16 @@ public class ServerMsg : MonoBehaviour
 			return;
 		}
 
+
 		if (playerStateSyncReq.Transform != null)
 		{
 			if (playerStateSyncReq.Transform.Position != null)
 			{
-				playerData.speedCheckDelate += playerStateSyncReq.DeltaMs;
+				playerData.speedCheckDelate += playerStateSyncReq.SyncTime - playerData.SyncTime;
 				Vector3 np = new Vector3(playerStateSyncReq.Transform.Position.X, playerStateSyncReq.Transform.Position.Y, playerStateSyncReq.Transform.Position.Z);
-				if (Vector3.Distance(playerData.lastPos, np) > tankInstance.speed * playerData.speedCheckDelate / 990)
+				if (Vector3.Distance(playerData.lastPos, np) > tankInstance.speed * playerData.speedCheckDelate * 1.01f)
 				{
-					Debug.LogWarning($"Position jump too large from {playerData.lastPos} to {np}, distance {Vector3.Distance(playerData.lastPos, np)}, max {tankInstance.speed * playerData.speedCheckDelate / 1000}");
+					Debug.LogWarning($"Position jump too large from {playerData.lastPos} to {np}, distance {Vector3.Distance(playerData.lastPos, np)}, max {tankInstance.speed * playerData.speedCheckDelate * 1.01f}");
 				}
 				else
 				{
@@ -146,7 +156,7 @@ public class ServerMsg : MonoBehaviour
 			}
 		}
 
-		playerData.SyncTime += playerStateSyncReq.DeltaMs;
+		playerData.SyncTime = playerStateSyncReq.SyncTime;
 
 		TankGame.PlayerStateNtf playerStateNtf = new TankGame.PlayerStateNtf();
 		playerStateNtf.Id = playerData.Id;

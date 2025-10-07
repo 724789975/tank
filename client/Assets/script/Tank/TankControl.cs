@@ -41,7 +41,7 @@ public class TankControl : MonoBehaviour
         if (t - lastSyncTime > 0.125f)
         {
 			TankGame.PlayerStateSyncReq playerStateSyncReq = new TankGame.PlayerStateSyncReq();
-			playerStateSyncReq.DeltaMs = (int)((t - lastSyncTime) * 1000);
+			playerStateSyncReq.SyncTime = ClientFrame.Instance.CurrentTime;
             if (syncFlag)
             {
                 playerStateSyncReq.Transform = new TankCommon.Transform();

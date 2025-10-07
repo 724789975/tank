@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 5025408137420946275}
   m_Layer: 23
   m_Name: sphere
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -304,7 +304,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -441,6 +441,7 @@ MonoBehaviour:
   idText: {fileID: 6945539554923124399}
   speed: 10
   hpSlider: {fileID: 8470765915348361131}
+  rebornTime: 3
 --- !u!1 &4388449959199103560
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,7 +451,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 302862921559598454}
-  m_Layer: 5
+  m_Layer: 23
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -487,7 +488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 928639596172532764}
   - component: {fileID: 8470765915348361131}
-  m_Layer: 5
+  m_Layer: 23
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -579,7 +580,7 @@ GameObject:
   - component: {fileID: 2493784373661868715}
   - component: {fileID: 2756855971898345926}
   - component: {fileID: 1879003816550753687}
-  m_Layer: 5
+  m_Layer: 23
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -680,7 +681,7 @@ GameObject:
   - component: {fileID: 2713954286029126603}
   - component: {fileID: 12095640451836713}
   - component: {fileID: 3030181011182555002}
-  m_Layer: 5
+  m_Layer: 23
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -755,7 +756,7 @@ GameObject:
   - component: {fileID: 8574128601837231098}
   - component: {fileID: 7168297850850484175}
   - component: {fileID: 1848502137771750307}
-  m_Layer: 5
+  m_Layer: 23
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -833,7 +834,7 @@ GameObject:
   - component: {fileID: 4235188365037274816}
   m_Layer: 23
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -920,7 +921,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -935,7 +936,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2209339018318523800}
-  m_Layer: 5
+  m_Layer: 23
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -973,7 +974,7 @@ GameObject:
   - component: {fileID: 6729142986231210219}
   - component: {fileID: 4624424265915273735}
   - component: {fileID: 1479102516038525349}
-  m_Layer: 5
+  m_Layer: 23
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}

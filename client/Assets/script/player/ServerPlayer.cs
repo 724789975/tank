@@ -10,7 +10,7 @@ using PLAYERDATA = ServerPlayer;
 public class ServerPlayer : PlayerData
 {
 	public IntPtr session = IntPtr.Zero;
-	public int SyncTime = 0;
+	public float SyncTime = 0;
 	public Vector3 lastPos = Vector3.zero;
-	public int speedCheckDelate = 0;
+	public float speedCheckDelate = 0;
 }

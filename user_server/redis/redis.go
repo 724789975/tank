@@ -17,8 +17,12 @@ var cache struct {
 
 func GetRedis() redis.UniversalClient {
 	cache.Do(func() {
+		addrs := make([]string, 0)
+		for _, addr := range common_config.Get("redis.addrs").([]interface{}) {
+			addrs = append(addrs, addr.(string))
+		}
 		rdb := redis.NewUniversalClient(&redis.UniversalOptions{
-			Addrs:           common_config.Get("redis.addrs").([]string),
+			Addrs:           addrs,
 			Password:        common_config.Get("redis.password").(string),
 			DB:              0,
 			MaxIdleConns:    16,

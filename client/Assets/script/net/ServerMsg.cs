@@ -21,7 +21,6 @@ public class ServerMsg : MonoBehaviour
         
     }
 
-
 	[RpcHandler("tank_game.Ping")]
 	static void Ping(IntPtr pConnector, Any anyMessage)
 	{
@@ -31,7 +30,7 @@ public class ServerMsg : MonoBehaviour
 		TankGame.Pong pongMessage = new TankGame.Pong();
 		pongMessage.Ts = ping.Ts;
 		pongMessage.CurrentTime = ServerFrame.Instance.CurrentTime;
-		Debug.Log($"OnPing {ping.ToString()}, {pongMessage.ToString()}");
+		//Debug.Log($"OnPing {ping.ToString()}, {pongMessage.ToString()}");
 		NetServer.Instance.SendMessage(pConnector, pongMessage);
 	}
 

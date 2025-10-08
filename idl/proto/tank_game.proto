@@ -2,11 +2,7 @@ syntax = "proto3";
 package tank_game;
 
 import "proto/tank_common.proto";
-
-enum ErrorCode {
-    Ok = 0;
-    Failed = 1;
-}
+import "proto/common.proto";
 
 message Ping {
     float ts = 1;
@@ -25,7 +21,7 @@ message LoginReq {
 
 //登录回复
 message LoginRsp {
-    ErrorCode code = 1;
+    common.ErrorCode code = 1;
     string msg = 2;
 }
 

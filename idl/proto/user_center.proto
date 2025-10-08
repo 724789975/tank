@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "user_center";
+package user_center;
+
+import "proto/common.proto";
+
+
+message LoginReq {
+    string token = 1;
+}
+
+message LoginRsp {
+    common.ErrorCode code = 1;
+    string msg = 2;
+    string id = 3;
+    string name = 4;
+    string serverAddr = 5;
+    int32 serverPort = 6;
+}

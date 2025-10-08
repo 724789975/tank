@@ -92,7 +92,18 @@ public class ClientMsg : MonoBehaviour
 #endif
 	}
 
-    [RpcHandler("tank_game.PlayerShootNtf")]
+
+    [RpcHandler("tank_game.PlayerDisappearNtf")]
+    static void PlayerDisappearNtf(IntPtr pConnection, Any anyMessage)
+    {
+#if !UNITY_SERVER
+		TankGame.PlayerDisappearNtf playerDisappearNtf = anyMessage.Unpack<TankGame.PlayerDisappearNtf>();
+        TankManager.Instance.RemoveTank(playerDisappearNtf.Id);
+        PlayerManager.Instance.RemovePlayer(playerDisappearNtf.Id);
+#endif
+	}
+
+	[RpcHandler("tank_game.PlayerShootNtf")]
     static void PlayerShootNtf(IntPtr pConnection, Any anyMessage)
     {
 #if !UNITY_SERVER

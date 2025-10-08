@@ -25,29 +25,29 @@ namespace TankGame {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChVwcm90by90YW5rX2dhbWUucHJvdG8SCXRhbmtfZ2FtZRoXcHJvdG8vdGFu",
-            "a19jb21tb24ucHJvdG8iEgoEUGluZxIKCgJ0cxgBIAEoAiInCgRQb25nEgoK",
-            "AnRzGAEgASgCEhMKC2N1cnJlbnRUaW1lGAIgASgCIiQKCExvZ2luUmVxEgwK",
-            "BG5hbWUYASABKAkSCgoCaWQYAiABKAkiOwoITG9naW5Sc3ASIgoEY29kZRgB",
-            "IAEoDjIULnRhbmtfZ2FtZS5FcnJvckNvZGUSCwoDbXNnGAIgASgJIoABChJQ",
-            "bGF5ZXJBcHBlcmFuY2VOdGYSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIp",
-            "Cgl0cmFuc2Zvcm0YAyABKAsyFi50YW5rX2NvbW1vbi5UcmFuc2Zvcm0SCgoC",
-            "aHAYBCABKAUSGQoRcmVib3JuUHJvdGVjdFRpbWUYBSABKAIiWQoOUGxheWVy",
-            "U3RhdGVOdGYSCgoCaWQYASABKAkSEAoIc3luY1RpbWUYAiABKAISKQoJdHJh",
-            "bnNmb3JtGAMgASgLMhYudGFua19jb21tb24uVHJhbnNmb3JtIiAKElBsYXll",
-            "ckRpc2FwcGVhck50ZhIKCgJpZBgBIAEoCSJRChJQbGF5ZXJTdGF0ZVN5bmNS",
-            "ZXESEAoIc3luY1RpbWUYASABKAISKQoJdHJhbnNmb3JtGAIgASgLMhYudGFu",
-            "a19jb21tb24uVHJhbnNmb3JtIjsKDlBsYXllclNob290UmVxEikKCXRyYW5z",
-            "Zm9ybRgBIAEoCzIWLnRhbmtfY29tbW9uLlRyYW5zZm9ybSJWCg5QbGF5ZXJT",
-            "aG9vdE50ZhIKCgJpZBgBIAEoCRIpCgl0cmFuc2Zvcm0YAiABKAsyFi50YW5r",
-            "X2NvbW1vbi5UcmFuc2Zvcm0SDQoFc3BlZWQYAyABKAIiQQoQQnVsbGV0RGVz",
-            "dG9yeU50ZhIKCgJpZBgBIAEoDRIhCgNwb3MYAiABKAsyFC50YW5rX2NvbW1v",
-            "bi5WZWN0b3IzIicKDVRhbmtIcFN5bmNOdGYSCgoCaWQYASABKAkSCgoCaHAY",
-            "AiABKAUiTQoMUGxheWVyRGllTnRmEhAKCGtpbGxlZElkGAEgASgJEhAKCGtp",
-            "bGxlcklkGAIgASgJEhkKEXJlYm9yblByb3RlY3RUaW1lGAMgASgCKh8KCUVy",
-            "cm9yQ29kZRIGCgJPaxAAEgoKBkZhaWxlZBABYgZwcm90bzM="));
+            "a19jb21tb24ucHJvdG8aEnByb3RvL2NvbW1vbi5wcm90byISCgRQaW5nEgoK",
+            "AnRzGAEgASgCIicKBFBvbmcSCgoCdHMYASABKAISEwoLY3VycmVudFRpbWUY",
+            "AiABKAIiJAoITG9naW5SZXESDAoEbmFtZRgBIAEoCRIKCgJpZBgCIAEoCSI4",
+            "CghMb2dpblJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29kZRIL",
+            "CgNtc2cYAiABKAkigAEKElBsYXllckFwcGVyYW5jZU50ZhIKCgJpZBgBIAEo",
+            "CRIMCgRuYW1lGAIgASgJEikKCXRyYW5zZm9ybRgDIAEoCzIWLnRhbmtfY29t",
+            "bW9uLlRyYW5zZm9ybRIKCgJocBgEIAEoBRIZChFyZWJvcm5Qcm90ZWN0VGlt",
+            "ZRgFIAEoAiJZCg5QbGF5ZXJTdGF0ZU50ZhIKCgJpZBgBIAEoCRIQCghzeW5j",
+            "VGltZRgCIAEoAhIpCgl0cmFuc2Zvcm0YAyABKAsyFi50YW5rX2NvbW1vbi5U",
+            "cmFuc2Zvcm0iIAoSUGxheWVyRGlzYXBwZWFyTnRmEgoKAmlkGAEgASgJIlEK",
+            "ElBsYXllclN0YXRlU3luY1JlcRIQCghzeW5jVGltZRgBIAEoAhIpCgl0cmFu",
+            "c2Zvcm0YAiABKAsyFi50YW5rX2NvbW1vbi5UcmFuc2Zvcm0iOwoOUGxheWVy",
+            "U2hvb3RSZXESKQoJdHJhbnNmb3JtGAEgASgLMhYudGFua19jb21tb24uVHJh",
+            "bnNmb3JtIlYKDlBsYXllclNob290TnRmEgoKAmlkGAEgASgJEikKCXRyYW5z",
+            "Zm9ybRgCIAEoCzIWLnRhbmtfY29tbW9uLlRyYW5zZm9ybRINCgVzcGVlZBgD",
+            "IAEoAiJBChBCdWxsZXREZXN0b3J5TnRmEgoKAmlkGAEgASgNEiEKA3BvcxgC",
+            "IAEoCzIULnRhbmtfY29tbW9uLlZlY3RvcjMiJwoNVGFua0hwU3luY050ZhIK",
+            "CgJpZBgBIAEoCRIKCgJocBgCIAEoBSJNCgxQbGF5ZXJEaWVOdGYSEAoIa2ls",
+            "bGVkSWQYASABKAkSEAoIa2lsbGVySWQYAiABKAkSGQoRcmVib3JuUHJvdGVj",
+            "dFRpbWUYAyABKAJiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::TankCommon.TankCommonReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::TankGame.ErrorCode), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::FileDescriptor[] { global::TankCommon.TankCommonReflection.Descriptor, global::Common.CommonReflection.Descriptor, },
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.Ping), global::TankGame.Ping.Parser, new[]{ "Ts" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.Pong), global::TankGame.Pong.Parser, new[]{ "Ts", "CurrentTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.LoginReq), global::TankGame.LoginReq.Parser, new[]{ "Name", "Id" }, null, null, null, null),
@@ -66,14 +66,6 @@ namespace TankGame {
     #endregion
 
   }
-  #region Enums
-  public enum ErrorCode {
-    [pbr::OriginalName("Ok")] Ok = 0,
-    [pbr::OriginalName("Failed")] Failed = 1,
-  }
-
-  #endregion
-
   #region Messages
   public sealed partial class Ping : pb::IMessage<Ping>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -769,10 +761,10 @@ namespace TankGame {
 
     /// <summary>Field number for the "code" field.</summary>
     public const int CodeFieldNumber = 1;
-    private global::TankGame.ErrorCode code_ = global::TankGame.ErrorCode.Ok;
+    private global::Common.ErrorCode code_ = global::Common.ErrorCode.Ok;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::TankGame.ErrorCode Code {
+    public global::Common.ErrorCode Code {
       get { return code_; }
       set {
         code_ = value;
@@ -815,7 +807,7 @@ namespace TankGame {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Code != global::TankGame.ErrorCode.Ok) hash ^= Code.GetHashCode();
+      if (Code != global::Common.ErrorCode.Ok) hash ^= Code.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -835,7 +827,7 @@ namespace TankGame {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Code != global::TankGame.ErrorCode.Ok) {
+      if (Code != global::Common.ErrorCode.Ok) {
         output.WriteRawTag(8);
         output.WriteEnum((int) Code);
       }
@@ -853,7 +845,7 @@ namespace TankGame {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Code != global::TankGame.ErrorCode.Ok) {
+      if (Code != global::Common.ErrorCode.Ok) {
         output.WriteRawTag(8);
         output.WriteEnum((int) Code);
       }
@@ -871,7 +863,7 @@ namespace TankGame {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Code != global::TankGame.ErrorCode.Ok) {
+      if (Code != global::Common.ErrorCode.Ok) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Code);
       }
       if (Msg.Length != 0) {
@@ -889,7 +881,7 @@ namespace TankGame {
       if (other == null) {
         return;
       }
-      if (other.Code != global::TankGame.ErrorCode.Ok) {
+      if (other.Code != global::Common.ErrorCode.Ok) {
         Code = other.Code;
       }
       if (other.Msg.Length != 0) {
@@ -911,7 +903,7 @@ namespace TankGame {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Code = (global::TankGame.ErrorCode) input.ReadEnum();
+            Code = (global::Common.ErrorCode) input.ReadEnum();
             break;
           }
           case 18: {
@@ -934,7 +926,7 @@ namespace TankGame {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            Code = (global::TankGame.ErrorCode) input.ReadEnum();
+            Code = (global::Common.ErrorCode) input.ReadEnum();
             break;
           }
           case 18: {

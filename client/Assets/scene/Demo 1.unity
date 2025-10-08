@@ -2412,6 +2412,7 @@ GameObject:
   - component: {fileID: 1901427913}
   - component: {fileID: 1901427914}
   - component: {fileID: 1901427915}
+  - component: {fileID: 1901427916}
   m_Layer: 0
   m_Name: server
   m_TagString: Untagged
@@ -2468,6 +2469,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8510840893a5b8e40af2d03dd0e1a773, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901427916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901427911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecbd71c969077a141b8be89cc75632b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1919893557

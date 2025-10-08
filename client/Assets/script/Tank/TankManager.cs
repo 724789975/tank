@@ -44,6 +44,7 @@ public class TankManager : MonoBehaviour
 	{
 		if (instanceMap.ContainsKey(id))
 		{
+			Debug.Log($"remove tank {id}");
 			Destroy(instanceMap[id].gameObject);
 			instanceMap.Remove(id);
 		}

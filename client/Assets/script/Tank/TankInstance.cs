@@ -32,6 +32,7 @@ public class TankInstance : MonoBehaviour
         {
             isDead = true;
 			rebornTime -= Time.deltaTime;
+            gameObject.GetComponent<MeshRenderer>().enabled = (int)(rebornTime * 10) % 2 == 0 ? false : true;
             gameObject.GetComponentInChildren<MeshRenderer>().enabled = (int)(rebornTime * 10) % 2 == 0 ? false : true;
 		}
         else
@@ -40,6 +41,7 @@ public class TankInstance : MonoBehaviour
             {
                 isDead = false;
                 rebornTime = 0;
+                gameObject.GetComponent<MeshRenderer>().enabled = true;
                 gameObject.GetComponentInChildren<MeshRenderer>().enabled = true;
                 Debug.Log($"Tank {ID} reborn protection ended.");
             }
@@ -87,6 +89,17 @@ public class TankInstance : MonoBehaviour
 				Debug.Log($"Tank {ID} reborn protection ended.");
                 isDead = false;
 			}
+        }
+
+        ServerPlayer playerData = PlayerManager.Instance.GetPlayer(ID);
+        if (playerData == null)
+        {
+            Debug.LogWarning($"get player error {ID}");
+            return;
+		}
+        if (playerData.session == System.IntPtr.Zero)
+        {
+            offLineTime += Time.deltaTime;
         }
 #endif
 	}
@@ -160,4 +173,7 @@ public class TankInstance : MonoBehaviour
     bool isDead = false;
     int hp = 0;
 
+#if UNITY_SERVER
+    public float offLineTime;
+#endif
 }

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "proto/user_center.proto";
+package user_center_service;
+
+option go_package = "user_center_service";
+
+service UserCenterService {
+    //登录
+    rpc login(user_center.LoginReq) returns (user_center.LoginRsp);
+}

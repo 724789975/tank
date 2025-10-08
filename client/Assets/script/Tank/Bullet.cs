@@ -107,7 +107,7 @@ public class Bullet : MonoBehaviour
             Destroy(gameObject);
         }
 
-        Debug.Log($"Bullet {bulletId} collided with {collision.gameObject.name} tag {collision.gameObject.tag}, destroying bullet.");
+        //Debug.Log($"Bullet {bulletId} collided with {collision.gameObject.name} tag {collision.gameObject.tag}, destroying bullet.");
         TankGame.BulletDestoryNtf bulletDestoryNtf = new TankGame.BulletDestoryNtf();
         bulletDestoryNtf.Id = bulletId;
         Vector3 pos = collision.collider.ClosestPoint(collision.transform.position);

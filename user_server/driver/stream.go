@@ -4,7 +4,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/cloudwego/kitex/pkg/streaming"
+	streaming "github.com/cloudwego/kitex/pkg/streaming"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

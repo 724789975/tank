@@ -88,16 +88,16 @@ func (s *UserService) ListenAndServe(ctx context.Context) {
 func (s *UserService) ginRoute(ctx *gin.Context) {
 	methodName := ctx.Param("method")
 
-	c := context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(int64))
+	// c := context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(int64))
 	info, ok := s.ServiceInfo.Methods[methodName]
 	if !ok {
-		klog.CtxErrorf(c, "not found", ctx.FullPath())
+		klog.CtxErrorf(ctx, "not found", ctx.FullPath())
 		return
 	}
 	str := driver.NewHttpStream(ctx.Writer, ctx.Request)
 	handler := info.Handler()
-	if err := handler(c, s, &streaming.Args{Stream: str}, nil); err != nil {
-		klog.CtxErrorf(c, err.Error())
+	if err := handler(ctx, s, &streaming.Args{Stream: str}, nil); err != nil {
+		klog.CtxErrorf(ctx, err.Error())
 	}
 }
 

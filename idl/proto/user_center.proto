@@ -6,7 +6,6 @@ import "proto/common.proto";
 
 
 message LoginReq {
-    string token = 1;
 }
 
 message LoginRsp {

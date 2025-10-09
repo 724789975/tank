@@ -1,6 +1,6 @@
 module user_server
 
-go 1.25.2
+go 1.23.0
 
 require (
 	github.com/cloudwego/kitex v0.15.1

@@ -9,5 +9,5 @@ user_http:
   addr: ":8080"
 
 user_rpc:
-  addr: "0.0.0.0:10001"
+  addr: "0.0.0.0:11001"
   service_name: "user_center_service"

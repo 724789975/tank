@@ -25,15 +25,14 @@ namespace UserCenter {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Chdwcm90by91c2VyX2NlbnRlci5wcm90bxILdXNlcl9jZW50ZXIaEnByb3Rv",
-            "L2NvbW1vbi5wcm90byIZCghMb2dpblJlcRINCgV0b2tlbhgBIAEoCSJ6CghM",
-            "b2dpblJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29kZRILCgNt",
-            "c2cYAiABKAkSCgoCaWQYAyABKAkSDAoEbmFtZRgEIAEoCRISCgpzZXJ2ZXJB",
-            "ZGRyGAUgASgJEhIKCnNlcnZlclBvcnQYBiABKAVCDVoLdXNlcl9jZW50ZXJi",
-            "BnByb3RvMw=="));
+            "L2NvbW1vbi5wcm90byIKCghMb2dpblJlcSJ6CghMb2dpblJzcBIfCgRjb2Rl",
+            "GAEgASgOMhEuY29tbW9uLkVycm9yQ29kZRILCgNtc2cYAiABKAkSCgoCaWQY",
+            "AyABKAkSDAoEbmFtZRgEIAEoCRISCgpzZXJ2ZXJBZGRyGAUgASgJEhIKCnNl",
+            "cnZlclBvcnQYBiABKAVCDVoLdXNlcl9jZW50ZXJiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginReq), global::UserCenter.LoginReq.Parser, new[]{ "Token" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginReq), global::UserCenter.LoginReq.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginRsp), global::UserCenter.LoginRsp.Parser, new[]{ "Code", "Msg", "Id", "Name", "ServerAddr", "ServerPort" }, null, null, null, null)
           }));
     }
@@ -75,7 +74,6 @@ namespace UserCenter {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginReq(LoginReq other) : this() {
-      token_ = other.token_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -83,18 +81,6 @@ namespace UserCenter {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginReq Clone() {
       return new LoginReq(this);
-    }
-
-    /// <summary>Field number for the "token" field.</summary>
-    public const int TokenFieldNumber = 1;
-    private string token_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Token {
-      get { return token_; }
-      set {
-        token_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -112,7 +98,6 @@ namespace UserCenter {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Token != other.Token) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -120,7 +105,6 @@ namespace UserCenter {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -139,10 +123,6 @@ namespace UserCenter {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Token.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Token);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -153,10 +133,6 @@ namespace UserCenter {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Token.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Token);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -167,9 +143,6 @@ namespace UserCenter {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Token.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Token);
-      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -181,9 +154,6 @@ namespace UserCenter {
     public void MergeFrom(LoginReq other) {
       if (other == null) {
         return;
-      }
-      if (other.Token.Length != 0) {
-        Token = other.Token;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -200,10 +170,6 @@ namespace UserCenter {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
-            Token = input.ReadString();
-            break;
-          }
         }
       }
     #endif
@@ -219,10 +185,6 @@ namespace UserCenter {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 10: {
-            Token = input.ReadString();
-            break;
-          }
         }
       }
     }

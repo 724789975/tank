@@ -126,27 +126,6 @@ type LoginArgs struct {
 	Req *user_center.LoginReq
 }
 
-func (p *LoginArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
-	if !p.IsSetReq() {
-		p.Req = new(user_center.LoginReq)
-	}
-	return p.Req.FastRead(buf, _type, number)
-}
-
-func (p *LoginArgs) FastWrite(buf []byte) (n int) {
-	if !p.IsSetReq() {
-		return 0
-	}
-	return p.Req.FastWrite(buf)
-}
-
-func (p *LoginArgs) Size() (n int) {
-	if !p.IsSetReq() {
-		return 0
-	}
-	return p.Req.Size()
-}
-
 func (p *LoginArgs) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetReq() {
 		return out, nil
@@ -185,27 +164,6 @@ type LoginResult struct {
 }
 
 var LoginResult_Success_DEFAULT *user_center.LoginRsp
-
-func (p *LoginResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
-	if !p.IsSetSuccess() {
-		p.Success = new(user_center.LoginRsp)
-	}
-	return p.Success.FastRead(buf, _type, number)
-}
-
-func (p *LoginResult) FastWrite(buf []byte) (n int) {
-	if !p.IsSetSuccess() {
-		return 0
-	}
-	return p.Success.FastWrite(buf)
-}
-
-func (p *LoginResult) Size() (n int) {
-	if !p.IsSetSuccess() {
-		return 0
-	}
-	return p.Success.Size()
-}
 
 func (p *LoginResult) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetSuccess() {

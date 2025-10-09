@@ -12,6 +12,6 @@ copy .\proto_gen\*.cs ..\server\Assets\script\proto\
 @REM rmdir /s /q ..\user_server\proto
 @REM move .\proto_gen\user_server\proto ..\user_server\
 
-.\bin\kitex -module user_server -type protobuf proto/user_center_service.proto
+.\bin\kitex -module user_server -type protobuf -no-fast-api proto/user_center_service.proto
 rmdir /s /q ..\user_server\kitex_gen
 move .\kitex_gen ..\user_server\

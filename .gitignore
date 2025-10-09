@@ -4,7 +4,6 @@
 # Binaries for programs and plugins
 *.exe
 *.exe~
-*.dylib
 
 # Test binary, built with `go test -c`
 *.test

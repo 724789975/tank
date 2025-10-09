@@ -8,6 +8,7 @@ import (
 	common_config "user_server/config"
 	"user_server/driver"
 	user_http "user_server/http"
+	"user_server/logic/manager"
 
 	"user_server/kitex_gen/user_center"
 	"user_server/kitex_gen/user_center_service/usercenterservice"
@@ -105,6 +106,5 @@ func (s *UserService) Close() {
 }
 
 func (x *UserService) Login(ctx context.Context, req *user_center.LoginReq) (resp *user_center.LoginRsp, err error) {
-	// return manager.GetUserManager().Login(ctx, req)
-	return nil, nil
+	return manager.GetUserManager().Login(ctx, req)
 }

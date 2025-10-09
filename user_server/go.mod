@@ -4,7 +4,6 @@ go 1.23.0
 
 require (
 	github.com/cloudwego/kitex v0.15.1
-	github.com/cloudwego/prutal v0.1.3
 	github.com/gin-gonic/gin v1.11.0
 	github.com/kitex-contrib/obs-opentelemetry v0.2.9
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20241120035129-55da83caab1b
@@ -18,6 +17,11 @@ require (
 )
 
 require (
+	github.com/bwmarrin/snowflake v0.3.0
+	github.com/cloudwego/fastpb v0.0.5
+)
+
+require (
 	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.14.1 // indirect
 	github.com/bytedance/sonic/loader v0.3.0 // indirect
@@ -26,7 +30,6 @@ require (
 	github.com/cloudwego/base64x v0.1.6 // indirect
 	github.com/cloudwego/configmanager v0.2.3 // indirect
 	github.com/cloudwego/dynamicgo v0.7.0 // indirect
-	github.com/cloudwego/fastpb v0.0.5 // indirect
 	github.com/cloudwego/frugal v0.3.0 // indirect
 	github.com/cloudwego/gopkg v0.1.6 // indirect
 	github.com/cloudwego/localsession v0.1.2 // indirect

@@ -88,7 +88,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -1265039355344610869, guid: 77d7d04eda266504f9da28be5b6226d1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -132,8 +132,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 77d7d04eda266504f9da28be5b6226d1, type: 2}
+  m_sharedMaterial: {fileID: -1265039355344610869, guid: 77d7d04eda266504f9da28be5b6226d1,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -435,10 +436,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 
+  Name: 
   bulletPos: {fileID: 943139049852432613}
   bulletPrefab: {fileID: 1344418382193266166, guid: 3e57356fd12162a4b8b01c0cb2d66506,
     type: 3}
-  idText: {fileID: 6945539554923124399}
+  nameText: {fileID: 6945539554923124399}
   speed: 10
   hpSlider: {fileID: 8470765915348361131}
   rebornTime: 3

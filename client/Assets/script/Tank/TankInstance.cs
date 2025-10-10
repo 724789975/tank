@@ -10,7 +10,7 @@ public class TankInstance : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        idText.text = ID;
+        nameText.text = Name;
 #if !UNITY_SERVER
         GetComponent<BoxCollider>().enabled = false;
 #endif
@@ -160,11 +160,13 @@ public class TankInstance : MonoBehaviour
 	/// </summary>
 	public string ID;
 
+    public string Name;
+
     public GameObject bulletPos;
 
     public GameObject bulletPrefab;
 
-    public TextMeshPro idText;
+    public TextMeshPro nameText;
     public float speed;
 
     public Slider hpSlider;

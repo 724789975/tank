@@ -23,7 +23,7 @@ public class TankControl : MonoBehaviour
         }
 
         lastUpdateTime = t;
-        TankInstance tankInstance = TankManager.Instance.GetTank(PlayerControl.Instance.PlayerId);
+        TankInstance tankInstance = TankManager.Instance.GetTank(AccountInfo.Instance.Account.Openid);
         if (tankInstance == null)
         {
             return;
@@ -63,7 +63,7 @@ public class TankControl : MonoBehaviour
 
     public void Shoot()
     {
-        TankInstance tankInstance = TankManager.Instance.GetTank(PlayerControl.Instance.PlayerId);
+        TankInstance tankInstance = TankManager.Instance.GetTank(AccountInfo.Instance.Account.Openid);
 		if (tankInstance == null)
         {
             return;

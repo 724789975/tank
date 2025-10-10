@@ -104,7 +104,7 @@ public class ServerMsg : MonoBehaviour
 		}
 		else
 		{
-			loginRspMessage.Code = TankGame.ErrorCode.Failed;
+			loginRspMessage.Code = Common.ErrorCode.Failed;
 			loginRspMessage.Msg = "Duplicate login";
 			byte[] messageBytes = Any.Pack(loginRspMessage).ToByteArray();
 			DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);

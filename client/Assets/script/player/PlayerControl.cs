@@ -15,12 +15,14 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         instance = this;
+        NetClient.Instance.AddOnConnected(()=> {
+            StartGame();
+		});
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public void StartGame()
@@ -30,8 +32,8 @@ public class PlayerControl : MonoBehaviour
 		NetClient.Instance.SendMessage(pingMessage);
 
 		TankGame.LoginReq req = new TankGame.LoginReq();
-        req.Name = nameText.text;
-        req.Id = idText.text;
+        req.Name = AccountInfo.Instance.Account.Name;
+        req.Id = AccountInfo.Instance.Account.Openid;
 		NetClient.Instance.SendMessage(req);
 	}
 
@@ -43,24 +45,5 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    public string PlayerName
-    {
-        get
-        {
-            return nameText.text;
-        }
-    }
-
-	public string PlayerId
-    {
-        get
-        {
-            return idText.text;
-        }
-    }
-
 	static PlayerControl instance;
-
-	public TextMeshProUGUI nameText;
-	public TextMeshProUGUI idText;
 }

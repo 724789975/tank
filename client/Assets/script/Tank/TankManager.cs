@@ -23,7 +23,7 @@ public class TankManager : MonoBehaviour
     {
 	}
 
-	public TankInstance AddTank(string id, out bool isAdd)
+	public TankInstance AddTank(string id, string name, out bool isAdd)
 	{
 		if (GetTank(id))
 		{
@@ -33,6 +33,7 @@ public class TankManager : MonoBehaviour
 		}
 		GameObject tankInstance = Instantiate(tankPrefab);
 		tankInstance.GetComponent<TankInstance>().ID = id;
+		tankInstance.GetComponent<TankInstance>().Name = name;
 		tankInstance.transform.position = new Vector3(0, 0, 0);
 
 		instanceMap.Add(id, tankInstance.GetComponent<TankInstance>());

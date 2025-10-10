@@ -86,8 +86,8 @@ public class Config : MonoBehaviour
     private float bottom;
     private float sceneLimit = 0.2f;
 
-    public string serverIP;
-    public ushort port;
+    public string serverIP = "0.0.0.0";
+    public ushort port = 10085;
     public float speed = 3f;
     public int maxHp = 100;
     public float rebornProtectionTime = 5f;

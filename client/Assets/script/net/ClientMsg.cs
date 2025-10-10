@@ -46,7 +46,7 @@ public class ClientMsg : MonoBehaviour
     static void PlayerApperanceNtf(IntPtr pConnection, Any anyMessage)
     {
         TankGame.PlayerApperanceNtf playerApperanceNtf = anyMessage.Unpack<TankGame.PlayerApperanceNtf>();
-		TankInstance tankInstance = TankManager.Instance.AddTank(playerApperanceNtf.Id, out bool isAdd);
+		TankInstance tankInstance = TankManager.Instance.AddTank(playerApperanceNtf.Id, playerApperanceNtf.Name, out bool isAdd);
         tankInstance.name = "tank:" + playerApperanceNtf.Id;
         tankInstance.ID = playerApperanceNtf.Id;
         tankInstance.HP = playerApperanceNtf.Hp;

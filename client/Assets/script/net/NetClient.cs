@@ -12,7 +12,6 @@ public class NetClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		instance = this;
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(delegate (byte[] pData, int dwLen)
 			{
@@ -61,7 +60,10 @@ public class NetClient : MonoBehaviour
 	static void OnConnectedCallback(IntPtr pConnector)
 	{
 		Debug.LogFormat("{0} connected", pConnector);
-
+		foreach (var action in instance.onConnected)
+		{
+			action();
+		}
 	}
 	static void OnErrorCallback(IntPtr pConnector, IntPtr nLen)
 	{
@@ -72,6 +74,11 @@ public class NetClient : MonoBehaviour
 	{
 		Debug.Log("connector destroy");
 		DLLImport.DestroyConnector(pConnector);
+
+		if (instance.connector == pConnector)
+		{
+			instance.connector = IntPtr.Zero;
+		}
 	}
 
 	public void Connect()
@@ -92,10 +99,40 @@ public class NetClient : MonoBehaviour
 		DLLImport.Send(connector, messageBytes, (uint)messageBytes.Length);
 	}
 
+	public void AddOnConnected(Action action)
+	{
+		onConnected.Add(action);
+	}
+
+	public void OnConnected()
+	{
+	}
+
 	public static NetClient Instance
 	{
 		get
 		{
+			if (instance == null)
+			{
+				lock (Lock)
+				{
+					if (instance == null)
+					{
+						instance = FindObjectOfType<NetClient>();
+						if (instance == null)
+						{
+							// 创建新的实例
+							GameObject singletonObject = new GameObject();
+							instance = singletonObject.AddComponent<NetClient>();
+							singletonObject.name = typeof(NetClient).ToString();
+
+							// 确保单例不会被销毁
+							DontDestroyOnLoad(singletonObject);
+						}
+					}
+				}
+			}
+
 			return instance;
 		}
 	}
@@ -103,6 +140,8 @@ public class NetClient : MonoBehaviour
 	IntPtr connector = IntPtr.Zero;
 
 	static NetClient instance;
+	static readonly object Lock = new object();
 	List<P> msgs = new List<P>();
 	delegate void P();
+	List<Action> onConnected = new List<Action>();
 }

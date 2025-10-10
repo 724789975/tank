@@ -14,7 +14,7 @@ import (
 
 func TestTap(t *testing.T) {
 
-	hmacSha1 := func (valStr, keyStr string) string {
+	hmacSha1 := func(valStr, keyStr string) string {
 		key := []byte(keyStr)
 		mac := hmac.New(sha1.New, key)
 		mac.Write([]byte(valStr))
@@ -22,16 +22,19 @@ func TestTap(t *testing.T) {
 		return base64.StdEncoding.EncodeToString(mac.Sum(nil))
 	}
 	clientId := "oy5mqqrghbgdlrfmf4"
-	kid := "1/TBb9UU5l8KUFesdZbESlDswvs4GnYqepUEsv8NiLvspxasuv4h6m7_karII5-SuNRsqmkBSEW8AyKXUwzMvuQ1QsZuaP8mHjsJQAd33SAUNQrMFm1AqavV2YevBO-pIF8HLYQUYmv-6J1ePJ1B-DUFKRXVXMkXAIv9rl5wiGmn7glWnikgGzAx3oqDy1l0tj4NEHHSXYE_ySpqoCy4fXt-x7SEBQTOoUszaU1sag2OlqcfstAcJxa-f6Lhxa37jcKBN0sla7e0LhiYKJYdaOQyoP8POTGvbZ3A41YByvINh_BKPEwa0luGIkHMDWkOuMBquX_wzmQ52LhcHlge0Fyg"
-	macKey := "IEBIQHUyWLSzgWlaqgD7at6ge1Yle6MMOurWM497"
+	kid := "1/hsYICnlCUZ19wPhUCXapwMVZo0nqj9NQkVGRYKiEyF3gr_QU15tlezQObRtUeJemepEfxqDMt60ztDd32sBxwlJfNU_Y8SA_6MFI5fGwROLaT7WMAe6zV__nhTMIVJM4zJ2eCaAY-Q40WvPAU89Mvn1-lAO2zcbE7ru0khO7fvFg4FYgzOPcQGTb9QVgchNTwejEqbRO3Zytp6Zc_XY7vg_Wp-AzZ34BHXhlqQxNY1Bnd6cwGBod9awWGW1NLKjESPRxBeFLC93JRoAR4bWqQP66_bS65e-lKdStH1qYOvbYw1X6g730l-XEOmZXQZh5j9SKfr3oY0uw_SJNgxmu5w"
+	macKey := "npNS8eUyw9omtiMtjUVy2t0aTpbAQu6P0GsuZWfA"
 
 	nonce := "8IBTHwOdqNKAWeKl7plt66=="
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	timestamp = "1760061241"
 	reqHost := "open.tapapis.cn"
 	reqURI := "/account/profile/v1?client_id=" + clientId
 	reqURL := "https://" + reqHost + reqURI
 
 	macStr := timestamp + "\n" + nonce + "\n" + "GET" + "\n" + reqURI + "\n" + reqHost + "\n" + "443" + "\n\n"
+	fmt.Println(macStr)
+
 	mac := hmacSha1(macStr, macKey)
 	authorization := "MAC id=" + "\"" + kid + "\"" + "," + "ts=" + "\"" + timestamp + "\"" + "," + "nonce=" + "\"" + nonce + "\"" + "," + "mac=" + "\"" + mac + "\""
 
@@ -46,6 +49,8 @@ func TestTap(t *testing.T) {
 	// req.URL.RawQuery = q.Encode()
 
 	req.Header.Add("Authorization", authorization)
+
+	fmt.Println(req)
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -60,4 +65,3 @@ func TestTap(t *testing.T) {
 	}
 	fmt.Println(string(respBody))
 }
-

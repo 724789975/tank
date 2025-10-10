@@ -2493,7 +2493,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1919893559}
   - component: {fileID: 1919893558}
-  - component: {fileID: 1919893560}
   - component: {fileID: 1919893561}
   - component: {fileID: 1919893562}
   m_Layer: 0
@@ -2534,23 +2533,6 @@ Transform:
   - {fileID: 152211668}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1919893560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1919893557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 789c98925be85274f9f53099c231077b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serverIP: 127.0.0.1
-  port: 10085
-  speed: 3
-  maxHp: 100
-  rebornProtectionTime: 5
 --- !u!114 &1919893561
 MonoBehaviour:
   m_ObjectHideFlags: 0

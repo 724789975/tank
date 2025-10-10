@@ -25,7 +25,7 @@ namespace Common {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiofCglFcnJvckNvZGUSBgoC",
-            "T2sQABIKCgZGYWlsZWQQAUIIWgZjb21tb25iBnByb3RvMw=="));
+            "T0sQABIKCgZGQUlMRUQQAUIIWgZjb21tb25iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null, null));
@@ -35,8 +35,8 @@ namespace Common {
   }
   #region Enums
   public enum ErrorCode {
-    [pbr::OriginalName("Ok")] Ok = 0,
-    [pbr::OriginalName("Failed")] Failed = 1,
+    [pbr::OriginalName("OK")] Ok = 0,
+    [pbr::OriginalName("FAILED")] Failed = 1,
   }
 
   #endregion

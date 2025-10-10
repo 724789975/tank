@@ -30,18 +30,17 @@ namespace UserCenter {
             "chgCIAEoCRIMCgRuYW1lGAMgASgJEg4KBm9wZW5pZBgEIAEoCRIPCgd1bmlv",
             "bmlkGAUgASgJIk8KC1RhcEJhc2VJbmZvEiIKBGRhdGEYASABKAsyFC51c2Vy",
             "X2NlbnRlci5UYXBJbmZvEgsKA25vdxgCIAEoAxIPCgdzdWNjZXNzGAMgASgI",
-            "IqEBCghMb2dpblJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29k",
-            "ZRILCgNtc2cYAiABKAkSCgoCaWQYAyABKAkSDAoEbmFtZRgEIAEoCRISCgpz",
-            "ZXJ2ZXJBZGRyGAUgASgJEhIKCnNlcnZlclBvcnQYBiABKAUSJQoHdGFwSW5m",
-            "bxgHIAEoCzIULnVzZXJfY2VudGVyLlRhcEluZm9CDVoLdXNlcl9jZW50ZXJi",
-            "BnByb3RvMw=="));
+            "IocBCghMb2dpblJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29k",
+            "ZRILCgNtc2cYAiABKAkSEgoKc2VydmVyQWRkchgDIAEoCRISCgpzZXJ2ZXJQ",
+            "b3J0GAQgASgFEiUKB3RhcEluZm8YBSABKAsyFC51c2VyX2NlbnRlci5UYXBJ",
+            "bmZvQg1aC3VzZXJfY2VudGVyYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginReq), global::UserCenter.LoginReq.Parser, new[]{ "Kid", "MacKey" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapInfo), global::UserCenter.TapInfo.Parser, new[]{ "Avatar", "Gender", "Name", "Openid", "Unionid" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapBaseInfo), global::UserCenter.TapBaseInfo.Parser, new[]{ "Data", "Now", "Success" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginRsp), global::UserCenter.LoginRsp.Parser, new[]{ "Code", "Msg", "Id", "Name", "ServerAddr", "ServerPort", "TapInfo" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginRsp), global::UserCenter.LoginRsp.Parser, new[]{ "Code", "Msg", "ServerAddr", "ServerPort", "TapInfo" }, null, null, null, null)
           }));
     }
     #endregion
@@ -919,8 +918,6 @@ namespace UserCenter {
     public LoginRsp(LoginRsp other) : this() {
       code_ = other.code_;
       msg_ = other.msg_;
-      id_ = other.id_;
-      name_ = other.name_;
       serverAddr_ = other.serverAddr_;
       serverPort_ = other.serverPort_;
       tapInfo_ = other.tapInfo_ != null ? other.tapInfo_.Clone() : null;
@@ -957,32 +954,8 @@ namespace UserCenter {
       }
     }
 
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 3;
-    private string id_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Id {
-      get { return id_; }
-      set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "name" field.</summary>
-    public const int NameFieldNumber = 4;
-    private string name_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Name {
-      get { return name_; }
-      set {
-        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     /// <summary>Field number for the "serverAddr" field.</summary>
-    public const int ServerAddrFieldNumber = 5;
+    public const int ServerAddrFieldNumber = 3;
     private string serverAddr_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -994,7 +967,7 @@ namespace UserCenter {
     }
 
     /// <summary>Field number for the "serverPort" field.</summary>
-    public const int ServerPortFieldNumber = 6;
+    public const int ServerPortFieldNumber = 4;
     private int serverPort_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1006,7 +979,7 @@ namespace UserCenter {
     }
 
     /// <summary>Field number for the "tapInfo" field.</summary>
-    public const int TapInfoFieldNumber = 7;
+    public const int TapInfoFieldNumber = 5;
     private global::UserCenter.TapInfo tapInfo_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1034,8 +1007,6 @@ namespace UserCenter {
       }
       if (Code != other.Code) return false;
       if (Msg != other.Msg) return false;
-      if (Id != other.Id) return false;
-      if (Name != other.Name) return false;
       if (ServerAddr != other.ServerAddr) return false;
       if (ServerPort != other.ServerPort) return false;
       if (!object.Equals(TapInfo, other.TapInfo)) return false;
@@ -1048,8 +1019,6 @@ namespace UserCenter {
       int hash = 1;
       if (Code != global::Common.ErrorCode.Ok) hash ^= Code.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (ServerAddr.Length != 0) hash ^= ServerAddr.GetHashCode();
       if (ServerPort != 0) hash ^= ServerPort.GetHashCode();
       if (tapInfo_ != null) hash ^= TapInfo.GetHashCode();
@@ -1079,24 +1048,16 @@ namespace UserCenter {
         output.WriteRawTag(18);
         output.WriteString(Msg);
       }
-      if (Id.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(Id);
-      }
-      if (Name.Length != 0) {
-        output.WriteRawTag(34);
-        output.WriteString(Name);
-      }
       if (ServerAddr.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(26);
         output.WriteString(ServerAddr);
       }
       if (ServerPort != 0) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(32);
         output.WriteInt32(ServerPort);
       }
       if (tapInfo_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(42);
         output.WriteMessage(TapInfo);
       }
       if (_unknownFields != null) {
@@ -1117,24 +1078,16 @@ namespace UserCenter {
         output.WriteRawTag(18);
         output.WriteString(Msg);
       }
-      if (Id.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(Id);
-      }
-      if (Name.Length != 0) {
-        output.WriteRawTag(34);
-        output.WriteString(Name);
-      }
       if (ServerAddr.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(26);
         output.WriteString(ServerAddr);
       }
       if (ServerPort != 0) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(32);
         output.WriteInt32(ServerPort);
       }
       if (tapInfo_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(42);
         output.WriteMessage(TapInfo);
       }
       if (_unknownFields != null) {
@@ -1152,12 +1105,6 @@ namespace UserCenter {
       }
       if (Msg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Msg);
-      }
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
-      }
-      if (Name.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
       }
       if (ServerAddr.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ServerAddr);
@@ -1185,12 +1132,6 @@ namespace UserCenter {
       }
       if (other.Msg.Length != 0) {
         Msg = other.Msg;
-      }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
-      }
-      if (other.Name.Length != 0) {
-        Name = other.Name;
       }
       if (other.ServerAddr.Length != 0) {
         ServerAddr = other.ServerAddr;
@@ -1228,22 +1169,14 @@ namespace UserCenter {
             break;
           }
           case 26: {
-            Id = input.ReadString();
-            break;
-          }
-          case 34: {
-            Name = input.ReadString();
-            break;
-          }
-          case 42: {
             ServerAddr = input.ReadString();
             break;
           }
-          case 48: {
+          case 32: {
             ServerPort = input.ReadInt32();
             break;
           }
-          case 58: {
+          case 42: {
             if (tapInfo_ == null) {
               TapInfo = new global::UserCenter.TapInfo();
             }
@@ -1274,22 +1207,14 @@ namespace UserCenter {
             break;
           }
           case 26: {
-            Id = input.ReadString();
-            break;
-          }
-          case 34: {
-            Name = input.ReadString();
-            break;
-          }
-          case 42: {
             ServerAddr = input.ReadString();
             break;
           }
-          case 48: {
+          case 32: {
             ServerPort = input.ReadInt32();
             break;
           }
-          case 58: {
+          case 42: {
             if (tapInfo_ == null) {
               TapInfo = new global::UserCenter.TapInfo();
             }

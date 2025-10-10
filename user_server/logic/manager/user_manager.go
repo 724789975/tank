@@ -14,11 +14,6 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-const (
-	item_operator         = "item_operator"
-	winedroplets_giveback = "winedroplets_giveback"
-)
-
 type UserManager struct {
 }
 
@@ -51,9 +46,8 @@ func GetUserManager() *UserManager {
 
 func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (resp *user_center.LoginRsp, err error) {
 	resp = &user_center.LoginRsp{
-		Code:       common.ErrorCode_Ok,
+		Code:       common.ErrorCode_OK,
 		Msg:        "success",
-		Name:       "",
 		ServerAddr: common_config.Get("game.addr").(string),
 		ServerPort: int32(common_config.Get("game.port").(int)),
 	}
@@ -64,7 +58,6 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 	}()
 
 	uuid = ctx.Value("userId").(string)
-	resp.Id = uuid
 
 	tapResp, err := tap.GetHandle(ctx, req.Kid, req.MacKey, common_config.Get("tap.base_info_uri").(string))
 	if err != nil {

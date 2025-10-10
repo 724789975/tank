@@ -7,7 +7,6 @@ public class Config : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		instance = this;
         // 获取屏幕左下角坐标
         Vector3 screenBottomLeft = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
         // 获取屏幕右上角坐标
@@ -21,6 +20,8 @@ public class Config : MonoBehaviour
         right = screenTopRight.x - sceneLimit;
         top = screenTopRight.y - sceneLimit;
         bottom = screenBottomLeft.y + sceneLimit;
+
+        Debug.Log($"left: {left}, right: {right}, top: {top}, bottom: {bottom}");
     }
 
     // Update is called once per frame
@@ -49,12 +50,34 @@ public class Config : MonoBehaviour
     }
 
     static Config instance;
-    public static Config Instance
-    {
-        get
-        {
-            return instance;
-        }
+	// 公共访问接口
+	public static Config Instance
+	{
+		get
+		{
+			if (instance == null)
+			{
+				lock (Lock)
+				{
+					if (instance == null)
+					{
+						instance = FindObjectOfType<Config>();
+						if (instance == null)
+						{
+							// 创建新的实例
+							GameObject singletonObject = new GameObject();
+							instance = singletonObject.AddComponent<Config>();
+							singletonObject.name = typeof(Config).ToString();
+
+							// 确保单例不会被销毁
+							DontDestroyOnLoad(singletonObject);
+						}
+					}
+				}
+			}
+
+			return instance;
+		}
 	}
 
 	private float left;
@@ -65,7 +88,8 @@ public class Config : MonoBehaviour
 
     public string serverIP;
     public ushort port;
-    public float speed;
-    public int maxHp;
-    public float rebornProtectionTime;
+    public float speed = 3f;
+    public int maxHp = 100;
+    public float rebornProtectionTime = 5f;
+	static readonly object Lock = new object();
 }

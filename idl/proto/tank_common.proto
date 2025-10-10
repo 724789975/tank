@@ -15,6 +15,6 @@ message Quaternion {
 }
 
 message Transform {
-    Vector3 position = 1;
+    Vector3    position = 1;
     Quaternion rotation = 2;
 }

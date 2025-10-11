@@ -44,17 +44,23 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+	"com.google.external-dependency-manager": "1.2.179",
+	"com.taptap.sdk.core":"4.8.2",
+	"com.taptap.sdk.login":"4.8.2"
   },
   "scopedRegistries": [
     {
-      "name": "NPMJS",
-      "url": "https://registry.npmjs.org/",
-      "scopes": [
-        "com.tapsdk",
-        "com.taptap",
-        "com.leancloud"
-      ]
-    }
+      "name": "package.openupm.com",
+         "url": "https://package.openupm.com",
+         "scopes": [
+            "com.google.external-dependency-manager"
+         ]
+    },
+	{
+    "name": "NPMJS",
+    "url": "https://registry.npmjs.org/",
+    "scopes": ["com.taptap"]
+  }
   ]
 }

@@ -6,6 +6,31 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.google.external-dependency-manager": {
+      "version": "1.2.179",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
+    "com.taptap.sdk.core": {
+      "version": "4.8.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.179"
+      },
+      "url": "https://registry.npmjs.org"
+    },
+    "com.taptap.sdk.login": {
+      "version": "4.8.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.taptap.sdk.core": "4.8.2"
+      },
+      "url": "https://registry.npmjs.org"
+    },
     "com.unity.2d.pixel-perfect": {
       "version": "5.1.0",
       "depth": 0,

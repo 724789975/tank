@@ -55,7 +55,7 @@ public class ServerMsg : MonoBehaviour
 			byte[] messageBytes = Any.Pack(loginRspMessage).ToByteArray();
 			DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
 
-			TankInstance tankInstance = TankManager.Instance.AddTank(loginReq.Id, out bool isAdd);
+			TankInstance tankInstance = TankManager.Instance.AddTank(loginReq.Id, loginReq.Name, out bool isAdd);
 			tankInstance.name = "tank:" + loginReq.Id;
 
 			TankGame.PlayerApperanceNtf playerApperanceNtf = new TankGame.PlayerApperanceNtf();

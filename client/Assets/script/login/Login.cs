@@ -98,7 +98,7 @@ public class Login : MonoBehaviour
 							{
 								loginCallback.Add(() =>
 								{
-									asyncWebRequest.Post("http://127.0.0.1:8080/api/1.0/public/user_server/login", body, headers, (ok, response) =>
+									asyncWebRequest.Post("http://10.0.12.176:8080/api/1.0/public/user_server/login", body, headers, (ok, response) =>
 									{
 										if (!ok)
 										{
@@ -133,7 +133,7 @@ public class Login : MonoBehaviour
 #else
 		AccountInfo.Instance.SetAccount(new UserCenter.TapInfo() { Avatar = "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80", Gender = "", Name = "¿‰ÀÆ≈›√Ê", Openid = "mzw0536knQSO+bhbdL6dtw==", Unionid = "SnwhJ5s2EURKCKt0LBsDLw==" });
 
-		Config.Instance.serverIP = "127.0.0.1";
+		Config.Instance.serverIP = "10.0.12.176";
 		Config.Instance.port = 10085;
 		startButton.SetActive(true);
 #endif

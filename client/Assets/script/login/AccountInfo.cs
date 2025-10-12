@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using TapTap;
-
 public class AccountInfo : MonoBehaviour
 {
 	// 公共访问接口

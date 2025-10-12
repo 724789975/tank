@@ -4,11 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using TapSDK.Core;
 using System.Threading.Tasks;
-using TapSDK.Login;
 using System;
 using System.Text;
+#if USE_TAP_LOGIN
+using TapSDK.Core;
+using TapSDK.Login;
+#endif
 
 
 public class Login : MonoBehaviour

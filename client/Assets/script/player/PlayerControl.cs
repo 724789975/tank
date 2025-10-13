@@ -37,6 +37,17 @@ public class PlayerControl : MonoBehaviour
 		NetClient.Instance.SendMessage(req);
 	}
 
+    public void ShowNotice(string content)
+    {
+        if (notice == null)
+        {
+            return;
+        }
+        GameObject go = Instantiate(notice.gameObject, notice.transform.parent);
+        Notice n = go.GetComponent<Notice>();
+        n.text.text = content;
+    }
+
     public static PlayerControl Instance
     {
         get
@@ -45,5 +56,8 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+
 	static PlayerControl instance;
+
+    public Notice notice;
 }

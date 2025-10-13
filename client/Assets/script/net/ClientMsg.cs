@@ -155,13 +155,22 @@ public class ClientMsg : MonoBehaviour
     {
 #if !UNITY_SERVER
         TankGame.PlayerDieNtf playerDieNtf = anyMessage.Unpack<TankGame.PlayerDieNtf>();
-        TankInstance tankInstance = TankManager.Instance.GetTank(playerDieNtf.KilledId);
-        if (tankInstance == null)
+        TankInstance tankKilled = TankManager.Instance.GetTank(playerDieNtf.KilledId);
+        if (tankKilled == null)
         {
             Debug.LogWarning($"Tank instance not found: {playerDieNtf.KilledId}");
             return;
         }
-        tankInstance.rebornTime = playerDieNtf.RebornProtectTime - ClientFrame.Instance.CurrentTime;
+        tankKilled.rebornTime = playerDieNtf.RebornProtectTime - ClientFrame.Instance.CurrentTime;
+
+        TankInstance tankKiller = TankManager.Instance.GetTank(playerDieNtf.KillerId);
+        if (tankKiller == null)
+        {
+            Debug.LogWarning($"Tank instance not found: {playerDieNtf.KillerId}");
+            return;
+        }
+
+        PlayerControl.Instance.ShowNotice($"Íæ¼Ò{tankKilled.name}ÒÑ±»{tankKiller.name}»÷»Ù");
 #endif
     }
 

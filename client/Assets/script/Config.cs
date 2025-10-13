@@ -21,6 +21,12 @@ public class Config : MonoBehaviour
         top = screenTopRight.y - sceneLimit;
         bottom = screenBottomLeft.y + sceneLimit;
 
+#if UNITY_SERVER
+        Application.targetFrameRate = 40;
+#else
+        Application.targetFrameRate = 60;
+#endif
+
         Debug.Log($"left: {left}, right: {right}, top: {top}, bottom: {bottom}");
     }
 

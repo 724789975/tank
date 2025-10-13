@@ -170,7 +170,7 @@ public class ClientMsg : MonoBehaviour
             return;
         }
 
-        PlayerControl.Instance.ShowNotice($"玩家{tankKilled.name}已被{tankKiller.name}击毁");
+        PlayerControl.Instance.ShowNotice($"玩家 <color=#00FF00>{tankKilled.name}</color> 已被 <color = #00FF00>{tankKiller.name}</color> 击毁");
 #endif
     }
 

@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/scene/login.unity
     guid: ada2619e930cf12438f9eca273b25bad
   - enabled: 1
-    path: Assets/scene/Demo 1.unity
-    guid: 5018ef9d729bba245863647b0ef97e04
+    path: Assets/scene/tank.unity
+    guid: d22ca1952a683244593a002ef016f3f0
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b97aa33f8676adc41b9665b106f1dd3d,
       type: 2}

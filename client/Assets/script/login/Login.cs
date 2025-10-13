@@ -157,7 +157,7 @@ public class Login : MonoBehaviour
 
 	public void StartGame()
 	{
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Demo 1");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
 	}
 
 	readonly object Lock = new object();

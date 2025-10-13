@@ -54,5 +54,7 @@ public class ServerControl : MonoBehaviour
 #endif
 	}
 
+#if UNITY_SERVER
     float updateTime = 0;
+#endif
 }

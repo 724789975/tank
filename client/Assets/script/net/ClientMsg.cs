@@ -31,8 +31,8 @@ public class ClientMsg : MonoBehaviour
     static void Pong(IntPtr pConnection, Any anyMessage)
     {
         TankGame.Pong pong = anyMessage.Unpack<TankGame.Pong>();
-        Debug.Log($"OnPong {pong.ToString()} latency {Time.time - pong.Ts}");
         ClientFrame.Instance.CorrectFrame(pong.CurrentTime, Time.time - pong.Ts);
+        Debug.Log($"OnPong {pong.ToString()}, current_time:{ClientFrame.Instance.CurrentTime}, Latency:{ClientFrame.Instance.Latency}");
 	}
 
     [RpcHandler("tank_game.LoginRsp")]

@@ -46,6 +46,14 @@ public class ClientFrame : MonoBehaviour
 		}
 	}
 
+    public float Latency
+    {
+        get
+        {
+            return latency;
+        }
+    }
+
     public void ResetTime()
     {
         currentTime = 0;

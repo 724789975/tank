@@ -13,7 +13,7 @@ public class ServerFrame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTime += Time.deltaTime;
+        currentTime = Time.time;
 	}
 
 	public static ServerFrame Instance

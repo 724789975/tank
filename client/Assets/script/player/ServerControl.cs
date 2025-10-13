@@ -17,6 +17,12 @@ public class ServerControl : MonoBehaviour
     void Update()
     {
 #if UNITY_SERVER
+        updateTime += Time.deltaTime;
+        if (updateTime < 1)
+        {
+            return;
+        }
+        updateTime = 0;
         List<string> waitDestroy = new List<string>();
         PlayerManager.Instance.ForEach((data =>
         {
@@ -47,4 +53,6 @@ public class ServerControl : MonoBehaviour
 		}
 #endif
 	}
+
+    float updateTime = 0;
 }

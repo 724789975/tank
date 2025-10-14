@@ -7,6 +7,7 @@ import (
 	"sync"
 	common_config "user_server/config"
 	"user_server/driver"
+	"user_server/etcd"
 	user_http "user_server/http"
 	"user_server/logic/manager"
 
@@ -70,6 +71,7 @@ func (s *UserService) ListenAndServe(ctx context.Context) {
 				ServiceName: serviceName,
 			}),
 			kitexserver.WithSuite(tracing.NewServerSuite()),
+			kitexserver.WithRegistry(etcd.GetEtcdClient()),
 		)
 
 		return server

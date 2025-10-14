@@ -2,7 +2,7 @@ package session
 
 import (
 	"errors"
-	msghandler "xf_gateway/msg_handler"
+	msghandler "gateway/msg_handler"
 
 	"github.com/gorilla/websocket"
 	"google.golang.org/protobuf/encoding/protojson"

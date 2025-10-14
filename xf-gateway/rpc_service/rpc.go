@@ -3,7 +3,7 @@ package rpcservice
 import (
 	"context"
 	"fmt"
-	"xf_gateway/constant"
+	"gateway/constant"
 
 	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/common"
 	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/idl/kitex_gen/gateway"

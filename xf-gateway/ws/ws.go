@@ -1,8 +1,8 @@
 package ws
 
 import (
+	"gateway/session/isession"
 	"net/http"
-	"xf_gateway/session/isession"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gorilla/websocket"

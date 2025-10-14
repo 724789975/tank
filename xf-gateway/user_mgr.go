@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"gateway/constant"
 	msghandler "gateway/msg_handler"
-	common_redis "gateway/redis"
 	"gateway/session/isession"
 	"gateway/util"
 	"sync"
@@ -98,7 +97,7 @@ func InitUserMgr()  {
 		b, _ := protojson.Marshal(any)
 		fmt.Print(string(b))
 		msghandler.RegisterHandler(any.TypeUrl, func(session isession.ISession, any *anypb.Any) error {
-			idx, _ := common_redis.GetRedis().Incr(context.TODO(), constant.UserLoginMsgIdx).Result()
+			idx, _ := common.GetRedis().Incr(context.TODO(), constant.UserLoginMsgIdx).Result()
 			loginRequest := &gateway.LoginRequest{}
 			err := any.UnmarshalTo(loginRequest)
 			if err != nil {

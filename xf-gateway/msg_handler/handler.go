@@ -2,7 +2,7 @@ package msghandler
 
 import (
 	"errors"
-	"xf_gateway/session/isession"
+	"gateway/session/isession"
 
 	"google.golang.org/protobuf/types/known/anypb"
 )

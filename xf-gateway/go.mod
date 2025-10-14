@@ -1,4 +1,4 @@
-module xf_gateway
+module gateway
 
 go 1.22.8
 

@@ -20,3 +20,9 @@ tap:
   host: "open.tapapis.cn"
   client_id: "oy5mqqrghbgdlrfmf4"
   base_info_uri: "/account/profile/v1"
+
+etcd:
+  addrs:
+    - "114.132.124.13:2379"
+  password: "123#@!QAzx"
+  username: "root"

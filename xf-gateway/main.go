@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
+	rpcservice "gateway/rpc_service"
+	"gateway/session"
+	"gateway/session/isession"
+	usermgr "gateway/user_mgr"
+	"gateway/ws"
 	"os"
 	"os/signal"
 	"syscall"
-	rpcservice "xf_gateway/rpc_service"
-	"xf_gateway/session"
-	"xf_gateway/session/isession"
-	usermgr "xf_gateway/user_mgr"
-	"xf_gateway/ws"
 
 	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/common"
 )

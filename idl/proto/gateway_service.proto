@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-import "proto/gateway_proto.proto";
+import "proto/gate_way.proto";
 package gateway_service;
 
 option go_package="gateway_service";
 
 
 service GatewayService {
-	rpc UserMsg(gateway_proto.UserMsgReq) returns (gateway_proto.UserMsgResp);
+	rpc UserMsg(gate_way.UserMsgReq) returns (gate_way.UserMsgResp);
 }

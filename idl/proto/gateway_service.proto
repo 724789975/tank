@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "proto/gateway_proto.proto";
+package gateway_service;
+
+option go_package="gateway_service";
+
+
+service GatewayService {
+	rpc UserMsg(gateway_proto.UserMsgReq) returns (gateway_proto.UserMsgResp);
+}

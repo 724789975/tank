@@ -22,6 +22,8 @@ etcd:
 
 nats:
   addr: "10.229.19.253:4222"
+  username: "root"
+  password: "123#@!QAzx"
 
 ws:
   addr: "0.0.0.0:10002"

@@ -2,7 +2,7 @@
 package gatewayservice
 
 import (
-	gateway_service "gate_way_nodule/kitex_gen/gateway_service"
+	gateway_service "gate_way_module/kitex_gen/gateway_service"
 	server "github.com/cloudwego/kitex/server"
 )
 

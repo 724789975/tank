@@ -4,7 +4,7 @@ package gatewayservice
 
 import (
 	"context"
-	gate_way "gate_way_nodule/kitex_gen/gate_way"
+	gate_way "gate_way_module/kitex_gen/gate_way"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
 )

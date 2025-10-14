@@ -14,7 +14,7 @@ copy .\proto_gen\*.cs ..\server\Assets\script\proto\
 
 .\bin\kitex -module user_server -type protobuf -no-fast-api proto/user_center_service.proto
 del go.mod
-.\bin\kitex -module gate_way_nodule -type protobuf -no-fast-api proto/gateway_service.proto
+.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/gateway_service.proto
 del go.mod
 rmdir /s /q ..\user_server\kitex_gen
 xcopy .\kitex_gen ..\user_server\kitex_gen /e /i /h /q /y

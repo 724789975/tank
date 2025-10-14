@@ -5,8 +5,8 @@ package gatewayservice
 import (
 	"context"
 	"errors"
-	gate_way "gate_way_nodule/kitex_gen/gate_way"
-	gateway_service "gate_way_nodule/kitex_gen/gateway_service"
+	gate_way "gate_way_module/kitex_gen/gate_way"
+	gateway_service "gate_way_module/kitex_gen/gateway_service"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
 	streaming "github.com/cloudwego/kitex/pkg/streaming"

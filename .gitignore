@@ -33,14 +33,11 @@ Library
 .vscode
 .vsconfig
 *.csproj
-client/build
 client/Temp
 client/Logs
 client/obj
 client/*.sln
-client/buildc
-client/builds
-
+client/build*
 
 3rdpkg/*/*
 server/

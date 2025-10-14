@@ -3,12 +3,18 @@ package rpcservice
 import (
 	"context"
 	"fmt"
-	"gateway/constant"
+	common_config "gate_way_module/config"
+	"gate_way_module/constant"
+	"gate_way_module/etcd"
+	"gate_way_module/kitex_gen/gate_way"
+	"gate_way_module/kitex_gen/gateway_service/gatewayservice"
+	"gate_way_module/nats"
+	"net"
 
-	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/common"
-	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/idl/kitex_gen/gateway"
-	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/idl/kitex_gen/gateway_service/gatewayservice"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/serviceinfo"
+	kitexserver "github.com/cloudwego/kitex/server"
+	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 )
 
 type GatewayService struct {
@@ -20,16 +26,36 @@ func InitGatewayService() {
 	service     = &GatewayService{
 		ServiceInfo: gatewayservice.NewServiceInfo(),
 	}
-	ser         := common.NewKitexServer()
+
+	NewKitexServer := func() kitexserver.Server {
+		address, err := net.ResolveTCPAddr("tcp", common_config.Get("gateway_rpc.addr").(string))
+		if err != nil {
+			panic(err)
+		}
+		serviceName := common_config.Get("gateway_rpc.service_name").(string)
+
+		server := kitexserver.NewServer(
+			kitexserver.WithServiceAddr(address),
+			kitexserver.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+				ServiceName: serviceName,
+			}),
+			kitexserver.WithSuite(tracing.NewServerSuite()),
+			kitexserver.WithRegistry(etcd.GetEtcdClient()),
+		)
+
+		return server
+	}
+
+	ser := NewKitexServer()
 	gatewayservice.RegisterService(ser, service)
 
 	go ser.Run()
 }
 
-func (x *GatewayService) UserMsg(ctx context.Context, req *gateway.UserMsgReq) (resp *gateway.UserMsgResp, err error) {
+func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) (resp *gate_way.UserMsgResp, err error) {
 
-	common.GetNatsConn().Publish(fmt.Sprintf(constant.UserMsg, req.Id), []byte(""))
-	resp = &gateway.UserMsgResp{
+	nats.GetNatsConn().Publish(fmt.Sprintf(constant.UserMsg, req.Id), []byte(""))
+	resp = &gate_way.UserMsgResp{
 		Id  : req.Id,
 		Code: 0,
 	}

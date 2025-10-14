@@ -2,7 +2,7 @@ package common_redis
 
 import (
 	"context"
-	common_config "gateway/config"
+	common_config "gate_way_module/config"
 	"sync"
 	"time"
 

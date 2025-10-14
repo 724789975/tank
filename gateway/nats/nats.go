@@ -1,7 +1,7 @@
 package nats
 
 import (
-	common_config "gateway/config"
+	common_config "gate_way_module/config"
 	"sync"
 
 	_nats "github.com/nats-io/nats.go"

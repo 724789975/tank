@@ -1,8 +1,8 @@
 package etcd
 
 import (
+	common_config "gate_way_module/config"
 	"sync"
-	common_config "user_server/config"
 
 	"github.com/cloudwego/kitex/pkg/registry"
 	_etcd "github.com/kitex-contrib/registry-etcd"

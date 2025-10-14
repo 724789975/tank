@@ -1,7 +1,7 @@
 package ws
 
 import (
-	"gateway/session/isession"
+	"gate_way_module/session/isession"
 	"net/http"
 
 	"github.com/cloudwego/kitex/pkg/klog"

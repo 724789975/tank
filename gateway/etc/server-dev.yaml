@@ -6,7 +6,7 @@ redis:
 user_http:
   addr: ":8080"
 
-user_rpc:
+gateway_rpc:
   addr: "0.0.0.0:11002"
   service_name: "gateway"
 

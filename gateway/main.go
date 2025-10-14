@@ -2,26 +2,23 @@ package main
 
 import (
 	"context"
-	rpcservice "gateway/rpc_service"
-	"gateway/session"
-	"gateway/session/isession"
-	usermgr "gateway/user_mgr"
-	"gateway/ws"
+	common_config "gate_way_module/config"
+	rpcservice "gate_way_module/rpc_service"
+	"gate_way_module/session"
+	"gate_way_module/session/isession"
+	usermgr "gate_way_module/user_mgr"
+	"gate_way_module/ws"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/common"
 )
 
 func main() {
 	_, cancel := context.WithCancel(context.Background())
-	common.Init(nil, nil)
-	common.GetNatsConn()
 
 	usermgr.InitUserMgr()
 
-	ws.WebSocketServer(common.Get("ws.addr").(string), common.Get("ws.uri").(string), func() isession.ISession {
+	ws.WebSocketServer(common_config.Get("ws.addr").(string), common_config.Get("ws.uri").(string), func() isession.ISession {
 		return session.NewSession(func(s *session.Session) {
 				usermgr.GetUserMgr().RemoveSession(s)
 			})

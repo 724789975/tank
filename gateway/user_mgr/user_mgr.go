@@ -3,18 +3,18 @@ package usermgr
 import (
 	"context"
 	"fmt"
-	"gateway/constant"
-	msghandler "gateway/msg_handler"
-	common_redis "gateway/redis"
-	"gateway/session/isession"
-	"gateway/util"
+	"gate_way_module/constant"
+	"gate_way_module/kitex_gen/gate_way"
+	msghandler "gate_way_module/msg_handler"
+	"gate_way_module/nats"
+	common_redis "gate_way_module/redis"
+	"gate_way_module/session/isession"
+	"gate_way_module/util"
 	"sync"
 
-	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/common"
-	"devops.xfein.com/codeup/75560f9d-2fab-4efe-bbe6-90b71f3ff9e4/xf-x/backend/idl/kitex_gen/gateway"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/golang/protobuf/proto"
-	"github.com/nats-io/nats.go"
+	_nats "github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/anypb"
 )
@@ -23,7 +23,7 @@ import (
 type User struct {
 	id string
 	session isession.ISession
-	sub *nats.Subscription
+	sub *_nats.Subscription
 }
 
 type UserMgr struct {
@@ -33,7 +33,7 @@ type UserMgr struct {
 	ops *util.RWMap[int64, func()]
 }
 
-func (u *UserMgr) addUser(userId string, _session isession.ISession, _sub *nats.Subscription) {
+func (u *UserMgr) addUser(userId string, _session isession.ISession, _sub *_nats.Subscription) {
 	u.users.Set(userId, &User{
 		id: userId,
 		session: _session,
@@ -94,18 +94,18 @@ func GetUserMgr() *UserMgr {
 func InitUserMgr()  {
 	{
 		any := &anypb.Any{}
-		any.MarshalFrom(&gateway.LoginRequest{Id: "123"})
+		any.MarshalFrom(&gate_way.LoginRequest{Id: "123"})
 		b, _ := protojson.Marshal(any)
 		fmt.Print(string(b))
 		msghandler.RegisterHandler(any.TypeUrl, func(session isession.ISession, any *anypb.Any) error {
 			idx, _ := common_redis.GetRedis().Incr(context.TODO(), constant.UserLoginMsgIdx).Result()
-			loginRequest := &gateway.LoginRequest{}
+			loginRequest := &gate_way.LoginRequest{}
 			err := any.UnmarshalTo(loginRequest)
 			if err != nil {
 				return err
 			}
 
-			ncMsg := &gateway.NatsLoginRequest{
+			ncMsg := &gate_way.NatsLoginRequest{
 				Id: loginRequest.Id,
 				Idx: idx,
 			}
@@ -115,7 +115,7 @@ func InitUserMgr()  {
 			}
 
 			GetUserMgr().addOp(idx, func() {
-				if sub, err := common.GetNatsConn().Subscribe(fmt.Sprintf(constant.UserMsg, loginRequest.Id), func(msg *nats.Msg) {
+				if sub, err := nats.GetNatsConn().Subscribe(fmt.Sprintf(constant.UserMsg, loginRequest.Id), func(msg *_nats.Msg) {
 					any := &anypb.Any{}
 					err := proto.Unmarshal(msg.Data, any)
 					if err != nil {
@@ -131,15 +131,15 @@ func InitUserMgr()  {
 				}
 			})
 
-			common.GetNatsConn().Publish(constant.UserLoginMsg, ncMsgb)
-			common.GetNatsConn().Flush()
+			nats.GetNatsConn().Publish(constant.UserLoginMsg, ncMsgb)
+			nats.GetNatsConn().Flush()
 
 			return nil
 		})
 	}
 
-	if _, err := common.GetNatsConn().Subscribe(constant.UserLoginMsg, func(msg *nats.Msg) {
-		ncMsg := &gateway.NatsLoginRequest{}
+	if _, err := nats.GetNatsConn().Subscribe(constant.UserLoginMsg, func(msg *_nats.Msg) {
+		ncMsg := &gate_way.NatsLoginRequest{}
 		err := proto.Unmarshal(msg.Data, ncMsg)
 		if err != nil {
 			return

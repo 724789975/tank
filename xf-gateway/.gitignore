@@ -1,0 +1,6 @@
+*.log
+*.swp
+*.swo
+*.code-workspace
+.vscode
+tmp

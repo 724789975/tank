@@ -1,0 +1,47 @@
+service_name: "xf-gateway"
+http_address: ":9090"
+mysql:
+  Host: "xfworldv2:Ct3Xi9njFr8@tcp(mysqldf2456ac9190.rds-boe.cloud.xunfeng.cn:3306)/xf_hp_nt?charset=utf8mb4&parseTime=True&loc=Local"
+redis:
+  Address:
+    - 10.229.20.225:6379
+  Password: "Lj3hUi07Pn"
+rocketmq:
+  Address:
+    - "10.229.23.30"
+  AccessKey: "7HpaoqXifaE8X5n0LjxxRAjn"
+  SecretKey: "tD1lXE8JJqMtNlhWNtqJUVo5"
+  ProducerGroup: "xf-content-group"
+  ProducerTopic:
+    AddContent: "add_nearly_content"
+
+rpc_address: "0.0.0.0:10001"
+
+apollo:
+  addr: "http://10.229.18.126:30180"
+  app_id: "xf-home-page1"
+  cluster: "TEST"
+  namespace:
+    - "application"
+  access_key: "fa92e00cf3094cdcbf9ed4791e517d1f"
+
+tracer:
+  address: "otel-collector:4317"
+
+nacos:
+  address:
+    - "10.229.18.126:30848"
+  UserName: "user"
+  Password: "User@Nacos369!"
+  feed_service_name: "xf-feeds"
+  moments_service_name: "xf-moments"
+  usercenter_service_name: "xf-user-center"
+  points_service_name: "xf-points"
+  circle_service_name: "xf-circle"
+
+nats:
+  addr: "10.229.19.253:4222"
+
+ws:
+  addr: "0.0.0.0:10002"
+  uri: "/ws"

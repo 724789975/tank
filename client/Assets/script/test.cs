@@ -21,5 +21,19 @@ public class test : MonoBehaviour
     public void OnClick()
     {
         Debug.Log("点击事件触发");
+        ShowNotice("点击事件触发");
     }
+
+	public void ShowNotice(string content)
+	{
+		if (notice == null)
+		{
+			return;
+		}
+		GameObject go = Instantiate(notice.gameObject, notice.transform.parent);
+		Notice n = go.GetComponent<Notice>();
+		n.text.text = content;
+	}
+
+	public Notice notice;
 }

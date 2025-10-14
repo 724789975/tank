@@ -170,7 +170,30 @@ public class ClientMsg : MonoBehaviour
             return;
         }
 
-        PlayerControl.Instance.ShowNotice($"玩家 <color=#00FF00>{tankKilled.name}</color> 已被 <color = #00FF00>{tankKiller.name}</color> 击毁");
+        string notice = $"玩家 <color=#00FF00>{tankKilled.Name}</color> 已被 <color=#F00000>{tankKiller.Name}</color> 击毁";
+        if (tankKilled.ID == tankKiller.ID)
+        {
+            notice = $"玩家 <color=#00FF00>{tankKilled.Name}</color> 自爆了";
+            if (tankKiller.ID == AccountInfo.Instance.Account.Openid)
+            {
+                notice = $"<color=#00FF00>你</color> 自爆了";
+            }
+        }
+        else
+        {
+            if (tankKiller.ID == AccountInfo.Instance.Account.Openid)
+            {
+                notice = $"<color=#00FF00>你</color> 击毁了 <color=#F00000>{tankKilled.Name}</color>";
+            }
+            else if (tankKilled.ID == AccountInfo.Instance.Account.Openid)
+			{
+				notice = $"<color=#00FF00>你</color>被 <color=#F00000>{tankKiller.Name}</color> 击毁了";
+            }
+        }
+
+        PlayerControl.Instance.ShowNotice(notice);
+
+        Debug.Log($"OnPlayerDieNtf {playerDieNtf.ToString()} {tankKilled.rebornTime} {ClientFrame.Instance.CurrentTime}");
 #endif
     }
 

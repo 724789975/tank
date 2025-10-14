@@ -100,30 +100,29 @@ public class Bullet : MonoBehaviour
                     tankInstance.GetComponent<BoxCollider>().enabled = false;
 				}
 
-                Debug.Log($"Tank {tankInstance.ID} hit, current HP: {tankInstance.HP}");
             }
-            Debug.Log($"Bullet hit tank {collision.gameObject.name} ");
+            Debug.Log($"Bullet {ownerId}:{bulletId} hit tank {tankInstance.ID}, HP:{tankInstance.HP}");
+			//Debug.Log($"Bullet {bulletId} collided with {collision.gameObject.name} tag {collision.gameObject.tag}, destroying bullet.");
+			TankGame.BulletDestoryNtf bulletDestoryNtf = new TankGame.BulletDestoryNtf();
+			bulletDestoryNtf.Id = bulletId;
+			Vector3 pos = collision.collider.ClosestPoint(collision.transform.position);
+
+			bulletDestoryNtf.Pos = new TankCommon.Vector3() {X = pos.x, Y = pos.y, Z = pos.z};
+
+			byte[] messageBytes = Any.Pack(bulletDestoryNtf).ToByteArray();
+			PlayerManager.Instance.ForEach((p) =>
+			{
+				if (p.session != IntPtr.Zero)
+				{
+					DLLImport.Send(p.session, messageBytes, (uint)messageBytes.Length);
+				}
+			});
+
+			BulletManager.Instance.RemoveBullet(bulletId);
             // 销毁子弹
             Destroy(gameObject);
         }
 
-        //Debug.Log($"Bullet {bulletId} collided with {collision.gameObject.name} tag {collision.gameObject.tag}, destroying bullet.");
-        TankGame.BulletDestoryNtf bulletDestoryNtf = new TankGame.BulletDestoryNtf();
-        bulletDestoryNtf.Id = bulletId;
-        Vector3 pos = collision.collider.ClosestPoint(collision.transform.position);
-
-		bulletDestoryNtf.Pos = new TankCommon.Vector3() {X = pos.x, Y = pos.y, Z = pos.z};
-
-		byte[] messageBytes = Any.Pack(bulletDestoryNtf).ToByteArray();
-		PlayerManager.Instance.ForEach((p) =>
-        {
-            if (p.session != IntPtr.Zero)
-            {
-                DLLImport.Send(p.session, messageBytes, (uint)messageBytes.Length);
-            }
-        });
-
-        BulletManager.Instance.RemoveBullet(bulletId);
 #endif
     }
 

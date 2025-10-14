@@ -47,7 +47,8 @@
     "com.unity.modules.xr": "1.0.0",
 	"com.google.external-dependency-manager": "1.2.179",
 	"com.taptap.sdk.core":"4.8.2",
-	"com.taptap.sdk.login":"4.8.2"
+	"com.taptap.sdk.login":"4.8.2",
+	"com.psygames.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#upm"
   },
   "scopedRegistries": [
     {

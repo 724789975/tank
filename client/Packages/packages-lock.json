@@ -13,6 +13,13 @@
       "dependencies": {},
       "url": "https://package.openupm.com"
     },
+    "com.psygames.unitywebsocket": {
+      "version": "https://github.com/psygames/UnityWebSocket.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "369f2a56f68e7a133d3d1acfdc26d4693cd74497"
+    },
     "com.taptap.sdk.core": {
       "version": "4.8.2",
       "depth": 0,

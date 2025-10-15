@@ -8,6 +8,7 @@ import (
 	common_config "user_server/config"
 	"user_server/logic/service"
 	common_redis "user_server/redis"
+	"user_server/rpc"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 	common_config.LoadConfig()
 	common_redis.GetRedis()
 	service.GetUserService().ListenAndServe(ctx)
+	rpc.InitRpc()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)

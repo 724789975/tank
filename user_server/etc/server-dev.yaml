@@ -26,3 +26,6 @@ etcd:
     - "114.132.124.13:2379"
   password: "123#@!QAzx"
   username: "root"
+
+gateway:
+  service_name: "gateway"

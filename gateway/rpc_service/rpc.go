@@ -15,6 +15,9 @@ import (
 	"github.com/cloudwego/kitex/pkg/serviceinfo"
 	kitexserver "github.com/cloudwego/kitex/server"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
+	_nats "github.com/nats-io/nats.go"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -59,7 +62,29 @@ func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) 
 	if err != nil {
 		return nil, err
 	}
-	nats.GetNatsConn().Publish(fmt.Sprintf(constant.UserMsg, req.Id), ncMsgb)
+	natsMsg := &_nats.Msg{
+		Subject: fmt.Sprintf(constant.UserMsg, req.Id),
+		Data:    ncMsgb,
+	}
+	js, err := nats.GetNatsConn().JetStream(_nats.ClientTrace{
+		RequestSent: func(subj string, payload []byte) {
+			// 将追踪上下文注入消息头
+			carrier := propagation.HeaderCarrier(natsMsg.Header)
+			otel.GetTextMapPropagator().Inject(ctx, carrier)
+		},
+		ResponseReceived: func(subj string, payload []byte, hdr _nats.Header) {
+			// 从消息头提取追踪上下文
+			carrier := propagation.HeaderCarrier(hdr)
+			ctx = otel.GetTextMapPropagator().Extract(ctx, carrier)
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	_, err = js.PublishMsg(natsMsg)
+	if err != nil {
+		return nil, err
+	}
 	resp = &gate_way.UserMsgResp{
 		Id:   req.Id,
 		Code: 0,

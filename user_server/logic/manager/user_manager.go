@@ -5,13 +5,16 @@ import (
 	"sync"
 	common_config "user_server/config"
 	"user_server/kitex_gen/common"
+	"user_server/kitex_gen/gate_way"
 	"user_server/kitex_gen/user_center"
 	"user_server/logic/tap"
 	common_redis "user_server/redis"
+	"user_server/rpc"
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type UserManager struct {
@@ -52,12 +55,12 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 		ServerPort: int32(common_config.Get("game.port").(int)),
 	}
 
-	uuid := ""
+	userId := ""
 	defer func() {
-		klog.CtxInfof(ctx, "uuid: %d, resp: %d", uuid, resp.Code)
+		klog.CtxInfof(ctx, "uuid: %d, resp: %d", userId, resp.Code)
 	}()
 
-	uuid = ctx.Value("userId").(string)
+	userId = ctx.Value("userId").(string)
 
 	tapResp, err := tap.GetHandle(ctx, req.Kid, req.MacKey, common_config.Get("tap.base_info_uri").(string))
 	if err != nil {
@@ -75,6 +78,21 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 		return nil, err
 	}
 	resp.TapInfo = tapBaseInfo.Data
+
+	test := &gate_way.Test{
+		Test: "test",
+	}
+
+	any := &anypb.Any{}
+	err = any.MarshalFrom(test)
+	if err != nil {
+		return nil, err
+	}
+
+	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+		Id:  userId,
+		Msg: any,
+	})
 
 	return resp, nil
 }

@@ -15,6 +15,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/serviceinfo"
 	kitexserver "github.com/cloudwego/kitex/server"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
+	"google.golang.org/protobuf/proto"
 )
 
 type GatewayService struct {
@@ -22,8 +23,9 @@ type GatewayService struct {
 }
 
 var service *GatewayService
+
 func InitGatewayService() {
-	service     = &GatewayService{
+	service = &GatewayService{
 		ServiceInfo: gatewayservice.NewServiceInfo(),
 	}
 
@@ -53,10 +55,13 @@ func InitGatewayService() {
 }
 
 func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) (resp *gate_way.UserMsgResp, err error) {
-
-	nats.GetNatsConn().Publish(fmt.Sprintf(constant.UserMsg, req.Id), []byte(""))
+	ncMsgb, err := proto.Marshal(req.Msg)
+	if err != nil {
+		return nil, err
+	}
+	nats.GetNatsConn().Publish(fmt.Sprintf(constant.UserMsg, req.Id), ncMsgb)
 	resp = &gate_way.UserMsgResp{
-		Id  : req.Id,
+		Id:   req.Id,
 		Code: 0,
 	}
 	return resp, nil

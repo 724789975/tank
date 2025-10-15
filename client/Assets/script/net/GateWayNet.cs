@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityWebSocket;
 using UnityEngine;
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 
 public class GateWayNet : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
+		WSMsgProcess.Instance.RegisterHandler(WSMsg.Instance);
 		string serverUrl = "ws://127.0.0.1:20002/ws";
 
 		// 创建一个新的WebSocket实例并与指定URL建立连接
@@ -34,7 +37,9 @@ public class GateWayNet : MonoBehaviour
 		};
 		webSocket.OnMessage += (sender, e) =>
 		{
-			Debug.Log("WebSocket收到消息：" + e.RawData);
+			Any any = Any.Parser.ParseFrom(e.RawData);
+			Debug.Log("WebSocket收到消息类型：" + any.TypeUrl);
+			WSMsgProcess.Instance.ProcessMessage(sender, any);
 		};
 	}
 
@@ -83,7 +88,7 @@ public class GateWayNet : MonoBehaviour
 		}
 	}
 
-	public void SendMessage(byte[] message)
+	public void SendGW(byte[] message)
 	{
 		webSocket.SendAsync(message);
 	}

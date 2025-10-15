@@ -11,7 +11,7 @@ import (
 )
 
 type Session struct {
-	conn *websocket.Conn
+	conn    *websocket.Conn
 	errChan chan error
 
 	CloseFunc func(*Session)
@@ -21,7 +21,7 @@ type Session struct {
 
 func NewSession(closeFunc func(*Session)) *Session {
 	s := &Session{
-		errChan: make(chan error, 1),
+		errChan:   make(chan error, 1),
 		CloseFunc: closeFunc,
 	}
 	return s
@@ -120,7 +120,7 @@ func (s *Session) processTextMessage(msg []byte) {
 func (s *Session) processBinaryMessage(msg []byte) {
 	any := &anypb.Any{}
 	proto.Unmarshal(msg, any)
-	if e := protojson.Unmarshal(msg, any); e != nil {
+	if e := proto.Unmarshal(msg, any); e != nil {
 		s.errChan <- e
 		return
 	}
@@ -130,4 +130,3 @@ func (s *Session) processBinaryMessage(msg []byte) {
 		return
 	}
 }
-

@@ -3,14 +3,23 @@ option go_package="gate_way";
 package gate_way;
 
 import "google/protobuf/any.proto";
+import "proto/common.proto";
 
 message LoginRequest {
 	string id = 1;
 }
 
+message LoginResp {
+	common.ErrorCode code = 1;
+}
+
 message NatsLoginRequest {
 	string id = 1;
 	int64 idx = 2;
+}
+
+message Test {
+	string test = 1;
 }
 
 message UserMsgReq {

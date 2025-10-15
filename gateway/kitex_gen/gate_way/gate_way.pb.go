@@ -8,6 +8,7 @@ package gate_way
 
 import (
 	context "context"
+	common "gate_way_module/kitex_gen/common"
 	any1 "github.com/golang/protobuf/ptypes/any"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -69,6 +70,53 @@ func (x *LoginRequest) GetId() string {
 	return ""
 }
 
+type LoginResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"`
+}
+
+func (x *LoginResp) Reset() {
+	*x = LoginResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_gate_way_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LoginResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginResp) ProtoMessage() {}
+
+func (x *LoginResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_gate_way_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginResp.ProtoReflect.Descriptor instead.
+func (*LoginResp) Descriptor() ([]byte, []int) {
+	return file_proto_gate_way_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *LoginResp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
 type NatsLoginRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -81,7 +129,7 @@ type NatsLoginRequest struct {
 func (x *NatsLoginRequest) Reset() {
 	*x = NatsLoginRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_gate_way_proto_msgTypes[1]
+		mi := &file_proto_gate_way_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -94,7 +142,7 @@ func (x *NatsLoginRequest) String() string {
 func (*NatsLoginRequest) ProtoMessage() {}
 
 func (x *NatsLoginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_gate_way_proto_msgTypes[1]
+	mi := &file_proto_gate_way_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -107,7 +155,7 @@ func (x *NatsLoginRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NatsLoginRequest.ProtoReflect.Descriptor instead.
 func (*NatsLoginRequest) Descriptor() ([]byte, []int) {
-	return file_proto_gate_way_proto_rawDescGZIP(), []int{1}
+	return file_proto_gate_way_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *NatsLoginRequest) GetId() string {
@@ -124,6 +172,53 @@ func (x *NatsLoginRequest) GetIdx() int64 {
 	return 0
 }
 
+type Test struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Test string `protobuf:"bytes,1,opt,name=test,proto3" json:"test,omitempty"`
+}
+
+func (x *Test) Reset() {
+	*x = Test{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_gate_way_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Test) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Test) ProtoMessage() {}
+
+func (x *Test) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_gate_way_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Test.ProtoReflect.Descriptor instead.
+func (*Test) Descriptor() ([]byte, []int) {
+	return file_proto_gate_way_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Test) GetTest() string {
+	if x != nil {
+		return x.Test
+	}
+	return ""
+}
+
 type UserMsgReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -136,7 +231,7 @@ type UserMsgReq struct {
 func (x *UserMsgReq) Reset() {
 	*x = UserMsgReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_gate_way_proto_msgTypes[2]
+		mi := &file_proto_gate_way_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -149,7 +244,7 @@ func (x *UserMsgReq) String() string {
 func (*UserMsgReq) ProtoMessage() {}
 
 func (x *UserMsgReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_gate_way_proto_msgTypes[2]
+	mi := &file_proto_gate_way_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -162,7 +257,7 @@ func (x *UserMsgReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserMsgReq.ProtoReflect.Descriptor instead.
 func (*UserMsgReq) Descriptor() ([]byte, []int) {
-	return file_proto_gate_way_proto_rawDescGZIP(), []int{2}
+	return file_proto_gate_way_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UserMsgReq) GetId() string {
@@ -191,7 +286,7 @@ type UserMsgResp struct {
 func (x *UserMsgResp) Reset() {
 	*x = UserMsgResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_gate_way_proto_msgTypes[3]
+		mi := &file_proto_gate_way_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -204,7 +299,7 @@ func (x *UserMsgResp) String() string {
 func (*UserMsgResp) ProtoMessage() {}
 
 func (x *UserMsgResp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_gate_way_proto_msgTypes[3]
+	mi := &file_proto_gate_way_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -217,7 +312,7 @@ func (x *UserMsgResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserMsgResp.ProtoReflect.Descriptor instead.
 func (*UserMsgResp) Descriptor() ([]byte, []int) {
-	return file_proto_gate_way_proto_rawDescGZIP(), []int{3}
+	return file_proto_gate_way_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UserMsgResp) GetId() string {
@@ -240,23 +335,29 @@ var file_proto_gate_way_proto_rawDesc = []byte{
 	0x0a, 0x14, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x61, 0x74, 0x65, 0x5f, 0x77, 0x61, 0x79,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x67, 0x61, 0x74, 0x65, 0x5f, 0x77, 0x61, 0x79,
 	0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
-	0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x1e, 0x0a, 0x0c, 0x4c,
-	0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x34, 0x0a, 0x10, 0x4e,
-	0x61, 0x74, 0x73, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
-	0x10, 0x0a, 0x03, 0x69, 0x64, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x69, 0x64,
-	0x78, 0x22, 0x44, 0x0a, 0x0a, 0x55, 0x73, 0x65, 0x72, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x71, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
-	0x26, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67,
-	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41,
-	0x6e, 0x79, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x22, 0x31, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x4d,
-	0x73, 0x67, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x42, 0x24, 0x5a, 0x22, 0x67, 0x61,
-	0x74, 0x65, 0x5f, 0x77, 0x61, 0x79, 0x5f, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2f, 0x6b, 0x69,
-	0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x67, 0x61, 0x74, 0x65, 0x5f, 0x77, 0x61, 0x79,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x12, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
+	0x1e, 0x0a, 0x0c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
+	0x32, 0x0a, 0x09, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d,
+	0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63,
+	0x6f, 0x64, 0x65, 0x22, 0x34, 0x0a, 0x10, 0x4e, 0x61, 0x74, 0x73, 0x4c, 0x6f, 0x67, 0x69, 0x6e,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x69, 0x64, 0x78, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x69, 0x64, 0x78, 0x22, 0x1a, 0x0a, 0x04, 0x54, 0x65, 0x73,
+	0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x73, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x74, 0x65, 0x73, 0x74, 0x22, 0x44, 0x0a, 0x0a, 0x55, 0x73, 0x65, 0x72, 0x4d, 0x73, 0x67,
+	0x52, 0x65, 0x71, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x02, 0x69, 0x64, 0x12, 0x26, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x22, 0x31, 0x0a, 0x0b, 0x55,
+	0x73, 0x65, 0x72, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f,
+	0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x42, 0x24,
+	0x5a, 0x22, 0x67, 0x61, 0x74, 0x65, 0x5f, 0x77, 0x61, 0x79, 0x5f, 0x6d, 0x6f, 0x64, 0x75, 0x6c,
+	0x65, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x67, 0x61, 0x74, 0x65,
+	0x5f, 0x77, 0x61, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -271,21 +372,25 @@ func file_proto_gate_way_proto_rawDescGZIP() []byte {
 	return file_proto_gate_way_proto_rawDescData
 }
 
-var file_proto_gate_way_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_gate_way_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_gate_way_proto_goTypes = []interface{}{
 	(*LoginRequest)(nil),     // 0: gate_way.LoginRequest
-	(*NatsLoginRequest)(nil), // 1: gate_way.NatsLoginRequest
-	(*UserMsgReq)(nil),       // 2: gate_way.UserMsgReq
-	(*UserMsgResp)(nil),      // 3: gate_way.UserMsgResp
-	(*any1.Any)(nil),         // 4: google.protobuf.Any
+	(*LoginResp)(nil),        // 1: gate_way.LoginResp
+	(*NatsLoginRequest)(nil), // 2: gate_way.NatsLoginRequest
+	(*Test)(nil),             // 3: gate_way.Test
+	(*UserMsgReq)(nil),       // 4: gate_way.UserMsgReq
+	(*UserMsgResp)(nil),      // 5: gate_way.UserMsgResp
+	(common.ErrorCode)(0),    // 6: common.ErrorCode
+	(*any1.Any)(nil),         // 7: google.protobuf.Any
 }
 var file_proto_gate_way_proto_depIdxs = []int32{
-	4, // 0: gate_way.UserMsgReq.msg:type_name -> google.protobuf.Any
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: gate_way.LoginResp.code:type_name -> common.ErrorCode
+	7, // 1: gate_way.UserMsgReq.msg:type_name -> google.protobuf.Any
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_gate_way_proto_init() }
@@ -307,7 +412,7 @@ func file_proto_gate_way_proto_init() {
 			}
 		}
 		file_proto_gate_way_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NatsLoginRequest); i {
+			switch v := v.(*LoginResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -319,7 +424,7 @@ func file_proto_gate_way_proto_init() {
 			}
 		}
 		file_proto_gate_way_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserMsgReq); i {
+			switch v := v.(*NatsLoginRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -331,6 +436,30 @@ func file_proto_gate_way_proto_init() {
 			}
 		}
 		file_proto_gate_way_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Test); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_gate_way_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserMsgReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_gate_way_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserMsgResp); i {
 			case 0:
 				return &v.state
@@ -349,7 +478,7 @@ func file_proto_gate_way_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_gate_way_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

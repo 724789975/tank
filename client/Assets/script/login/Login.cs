@@ -7,6 +7,8 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System;
 using System.Text;
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 #if USE_TAP_LOGIN
 using TapSDK.Core;
 using TapSDK.Login;
@@ -31,6 +33,7 @@ public class Login : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		GateWayNet.Instance.ToString();
 #if USE_TAP_LOGIN
 		// 核心配置 详细参数见 [TapTapSDK]
 		TapTapSdkOptions coreOptions = new TapTapSdkOptions()
@@ -43,7 +46,7 @@ public class Login : MonoBehaviour
 			// 语言，默认为 Auto，默认情况下，国内为 zh_Hans，海外为 en
 			preferredLanguage = TapTapLanguageType.zh_Hans,
 			// 是否开启日志，Release 版本请设置为 false
-			enableLog = true
+			//enableLog = true
 		};
 		// TapSDK 初始化
 		TapTapSDK.Init(coreOptions);
@@ -157,7 +160,12 @@ public class Login : MonoBehaviour
 
 	public void StartGame()
 	{
-        UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
+		GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
+		loginRequest.Id = AccountInfo.Instance.Account.Openid;
+
+		GateWayNet.Instance.SendGW(Any.Pack(loginRequest).ToByteArray());
+
+		UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
 	}
 
 	readonly object Lock = new object();

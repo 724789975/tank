@@ -10,6 +10,6 @@ type ISession interface {
 	ErrChan() *chan error
 	Read() error
 	Write(int, []byte) error
-	Send(any *anypb.Any)
+	Send(any *anypb.Any)		// 发送空值代表关闭连接
 	Close() error
 }

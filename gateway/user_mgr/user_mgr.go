@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gate_way_module/constant"
+	"gate_way_module/kitex_gen/common"
 	"gate_way_module/kitex_gen/gate_way"
 	msghandler "gate_way_module/msg_handler"
 	"gate_way_module/nats"
@@ -19,25 +20,24 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
-
 type User struct {
-	id string
+	id      string
 	session isession.ISession
-	sub *_nats.Subscription
+	sub     *_nats.Subscription
 }
 
 type UserMgr struct {
 	users *util.RWMap[string, *User]
 
 	sessions *util.RWMap[isession.ISession, string]
-	ops *util.RWMap[int64, func()]
+	ops      *util.RWMap[int64, func()]
 }
 
 func (u *UserMgr) addUser(userId string, _session isession.ISession, _sub *_nats.Subscription) {
 	u.users.Set(userId, &User{
-		id: userId,
+		id:      userId,
 		session: _session,
-		sub: _sub,
+		sub:     _sub,
 	})
 }
 
@@ -56,7 +56,7 @@ func (u *UserMgr) RemoveSession(session isession.ISession) {
 }
 
 func (u *UserMgr) getUserSession(userId string) (isession.ISession, bool) {
-	user, b :=  u.users.Get(userId)
+	user, b := u.users.Get(userId)
 	if b {
 		return user.session, true
 	}
@@ -77,21 +77,22 @@ func (u *UserMgr) getOp(idx int64) (func(), bool) {
 
 var (
 	usermgr *UserMgr
-	once  sync.Once
+	once    sync.Once
 )
+
 func GetUserMgr() *UserMgr {
 	once.Do(func() {
 		usermgr = &UserMgr{
-			users: util.NewRWMap[string, *User](),
+			users:    util.NewRWMap[string, *User](),
 			sessions: util.NewRWMap[isession.ISession, string](),
-			ops: util.NewRWMap[int64, func()](),
+			ops:      util.NewRWMap[int64, func()](),
 		}
 	})
 
 	return usermgr
 }
 
-func InitUserMgr()  {
+func InitUserMgr() {
 	{
 		any := &anypb.Any{}
 		any.MarshalFrom(&gate_way.LoginRequest{Id: "123"})
@@ -105,8 +106,9 @@ func InitUserMgr()  {
 				return err
 			}
 
+			klog.Infof("recv %s", loginRequest.String())
 			ncMsg := &gate_way.NatsLoginRequest{
-				Id: loginRequest.Id,
+				Id:  loginRequest.Id,
 				Idx: idx,
 			}
 			ncMsgb, err := proto.Marshal(ncMsg)
@@ -119,6 +121,7 @@ func InitUserMgr()  {
 					any := &anypb.Any{}
 					err := proto.Unmarshal(msg.Data, any)
 					if err != nil {
+						klog.Errorf("unmarshal %s failed, err: %v", string(msg.Data), err)
 						return
 					}
 					session.Send(any)
@@ -129,6 +132,18 @@ func InitUserMgr()  {
 					GetUserMgr().addUser(loginRequest.Id, session, sub)
 					GetUserMgr().removeOp(idx)
 				}
+
+				loginResp := &gate_way.LoginResp{
+					Code: common.ErrorCode_OK,
+				}
+
+				any := &anypb.Any{}
+				err := any.MarshalFrom(loginResp)
+				if err != nil {
+					return
+				}
+				klog.Infof("send %s", loginResp.String())
+				session.Send(any)
 			})
 
 			nats.GetNatsConn().Publish(constant.UserLoginMsg, ncMsgb)

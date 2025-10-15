@@ -16,6 +16,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/golang/protobuf/proto"
 	_nats "github.com/nats-io/nats.go"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/anypb"
 )
@@ -117,16 +119,26 @@ func InitUserMgr() {
 			}
 
 			GetUserMgr().addOp(idx, func() {
-				if sub, err := nats.GetNatsConn().Subscribe(fmt.Sprintf(constant.UserMsg, loginRequest.Id), func(msg *_nats.Msg) {
+				ctx := context.Background()
+				js, err := nats.GetNatsConn().JetStream(_nats.ClientTrace{
+					ResponseReceived: func(subj string, payload []byte, hdr _nats.Header) {
+						// 从消息头提取追踪上下文
+						carrier := propagation.HeaderCarrier(hdr)
+						ctx = otel.GetTextMapPropagator().Extract(ctx, carrier)
+					},
+				})
+
+				if sub, err := js.Subscribe(fmt.Sprintf(constant.UserMsg, loginRequest.Id), func(msg *_nats.Msg) {
 					any := &anypb.Any{}
 					err := proto.Unmarshal(msg.Data, any)
 					if err != nil {
-						klog.Errorf("unmarshal %s failed, err: %v", string(msg.Data), err)
+						klog.CtxErrorf(ctx, "unmarshal %s failed, err: %v", string(msg.Data), err)
 						return
 					}
+					klog.CtxInfof(ctx, "recv %s", any.String())
 					session.Send(any)
 				}); err != nil {
-					klog.Errorf("subscribe %s failed, err: %v", fmt.Sprintf(constant.UserMsg, loginRequest.Id), err)
+					klog.CtxErrorf(ctx, "subscribe %s failed, err: %v", fmt.Sprintf(constant.UserMsg, loginRequest.Id), err)
 					return
 				} else {
 					GetUserMgr().addUser(loginRequest.Id, session, sub)
@@ -138,11 +150,12 @@ func InitUserMgr() {
 				}
 
 				any := &anypb.Any{}
-				err := any.MarshalFrom(loginResp)
+				err = any.MarshalFrom(loginResp)
 				if err != nil {
+					klog.CtxErrorf(ctx, "marshal %s failed, err: %v", loginResp.String(), err)
 					return
 				}
-				klog.Infof("send %s", loginResp.String())
+				klog.CtxInfof(ctx, "send %s", loginResp.String())
 				session.Send(any)
 			})
 

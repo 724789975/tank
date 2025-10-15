@@ -103,7 +103,7 @@ public class Login : MonoBehaviour
 							{
 								loginCallback.Add(() =>
 								{
-									asyncWebRequest.Post("http://127.0.0.1:8080/api/1.0/public/user_server/login", body, headers, (ok, response) =>
+									asyncWebRequest.Post("http://114.132.124.13:8080/api/1.0/public/user_server/login", body, headers, (ok, response) =>
 									{
 										if (!ok)
 										{
@@ -165,7 +165,7 @@ public class Login : MonoBehaviour
 
 		GateWayNet.Instance.SendGW(Any.Pack(loginRequest).ToByteArray());
 
-		//UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
+		UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
 	}
 
 	public void CloseWs()

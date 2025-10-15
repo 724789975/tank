@@ -12,7 +12,7 @@ public class GateWayNet : MonoBehaviour
     void Start()
     {
 		WSMsgProcess.Instance.RegisterHandler(WSMsg.Instance);
-		string serverUrl = "ws://127.0.0.1:20002/ws";
+		string serverUrl = "ws://114.132.124.13:20002/ws";
 
 		// 创建一个新的WebSocket实例并与指定URL建立连接
 		webSocket = new WebSocket(serverUrl);

@@ -67,6 +67,7 @@ func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) 
 		Subject: fmt.Sprintf(constant.UserMsg, req.Id),
 		Data:    ncMsgb,
 	}
+	klog.CtxInfof(ctx, "publish %s, data: %s", natsMsg.Subject, string(ncMsgb))
 	js, err := nats.GetNatsConn().JetStream(_nats.ClientTrace{
 		RequestSent: func(subj string, payload []byte) {
 			// 将追踪上下文注入消息头
@@ -92,5 +93,6 @@ func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) 
 		Id:   req.Id,
 		Code: 0,
 	}
+	klog.CtxInfof(ctx, "publish %s success", natsMsg.Subject)
 	return resp, nil
 }

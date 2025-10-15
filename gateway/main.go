@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	common_config "gate_way_module/config"
+	"gate_way_module/etcd"
+	"gate_way_module/nats"
+	common_redis "gate_way_module/redis"
 	rpcservice "gate_way_module/rpc_service"
 	"gate_way_module/session"
 	"gate_way_module/session/isession"
@@ -15,13 +18,17 @@ import (
 
 func main() {
 	_, cancel := context.WithCancel(context.Background())
+	common_config.LoadConfig()
+	common_redis.GetRedis()
+	nats.GetNatsConn()
+	etcd.GetEtcdClient()
 
 	usermgr.InitUserMgr()
 
 	ws.WebSocketServer(common_config.Get("ws.addr").(string), common_config.Get("ws.uri").(string), func() isession.ISession {
 		return session.NewSession(func(s *session.Session) {
-				usermgr.GetUserMgr().RemoveSession(s)
-			})
+			usermgr.GetUserMgr().RemoveSession(s)
+		})
 		// return &session.Session{
 		// 	CloseFunc: func(s *session.Session) {
 		// 		usermgr.GetUserMgr().RemoveSession(s)

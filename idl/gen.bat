@@ -2,6 +2,7 @@
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\tank_common.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\tank_game.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\user_center.proto
+.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\gate_way.proto
 copy .\proto_gen\*.cs ..\client\Assets\script\proto\
 copy .\proto_gen\*.cs ..\server\Assets\script\proto\
 

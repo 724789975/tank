@@ -11,6 +11,7 @@ import (
 	"gate_way_module/nats"
 	"net"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/serviceinfo"
 	kitexserver "github.com/cloudwego/kitex/server"
@@ -79,10 +80,12 @@ func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) 
 		},
 	})
 	if err != nil {
+		klog.CtxErrorf(ctx, "publish %s failed, err: %v", natsMsg.Subject, err)
 		return nil, err
 	}
 	_, err = js.PublishMsg(natsMsg)
 	if err != nil {
+		klog.CtxErrorf(ctx, "publish %s failed, err: %v", natsMsg.Subject, err)
 		return nil, err
 	}
 	resp = &gate_way.UserMsgResp{

@@ -23,7 +23,7 @@ func WebSocketServer(addr string, uri string, sessionFactory func() isession.ISe
 		s := sessionFactory()
 		conn, err := upgrader.Upgrade(resp, req, nil)
 		if err != nil {
-			klog.Error("WebSocket upgrade error: %v", err)
+			klog.Error("[WS-UPGRADE-ERROR] WebSocket upgrade error: %v", err)
 			return
 		}
 		defer conn.Close()
@@ -33,19 +33,19 @@ func WebSocketServer(addr string, uri string, sessionFactory func() isession.ISe
 		// 读取客户端的发送额消息,并返回
 		go readMessage(s, s.ErrChan())
 		select {
-			case err := <-(*s.ErrChan()):
-				s.Close()
-				klog.Infof("WebSocket client closed connection: %s, %+v", conn.RemoteAddr(), err)
-				return
+		case err := <-(*s.ErrChan()):
+			s.Close()
+			klog.Infof("[WS-CLIENT-CLOSE] WebSocket client closed connection: %s, %+v", conn.RemoteAddr(), err)
+			return
 		}
 
 	})
-	klog.Infof("Starting websocket server at: %s/%s", addr, uri)
+	klog.Infof("[WS-SERVER-START] Starting websocket server at: %s/%s", addr, uri)
 
 	go func() {
 		err := http.ListenAndServe(addr, nil)
 		if err != nil {
-			klog.Errorf("WebSocket server failed to start: %v", err)
+			klog.Errorf("[WS-SERVER-FAIL] WebSocket server failed to start: %v", err)
 		}
 	}()
 }

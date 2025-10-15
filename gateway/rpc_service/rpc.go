@@ -16,9 +16,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/serviceinfo"
 	kitexserver "github.com/cloudwego/kitex/server"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
-	_nats "github.com/nats-io/nats.go"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -63,36 +60,11 @@ func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) 
 	if err != nil {
 		return nil, err
 	}
-	natsMsg := &_nats.Msg{
-		Subject: fmt.Sprintf(constant.UserMsg, req.Id),
-		Data:    ncMsgb,
-	}
-	klog.CtxInfof(ctx, "publish %s, data: %s", natsMsg.Subject, string(ncMsgb))
-	js, err := nats.GetNatsConn().JetStream(_nats.ClientTrace{
-		RequestSent: func(subj string, payload []byte) {
-			// 将追踪上下文注入消息头
-			carrier := propagation.HeaderCarrier(natsMsg.Header)
-			otel.GetTextMapPropagator().Inject(ctx, carrier)
-		},
-		ResponseReceived: func(subj string, payload []byte, hdr _nats.Header) {
-			// 从消息头提取追踪上下文
-			carrier := propagation.HeaderCarrier(hdr)
-			ctx = otel.GetTextMapPropagator().Extract(ctx, carrier)
-		},
-	})
-	if err != nil {
-		klog.CtxErrorf(ctx, "publish %s failed, err: %v", natsMsg.Subject, err)
-		return nil, err
-	}
-	_, err = js.PublishMsg(natsMsg)
-	if err != nil {
-		klog.CtxErrorf(ctx, "publish %s failed, err: %v", natsMsg.Subject, err)
-		return nil, err
-	}
+	nats.GetNatsConn().Publish(fmt.Sprintf(constant.UserMsg, req.Id), ncMsgb)
 	resp = &gate_way.UserMsgResp{
 		Id:   req.Id,
 		Code: 0,
 	}
-	klog.CtxInfof(ctx, "publish %s success", natsMsg.Subject)
+	klog.CtxInfof(ctx, "[GATEWAY-RPC-PUBLISH] publish %s success", fmt.Sprintf(constant.UserMsg, req.Id))
 	return resp, nil
 }

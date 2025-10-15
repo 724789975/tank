@@ -25,6 +25,7 @@ public class WSMsg : MonoBehaviour
 		Debug.Log(test.ToString());
 	}
 
+	[WSHandler("gate_way.LoginResp")]
 	static void LoginResp(object sender, Any anyMessage)
 	{
 		GateWay.LoginResp test = anyMessage.Unpack<GateWay.LoginResp>();

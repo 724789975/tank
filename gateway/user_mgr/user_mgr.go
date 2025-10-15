@@ -16,8 +16,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/golang/protobuf/proto"
 	_nats "github.com/nats-io/nats.go"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/anypb"
 )
@@ -41,6 +39,7 @@ func (u *UserMgr) addUser(userId string, _session isession.ISession, _sub *_nats
 		session: _session,
 		sub:     _sub,
 	})
+	u.sessions.Set(_session, userId)
 }
 
 func (u *UserMgr) removeUser(userId string) {
@@ -95,77 +94,6 @@ func GetUserMgr() *UserMgr {
 }
 
 func InitUserMgr() {
-	{
-		any := &anypb.Any{}
-		any.MarshalFrom(&gate_way.LoginRequest{Id: "123"})
-		b, _ := protojson.Marshal(any)
-		fmt.Print(string(b))
-		msghandler.RegisterHandler(any.TypeUrl, func(session isession.ISession, any *anypb.Any) error {
-			idx, _ := common_redis.GetRedis().Incr(context.TODO(), constant.UserLoginMsgIdx).Result()
-			loginRequest := &gate_way.LoginRequest{}
-			err := any.UnmarshalTo(loginRequest)
-			if err != nil {
-				return err
-			}
-
-			klog.Infof("recv %s", loginRequest.String())
-			ncMsg := &gate_way.NatsLoginRequest{
-				Id:  loginRequest.Id,
-				Idx: idx,
-			}
-			ncMsgb, err := proto.Marshal(ncMsg)
-			if err != nil {
-				return err
-			}
-
-			GetUserMgr().addOp(idx, func() {
-				ctx := context.Background()
-				js, err := nats.GetNatsConn().JetStream(_nats.ClientTrace{
-					ResponseReceived: func(subj string, payload []byte, hdr _nats.Header) {
-						// 从消息头提取追踪上下文
-						carrier := propagation.HeaderCarrier(hdr)
-						ctx = otel.GetTextMapPropagator().Extract(ctx, carrier)
-					},
-				})
-
-				if sub, err := js.Subscribe(fmt.Sprintf(constant.UserMsg, loginRequest.Id), func(msg *_nats.Msg) {
-					any := &anypb.Any{}
-					err := proto.Unmarshal(msg.Data, any)
-					if err != nil {
-						klog.CtxErrorf(ctx, "unmarshal %s failed, err: %v", string(msg.Data), err)
-						return
-					}
-					klog.CtxInfof(ctx, "recv %s", any.String())
-					session.Send(any)
-				}); err != nil {
-					klog.CtxErrorf(ctx, "subscribe %s failed, err: %v", fmt.Sprintf(constant.UserMsg, loginRequest.Id), err)
-					return
-				} else {
-					GetUserMgr().addUser(loginRequest.Id, session, sub)
-					GetUserMgr().removeOp(idx)
-				}
-
-				loginResp := &gate_way.LoginResp{
-					Code: common.ErrorCode_OK,
-				}
-
-				any := &anypb.Any{}
-				err = any.MarshalFrom(loginResp)
-				if err != nil {
-					klog.CtxErrorf(ctx, "marshal %s failed, err: %v", loginResp.String(), err)
-					return
-				}
-				klog.CtxInfof(ctx, "send %s", loginResp.String())
-				session.Send(any)
-			})
-
-			nats.GetNatsConn().Publish(constant.UserLoginMsg, ncMsgb)
-			nats.GetNatsConn().Flush()
-
-			return nil
-		})
-	}
-
 	if _, err := nats.GetNatsConn().Subscribe(constant.UserLoginMsg, func(msg *_nats.Msg) {
 		ncMsg := &gate_way.NatsLoginRequest{}
 		err := proto.Unmarshal(msg.Data, ncMsg)
@@ -184,4 +112,73 @@ func InitUserMgr() {
 	}); err != nil {
 		panic(err)
 	}
+
+	any := &anypb.Any{}
+	any.MarshalFrom(&gate_way.LoginRequest{Id: "123"})
+	b, _ := protojson.Marshal(any)
+	fmt.Print(string(b))
+	msghandler.RegisterHandler(any.TypeUrl, func(session isession.ISession, any *anypb.Any) error {
+		loginResp := &gate_way.LoginResp{
+			Code: common.ErrorCode_OK,
+		}
+
+		any1 := &anypb.Any{}
+		err1 := any1.MarshalFrom(loginResp)
+		if err1 != nil {
+			klog.Errorf("[GATEWAY-LOGIN-MARSHAL] marshal %s failed, err: %v", loginResp.String(), err1)
+			return err1
+		}
+		if id, ok := GetUserMgr().sessions.Get(session); ok {
+			klog.Errorf("[GATEWAY-SESSION-EXIST] session %s already login", id)
+			session.Send(any1)
+			return nil
+		}
+		idx, _ := common_redis.GetRedis().Incr(context.TODO(), constant.UserLoginMsgIdx).Result()
+		loginRequest := &gate_way.LoginRequest{}
+		err := any.UnmarshalTo(loginRequest)
+		if err != nil {
+			klog.Errorf("[GATEWAY-LOGIN-UNMARSHAL] unmarshal %s failed, err: %v", any.TypeUrl, err)
+			return err
+		}
+
+		klog.Infof("[GATEWAY-LOGIN-RECV] recv %s", loginRequest.String())
+		ncMsg := &gate_way.NatsLoginRequest{
+			Id:  loginRequest.Id,
+			Idx: idx,
+		}
+		ncMsgb, err := proto.Marshal(ncMsg)
+		if err != nil {
+			klog.Errorf("[GATEWAY-NATS-MARSHAL] marshal %s failed, err: %v", ncMsg.String(), err)
+			return err
+		}
+
+		GetUserMgr().addOp(idx, func() {
+			if sub, err := nats.GetNatsConn().Subscribe(fmt.Sprintf(constant.UserMsg, loginRequest.Id), func(msg *_nats.Msg) {
+				any := &anypb.Any{}
+				err := proto.Unmarshal(msg.Data, any)
+				if err != nil {
+					klog.Errorf("[GATEWAY-USER-MSG-UNMARSHAL] unmarshal %s failed, err: %v", string(msg.Data), err)
+					return
+				}
+				klog.Infof("[GATEWAY-USER-MSG-RECV] recv %s", any.String())
+				session.Send(any)
+			}); err != nil {
+				klog.Errorf("[GATEWAY-SUBSCRIBE-FAIL] subscribe %s failed, err: %v", fmt.Sprintf(constant.UserMsg, loginRequest.Id), err)
+				return
+			} else {
+				GetUserMgr().addUser(loginRequest.Id, session, sub)
+				GetUserMgr().removeOp(idx)
+			}
+			
+			klog.Infof("[GATEWAY-LOGIN-SEND] send %s", loginResp.String())
+			session.Send(any1)
+		})
+
+		nats.GetNatsConn().Publish(constant.UserLoginMsg, ncMsgb)
+		// nats.GetNatsConn().Flush()
+		klog.Infof("[GATEWAY-NATS-PUBLISH] publish %s success", constant.UserLoginMsg)
+
+		return nil
+	})
+
 }

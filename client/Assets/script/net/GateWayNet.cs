@@ -93,6 +93,11 @@ public class GateWayNet : MonoBehaviour
 		webSocket.SendAsync(message);
 	}
 
+	public void Close()
+	{
+		webSocket.CloseAsync();
+	}
+
 	static readonly object Lock = new object();
 	static GateWayNet instance;
 

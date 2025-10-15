@@ -25,33 +25,33 @@ func AuthForClient(offset int64) gin.HandlerFunc {
 		}
 		userInfoRaw := c.GetHeader("user-channel")
 		if userInfoRaw == "" {
-			klog.Error("user-channel header is missing ", c.Request.URL.Path)
+			klog.Error("[AUTH-MISSING-HEADER] user-channel header is missing ", c.Request.URL.Path)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		userInfo := UserInfo{}
 		if err := json.Unmarshal([]byte(userInfoRaw), &userInfo); err != nil {
-			klog.Error("Invalid JSON in user-channel header")
+			klog.Error("[AUTH-INVALID-JSON] Invalid JSON in user-channel header")
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.UserId == "" {
-			klog.Error("Invalid userId in user-channel header")
+			klog.Error("[AUTH-INVALID-USERID] Invalid userId in user-channel header")
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.Exp == 0 {
-			klog.Error("Invalid exp in user-channel header")
+			klog.Error("[AUTH-INVALID-EXP] Invalid exp in user-channel header")
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		now := time.Now().Unix()
 		if now-offset >= userInfo.Exp {
-			klog.Error("Token expired")
+			klog.Error("[AUTH-TOKEN-EXPIRED] Token expired")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -76,8 +76,8 @@ func GetClientRouter() *gin.Engine {
 
 func klogRecovery() gin.HandlerFunc {
 	return gin.CustomRecovery(func(c *gin.Context, err interface{}) {
-		klog.CtxErrorf(c.Request.Context(), "panic %v", err)
-		klog.CtxErrorf(c.Request.Context(), "stack trace %s", debug.Stack())
+		klog.CtxErrorf(c.Request.Context(), "[PANIC-RECOVERY] panic %v", err)
+		klog.CtxErrorf(c.Request.Context(), "[PANIC-STACK] stack trace %s", debug.Stack())
 
 		c.AbortWithStatus(500)
 	})
@@ -99,10 +99,10 @@ func Logger() gin.HandlerFunc {
 			return
 		}
 		if rt > 150 {
-			klog.CtxErrorf(ctx, "path = %s  , rt = %d , userId = %s , body = %v , slow api", path, rt, context.GetString("userId"))
+			klog.CtxErrorf(ctx, "[HTTP-SLOW-API] path = %s  , rt = %d , userId = %s , body = %v , slow api", path, rt, context.GetString("userId"))
 		} else {
 
-			klog.CtxInfof(ctx, "path = %s  , rt = %d , userId = %s , body = %v", path, rt, context.GetString("userId"))
+			klog.CtxInfof(ctx, "[HTTP-ACCESS] path = %s  , rt = %d , userId = %s , body = %v", path, rt, context.GetString("userId"))
 		}
 	}
 }

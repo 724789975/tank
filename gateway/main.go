@@ -14,9 +14,14 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 )
 
 func main() {
+	klog.SetLogger(logrus.NewLogger())
+	klog.SetLevel(klog.LevelDebug)
 	_, cancel := context.WithCancel(context.Background())
 	common_config.LoadConfig()
 	common_redis.GetRedis()

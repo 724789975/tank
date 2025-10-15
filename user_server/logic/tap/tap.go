@@ -31,7 +31,7 @@ func GetHandle(ctx context.Context, kid, macKey, reqURI string) (string, error) 
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodGet, reqURL, nil)
 	if err != nil {
-		klog.CtxErrorf(ctx, "tap GetHandle err: %v", err)
+		klog.CtxErrorf(ctx, "[TAP-REQ-BUILD] tap GetHandle err: %v", err)
 		return "", err
 	}
 
@@ -39,14 +39,14 @@ func GetHandle(ctx context.Context, kid, macKey, reqURI string) (string, error) 
 
 	resp, err := client.Do(req)
 	if err != nil {
-		klog.CtxErrorf(ctx, "tap GetHandle err: %v", err)
+		klog.CtxErrorf(ctx, "[TAP-HTTP-DO] tap GetHandle err: %v", err)
 		return "", err
 	}
 	defer resp.Body.Close()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		klog.CtxErrorf(ctx, "tap GetHandle err: %v", err)
+		klog.CtxErrorf(ctx, "[TAP-READ-BODY] tap GetHandle err: %v", err)
 		return "", err
 	}
 	return string(respBody), nil

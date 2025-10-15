@@ -33,14 +33,14 @@ func GetUserManager() *UserManager {
 		key := "user_svr:snowflake:node"
 		n, err := common_redis.GetRedis().Incr(context.Background(), key).Result()
 		if err != nil {
-			klog.Fatal("UserManager: gen uuid creator err: %v", err)
+			klog.Fatal("[USER-MANAGER-INIT] UserManager: gen uuid creator err: %v", err)
 		}
 
 		nodeIdx := n % (1 << snowflake.NodeBits)
 		if node, err := snowflake.NewNode(nodeIdx); err != nil {
-			klog.Fatal("UserManager: gen uuid creator err: %v", err)
+			klog.Fatal("[USER-MANAGER-NODE] UserManager: gen uuid creator err: %v", err)
 		} else {
-			klog.Infof("UserManager: gen uuid creator success, node: %d", nodeIdx)
+			klog.Infof("[USER-MANAGER-NODE-OK] UserManager: gen uuid creator success, node: %d", nodeIdx)
 			IdClient = node
 		}
 	})
@@ -57,24 +57,24 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 
 	userId := ""
 	defer func() {
-		klog.CtxInfof(ctx, "uuid: %d, resp: %d", userId, resp.Code)
+		klog.CtxInfof(ctx, "[USER-LOGIN-RESULT] uuid: %s, resp: %d", userId, resp.Code)
 	}()
 
 	userId = ctx.Value("userId").(string)
 
 	tapResp, err := tap.GetHandle(ctx, req.Kid, req.MacKey, common_config.Get("tap.base_info_uri").(string))
 	if err != nil {
-		klog.CtxErrorf(ctx, "tap GetHandle err: %v", err)
+		klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-ERROR] tap GetHandle err: %v", err)
 		return nil, err
 	}
 	tapBaseInfo := user_center.TapBaseInfo{}
 	err = protojson.Unmarshal([]byte(tapResp), &tapBaseInfo)
 	if err != nil {
-		klog.CtxErrorf(ctx, "tap UnmarshalTo err: %v", err)
+		klog.CtxErrorf(ctx, "[USER-LOGIN-UNMARSHAL] tap UnmarshalTo err: %v", err)
 		return nil, err
 	}
 	if !tapBaseInfo.Success {
-		klog.CtxErrorf(ctx, "tap GetHandle err: %v", err)
+		klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle err: %v", err)
 		return nil, err
 	}
 	resp.TapInfo = tapBaseInfo.Data

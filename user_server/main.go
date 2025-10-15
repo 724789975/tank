@@ -9,9 +9,14 @@ import (
 	"user_server/logic/service"
 	common_redis "user_server/redis"
 	"user_server/rpc"
+
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 )
 
 func main() {
+	klog.SetLogger(logrus.NewLogger())
+	klog.SetLevel(klog.LevelDebug)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	common_config.LoadConfig()

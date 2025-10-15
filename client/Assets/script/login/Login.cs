@@ -118,6 +118,11 @@ public class Login : MonoBehaviour
 											Config.Instance.serverIP = rsp.ServerAddr;
 											Config.Instance.port = (ushort)rsp.ServerPort;
 											startButton.SetActive(true);
+
+											GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
+											loginRequest.Id = AccountInfo.Instance.Account.Openid;
+
+											GateWayNet.Instance.SendGW(Any.Pack(loginRequest).ToByteArray());
 										}
 									});
 								});
@@ -160,10 +165,7 @@ public class Login : MonoBehaviour
 
 	public void StartGame()
 	{
-		GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
-		loginRequest.Id = AccountInfo.Instance.Account.Openid;
 
-		GateWayNet.Instance.SendGW(Any.Pack(loginRequest).ToByteArray());
 
 		UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
 	}

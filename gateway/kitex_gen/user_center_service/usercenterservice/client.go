@@ -4,9 +4,9 @@ package usercenterservice
 
 import (
 	"context"
+	user_center "gate_way_module/kitex_gen/user_center"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
-	user_center "user_server/kitex_gen/user_center"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.

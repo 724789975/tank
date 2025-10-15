@@ -4,9 +4,9 @@ package gatewayservice
 
 import (
 	"context"
-	gate_way "gate_way_module/kitex_gen/gate_way"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
+	gate_way "user_server/kitex_gen/gate_way"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.

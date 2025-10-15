@@ -2,8 +2,8 @@
 package usercenterservice
 
 import (
+	user_center_service "gate_way_module/kitex_gen/user_center_service"
 	server "github.com/cloudwego/kitex/server"
-	user_center_service "user_server/kitex_gen/user_center_service"
 )
 
 // NewServer creates a server.Server with the given handler and options.

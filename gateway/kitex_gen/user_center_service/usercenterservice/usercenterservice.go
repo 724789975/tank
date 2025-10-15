@@ -5,12 +5,12 @@ package usercenterservice
 import (
 	"context"
 	"errors"
+	user_center "gate_way_module/kitex_gen/user_center"
+	user_center_service "gate_way_module/kitex_gen/user_center_service"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
 	streaming "github.com/cloudwego/kitex/pkg/streaming"
 	proto "google.golang.org/protobuf/proto"
-	user_center "user_server/kitex_gen/user_center"
-	user_center_service "user_server/kitex_gen/user_center_service"
 )
 
 var errInvalidMessageType = errors.New("invalid message type for service method handler")

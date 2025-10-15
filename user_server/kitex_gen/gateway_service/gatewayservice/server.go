@@ -2,8 +2,8 @@
 package gatewayservice
 
 import (
-	gateway_service "gate_way_module/kitex_gen/gateway_service"
 	server "github.com/cloudwego/kitex/server"
+	gateway_service "user_server/kitex_gen/gateway_service"
 )
 
 // NewServer creates a server.Server with the given handler and options.

@@ -1,25 +1,18 @@
-
-
 redis:
   addrs:
     - "114.132.124.13:6389"
   password: "123#@!QAzx"
 
-user_http:
-  addr: ":8080"
+match_http:
+  addr: ":8081"
 
-user_rpc:
-  addr: "0.0.0.0:11001"
-  service_name: "user_center_service"
+match_rpc:
+  addr: "0.0.0.0:11002"
+  service_name: "match_server"
 
 game:
   addr: "114.132.124.13"
   port: 10085
-
-tap:
-  host: "open.tapapis.cn"
-  client_id: "oy5mqqrghbgdlrfmf4"
-  base_info_uri: "/account/profile/v1"
 
 etcd:
   addrs:

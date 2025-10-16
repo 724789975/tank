@@ -5,7 +5,7 @@ import (
 	common_config "match_server/config"
 	"match_server/driver"
 	"match_server/etcd"
-	user_http "match_server/http"
+	match_http "match_server/http"
 	"match_server/logic/manager"
 	"net"
 	"net/http"
@@ -43,12 +43,12 @@ func GetMatchService() IService {
 }
 
 func (s *MatchService) ListenAndServe(ctx context.Context) {
-	clientRouter := user_http.GetClientRouter()
+	clientRouter := match_http.GetClientRouter()
 	group := clientRouter.Group("api").Group("1.0").Group("public").Group("match_server")
 	group.POST(":method", s.ginRoute)
 
 	httpServer := &http.Server{
-		Addr:    common_config.Get("user_http.addr").(string),
+		Addr:    common_config.Get("match_http.addr").(string),
 		Handler: clientRouter,
 	}
 	go func() {
@@ -59,11 +59,11 @@ func (s *MatchService) ListenAndServe(ctx context.Context) {
 	}()
 
 	NewKitexServer := func() kitexserver.Server {
-		address, err := net.ResolveTCPAddr("tcp", common_config.Get("user_rpc.addr").(string))
+		address, err := net.ResolveTCPAddr("tcp", common_config.Get("match_rpc.addr").(string))
 		if err != nil {
 			panic(err)
 		}
-		serviceName := common_config.Get("user_rpc.service_name").(string)
+		serviceName := common_config.Get("match_rpc.service_name").(string)	
 
 		server := kitexserver.NewServer(
 			kitexserver.WithServiceAddr(address),

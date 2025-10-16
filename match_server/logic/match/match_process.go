@@ -63,6 +63,19 @@ func (mp *MatchProcess) update() {
 			}
 			return groups[i].CreateTime > groups[j].CreateTime
 		})
+
+		ret := true
+		for ret {
+			mr, mb, r := mp.match(0, 0, 0, groups)
+			if r {
+				go func(r, b []uint32) {
+					// 在这里处理匹配成功的情况
+					klog.Infof("match success, r: %v, b: %v", mr, mb)
+				}(mr, mb)
+			}
+			ret = r
+		}
+
 	}
 }
 

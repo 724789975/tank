@@ -2,9 +2,8 @@ package manager
 
 import (
 	"context"
-	common_config "match_server/config"
 	"match_server/kitex_gen/common"
-	"match_server/kitex_gen/user_center"
+	"match_server/kitex_gen/match_proto"
 	common_redis "match_server/redis"
 	"sync"
 
@@ -12,50 +11,38 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
-type UserManager struct {
+type MatchManager struct {
 }
 
 var (
-	user_mgr          UserManager
-	once_user_bag_mgr sync.Once
+	match_mgr          MatchManager
+	once_match_mgr sync.Once
 	IdClient          *snowflake.Node
 )
 
-func GetUserManager() *UserManager {
-	once_user_bag_mgr.Do(func() {
-		user_mgr = UserManager{}
+func GetMatchManager() *MatchManager {
+	once_match_mgr.Do(func() {
+		match_mgr = MatchManager{}
 
-		key := "user_svr:snowflake:node"
+		key := "match_server:snowflake:node"
 		n, err := common_redis.GetRedis().Incr(context.Background(), key).Result()
 		if err != nil {
-			klog.Fatal("[USER-MANAGER-INIT] UserManager: gen uuid creator err: %v", err)
+			klog.Fatal("[MATCH-MANAGER-INIT] MatchManager: gen uuid creator err: %v", err)
 		}
 
 		nodeIdx := n % (1 << snowflake.NodeBits)
 		if node, err := snowflake.NewNode(nodeIdx); err != nil {
-			klog.Fatal("[USER-MANAGER-NODE] UserManager: gen uuid creator err: %v", err)
+			klog.Fatal("[MATCH-MANAGER-NODE] MatchManager: gen uuid creator err: %v", err)
 		} else {
-			klog.Infof("[USER-MANAGER-NODE-OK] UserManager: gen uuid creator success, node: %d", nodeIdx)
+			klog.Infof("[MATCH-MANAGER-NODE-OK] MatchManager: gen uuid creator success, node: %d", nodeIdx)
 			IdClient = node
 		}
 	})
-	return &user_mgr
+	return &match_mgr
 }
 
-func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (resp *user_center.LoginRsp, err error) {
-	resp = &user_center.LoginRsp{
-		Code:       common.ErrorCode_OK,
-		Msg:        "success",
-		ServerAddr: common_config.Get("game.addr").(string),
-		ServerPort: int32(common_config.Get("game.port").(int)),
-	}
-
-	userId := ""
-	defer func() {
-		klog.CtxInfof(ctx, "[USER-LOGIN-RESULT] uuid: %s, resp: %d", userId, resp.Code)
-	}()
-
-	userId = ctx.Value("userId").(string)
-
-	return resp, nil
+func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (resp *match_proto.MatchResp, err error) {
+	return &match_proto.MatchResp{
+		Error: common.ErrorCode_OK,
+	}, nil
 }

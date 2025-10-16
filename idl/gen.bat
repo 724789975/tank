@@ -3,6 +3,8 @@
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\tank_game.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\user_center.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\gate_way.proto
+.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\match_proto.proto
+
 copy .\proto_gen\*.cs ..\client\Assets\script\proto\
 copy .\proto_gen\*.cs ..\server\Assets\script\proto\
 
@@ -20,13 +22,12 @@ rmdir /s /q ..\user_server\kitex_gen
 move .\kitex_gen ..\user_server\
 
 del go.mod
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/user_center_service.proto
 .\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/gateway_service.proto
 rmdir /s /q ..\gateway\kitex_gen
 move .\kitex_gen ..\gateway\
 
 del go.mod
-.\bin\kitex -module match_server -type protobuf -no-fast-api proto/user_center_service.proto
 .\bin\kitex -module match_server -type protobuf -no-fast-api proto/gateway_service.proto
+.\bin\kitex -module match_server -type protobuf -no-fast-api proto/match_service.proto
 rmdir /s /q ..\match_server\kitex_gen
 move .\kitex_gen ..\match_server\

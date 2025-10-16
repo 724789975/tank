@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"sync"
 
-	"match_server/kitex_gen/user_center"
-	"match_server/kitex_gen/user_center_service/usercenterservice"
+	"match_server/kitex_gen/match_proto"
+	"match_server/kitex_gen/match_service/matchservice"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
@@ -24,25 +24,25 @@ import (
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 )
 
-type UserService struct {
+type MatchService struct {
 	*kitex.ServiceInfo
 }
 
 var (
-	user_srv      UserService
+	user_srv      MatchService
 	once_user_srv sync.Once
 )
 
-func GetUserService() IService {
+func GetMatchService() IService {
 	once_user_srv.Do(func() {
-		user_srv = UserService{
-			ServiceInfo: usercenterservice.NewServiceInfo(),
+		user_srv = MatchService{
+			ServiceInfo: matchservice.NewServiceInfo(),
 		}
 	})
 	return &user_srv
 }
 
-func (s *UserService) ListenAndServe(ctx context.Context) {
+func (s *MatchService) ListenAndServe(ctx context.Context) {
 	clientRouter := user_http.GetClientRouter()
 	group := clientRouter.Group("api").Group("1.0").Group("public").Group("match_server")
 	group.POST(":method", s.ginRoute)
@@ -78,7 +78,7 @@ func (s *UserService) ListenAndServe(ctx context.Context) {
 	}
 
 	ser := NewKitexServer()
-	usercenterservice.RegisterService(ser, s)
+	matchservice.RegisterService(ser, s)
 
 	go func() {
 		if err := ser.Run(); err != nil {
@@ -88,7 +88,7 @@ func (s *UserService) ListenAndServe(ctx context.Context) {
 	}()
 }
 
-func (s *UserService) ginRoute(ctx *gin.Context) {
+func (s *MatchService) ginRoute(ctx *gin.Context) {
 	methodName := ctx.Param("method")
 
 	// c := context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(int64))
@@ -104,9 +104,9 @@ func (s *UserService) ginRoute(ctx *gin.Context) {
 	}
 }
 
-func (s *UserService) Close() {
+func (s *MatchService) Close() {
 }
 
-func (x *UserService) Login(ctx context.Context, req *user_center.LoginReq) (resp *user_center.LoginRsp, err error) {
-	return manager.GetUserManager().Login(ctx, req)
+func (x *MatchService) Match(ctx context.Context, req *match_proto.MatchReq) (resp *match_proto.MatchResp, err error) {
+	return manager.GetMatchManager().Match(ctx, req)
 }

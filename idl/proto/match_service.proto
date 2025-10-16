@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "proto/match_proto.proto";
+package match_service;
+
+option go_package = "match_service";
+
+service MatchService {
+    //µÇÂ¼
+    rpc match(match_proto.MatchReq) returns (match_proto.MatchResp){};
+}

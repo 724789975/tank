@@ -1,0 +1,21 @@
+syntax = "proto3";
+package match_proto;
+
+option go_package = "match_proto";
+
+import "proto/common.proto";
+
+message MatchReq {
+	string id = 1;
+}
+
+message MatchResp {
+	common.ErrorCode error = 1;
+}
+
+message MatchInfoNtf {
+	repeated string r = 1;
+	repeated string b = 2;
+	string gameAddr = 3;
+	int32 gamePort = 4;
+}

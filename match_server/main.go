@@ -21,7 +21,7 @@ func main() {
 	defer cancel()
 	common_config.LoadConfig()
 	common_redis.GetRedis()
-	service.GetUserService().ListenAndServe(ctx)
+	service.GetMatchService().ListenAndServe(ctx)
 	rpc.InitRpc()
 
 	quit := make(chan os.Signal, 1)

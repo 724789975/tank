@@ -50,7 +50,7 @@ func (bs *ExtendFlagByteSet) Reset() {
 // MatchGroup 匹配组
 type MatchGroup struct {
 	ID           uint32
-	Count        uint32
+	Count        int
 	MinLevel     uint32
 	MaxLevel     uint32
 	ExtendFlag   *ExtendFlagByteSet
@@ -69,13 +69,13 @@ func NewMatchGroup() *MatchGroup {
 }
 
 // Initialize 初始化匹配组
-func (mg *MatchGroup) Initialize(id, level, count uint32) {
+func (mg *MatchGroup) Initialize(id, level uint32, count int) {
 	mg.Reset()
 	mg.ID = id
 	mg.MinLevel = level
 	mg.MaxLevel = level
 	mg.Count = count
-	mg.Weights = count
+	mg.Weights = uint32(count)
 	mg.CreateTime = time.Now().Unix()
 }
 
@@ -146,9 +146,4 @@ func (mg *MatchGroup) Extend() bool {
 	}
 
 	return hasExtended
-}
-
-// MatchGroupCompareDes 用于按权重降序排列的比较器
-func MatchGroupCompareDes(l, r *MatchGroup) bool {
-	return l.Weights > r.Weights
 }

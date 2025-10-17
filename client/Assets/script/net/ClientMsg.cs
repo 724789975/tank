@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 #if UNITY_SERVER
 using PLAYERDATA = ServerPlayer;
@@ -196,6 +197,20 @@ public class ClientMsg : MonoBehaviour
         Debug.Log($"OnPlayerDieNtf {playerDieNtf.ToString()} {tankKilled.rebornTime} {ClientFrame.Instance.CurrentTime}");
 #endif
     }
+
+
+	[RpcHandler("tank_game.GameOverNtf")]
+	static void GameOverNtf(IntPtr pConnection, Any anyMessage)
+    {
+#if !UNITY_SERVER
+        TankGame.GameOverNtf gameOverNtf = anyMessage.Unpack<TankGame.GameOverNtf>();
+        string notice = $"游戏结束，你获得了胜利";
+		PlayerControl.Instance.ShowNotice(notice);
+
+		// 转场
+		UnityEngine.SceneManagement.SceneManager.LoadScene("match");
+#endif
+	}
 
 	public GameObject boomPrefab;
 }

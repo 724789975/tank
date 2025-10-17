@@ -73,3 +73,6 @@ message PlayerDieNtf {
     string killerId          = 2;  //击杀者ID
     float  rebornProtectTime = 3;  //重生保护时间
 }
+
+message GameOverNtf {
+}

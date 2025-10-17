@@ -3,10 +3,13 @@ package manager
 import (
 	"context"
 	"fmt"
+	common_config "match_server/config"
 	"match_server/kitex_gen/common"
+	"match_server/kitex_gen/gate_way"
 	"match_server/kitex_gen/match_proto"
 	"match_server/logic/match"
 	common_redis "match_server/redis"
+	"match_server/rpc"
 	"match_server/shell"
 	"sync"
 	"time"
@@ -14,6 +17,7 @@ import (
 	"github.com/bwmarrin/snowflake"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type MatchManager struct {
@@ -45,6 +49,39 @@ func GetMatchManager() *MatchManager {
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
 			shell.StartCmd(fmt.Sprintf("r=%v, b=%v", r, b))
+
+			time.Sleep(time.Second * 1)
+			match_info_ntf := &match_proto.MatchInfoNtf{
+				R:        make([]string, 0),
+				B:        make([]string, 0),
+				GameAddr: common_config.Get("game.addr").(string),
+				GamePort: common_config.Get("game.port").(int32),
+			}
+			for _, v := range r {
+				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
+				match_info_ntf.R = append(match_info_ntf.R, members...)
+			}
+			for _, v := range b {
+				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
+				match_info_ntf.B = append(match_info_ntf.B, members...)
+			}
+
+			any := &anypb.Any{}
+			if err := any.MarshalFrom(match_info_ntf); err != nil {
+				klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal match_info_ntf err: %v", err)
+			}
+			for _, v := range match_info_ntf.R {
+				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
+					Id:  v,
+					Msg: any,
+				})
+			}
+			for _, v := range match_info_ntf.B {
+				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
+					Id:  v,
+					Msg: any,
+				})
+			}
 		})
 	})
 	return &match_mgr

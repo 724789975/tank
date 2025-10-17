@@ -32,6 +32,18 @@ public class WSMsg : MonoBehaviour
 		Debug.Log(test.ToString());
 	}
 
+	[WSHandler("match_proto.MatchInfoNtf")]
+	static void MatchInfoNtf(object sender, Any anyMessage)
+	{
+		MatchProto.MatchInfoNtf info = anyMessage.Unpack<MatchProto.MatchInfoNtf>();
+		Debug.Log(info.ToString());
+
+		Config.Instance.serverIP = info.GameAddr;
+		Config.Instance.port = (ushort)info.GamePort;
+
+		UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
+	}
+
 	public static WSMsg Instance
 	{
 		get

@@ -115,14 +115,15 @@ public class Login : MonoBehaviour
 											Debug.Log($"登录成功，服务器响应：{responseStr}");
 											UserCenter.LoginRsp rsp = UserCenter.LoginRsp.Parser.ParseJson(responseStr);
 											AccountInfo.Instance.SetAccount(rsp.TapInfo);
-											Config.Instance.serverIP = rsp.ServerAddr;
-											Config.Instance.port = (ushort)rsp.ServerPort;
-											startButton.SetActive(true);
+											//Config.Instance.serverIP = rsp.ServerAddr;
+											//Config.Instance.port = (ushort)rsp.ServerPort;
 
 											GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
 											loginRequest.Id = AccountInfo.Instance.Account.Openid;
 
 											GateWayNet.Instance.SendGW(Any.Pack(loginRequest).ToByteArray());
+
+											UnityEngine.SceneManagement.SceneManager.LoadScene("match");
 										}
 									});
 								});
@@ -145,7 +146,7 @@ public class Login : MonoBehaviour
 
 		Config.Instance.serverIP = "10.0.12.176";
 		Config.Instance.port = 10085;
-		startButton.SetActive(true);
+		UnityEngine.SceneManagement.SceneManager.LoadScene("match");
 #endif
 	}
 
@@ -165,9 +166,7 @@ public class Login : MonoBehaviour
 
 	public void StartGame()
 	{
-
-
-		UnityEngine.SceneManagement.SceneManager.LoadScene("tank");
+		UnityEngine.SceneManagement.SceneManager.LoadScene("match");
 	}
 
 	public void CloseWs()
@@ -177,6 +176,4 @@ public class Login : MonoBehaviour
 
 	readonly object Lock = new object();
 	List<Action> loginCallback = new List<Action>();
-
-	public GameObject startButton;
 }

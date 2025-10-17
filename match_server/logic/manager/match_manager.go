@@ -44,7 +44,7 @@ func GetMatchManager() *MatchManager {
 		}
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
-			shell.StartCmd(fmt.Sprintf("echo match success, r: %v, b: %v", r, b))
+			shell.StartCmd(fmt.Sprintf("r=%v, b=%v", r, b))
 		})
 	})
 	return &match_mgr

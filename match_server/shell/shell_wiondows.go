@@ -1,20 +1,21 @@
 package shell
 
 import (
+	common_config "match_server/config"
 	"os"
 	"syscall"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
-func StartCmd(cmd string) {
+func StartCmd(params string) {
 	cmdPath := "C:\\Windows\\System32\\cmd.exe"
-	if _, err := os.StartProcess(cmdPath, []string{cmdPath, "/k", cmd}, &os.ProcAttr{
+	if _, err := os.StartProcess(cmdPath, []string{cmdPath, "/k", common_config.Get("exe_path.windows").(string), params}, &os.ProcAttr{
 		Sys:   &syscall.SysProcAttr{HideWindow: false},
 		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
 	}); err != nil {
-		klog.Errorf("start cmd %s failed, err: %v", cmd, err)
+		klog.Errorf("start cmd %s failed, err: %v", common_config.Get("exe_path.windows").(string), err)
 	}
 
-	klog.Infof("start cmd %s success", cmd)
+	klog.Infof("start cmd %s success", common_config.Get("exe_path.windows").(string))
 }

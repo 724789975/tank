@@ -22,3 +22,6 @@ etcd:
 
 gateway:
   service_name: "gateway"
+
+exe_path:
+  windows: ".\\etc\\windows.bat"

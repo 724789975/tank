@@ -7,21 +7,21 @@ import (
 )
 
 // 创建测试用的匹配组
-func createTestMatchGroup(id, level uint32, count int) *MatchGroup {
+func createTestMatchGroup(id int64, level uint32, count int) *MatchGroup {
 	mg := NewMatchGroup()
 	mg.Initialize(id, level, count)
 	return mg
 }
 
 // 创建测试用的匹配组并设置特定的创建时间
-func createTestMatchGroupWithTime(id, level uint32, count int, createTime int64) *MatchGroup {
+func createTestMatchGroupWithTime(id int64, level uint32, count int, createTime int64) *MatchGroup {
 	mg := createTestMatchGroup(id, level, count)
 	mg.CreateTime = createTime
 	return mg
 }
 
-// 比较两个uint32切片是否相等（忽略顺序）
-func slicesEqualIgnoreOrder(a, b []uint32) bool {
+// 比较两个int64切片是否相等（忽略顺序）
+func slicesEqualIgnoreOrder(a, b []int64) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -43,7 +43,7 @@ func TestMatchProcess_Match(t *testing.T) {
 	cleanupTestData := func() {
 		ch := make(chan bool)
 		mp.opchan <- func() {
-			mp.matchGroups = make(map[uint32]*MatchGroup)
+			mp.matchGroups = make(map[int64]*MatchGroup)
 			ch <- true
 		}
 		<-ch
@@ -61,16 +61,16 @@ func TestMatchProcess_Match(t *testing.T) {
 		b        uint32
 		level    uint32
 		groups   []*MatchGroup
-		want     []uint32
-		want2    []uint32
+		want     []int64
+		want2    []int64
 		want3    bool
 		describe string
 	}{
 		{
-			name:   "CountMatchTest",
-			r:      4,
-			b:      4,
-			level:  1,
+			name:  "CountMatchTest",
+			r:     4,
+			b:     4,
+			level: 1,
 			groups: []*MatchGroup{
 				createTestMatchGroup(1, 1, 2), // 2人组
 				createTestMatchGroup(2, 1, 1), // 1人组
@@ -78,39 +78,39 @@ func TestMatchProcess_Match(t *testing.T) {
 				createTestMatchGroup(4, 1, 1), // 1人组
 				createTestMatchGroup(5, 1, 1), // 1人组
 			},
-			want:   []uint32{3, 2},
-			want2:  []uint32{1, 5, 4}, // 2+1+1=4，但我们需要3，所以应该选2+1
-			want3:  true,
+			want:     []int64{3, 2},
+			want2:    []int64{1, 5, 4}, // 2+1+1=4，但我们需要3，所以应该选2+1
+			want3:    true,
 			describe: "测试不同Count值的匹配组组合",
 		},
 		{
-			name:   "SuccessfulMatch_MultipleGroups",
-			r:      2,
-			b:      2,
-			level:  1,
+			name:  "SuccessfulMatch_MultipleGroups",
+			r:     2,
+			b:     2,
+			level: 1,
 			groups: []*MatchGroup{
 				createTestMatchGroupWithTime(1, 1, 1, now),
 				createTestMatchGroupWithTime(2, 1, 1, now-1),
 				createTestMatchGroupWithTime(3, 1, 1, now-2),
 				createTestMatchGroupWithTime(4, 1, 1, now-3),
 			},
-			want:   []uint32{3, 4},
-			want2:  []uint32{1, 2},
-			want3:  true,
+			want:     []int64{3, 4},
+			want2:    []int64{1, 2},
+			want3:    true,
 			describe: "四个1人匹配组，应该成功匹配为2v2",
 		},
 		{
-			name:   "LevelMismatch",
-			r:      1,
-			b:      1,
-			level:  1,
+			name:  "LevelMismatch",
+			r:     1,
+			b:     1,
+			level: 1,
 			groups: []*MatchGroup{
 				createTestMatchGroup(1, 1, 1),
 				createTestMatchGroup(2, 100, 1), // 等级差距过大
 			},
-			want:   []uint32{},
-			want2:  []uint32{},
-			want3:  false,
+			want:     []int64{},
+			want2:    []int64{},
+			want3:    false,
 			describe: "等级差距过大的匹配组，应该匹配失败",
 		},
 		{
@@ -119,96 +119,96 @@ func TestMatchProcess_Match(t *testing.T) {
 			b:        0,
 			level:    1,
 			groups:   []*MatchGroup{},
-			want:     []uint32{},
-			want2:    []uint32{},
+			want:     []int64{},
+			want2:    []int64{},
 			want3:    false,
 			describe: "空匹配组列表，应该匹配失败",
 		},
 		{
-			name:   "SuccessfulMatch_1v1",
-			r:      1,
-			b:      1,
-			level:  1,
-			groups: []*MatchGroup{createTestMatchGroup(1, 1, 1), createTestMatchGroup(2, 1, 1)},
-			want:   []uint32{1},
-			want2:  []uint32{2},
-			want3:  true,
+			name:     "SuccessfulMatch_1v1",
+			r:        1,
+			b:        1,
+			level:    1,
+			groups:   []*MatchGroup{createTestMatchGroup(1, 1, 1), createTestMatchGroup(2, 1, 1)},
+			want:     []int64{1},
+			want2:    []int64{2},
+			want3:    true,
 			describe: "两个1人匹配组，应该成功匹配为1v1",
 		},
 		{
-			name:   "SuccessfulMatch_2v2",
-			r:      2,
-			b:      2,
-			level:  1,
-			groups: []*MatchGroup{createTestMatchGroup(1, 1, 2), createTestMatchGroup(2, 1, 2)},
-			want:   []uint32{1},
-			want2:  []uint32{2},
-			want3:  true,
+			name:     "SuccessfulMatch_2v2",
+			r:        2,
+			b:        2,
+			level:    1,
+			groups:   []*MatchGroup{createTestMatchGroup(1, 1, 2), createTestMatchGroup(2, 1, 2)},
+			want:     []int64{1},
+			want2:    []int64{2},
+			want3:    true,
 			describe: "两个2人匹配组，应该成功匹配为2v2",
 		},
 		{
-			name:   "InsufficientGroups",
-			r:      1,
-			b:      1,
-			level:  1,
-			groups: []*MatchGroup{createTestMatchGroup(1, 1, 1)},
-			want:   []uint32{},
-			want2:  []uint32{},
-			want3:  false,
+			name:     "InsufficientGroups",
+			r:        1,
+			b:        1,
+			level:    1,
+			groups:   []*MatchGroup{createTestMatchGroup(1, 1, 1)},
+			want:     []int64{},
+			want2:    []int64{},
+			want3:    false,
 			describe: "只有一个匹配组，应该匹配失败",
 		},
 		{
-			name:   "SuccessfulMatch_WithExistingPlayers",
-			r:      3,
-			b:      1,
-			level:  1,
+			name:  "SuccessfulMatch_WithExistingPlayers",
+			r:     3,
+			b:     1,
+			level: 1,
 			groups: []*MatchGroup{
 				createTestMatchGroup(1, 1, 1),
 				createTestMatchGroup(2, 1, 1),
 				createTestMatchGroup(3, 1, 1),
 				createTestMatchGroup(4, 1, 1),
 			},
-			want:   []uint32{1, 2, 3},
-			want2:  []uint32{4},
-			want3:  true,
+			want:     []int64{1, 2, 3},
+			want2:    []int64{4},
+			want3:    true,
 			describe: "已有部分玩家，应该成功匹配剩余玩家",
 		},
 		{
-			name:   "SuccessfulMatch_MixedGroupSizes",
-			r:      2,
-			b:      2,
-			level:  1,
+			name:  "SuccessfulMatch_MixedGroupSizes",
+			r:     2,
+			b:     2,
+			level: 1,
 			groups: []*MatchGroup{
 				createTestMatchGroup(1, 1, 2), // 2人组
 				createTestMatchGroup(2, 1, 1), // 1人组
 				createTestMatchGroup(3, 1, 1), // 1人组
 			},
-			want:   []uint32{1},
-			want2:  []uint32{2, 3},
-			want3:  true,
+			want:     []int64{1},
+			want2:    []int64{2, 3},
+			want3:    true,
 			describe: "混合大小的匹配组，应该成功匹配为2v2",
 		},
 		{
-			name:   "CreateTimePriority",
-			r:      2,
-			b:      2,
-			level:  1,
+			name:  "CreateTimePriority",
+			r:     2,
+			b:     2,
+			level: 1,
 			groups: []*MatchGroup{
 				createTestMatchGroupWithTime(1, 1, 1, now-10), // 更早创建
 				createTestMatchGroupWithTime(2, 1, 1, now-5),  // 中间创建
 				createTestMatchGroupWithTime(3, 1, 1, now-8),  // 较早创建
 				createTestMatchGroupWithTime(4, 1, 1, now-2),  // 较晚创建
 			},
-			want:   []uint32{1, 3}, // 期望创建时间早的组优先匹配
-			want2:  []uint32{2, 4},
-			want3:  true,
+			want:     []int64{1, 3}, // 期望创建时间早的组优先匹配
+			want2:    []int64{2, 4},
+			want3:    true,
 			describe: "创建时间早的匹配组应该优先匹配",
 		},
 		{
-			name:   "WeightsAndCreateTimeInteraction",
-			r:      2,
-			b:      2,
-			level:  1,
+			name:  "WeightsAndCreateTimeInteraction",
+			r:     2,
+			b:     2,
+			level: 1,
 			groups: []*MatchGroup{
 				// Weights不同时，Weights小的优先
 				func() *MatchGroup { g := createTestMatchGroupWithTime(1, 1, 1, now-10); g.Weights = 1; return g }(),
@@ -217,29 +217,29 @@ func TestMatchProcess_Match(t *testing.T) {
 				func() *MatchGroup { g := createTestMatchGroupWithTime(3, 1, 1, now-8); g.Weights = 1; return g }(),
 				func() *MatchGroup { g := createTestMatchGroupWithTime(4, 1, 1, now-2); g.Weights = 2; return g }(),
 			},
-			want:   []uint32{2, 4}, // Weights=1的两个组优先匹配
-			want2:  []uint32{1, 3},
-			want3:  true,
+			want:     []int64{2, 4}, // Weights=1的两个组优先匹配
+			want2:    []int64{1, 3},
+			want3:    true,
 			describe: "测试Weights和CreateTime的交互影响",
 		},
 		{
-			name:   "LevelExtensionTest",
-			r:      1,
-			b:      1,
-			level:  8,
+			name:  "LevelExtensionTest",
+			r:     1,
+			b:     1,
+			level: 8,
 			groups: []*MatchGroup{
-				func() *MatchGroup { 
+				func() *MatchGroup {
 					g := createTestMatchGroup(1, 1, 1)
 					// 模拟扩展后的等级范围
 					g.MinLevel = 1
 					g.MaxLevel = 10
-					return g 
+					return g
 				}(),
 				createTestMatchGroup(2, 8, 1),
 			},
-			want:   []uint32{1},
-			want2:  []uint32{2},
-			want3:  true,
+			want:     []int64{1},
+			want2:    []int64{2},
+			want3:    true,
 			describe: "测试等级扩展后的匹配逻辑",
 		},
 	}
@@ -278,4 +278,3 @@ func TestMatchProcess_Match(t *testing.T) {
 		})
 	}
 }
-

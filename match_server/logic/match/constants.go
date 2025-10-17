@@ -12,7 +12,7 @@ const MINLEVEL = 1
 const EXTENDTIME = 1.0
 
 // 每队最多多少人
-const MAX_TEAM_COUNT = 8
+const MAX_TEAM_COUNT = 1
 
 // ExtendFlagCount 扩展标志数量
 const ExtendFlagCount = MAXLEVEL - MINLEVEL + 1

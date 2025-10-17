@@ -24,8 +24,21 @@ namespace Common {
     static CommonReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiofCglFcnJvckNvZGUSBgoC",
-            "T0sQABIKCgZGQUlMRUQQAUIIWgZjb21tb25iBnByb3RvMw=="));
+            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbirbBAoJRXJyb3JDb2RlEgYK",
+            "Ak9LEAASCgoGRkFJTEVEEAESFwoTQVVUSF9NSVNTSU5HX0hFQURFUhBkEhUK",
+            "EUFVVEhfSU5WQUxJRF9KU09OEGUSFwoTQVVUSF9JTlZBTElEX1VTRVJJRBBm",
+            "EhQKEEFVVEhfSU5WQUxJRF9FWFAQZxIWChJBVVRIX1RPS0VOX0VYUElSRUQQ",
+            "aBIVChBVU0VSX0xPR0lOX0VSUk9SEMgBEhkKFFVTRVJfTE9HSU5fVEFQX0VS",
+            "Uk9SEMkBEhkKFFVTRVJfTE9HSU5fVU5NQVJTSEFMEMoBEhgKE1VTRVJfTE9H",
+            "SU5fVEFQX0ZBSUwQywESFwoSVVNFUl9TRVNTSU9OX0VYSVNUEMwBEhwKF01F",
+            "U1NBR0VfVU5NQVJTSEFMX0VSUk9SEKwCEhoKFU1FU1NBR0VfTUFSU0hBTF9F",
+            "UlJPUhCtAhIdChhVTlNVUFBPUlRFRF9NRVNTQUdFX1RZUEUQrgISGAoTUkVE",
+            "SVNfTk9UX0NPTk5FQ1RFRBCQAxIcChdXRUJTT0NLRVRfVVBHUkFERV9FUlJP",
+            "UhCRAxIaChVXRUJTT0NLRVRfU0VSVkVSX0ZBSUwQkgMSGwoWUlBDX0dBVEVX",
+            "QVlfSU5JVF9FUlJPUhD0AxIZChRSUENfTUVUSE9EX05PVF9GT1VORBD1AxId",
+            "ChhSUENfTUVUSE9EX0hBTkRMRVJfRVJST1IQ9gMSFgoRQ09ORklHX0xPQURf",
+            "RVJST1IQ2AQSEgoNSFRUUF9TTE9XX0FQSRC8BRITCg5QQU5JQ19SRUNPVkVS",
+            "WRCEB0IIWgZjb21tb25iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null, null));
@@ -35,8 +48,102 @@ namespace Common {
   }
   #region Enums
   public enum ErrorCode {
+    /// <summary>
+    /// 通用错误码
+    /// </summary>
     [pbr::OriginalName("OK")] Ok = 0,
+    /// <summary>
+    /// 失败
+    /// </summary>
     [pbr::OriginalName("FAILED")] Failed = 1,
+    /// <summary>
+    /// 认证相关错误
+    /// </summary>
+    [pbr::OriginalName("AUTH_MISSING_HEADER")] AuthMissingHeader = 100,
+    /// <summary>
+    /// 认证JSON无效
+    /// </summary>
+    [pbr::OriginalName("AUTH_INVALID_JSON")] AuthInvalidJson = 101,
+    /// <summary>
+    /// 用户ID无效
+    /// </summary>
+    [pbr::OriginalName("AUTH_INVALID_USERID")] AuthInvalidUserid = 102,
+    /// <summary>
+    /// 过期时间无效
+    /// </summary>
+    [pbr::OriginalName("AUTH_INVALID_EXP")] AuthInvalidExp = 103,
+    /// <summary>
+    /// 令牌过期
+    /// </summary>
+    [pbr::OriginalName("AUTH_TOKEN_EXPIRED")] AuthTokenExpired = 104,
+    /// <summary>
+    /// 用户相关错误
+    /// </summary>
+    [pbr::OriginalName("USER_LOGIN_ERROR")] UserLoginError = 200,
+    /// <summary>
+    /// TAP登录错误
+    /// </summary>
+    [pbr::OriginalName("USER_LOGIN_TAP_ERROR")] UserLoginTapError = 201,
+    /// <summary>
+    /// 登录数据解析错误
+    /// </summary>
+    [pbr::OriginalName("USER_LOGIN_UNMARSHAL")] UserLoginUnmarshal = 202,
+    /// <summary>
+    /// TAP登录失败
+    /// </summary>
+    [pbr::OriginalName("USER_LOGIN_TAP_FAIL")] UserLoginTapFail = 203,
+    /// <summary>
+    /// 用户会话已存在
+    /// </summary>
+    [pbr::OriginalName("USER_SESSION_EXIST")] UserSessionExist = 204,
+    /// <summary>
+    /// 消息处理错误
+    /// </summary>
+    [pbr::OriginalName("MESSAGE_UNMARSHAL_ERROR")] MessageUnmarshalError = 300,
+    /// <summary>
+    /// 消息序列化错误
+    /// </summary>
+    [pbr::OriginalName("MESSAGE_MARSHAL_ERROR")] MessageMarshalError = 301,
+    /// <summary>
+    /// 不支持的消息类型
+    /// </summary>
+    [pbr::OriginalName("UNSUPPORTED_MESSAGE_TYPE")] UnsupportedMessageType = 302,
+    /// <summary>
+    /// 连接相关错误
+    /// </summary>
+    [pbr::OriginalName("REDIS_NOT_CONNECTED")] RedisNotConnected = 400,
+    /// <summary>
+    /// WebSocket升级错误
+    /// </summary>
+    [pbr::OriginalName("WEBSOCKET_UPGRADE_ERROR")] WebsocketUpgradeError = 401,
+    /// <summary>
+    /// WebSocket服务器启动失败
+    /// </summary>
+    [pbr::OriginalName("WEBSOCKET_SERVER_FAIL")] WebsocketServerFail = 402,
+    /// <summary>
+    /// RPC相关错误
+    /// </summary>
+    [pbr::OriginalName("RPC_GATEWAY_INIT_ERROR")] RpcGatewayInitError = 500,
+    /// <summary>
+    /// RPC方法未找到
+    /// </summary>
+    [pbr::OriginalName("RPC_METHOD_NOT_FOUND")] RpcMethodNotFound = 501,
+    /// <summary>
+    /// RPC方法处理器错误
+    /// </summary>
+    [pbr::OriginalName("RPC_METHOD_HANDLER_ERROR")] RpcMethodHandlerError = 502,
+    /// <summary>
+    /// 配置相关错误
+    /// </summary>
+    [pbr::OriginalName("CONFIG_LOAD_ERROR")] ConfigLoadError = 600,
+    /// <summary>
+    /// HTTP相关错误
+    /// </summary>
+    [pbr::OriginalName("HTTP_SLOW_API")] HttpSlowApi = 700,
+    /// <summary>
+    /// 系统错误
+    /// </summary>
+    [pbr::OriginalName("PANIC_RECOVERY")] PanicRecovery = 900,
   }
 
   #endregion

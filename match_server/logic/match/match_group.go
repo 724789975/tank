@@ -49,7 +49,7 @@ func (bs *ExtendFlagByteSet) Reset() {
 
 // MatchGroup 匹配组
 type MatchGroup struct {
-	ID           uint32
+	ID           int64
 	Count        int
 	MinLevel     uint32
 	MaxLevel     uint32
@@ -69,7 +69,7 @@ func NewMatchGroup() *MatchGroup {
 }
 
 // Initialize 初始化匹配组
-func (mg *MatchGroup) Initialize(id, level uint32, count int) {
+func (mg *MatchGroup) Initialize(id int64, level uint32, count int) {
 	mg.Reset()
 	mg.ID = id
 	mg.MinLevel = level

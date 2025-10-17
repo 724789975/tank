@@ -25,16 +25,15 @@ namespace MatchProto {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Chdwcm90by9tYXRjaF9wcm90by5wcm90bxILbWF0Y2hfcHJvdG8aEnByb3Rv",
-            "L2NvbW1vbi5wcm90byIWCghNYXRjaFJlcRIKCgJpZBgBIAEoCSItCglNYXRj",
-            "aFJlc3ASIAoFZXJyb3IYASABKA4yES5jb21tb24uRXJyb3JDb2RlIkgKDE1h",
-            "dGNoSW5mb050ZhIJCgFyGAEgAygJEgkKAWIYAiADKAkSEAoIZ2FtZUFkZHIY",
-            "AyABKAkSEAoIZ2FtZVBvcnQYBCABKAVCDVoLbWF0Y2hfcHJvdG9iBnByb3Rv",
-            "Mw=="));
+            "L2NvbW1vbi5wcm90byIKCghNYXRjaFJlcSIsCglNYXRjaFJlc3ASHwoEY29k",
+            "ZRgBIAEoDjIRLmNvbW1vbi5FcnJvckNvZGUiSAoMTWF0Y2hJbmZvTnRmEgkK",
+            "AXIYASADKAkSCQoBYhgCIAMoCRIQCghnYW1lQWRkchgDIAEoCRIQCghnYW1l",
+            "UG9ydBgEIAEoBUINWgttYXRjaF9wcm90b2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MatchProto.MatchReq), global::MatchProto.MatchReq.Parser, new[]{ "Id" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MatchProto.MatchResp), global::MatchProto.MatchResp.Parser, new[]{ "Error" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MatchProto.MatchReq), global::MatchProto.MatchReq.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MatchProto.MatchResp), global::MatchProto.MatchResp.Parser, new[]{ "Code" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MatchProto.MatchInfoNtf), global::MatchProto.MatchInfoNtf.Parser, new[]{ "R", "B", "GameAddr", "GamePort" }, null, null, null, null)
           }));
     }
@@ -76,7 +75,6 @@ namespace MatchProto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MatchReq(MatchReq other) : this() {
-      id_ = other.id_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -84,18 +82,6 @@ namespace MatchProto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MatchReq Clone() {
       return new MatchReq(this);
-    }
-
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private string id_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Id {
-      get { return id_; }
-      set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -113,7 +99,6 @@ namespace MatchProto {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Id != other.Id) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -121,7 +106,6 @@ namespace MatchProto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -140,10 +124,6 @@ namespace MatchProto {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Id.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Id);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -154,10 +134,6 @@ namespace MatchProto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Id.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Id);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -168,9 +144,6 @@ namespace MatchProto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
-      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -182,9 +155,6 @@ namespace MatchProto {
     public void MergeFrom(MatchReq other) {
       if (other == null) {
         return;
-      }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -201,10 +171,6 @@ namespace MatchProto {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
-            Id = input.ReadString();
-            break;
-          }
         }
       }
     #endif
@@ -220,10 +186,6 @@ namespace MatchProto {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 10: {
-            Id = input.ReadString();
-            break;
-          }
         }
       }
     }
@@ -265,7 +227,7 @@ namespace MatchProto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MatchResp(MatchResp other) : this() {
-      error_ = other.error_;
+      code_ = other.code_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -275,15 +237,15 @@ namespace MatchProto {
       return new MatchResp(this);
     }
 
-    /// <summary>Field number for the "error" field.</summary>
-    public const int ErrorFieldNumber = 1;
-    private global::Common.ErrorCode error_ = global::Common.ErrorCode.Ok;
+    /// <summary>Field number for the "code" field.</summary>
+    public const int CodeFieldNumber = 1;
+    private global::Common.ErrorCode code_ = global::Common.ErrorCode.Ok;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Common.ErrorCode Error {
-      get { return error_; }
+    public global::Common.ErrorCode Code {
+      get { return code_; }
       set {
-        error_ = value;
+        code_ = value;
       }
     }
 
@@ -302,7 +264,7 @@ namespace MatchProto {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Error != other.Error) return false;
+      if (Code != other.Code) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -310,7 +272,7 @@ namespace MatchProto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Error != global::Common.ErrorCode.Ok) hash ^= Error.GetHashCode();
+      if (Code != global::Common.ErrorCode.Ok) hash ^= Code.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -329,9 +291,9 @@ namespace MatchProto {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Error != global::Common.ErrorCode.Ok) {
+      if (Code != global::Common.ErrorCode.Ok) {
         output.WriteRawTag(8);
-        output.WriteEnum((int) Error);
+        output.WriteEnum((int) Code);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -343,9 +305,9 @@ namespace MatchProto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Error != global::Common.ErrorCode.Ok) {
+      if (Code != global::Common.ErrorCode.Ok) {
         output.WriteRawTag(8);
-        output.WriteEnum((int) Error);
+        output.WriteEnum((int) Code);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -357,8 +319,8 @@ namespace MatchProto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Error != global::Common.ErrorCode.Ok) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Error);
+      if (Code != global::Common.ErrorCode.Ok) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Code);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -372,8 +334,8 @@ namespace MatchProto {
       if (other == null) {
         return;
       }
-      if (other.Error != global::Common.ErrorCode.Ok) {
-        Error = other.Error;
+      if (other.Code != global::Common.ErrorCode.Ok) {
+        Code = other.Code;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -391,7 +353,7 @@ namespace MatchProto {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Error = (global::Common.ErrorCode) input.ReadEnum();
+            Code = (global::Common.ErrorCode) input.ReadEnum();
             break;
           }
         }
@@ -410,7 +372,7 @@ namespace MatchProto {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            Error = (global::Common.ErrorCode) input.ReadEnum();
+            Code = (global::Common.ErrorCode) input.ReadEnum();
             break;
           }
         }

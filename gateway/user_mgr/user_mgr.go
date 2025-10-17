@@ -130,6 +130,8 @@ func InitUserMgr() {
 		}
 		if id, ok := GetUserMgr().sessions.Get(session); ok {
 			klog.Errorf("[GATEWAY-SESSION-EXIST] session %s already login", id)
+			loginResp.Code = common.ErrorCode_USER_SESSION_EXIST
+			any1.MarshalFrom(loginResp)
 			session.Send(any1)
 			return nil
 		}
@@ -169,7 +171,7 @@ func InitUserMgr() {
 				GetUserMgr().addUser(loginRequest.Id, session, sub)
 				GetUserMgr().removeOp(idx)
 			}
-			
+
 			klog.Infof("[GATEWAY-LOGIN-SEND] send %s", loginResp.String())
 			session.Send(any1)
 		})

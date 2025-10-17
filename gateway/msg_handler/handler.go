@@ -20,5 +20,7 @@ func Handle(session isession.ISession, any *anypb.Any) error {
 		return f(session, any)
 	}
 	return errors.New("unsupported message type " + msgType)
+	// 注意：实际使用时可以在调用方根据错误类型返回相应的错误码
+	// 这里仅作为参考，具体实现可能需要在session的响应中设置错误码
 }
 

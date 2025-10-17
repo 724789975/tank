@@ -3,6 +3,45 @@ option go_package = "common";
 package common;
 
 enum ErrorCode {
-    OK     = 0;
-    FAILED = 1;
+    // 通用错误码
+    OK                = 0;  // 成功
+    FAILED            = 1;  // 失败
+    
+    // 认证相关错误
+    AUTH_MISSING_HEADER    = 100;  // 认证头缺失
+    AUTH_INVALID_JSON      = 101;  // 认证JSON无效
+    AUTH_INVALID_USERID    = 102;  // 用户ID无效
+    AUTH_INVALID_EXP       = 103;  // 过期时间无效
+    AUTH_TOKEN_EXPIRED     = 104;  // 令牌过期
+    
+    // 用户相关错误
+    USER_LOGIN_ERROR       = 200;  // 用户登录错误
+    USER_LOGIN_TAP_ERROR   = 201;  // TAP登录错误
+    USER_LOGIN_UNMARSHAL   = 202;  // 登录数据解析错误
+    USER_LOGIN_TAP_FAIL    = 203;  // TAP登录失败
+    USER_SESSION_EXIST     = 204;  // 用户会话已存在
+    
+    // 消息处理错误
+    MESSAGE_UNMARSHAL_ERROR   = 300;  // 消息解析错误
+    MESSAGE_MARSHAL_ERROR     = 301;  // 消息序列化错误
+    UNSUPPORTED_MESSAGE_TYPE  = 302;  // 不支持的消息类型
+    
+    // 连接相关错误
+    REDIS_NOT_CONNECTED       = 400;  // Redis连接失败
+    WEBSOCKET_UPGRADE_ERROR   = 401;  // WebSocket升级错误
+    WEBSOCKET_SERVER_FAIL     = 402;  // WebSocket服务器启动失败
+    
+    // RPC相关错误
+    RPC_GATEWAY_INIT_ERROR    = 500;  // 网关RPC初始化错误
+    RPC_METHOD_NOT_FOUND      = 501;  // RPC方法未找到
+    RPC_METHOD_HANDLER_ERROR  = 502;  // RPC方法处理器错误
+    
+    // 配置相关错误
+    CONFIG_LOAD_ERROR         = 600;  // 配置加载错误
+    
+    // HTTP相关错误
+    HTTP_SLOW_API             = 700;  // HTTP慢API警告
+    
+    // 系统错误
+    PANIC_RECOVERY            = 900;  // 系统崩溃恢复
 }

@@ -6,11 +6,10 @@ option go_package = "match_proto";
 import "proto/common.proto";
 
 message MatchReq {
-	string id = 1;
 }
 
 message MatchResp {
-	common.ErrorCode error = 1;
+	common.ErrorCode code = 1;
 }
 
 message MatchInfoNtf {

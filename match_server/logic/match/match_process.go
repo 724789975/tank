@@ -9,10 +9,12 @@ import (
 )
 
 type MatchProcess struct {
-	matchGroups map[uint32]*MatchGroup
+	matchGroups map[int64]*MatchGroup
 	tree        []*MatchTree
 
 	opchan chan func()
+
+	afterMatched func(r, b []int64)
 }
 
 var (
@@ -23,7 +25,7 @@ var (
 func GetMatchProcess() *MatchProcess {
 	once.Do(func() {
 		matchProcessInstance = &MatchProcess{
-			matchGroups: make(map[uint32]*MatchGroup),
+			matchGroups: make(map[int64]*MatchGroup),
 			tree:        make([]*MatchTree, 0, MAX_TEAM_COUNT),
 			opchan:      make(chan func(), 10),
 		}
@@ -42,6 +44,10 @@ func GetMatchProcess() *MatchProcess {
 		}()
 	})
 	return matchProcessInstance
+}
+
+func (mp *MatchProcess) SetAfterMatched(f func(r, b []int64)) {
+	mp.afterMatched = f
 }
 
 func (mp *MatchProcess) update() {
@@ -67,14 +73,22 @@ func (mp *MatchProcess) update() {
 		for {
 			mr, mb, r := mp.match(MAX_TEAM_COUNT, MAX_TEAM_COUNT, 0, groups)
 			if r {
-				go func(r, b []uint32) {
+				go func(r, b []int64) {
 					// 在这里处理匹配成功的情况
 					klog.Infof("match success, r: %v, b: %v", mr, mb)
+					if mp.afterMatched != nil {
+						mp.afterMatched(mr, mb)
+					}
 				}(mr, mb)
 				// 从groups中删除 mr 和 mb 对应的匹配组
 				newGroups := make([]*MatchGroup, 0)
-				matchedIDs := make(map[uint32]bool)
+				matchedIDs := make(map[int64]bool)
 				for _, id := range mr {
+					delete(mp.matchGroups, id)
+					matchedIDs[id] = true
+				}
+				for _, id := range mb {
+					delete(mp.matchGroups, id)
 					matchedIDs[id] = true
 				}
 				for _, id := range mb {
@@ -86,7 +100,7 @@ func (mp *MatchProcess) update() {
 					}
 				}
 				groups = newGroups
-			}else{
+			} else {
 				break
 			}
 		}
@@ -97,20 +111,20 @@ func (mp *MatchProcess) update() {
 // match 匹配玩家
 // 输入：r 希望的红色方玩家数量，b 希望的蓝色方玩家数量，level 匹配等级，groups 匹配组列表
 // 输出：true 匹配成功，false 匹配失败 mr 红色方玩家列表 mb 蓝色方玩家列表
-func (mp *MatchProcess) match(r, b uint32, level uint32, groups []*MatchGroup) (mr, mb []uint32, ok bool) {
+func (mp *MatchProcess) match(r, b uint32, level uint32, groups []*MatchGroup) (mr, mb []int64, ok bool) {
 	// 检查是否有匹配组
 	if len(groups) == 0 {
 		return nil, nil, false
 	}
-	if r > 0{
-		rtree := mp.tree[r - 1]
-		mr, ok = mp.match_by_tree(rtree.TreeNode, level, groups, []uint32{})
+	if r > 0 {
+		rtree := mp.tree[r-1]
+		mr, ok = mp.match_by_tree(rtree.TreeNode, level, groups, []int64{})
 		if !ok {
 			return nil, nil, false
 		}
 	}
-	if b > 0{
-		btree := mp.tree[b - 1]
+	if b > 0 {
+		btree := mp.tree[b-1]
 		mb, ok = mp.match_by_tree(btree.TreeNode, level, groups, mr)
 		if !ok {
 			return nil, nil, false
@@ -119,14 +133,14 @@ func (mp *MatchProcess) match(r, b uint32, level uint32, groups []*MatchGroup) (
 	return mr, mb, ok
 }
 
-func (mp *MatchProcess) match_by_tree(node *TreeNode, level uint32, groups []*MatchGroup, exclude []uint32) (t []uint32, ok bool) {
+func (mp *MatchProcess) match_by_tree(node *TreeNode, level uint32, groups []*MatchGroup, exclude []int64) (t []int64, ok bool) {
 	// 检查是否有匹配组
 	if len(groups) == 0 {
 		return nil, false
 	}
 
 	retl := make([]*MatchGroup, 0, len(groups))
-	checkExclude := func(id uint32) bool {
+	checkExclude := func(id int64) bool {
 		for _, e := range exclude {
 			if e == id {
 				return false
@@ -135,7 +149,7 @@ func (mp *MatchProcess) match_by_tree(node *TreeNode, level uint32, groups []*Ma
 		return true
 	}
 	checkLevel := func(mg *MatchGroup) bool {
-		if !mg.CheckLevel(level) {
+		if level > 0 && !mg.CheckLevel(level) {
 			return false
 		}
 		for _, e := range retl {
@@ -165,7 +179,7 @@ func (mp *MatchProcess) match_by_tree(node *TreeNode, level uint32, groups []*Ma
 	return nil, false
 }
 
-func (mp *MatchProcess) AddMatch(id, level uint32, count int) bool {
+func (mp *MatchProcess) AddMatch(id int64, level uint32, count int) bool {
 	mg := NewMatchGroup()
 	mg.Initialize(id, level, count)
 
@@ -183,7 +197,7 @@ func (mp *MatchProcess) AddMatch(id, level uint32, count int) bool {
 	return <-ch
 }
 
-func (mp *MatchProcess) CancelMatch(id uint32) bool {
+func (mp *MatchProcess) CancelMatch(id int64) bool {
 	ch := make(chan bool)
 	mp.opchan <- func() {
 		if _, ok := mp.matchGroups[id]; !ok {
@@ -198,7 +212,7 @@ func (mp *MatchProcess) CancelMatch(id uint32) bool {
 	return <-ch
 }
 
-func (mp *MatchProcess) Match(r, b uint32, level uint32) (mr, mb []uint32, ok bool) {
+func (mp *MatchProcess) Match(r, b uint32, level uint32) (mr, mb []int64, ok bool) {
 	ch := make(chan bool)
 	mp.opchan <- func() {
 		defer func() { ch <- true }()

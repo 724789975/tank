@@ -65,16 +65,19 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 	tapResp, err := tap.GetHandle(ctx, req.Kid, req.MacKey, common_config.Get("tap.base_info_uri").(string))
 	if err != nil {
 		klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-ERROR] tap GetHandle err: %v", err)
+		resp.Code = common.ErrorCode_USER_LOGIN_TAP_ERROR
 		return nil, err
 	}
 	tapBaseInfo := user_center.TapBaseInfo{}
 	err = protojson.Unmarshal([]byte(tapResp), &tapBaseInfo)
 	if err != nil {
 		klog.CtxErrorf(ctx, "[USER-LOGIN-UNMARSHAL] tap UnmarshalTo err: %v", err)
+		resp.Code = common.ErrorCode_USER_LOGIN_UNMARSHAL
 		return nil, err
 	}
 	if !tapBaseInfo.Success {
 		klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle err: %v", err)
+		resp.Code = common.ErrorCode_USER_LOGIN_TAP_FAIL
 		return nil, err
 	}
 	resp.TapInfo = tapBaseInfo.Data

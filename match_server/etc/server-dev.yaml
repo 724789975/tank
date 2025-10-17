@@ -25,3 +25,4 @@ gateway:
 
 exe_path:
   windows: ".\\etc\\windows.bat"
+  linux: "./etc/linux.sh"

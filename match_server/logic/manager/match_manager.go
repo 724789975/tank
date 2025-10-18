@@ -48,22 +48,24 @@ func GetMatchManager() *MatchManager {
 		}
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
-			shell.StartCmd(fmt.Sprintf("r=%v, b=%v", r, b))
+			shell.StartCmd(fmt.Sprintf("r=%v b=%v", r, b))
 
 			time.Sleep(time.Second * 1)
 			match_info_ntf := &match_proto.MatchInfoNtf{
 				R:        make([]string, 0),
 				B:        make([]string, 0),
 				GameAddr: common_config.Get("game.addr").(string),
-				GamePort: common_config.Get("game.port").(int32),
+				GamePort: int32(common_config.Get("game.port").(int)),
 			}
 			for _, v := range r {
 				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
 				match_info_ntf.R = append(match_info_ntf.R, members...)
+				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
 			}
 			for _, v := range b {
 				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
 				match_info_ntf.B = append(match_info_ntf.B, members...)
+				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
 			}
 
 			any := &anypb.Any{}
@@ -75,12 +77,14 @@ func GetMatchManager() *MatchManager {
 					Id:  v,
 					Msg: any,
 				})
+				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_user:%s", v))
 			}
 			for _, v := range match_info_ntf.B {
 				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
 					Id:  v,
 					Msg: any,
 				})
+				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_user:%s", v))
 			}
 		})
 	})

@@ -41,12 +41,12 @@ public class Match : MonoBehaviour
 				{
 					if (!ok)
 					{
-						Debug.Log($"登录失败，服务器响应异常：{response}");
+						Debug.Log($"匹配请求失败，服务器响应异常：{response}");
 					}
 					else
 					{
 						string responseStr = Encoding.UTF8.GetString(response);
-						Debug.Log($"登录成功，服务器响应：{responseStr}");
+						Debug.Log($"匹配请求成功，服务器响应：{responseStr}");
 						MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
 					}
 				});

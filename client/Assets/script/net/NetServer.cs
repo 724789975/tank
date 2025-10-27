@@ -1,3 +1,4 @@
+using AOT;
 using fxnetlib.dllimport;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -14,12 +15,7 @@ public class NetServer : MonoBehaviour
     {
 		instance = this;
 		DLLImport.StartIOModule();
-		DLLImport.SetLogCallback(delegate (byte[] pData, int dwLen)
-			{
-				string logMessage = System.Text.Encoding.UTF8.GetString(pData, 0, dwLen);
-				Debug.Log(logMessage);
-			}
-		);
+		DLLImport.SetLogCallback(OnLogCallback);
 		DLLImport.CreateSessionMake(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 		DLLImport.TcpListen("0.0.0.0", Config.Instance.port);
 		DLLImport.UdpListen("0.0.0.0", Config.Instance.port);
@@ -45,6 +41,14 @@ public class NetServer : MonoBehaviour
 		msgs.Clear();
 	}
 
+	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnLogCallback))]
+	static void OnLogCallback (byte[] pData, int dwLen)
+	{
+		string logMessage = System.Text.Encoding.UTF8.GetString(pData, 0, dwLen);
+		Debug.Log(logMessage);
+	}
+
+	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnRecvCallback))]
 	static void OnRecvCallback(IntPtr pConnector, byte[] pData, uint nLen)
 	{
 		try
@@ -61,15 +65,20 @@ public class NetServer : MonoBehaviour
 			Debug.LogError($"Failed to parse message: {e.Message}\n{e.StackTrace}");
 		}
 	}
+
+	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnConnectedCallback))]
 	static void OnConnectedCallback(IntPtr pConnector)
 	{
 		Debug.LogFormat("{0} connected", pConnector);
 	}
+
+	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnErrorCallback))]
 	static void OnErrorCallback(IntPtr pConnector, IntPtr nLen)
 	{
 		Debug.LogFormat("connector destroy {0}", pConnector);
 	}
 
+	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnCloseCallback))]
 	static void OnCloseCallback(IntPtr pConnector)
 	{
 		Debug.Log("connector destroy");

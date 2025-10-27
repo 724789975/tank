@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: client
+  companyName: denglixiaoliu
+  productName: pongpongpong
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 1, g: 0.23529412, b: 0, a: 1}
@@ -42,7 +42,8 @@ PlayerSettings:
   m_SplashScreenLogos:
   - logo: {fileID: 21300000, guid: 2de366636f4c9fa498926af72ca0834e, type: 3}
     duration: 2
-  m_VirtualRealitySplashScreen: {fileID: 0}
+  m_VirtualRealitySplashScreen: {fileID: 2800000, guid: 53b91aa9999c7984ba97a42825846b0d,
+    type: 3}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
@@ -167,7 +168,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.moremountains.topdownengine
+    Android: com.denglixiaoliu.pongpongpong
     Standalone: unity.MoreMountains.TopDown
     Tizen: com.Company.ProductName
     iPhone: com.moremountains.topdownengine
@@ -274,7 +275,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 15
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
-  androidSplashScreen: {fileID: 0}
+  androidSplashScreen: {fileID: 2800000, guid: 6b6f020ead58f424fade5dc08e89e343, type: 3}
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
   AndroidEnableArmv9SecurityFeatures: 0
@@ -288,7 +289,7 @@ PlayerSettings:
   m_AndroidBanners:
   - width: 320
     height: 180
-    banner: {fileID: 0}
+    banner: {fileID: 2800000, guid: 6b6f020ead58f424fade5dc08e89e343, type: 3}
   androidGamepadSupportLevel: 0
   chromeosInputEmulation: 1
   AndroidMinifyRelease: 0
@@ -299,7 +300,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: a7adf48d4c8aa994cbdb33b10ecd5073, type: 3}
+      m_Icon: {fileID: 2800000, guid: 7b76cc781e845f642aff22b5075e9723, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

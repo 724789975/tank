@@ -59,5 +59,7 @@ public class ServerFrame : MonoBehaviour
 
 	static ServerFrame instane;
     float currentTime = 0;
+#if UNITY_SERVER
     bool isEnd = false;
+#endif
 }

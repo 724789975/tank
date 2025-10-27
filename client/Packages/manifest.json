@@ -48,7 +48,8 @@
 	"com.google.external-dependency-manager": "1.2.179",
 	"com.taptap.sdk.core":"4.8.2",
 	"com.taptap.sdk.login":"4.8.2",
-	"com.psygames.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#upm"
+	"com.psygames.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#upm",
+	"com.dlxl.fxnet": "https://github.com/724789975/fxnet.git?path=fxnet4unity#dllforunity"
   },
   "scopedRegistries": [
     {

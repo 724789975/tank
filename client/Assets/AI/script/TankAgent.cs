@@ -60,8 +60,8 @@ public class TankAgent : Agent
         float actionY = (actionBuffers.ContinuousActions[1] + 1) / 2f * (Config.Instance.GetTop() - Config.Instance.GetBottom()) + Config.Instance.GetBottom();
 
         bool shoot = actionBuffers.DiscreteActions[0] != 0f;
-        float delta = Time.time - lastUpdateTime;
-        lastUpdateTime = Time.time;
+        float delta = Time.time - lastRecvTime;
+        lastRecvTime = Time.time;
 
         Vector3 dir = new Vector3(actionX, actionY, 0);
         TankInstance instance = tank.GetComponent<TankInstance>();
@@ -197,7 +197,11 @@ public class TankAgent : Agent
 
 	public void Update()
 	{
-		WaitTimeInference();
+        if (Time.time - lastUpdateTime > 1f)
+        {
+            lastUpdateTime = Time.time;
+            WaitTimeInference();
+        }
 	}
 
 	void WaitTimeInference()
@@ -215,5 +219,6 @@ public class TankAgent : Agent
 	public int obsBulletNum;
     bool canShoot = false;
     float lastShootTime = 0f;
+    float lastRecvTime = 0f;
     float lastUpdateTime = 0f;
 }

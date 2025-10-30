@@ -65,7 +65,6 @@ public class AccountInfo : MonoBehaviour
 				};
 			}
 #endif
-
 			return account;
         }
     }

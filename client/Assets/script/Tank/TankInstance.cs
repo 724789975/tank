@@ -19,8 +19,9 @@ public class TankInstance : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+#if !AI_TRAIN
 #if !UNITY_SERVER
-		// 客户端模式下的同步
+        // 客户端模式下的同步
         ClientPlayer clientPlayer = PlayerManager.Instance.GetPlayer(ID);
         if (clientPlayer == null)
         {
@@ -101,6 +102,7 @@ public class TankInstance : MonoBehaviour
         {
             offLineTime += Time.deltaTime;
         }
+#endif
 #endif
 	}
 

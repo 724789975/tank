@@ -64,7 +64,7 @@ public class ServerMsg : MonoBehaviour
 			if (isAdd)
 			{
 				tankInstance.HP = Config.Instance.maxHp;
-				tankInstance.transform.position = new Vector3(UnityEngine.Random.Range(Config.Instance.GetLeft() + 10, Config.Instance.GetRight() - 10), UnityEngine.Random.Range(Config.Instance.GetTop() - 10, Config.Instance.GetBottom() + 10), 0);
+				tankInstance.transform.position = new Vector3(UnityEngine.Random.Range(Config.Instance.GetLeft() + 1, Config.Instance.GetRight() - 1), UnityEngine.Random.Range(Config.Instance.GetTop() - 1, Config.Instance.GetBottom() + 1), 0);
 				tankInstance.transform.right = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0).normalized;
 				tankInstance.rebornTime = Config.Instance.rebornProtectionTime;
 			}

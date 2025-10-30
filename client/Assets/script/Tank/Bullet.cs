@@ -17,15 +17,22 @@ public class Bullet : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		// 移动子弹
-		transform.Translate(Vector3.right * speed * Time.deltaTime);
-
+#if !AI_TRAIN
+        // 移动子弹
+        Move(Time.deltaTime);
 		// 检查是否超出屏幕边界
 		CheckScreenBounds();
+#endif
 	}
+
+	public void Move(float dt)
+    {
+        transform.Translate(Vector3.right * speed * dt);
+    }
+
     
 	// 检查屏幕边界
-	void CheckScreenBounds()
+	public bool CheckScreenBounds()
     {
         Vector3 position = transform.position;
         
@@ -39,7 +46,9 @@ public class Bullet : MonoBehaviour
         if (position.x < left || position.x > right || position.y < bottom || position.y > top)
         {
             BulletManager.Instance.RemoveBullet(bulletId);
+            return true;
         }
+        return false;
     }
 
     // 碰撞检测

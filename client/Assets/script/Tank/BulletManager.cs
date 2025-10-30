@@ -40,6 +40,42 @@ public class BulletManager : MonoBehaviour
 		return false;
 	}
 
+	/// <summary>
+	/// 获取与指定位置最近的num个子弹
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="num"></param>
+	/// <param name="nearestBullet"></param>
+	public void GetNearbyBullets(Vector3 position, int num, out List<Bullet> nearestBullet)
+	{
+		nearestBullet = new List<Bullet>();
+		foreach (var bullet in bullets.Values)
+		{
+			nearestBullet.Add(bullet);
+		}
+		nearestBullet.Sort((a, b) => Vector3.Distance(position, a.transform.position).CompareTo(Vector3.Distance(position, b.transform.position)));
+		if (nearestBullet.Count > num)
+		{
+			nearestBullet.RemoveRange(num, nearestBullet.Count - num);
+		}
+	}
+
+	public void ResetBullets()
+	{
+		foreach (var bullet in bullets.Values)
+		{
+			Destroy(bullet.gameObject);
+		}
+		bullets.Clear();
+	}
+
+	public List<Bullet> Bullets
+	{
+		get {
+			return new List<Bullet>(bullets.Values);
+		}
+	}
+
 	public static BulletManager Instance
 	{
 		get { 

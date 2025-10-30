@@ -7,7 +7,7 @@ public class ModelSelect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         foreach (GameObject model in serverModels)
         {
             model.SetActive(true);

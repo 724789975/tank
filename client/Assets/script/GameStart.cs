@@ -5,9 +5,48 @@ using UnityEngine;
 
 public class GameStart : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+	static void OnRuntimeMethodLoad()
+	{
+		Debug.Log("After Scene is loaded and game is running");
+
+		// Use commandline options passed to the application
+		var text = System.Environment.CommandLine + "\n";
+
+		// Load the commandline file content.
+		// You need to adjust the path to where the file is located in your project.
+		var path = System.IO.Path.Combine(Application.streamingAssetsPath, "CommandLine.txt");
+		if (System.IO.File.Exists(path))
+		{
+			text += System.IO.File.ReadAllText(path);
+		}
+		else
+		{
+			System.IO.File.Create(path).Close();
+			text += System.IO.File.ReadAllText(path);
+		}
+
+		// Initialize the CommandLine
+		Oddworm.Framework.CommandLine.Init(text);
+	}
+
+	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+	static void BeforeSceneLoad()
+	{
+		AccountInfo.Instance.Account.Name = "" ?? Oddworm.Framework.CommandLine.GetString("name", "¿‰ÀÆ≈›√Ê");
+		AccountInfo.Instance.Account.Avatar = "" ?? Oddworm.Framework.CommandLine.GetString("avatar", "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80");
+		AccountInfo.Instance.Account.Openid = "" ?? Oddworm.Framework.CommandLine.GetString("openid", "mzw0536knQSO+bhbdL6dtw==");
+		AccountInfo.Instance.Account.Unionid = "" ?? Oddworm.Framework.CommandLine.GetString("unionid", "SnwhJ5s2EURKCKt0LBsDLw==");
+
+		GameStart.Instance.ToString();
+	}
+
+	// Start is called before the first frame update
+	void Start()
     {
+#if AI_RUNNING
+		AIStart.Instance.ToString();
+#endif
 	}
 
 	// Update is called once per frame
@@ -43,11 +82,6 @@ public class GameStart : MonoBehaviour
 
 			return instance;
 		}
-	}
-
-	public static void Name(string name)
-	{
-		AccountInfo.Instance.Account.Name = name;
 	}
 
 	static readonly object Lock = new object();

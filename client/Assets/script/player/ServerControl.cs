@@ -16,7 +16,7 @@ public class ServerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         updateTime += Time.deltaTime;
         if (updateTime < 1)
         {
@@ -54,7 +54,7 @@ public class ServerControl : MonoBehaviour
 #endif
 	}
 
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
     float updateTime = 0;
 #endif
 }

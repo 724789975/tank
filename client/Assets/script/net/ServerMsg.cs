@@ -37,7 +37,7 @@ public class ServerMsg : MonoBehaviour
 	[RpcHandler("tank_game.LoginReq")]
 	static void LoginReq(IntPtr pConnector, Any anyMessage)
 	{
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
 		TankGame.LoginReq loginReq = anyMessage.Unpack<TankGame.LoginReq>();
 		Debug.Log($"OnLoginReq {loginReq.Name} {loginReq.Id}");
 
@@ -115,7 +115,7 @@ public class ServerMsg : MonoBehaviour
 	[RpcHandler("tank_game.PlayerStateSyncReq")]
 	static void PlayerStateSyncReq(IntPtr pConnector, Any anyMessage)
 	{
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
 		TankGame.PlayerStateSyncReq playerStateSyncReq = anyMessage.Unpack<TankGame.PlayerStateSyncReq>();
 		ServerPlayer playerData = PlayerManager.Instance.GetPlayerBySession(pConnector);
 		if (playerData == null) {
@@ -180,7 +180,7 @@ public class ServerMsg : MonoBehaviour
 	[RpcHandler("tank_game.PlayerShootReq")]
 	static void PlayerShootReq(IntPtr pConnector, Any anyMessage)
 	{
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
 		TankGame.PlayerShootReq playerShootReq = anyMessage.Unpack<TankGame.PlayerShootReq>();
 		ServerPlayer playerData = PlayerManager.Instance.GetPlayerBySession(pConnector);
 		if (playerData == null)

@@ -10,7 +10,7 @@ public class TankManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         Debug.Log("server model");
 #else
         Debug.Log("client model");
@@ -55,6 +55,14 @@ public class TankManager : MonoBehaviour
 	{
 		instanceMap.TryGetValue(id, out TankInstance ti);
 		return ti;
+	}
+
+	public List<TankInstance> Tanks
+	{
+		get
+		{
+			return new List<TankInstance>(instanceMap.Values);
+		}
 	}
 
 	public static TankManager Instance

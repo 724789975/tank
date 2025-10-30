@@ -21,7 +21,7 @@ public class Config : MonoBehaviour
         top = screenTopRight.y - sceneLimit;
         bottom = screenBottomLeft.y + sceneLimit;
 
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         Application.targetFrameRate = 40;
 #else
         Application.targetFrameRate = 60;

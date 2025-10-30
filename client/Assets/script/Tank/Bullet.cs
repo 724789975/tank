@@ -54,7 +54,7 @@ public class Bullet : MonoBehaviour
     // 碰撞检测
 	void OnCollisionEnter(Collision collision)
 	{
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         // 检测是否碰撞到坦克
         if (collision.gameObject.CompareTag("Tank"))
         {

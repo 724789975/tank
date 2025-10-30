@@ -15,6 +15,17 @@ public class AIControl : Unity.MLAgents.Agent
     // Update is called once per frame
     void Update()
     {
+		tank = TankManager.Instance.GetTank(AccountInfo.Instance.Account.Openid);
+		enemy = null;
+		foreach (TankInstance t in TankManager.Instance.Tanks)
+		{
+			if(t.ID != tank.ID)
+			{
+				enemy = t;
+				break;
+			}
+		}
+
 		if(tank && enemy)
 		{
 			if (Time.time - lastShootTime > 1f)
@@ -66,14 +77,13 @@ public class AIControl : Unity.MLAgents.Agent
 		bool shoot = actionBuffers.DiscreteActions[0] != 0f;
 
 		Vector3 dir = new Vector3(actionX, actionY, 0);
-		TankInstance instance = tank.GetComponent<TankInstance>();
 
 		if (shoot && canShoot)
 		{
 			dir = (enemy.transform.position - tank.transform.position).normalized;
 
-			instance.SetDir(dir.normalized);
-			instance.Shoot(instance.ID, instance.bulletPos.transform.position, instance.bulletPos.transform.rotation, Config.Instance.speed);
+			tank.SetDir(dir.normalized);
+			tank.Shoot(tank.ID, tank.bulletPos.transform.position, tank.bulletPos.transform.rotation, Config.Instance.speed);
 
 			lastShootTime = Time.time;
 			canShoot = false;
@@ -84,8 +94,8 @@ public class AIControl : Unity.MLAgents.Agent
 			dir.Normalize();
 		}
 
-		instance.SetDir(dir.normalized);
-		instance.AddPos(dir * instance.speed * Time.deltaTime);
+		tank.SetDir(dir.normalized);
+		tank.AddPos(dir * tank.speed * Time.deltaTime);
 	}
 
 	Vector2 toAIVecotr(Vector3 vec)
@@ -93,10 +103,8 @@ public class AIControl : Unity.MLAgents.Agent
 		return new Vector2((vec.x - Config.Instance.GetLeft()) / (Config.Instance.GetRight() - Config.Instance.GetLeft()), (vec.y - Config.Instance.GetBottom()) / (Config.Instance.GetTop() - Config.Instance.GetBottom()));
 	}
 
-	[Header("Specific to Enemy")]
-	public GameObject enemy;
-	[Header("Specific to Tank")]
-	public GameObject tank;
+	TankInstance enemy;
+	TankInstance tank;
 	public bool useVecObs;
 
 	public int obsBulletNum;

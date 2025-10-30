@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
 using PLAYERDATA = ServerPlayer;
 #else
 using PLAYERDATA = ClientPlayer;

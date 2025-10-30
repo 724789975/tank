@@ -15,7 +15,7 @@ public class ServerFrame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         currentTime = Time.time;
         if (currentTime > 600)
         { 
@@ -59,7 +59,7 @@ public class ServerFrame : MonoBehaviour
 
 	static ServerFrame instane;
     float currentTime = 0;
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
     bool isEnd = false;
 #endif
 }

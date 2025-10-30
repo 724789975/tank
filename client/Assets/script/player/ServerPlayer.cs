@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
 using PLAYERDATA = ServerPlayer;
 #endif
 [Serializable]

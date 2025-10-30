@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
 using PLAYERDATA = ServerPlayer;
 #else
 using PLAYERDATA = ClientPlayer;
@@ -26,7 +26,7 @@ public class PlayerManager : Singleton<PlayerManager>
         {
             Debug.LogWarning($"Player ID {id} already exists, cannot add again.");
         }
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         if(data.session != IntPtr.Zero)
         {
             if (!sessions.ContainsKey(data.session))
@@ -53,7 +53,7 @@ public class PlayerManager : Singleton<PlayerManager>
         return null;
     }
 
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
     public PLAYERDATA GetPlayerBySession(IntPtr pConnector)
 	{
         sessions.TryGetValue(pConnector, out string id);
@@ -75,7 +75,7 @@ public class PlayerManager : Singleton<PlayerManager>
         Debug.Log($"Removing player data with ID {id}.");
         if (players.ContainsKey(id))
         {
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
             if (players[id].session!= IntPtr.Zero)
             {
 				DLLImport.Close(players[id].session);
@@ -100,7 +100,7 @@ public class PlayerManager : Singleton<PlayerManager>
 
     public void AfterCloseCallback(IntPtr pConnector)
     {
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
         sessions.TryGetValue(pConnector, out string id);
         if (id != null)
         {
@@ -115,7 +115,7 @@ public class PlayerManager : Singleton<PlayerManager>
     }
 
 	Dictionary<string, PLAYERDATA> players = new Dictionary<string, PLAYERDATA>();
-#if UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
     Dictionary<IntPtr, string> sessions = new Dictionary<IntPtr, string>();
 #endif
 }

@@ -21,6 +21,13 @@
       "dependencies": {},
       "url": "https://package.openupm.com"
     },
+    "com.oddworm.commandline": {
+      "version": "https://github.com/pschraut/UnityCommandLine.git#1.2.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "7c2745042f0750889b807e447e1cebbf8ede5068"
+    },
     "com.psygames.unitywebsocket": {
       "version": "https://github.com/psygames/UnityWebSocket.git#upm",
       "depth": 0,

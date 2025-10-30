@@ -39,6 +39,7 @@ public class PlayerControl : MonoBehaviour
 
     public void ShowNotice(string content)
     {
+#if !AI_RUNNING
         if (notice == null)
         {
             return;
@@ -46,6 +47,7 @@ public class PlayerControl : MonoBehaviour
         GameObject go = Instantiate(notice.gameObject, notice.transform.parent);
         Notice n = go.GetComponent<Notice>();
         n.text.text = content;
+#endif
     }
 
     public static PlayerControl Instance

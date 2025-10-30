@@ -33,10 +33,13 @@ public class GameStart : MonoBehaviour
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 	static void BeforeSceneLoad()
 	{
-		AccountInfo.Instance.Account.Name = "" ?? Oddworm.Framework.CommandLine.GetString("name", "冷水泡面");
-		AccountInfo.Instance.Account.Avatar = "" ?? Oddworm.Framework.CommandLine.GetString("avatar", "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80");
-		AccountInfo.Instance.Account.Openid = "" ?? Oddworm.Framework.CommandLine.GetString("openid", "mzw0536knQSO+bhbdL6dtw==");
-		AccountInfo.Instance.Account.Unionid = "" ?? Oddworm.Framework.CommandLine.GetString("unionid", "SnwhJ5s2EURKCKt0LBsDLw==");
+		AccountInfo.Instance.Account.Name = AccountInfo.Instance.Account.Name == "" ? Oddworm.Framework.CommandLine.GetString("name", "冷水泡面") : AccountInfo.Instance.Account.Name;
+		AccountInfo.Instance.Account.Avatar = AccountInfo.Instance.Account.Avatar == "" ? Oddworm.Framework.CommandLine.GetString("avatar", "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80") : AccountInfo.Instance.Account.Avatar;
+		AccountInfo.Instance.Account.Openid = AccountInfo.Instance.Account.Openid == "" ? Oddworm.Framework.CommandLine.GetString("openid", "mzw0536knQSO+bhbdL6dtw==") : AccountInfo.Instance.Account.Openid;
+		AccountInfo.Instance.Account.Unionid = AccountInfo.Instance.Account.Unionid == "" ? Oddworm.Framework.CommandLine.GetString("unionid", "SnwhJ5s2EURKCKt0LBsDLw==") : AccountInfo.Instance.Account.Unionid;
+
+		Config.Instance.serverIP = Config.Instance.serverIP == "0.0.0.0" ? Oddworm.Framework.CommandLine.GetString("server_ip", "114.132.124.13") : Config.Instance.serverIP;
+		Debug.Log(Config.Instance.serverIP);
 
 		GameStart.Instance.ToString();
 	}

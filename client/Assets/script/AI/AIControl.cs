@@ -96,6 +96,22 @@ public class AIControl : Unity.MLAgents.Agent
 
 		tank.SetDir(dir.normalized);
 		tank.AddPos(dir * tank.speed * Time.deltaTime);
+
+		TankGame.PlayerStateSyncReq playerStateSyncReq = new TankGame.PlayerStateSyncReq();
+		playerStateSyncReq.SyncTime = ClientFrame.Instance.CurrentTime;
+		{
+			playerStateSyncReq.Transform = new TankCommon.Transform();
+			playerStateSyncReq.Transform.Position = new TankCommon.Vector3();
+			playerStateSyncReq.Transform.Position.X = tank.transform.position.x;
+			playerStateSyncReq.Transform.Position.Y = tank.transform.position.y;
+			playerStateSyncReq.Transform.Position.Z = tank.transform.position.z;
+			playerStateSyncReq.Transform.Rotation = new TankCommon.Quaternion();
+			playerStateSyncReq.Transform.Rotation.X = tank.transform.rotation.x;
+			playerStateSyncReq.Transform.Rotation.Y = tank.transform.rotation.y;
+			playerStateSyncReq.Transform.Rotation.Z = tank.transform.rotation.z;
+			playerStateSyncReq.Transform.Rotation.W = tank.transform.rotation.w;
+		}
+		NetClient.Instance.SendMessage(playerStateSyncReq);
 	}
 
 	Vector2 toAIVecotr(Vector3 vec)

@@ -16,6 +16,7 @@ public class TankControl : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+#if !AI_RUNNING
         float t = Time.time;
         if (t - lastUpdateTime < UPDATE_INTERVAL)
         {
@@ -59,7 +60,8 @@ public class TankControl : MonoBehaviour
 			lastSyncTime = t;
             NetClient.Instance.SendMessage(playerStateSyncReq);
 		}
-	}
+#endif
+    }
 
     public void Shoot()
     {
@@ -71,7 +73,9 @@ public class TankControl : MonoBehaviour
         tankInstance.Shoot();
     }
 
+#if !AI_RUNNING
     bool syncFlag = false;
+#endif
     float lastUpdateTime = 0f;
     float lastSyncTime = 0f;
     const float UPDATE_INTERVAL = 0.03f;

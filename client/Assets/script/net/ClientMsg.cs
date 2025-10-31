@@ -77,7 +77,8 @@ public class ClientMsg : MonoBehaviour
     [RpcHandler("tank_game.PlayerStateNtf")]
     static void PlayerStateNtf(IntPtr pConnection, Any anyMessage)
     {
-#if !UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
+#else
 		TankGame.PlayerStateNtf playerStateNtf = anyMessage.Unpack<TankGame.PlayerStateNtf>();
         PLAYERDATA playerData = PlayerManager.Instance.GetPlayer(playerStateNtf.Id);
         if (playerData == null)
@@ -97,7 +98,8 @@ public class ClientMsg : MonoBehaviour
     [RpcHandler("tank_game.PlayerDisappearNtf")]
     static void PlayerDisappearNtf(IntPtr pConnection, Any anyMessage)
     {
-#if !UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
+#else
 		TankGame.PlayerDisappearNtf playerDisappearNtf = anyMessage.Unpack<TankGame.PlayerDisappearNtf>();
         TankManager.Instance.RemoveTank(playerDisappearNtf.Id);
         PlayerManager.Instance.RemovePlayer(playerDisappearNtf.Id);
@@ -107,7 +109,8 @@ public class ClientMsg : MonoBehaviour
 	[RpcHandler("tank_game.PlayerShootNtf")]
     static void PlayerShootNtf(IntPtr pConnection, Any anyMessage)
     {
-#if !UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
+#else
 		TankGame.PlayerShootNtf playerStateNtf = anyMessage.Unpack<TankGame.PlayerShootNtf>();
 		PLAYERDATA playerData = PlayerManager.Instance.GetPlayer(playerStateNtf.Id);
 		if (playerData == null)
@@ -129,8 +132,9 @@ public class ClientMsg : MonoBehaviour
 	[RpcHandler("tank_game.BulletDestoryNtf")]
 	static void BulletDestoryNtf(IntPtr pConnection, Any anyMessage)
     {
-#if !UNITY_SERVER
-        TankGame.BulletDestoryNtf bulletDestoryNtf = anyMessage.Unpack<TankGame.BulletDestoryNtf>();
+#if UNITY_SERVER && !AI_RUNNING
+#else
+		TankGame.BulletDestoryNtf bulletDestoryNtf = anyMessage.Unpack<TankGame.BulletDestoryNtf>();
         BulletManager.Instance.RemoveBullet(bulletDestoryNtf.Id);
         Instantiate(instance.boomPrefab, new Vector3(bulletDestoryNtf.Pos.X, bulletDestoryNtf.Pos.Y, bulletDestoryNtf.Pos.Z - 5), Quaternion.identity);
 #endif
@@ -139,8 +143,9 @@ public class ClientMsg : MonoBehaviour
     [RpcHandler("tank_game.TankHpSyncNtf")]
     static void TankHpSyncNtf(IntPtr pConnection, Any anyMessage)
     {
-#if !UNITY_SERVER
-        TankGame.TankHpSyncNtf tankHpSyncNtf = anyMessage.Unpack<TankGame.TankHpSyncNtf>();
+#if UNITY_SERVER && !AI_RUNNING
+#else
+		TankGame.TankHpSyncNtf tankHpSyncNtf = anyMessage.Unpack<TankGame.TankHpSyncNtf>();
         TankInstance tankInstance = TankManager.Instance.GetTank(tankHpSyncNtf.Id);
         if (tankInstance == null)
         {
@@ -154,8 +159,9 @@ public class ClientMsg : MonoBehaviour
 	[RpcHandler("tank_game.PlayerDieNtf")]
 	static void PlayerDieNtf(IntPtr pConnection, Any anyMessage)
     {
-#if !UNITY_SERVER
-        TankGame.PlayerDieNtf playerDieNtf = anyMessage.Unpack<TankGame.PlayerDieNtf>();
+#if UNITY_SERVER && !AI_RUNNING
+#else
+		TankGame.PlayerDieNtf playerDieNtf = anyMessage.Unpack<TankGame.PlayerDieNtf>();
         TankInstance tankKilled = TankManager.Instance.GetTank(playerDieNtf.KilledId);
         if (tankKilled == null)
         {
@@ -202,9 +208,10 @@ public class ClientMsg : MonoBehaviour
 	[RpcHandler("tank_game.GameOverNtf")]
 	static void GameOverNtf(IntPtr pConnection, Any anyMessage)
     {
-#if !UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
+#else
         TankGame.GameOverNtf gameOverNtf = anyMessage.Unpack<TankGame.GameOverNtf>();
-        string notice = $"游戏结束，你获得了胜利";
+		string notice = $"游戏结束，你获得了胜利";
 		PlayerControl.Instance.ShowNotice(notice);
 
 		// 转场

@@ -11,7 +11,8 @@ public class TankInstance : MonoBehaviour
     void Start()
     {
         nameText.text = Name;
-#if !UNITY_SERVER
+#if UNITY_SERVER && !AI_RUNNING
+#else
         GetComponent<BoxCollider>().enabled = false;
 #endif
     }

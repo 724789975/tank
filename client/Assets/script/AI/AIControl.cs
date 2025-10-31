@@ -83,7 +83,7 @@ public class AIControl : Unity.MLAgents.Agent
 			dir = (enemy.transform.position - tank.transform.position).normalized;
 
 			tank.SetDir(dir.normalized);
-			tank.Shoot(tank.ID, tank.bulletPos.transform.position, tank.bulletPos.transform.rotation, Config.Instance.speed);
+			tank.Shoot();
 
 			lastShootTime = Time.time;
 			canShoot = false;

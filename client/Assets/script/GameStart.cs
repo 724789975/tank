@@ -53,8 +53,21 @@ public class GameStart : MonoBehaviour
 #if AI_RUNNING
 		AIStart.Instance.ToString();
 #endif
+		Resolution reslution = Screen.currentResolution;
 
-		Debug.Log($"GameStart Start {c} {AccountInfo.Instance.Account.Name} {Config.Instance.serverIP}");
+		int standard_width = reslution.width;
+		int standard_height = ((standard_width * 9) / 16);
+		if (standard_height > reslution.height)
+		{
+			standard_height = reslution.height;
+			standard_width = ((standard_height * 16) / 9);
+		}
+
+#if PLATFORM_STANDALONE_WIN
+		standard_width = 1280;
+		standard_height = 720;
+#endif
+		Screen.SetResolution(Convert.ToInt32(standard_width), Convert.ToInt32(standard_height), false);
 	}
 
 	// Update is called once per frame

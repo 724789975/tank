@@ -23,6 +23,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"pve": kitex.NewMethodInfo(
+		pveHandler,
+		newPveArgs,
+		newPveResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -200,6 +207,117 @@ func (p *MatchResult) GetResult() interface{} {
 	return p.Success
 }
 
+func pveHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(match_proto.PveReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(match_service.MatchService).Pve(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *PveArgs:
+		success, err := handler.(match_service.MatchService).Pve(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*PveResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newPveArgs() interface{} {
+	return &PveArgs{}
+}
+
+func newPveResult() interface{} {
+	return &PveResult{}
+}
+
+type PveArgs struct {
+	Req *match_proto.PveReq
+}
+
+func (p *PveArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *PveArgs) Unmarshal(in []byte) error {
+	msg := new(match_proto.PveReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var PveArgs_Req_DEFAULT *match_proto.PveReq
+
+func (p *PveArgs) GetReq() *match_proto.PveReq {
+	if !p.IsSetReq() {
+		return PveArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *PveArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *PveArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type PveResult struct {
+	Success *match_proto.PveResp
+}
+
+var PveResult_Success_DEFAULT *match_proto.PveResp
+
+func (p *PveResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *PveResult) Unmarshal(in []byte) error {
+	msg := new(match_proto.PveResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *PveResult) GetSuccess() *match_proto.PveResp {
+	if !p.IsSetSuccess() {
+		return PveResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *PveResult) SetSuccess(x interface{}) {
+	p.Success = x.(*match_proto.PveResp)
+}
+
+func (p *PveResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *PveResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -215,6 +333,16 @@ func (p *kClient) Match(ctx context.Context, Req *match_proto.MatchReq) (r *matc
 	_args.Req = Req
 	var _result MatchResult
 	if err = p.c.Call(ctx, "match", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Pve(ctx context.Context, Req *match_proto.PveReq) (r *match_proto.PveResp, err error) {
+	var _args PveArgs
+	_args.Req = Req
+	var _result PveResult
+	if err = p.c.Call(ctx, "pve", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

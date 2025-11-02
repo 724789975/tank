@@ -33,7 +33,7 @@ public class ClientMsg : MonoBehaviour
     {
         TankGame.Pong pong = anyMessage.Unpack<TankGame.Pong>();
         ClientFrame.Instance.CorrectFrame(pong.CurrentTime, Time.time - pong.Ts);
-        Debug.Log($"OnPong {pong.ToString()}, current_time:{ClientFrame.Instance.CurrentTime}, Latency:{ClientFrame.Instance.Latency}");
+        //Debug.Log($"OnPong {pong.ToString()}, current_time:{ClientFrame.Instance.CurrentTime}, Latency:{ClientFrame.Instance.Latency}");
 	}
 
     [RpcHandler("tank_game.LoginRsp")]
@@ -210,6 +210,10 @@ public class ClientMsg : MonoBehaviour
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
+#if AI_RUNNING
+        Application.Quit();
+        return;
+#else
         TankGame.GameOverNtf gameOverNtf = anyMessage.Unpack<TankGame.GameOverNtf>();
 		string notice = $"游戏结束，你获得了胜利";
 		PlayerControl.Instance.ShowNotice(notice);
@@ -217,7 +221,8 @@ public class ClientMsg : MonoBehaviour
 		// 转场
 		UnityEngine.SceneManagement.SceneManager.LoadScene("match");
 #endif
-	}
+#endif
+    }
 
 	public GameObject boomPrefab;
 }

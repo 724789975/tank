@@ -12,6 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	Match(ctx context.Context, Req *match_proto.MatchReq, callOptions ...callopt.Option) (r *match_proto.MatchResp, err error)
+	Pve(ctx context.Context, Req *match_proto.PveReq, callOptions ...callopt.Option) (r *match_proto.PveResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -46,4 +47,9 @@ type kMatchServiceClient struct {
 func (p *kMatchServiceClient) Match(ctx context.Context, Req *match_proto.MatchReq, callOptions ...callopt.Option) (r *match_proto.MatchResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Match(ctx, Req)
+}
+
+func (p *kMatchServiceClient) Pve(ctx context.Context, Req *match_proto.PveReq, callOptions ...callopt.Option) (r *match_proto.PveResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Pve(ctx, Req)
 }

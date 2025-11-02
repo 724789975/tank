@@ -63,7 +63,7 @@ func (s *MatchService) ListenAndServe(ctx context.Context) {
 		if err != nil {
 			panic(err)
 		}
-		serviceName := common_config.Get("match_rpc.service_name").(string)	
+		serviceName := common_config.Get("match_rpc.service_name").(string)
 
 		server := kitexserver.NewServer(
 			kitexserver.WithServiceAddr(address),
@@ -109,4 +109,8 @@ func (s *MatchService) Close() {
 
 func (x *MatchService) Match(ctx context.Context, req *match_proto.MatchReq) (resp *match_proto.MatchResp, err error) {
 	return manager.GetMatchManager().Match(ctx, req)
+}
+
+func (x *MatchService) Pve(ctx context.Context, req *match_proto.PveReq) (resp *match_proto.PveResp, err error) {
+	return manager.GetMatchManager().Pve(ctx, req)
 }

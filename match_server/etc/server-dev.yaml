@@ -26,3 +26,5 @@ gateway:
 exe_path:
   windows: ".\\etc\\windows.bat"
   linux: "./etc/linux.sh"
+  ai_windows: ".\\etc\\ai_windows.bat"
+  ai_linux: "./etc/ai_linux.sh"

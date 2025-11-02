@@ -43,6 +43,10 @@ public class AIControl : Unity.MLAgents.Agent
 		{
 			canShoot = true;
 		}
+		if (sensor == null || !tank || !enemy)
+		{
+			return;
+		}
 		if (useVecObs)
 		{
 			sensor.AddObservation(toAIVecotr(tank.transform.position));

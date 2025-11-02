@@ -15,6 +15,16 @@ message MatchResp {
 message MatchInfoNtf {
 	repeated string r = 1;
 	repeated string b = 2;
-	string gameAddr = 3;
-	int32 gamePort = 4;
+}
+
+message GameInfoNtf {
+	string gameAddr = 1;
+	int32 gamePort = 2;
+}
+
+message PveReq {
+}
+
+message PveResp {
+	common.ErrorCode code = 1;
 }

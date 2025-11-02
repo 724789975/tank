@@ -5,11 +5,31 @@ using UnityEngine;
 
 public class GameStart : MonoBehaviour
 {
-	string c;
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
 	static void OnRuntimeMethodLoad()
 	{
-		Debug.Log("After Scene is loaded and game is running");
+#if UNITY_SERVER && !AI_RUNNING
+        Application.targetFrameRate = 40;
+#else
+		Application.targetFrameRate = 60;
+#endif
+
+		Resolution reslution = Screen.currentResolution;
+
+		int standard_width = reslution.width;
+		int standard_height = ((standard_width * 9) / 16);
+		if (standard_height > reslution.height)
+		{
+			standard_height = reslution.height;
+			standard_width = ((standard_height * 16) / 9);
+		}
+
+#if PLATFORM_STANDALONE_WIN || PLATFORM_STANDALONE_LINUX || PLATFORM_STANDALONE_OSX
+		standard_width = 1280;
+		standard_height = 720;
+#endif
+		Debug.LogFormat("Set Screen Resolution to {0}x{1}", standard_width, standard_height);
+		Screen.SetResolution(Convert.ToInt32(standard_width), Convert.ToInt32(standard_height), false);
 
 		// Use commandline options passed to the application
 		var text = System.Environment.CommandLine + "\n";
@@ -28,9 +48,10 @@ public class GameStart : MonoBehaviour
 #endif
 		}
 
-		GameStart.Instance.c = text;
 		// Initialize the CommandLine
 		Oddworm.Framework.CommandLine.Init(text);
+
+		GameStart.Instance.ToString();
 	}
 
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -41,7 +62,7 @@ public class GameStart : MonoBehaviour
 		AccountInfo.Instance.Account.Openid = AccountInfo.Instance.Account.Openid == "" ? Oddworm.Framework.CommandLine.GetString("-openid", "mzw0536knQSO+bhbdL6dtw==") : AccountInfo.Instance.Account.Openid;
 		AccountInfo.Instance.Account.Unionid = AccountInfo.Instance.Account.Unionid == "" ? Oddworm.Framework.CommandLine.GetString("-unionid", "SnwhJ5s2EURKCKt0LBsDLw==") : AccountInfo.Instance.Account.Unionid;
 
-		Config.Instance.serverIP = Config.Instance.serverIP == "0.0.0.0" ? Oddworm.Framework.CommandLine.GetString("-server_ip", "114.132.124.13") : Config.Instance.serverIP;
+		Config.Instance.serverIP = Config.Instance.serverIP == "0.0.0.0" ? Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1") : Config.Instance.serverIP;
 		Debug.Log(Config.Instance.serverIP);
 
 		GameStart.Instance.ToString();
@@ -53,21 +74,6 @@ public class GameStart : MonoBehaviour
 #if AI_RUNNING
 		AIStart.Instance.ToString();
 #endif
-		Resolution reslution = Screen.currentResolution;
-
-		int standard_width = reslution.width;
-		int standard_height = ((standard_width * 9) / 16);
-		if (standard_height > reslution.height)
-		{
-			standard_height = reslution.height;
-			standard_width = ((standard_height * 16) / 9);
-		}
-
-#if PLATFORM_STANDALONE_WIN
-		standard_width = 1280;
-		standard_height = 720;
-#endif
-		Screen.SetResolution(Convert.ToInt32(standard_width), Convert.ToInt32(standard_height), false);
 	}
 
 	// Update is called once per frame

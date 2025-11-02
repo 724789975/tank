@@ -8,7 +8,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
-func StartCmd(params string) {
+func StartServer(params string) {
 	cmdPath := "/bin/bash"
 	if _, err := os.StartProcess(cmdPath, []string{"pwd;\n", common_config.Get("exe_path.linux").(string), params}, &os.ProcAttr{
 		Sys:   &syscall.SysProcAttr{},
@@ -18,4 +18,16 @@ func StartCmd(params string) {
 	}
 
 	klog.Infof("start cmd success, %s %s", cmdPath, params)
+}
+
+func StartAiClient(params string) {
+	cmdPath := "/bin/bash"
+	if _, err := os.StartProcess(cmdPath, []string{"pwd;\n", common_config.Get("exe_path.ai_linux").(string), params}, &os.ProcAttr{
+		Sys:   &syscall.SysProcAttr{},
+		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
+	}); err != nil {
+		klog.Errorf("start cmd %s failed, err: %v", common_config.Get("exe_path.ai_linux").(string), err)
+	}
+
+	klog.Infof("start cmd %s success", common_config.Get("exe_path.ai_linux").(string))
 }

@@ -32,10 +32,17 @@ public class WSMsg : MonoBehaviour
 		Debug.Log(test.ToString());
 	}
 
-	[WSHandler("match_proto.MatchInfoNtf")]
-	static void MatchInfoNtf(object sender, Any anyMessage)
+	[WSHandler("match_proto.GameInfo")]
+	static void GameInfo(object sender, Any anyMessage)
 	{
 		MatchProto.MatchInfoNtf info = anyMessage.Unpack<MatchProto.MatchInfoNtf>();
+		Debug.Log(info.ToString());
+	}
+
+	[WSHandler("match_proto.GameInfoNtf")]
+	static void GameInfoNtf(object sender, Any anyMessage)
+	{
+		MatchProto.GameInfoNtf info = anyMessage.Unpack<MatchProto.GameInfoNtf>();
 		Debug.Log(info.ToString());
 
 		Config.Instance.serverIP = info.GameAddr;

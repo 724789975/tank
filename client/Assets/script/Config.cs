@@ -8,23 +8,21 @@ public class Config : MonoBehaviour
     void Start()
     {
         // 获取屏幕左下角坐标
-        Vector3 screenBottomLeft = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
+        Vector3 screenBottomLeftV = Camera.main.ScreenToViewportPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
+        Vector3 screenBottomLeft = Camera.main.ViewportToWorldPoint(screenBottomLeftV);
         // 获取屏幕右上角坐标
-        Vector3 screenTopRight = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.nearClipPlane));
-
-        // // 打印屏幕左下角和右上角坐标
-        // Debug.Log("Screen Bottom Left: " + screenBottomLeft);
-        // Debug.Log("Screen Top Right: " + screenTopRight);
+        Vector3 screenTopRightV = Camera.main.ScreenToViewportPoint(new Vector3(Screen.width, Screen.height, Camera.main.nearClipPlane));
+        Vector3 screenTopRight = Camera.main.ViewportToWorldPoint(screenTopRightV);
 
         left = screenBottomLeft.x + sceneLimit;
         right = screenTopRight.x - sceneLimit;
         top = screenTopRight.y - sceneLimit;
         bottom = screenBottomLeft.y + sceneLimit;
-
-#if UNITY_SERVER && !AI_RUNNING
-        Application.targetFrameRate = 40;
-#else
-        Application.targetFrameRate = 60;
+#if UNITY_SERVER
+		left = -8.685631f;
+        right = 8.685631f;
+        top = 4.8f;
+        bottom = -4.8f;
 #endif
 
         Debug.Log($"left: {left}, right: {right}, top: {top}, bottom: {bottom}");

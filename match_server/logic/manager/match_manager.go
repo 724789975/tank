@@ -48,12 +48,14 @@ func GetMatchManager() *MatchManager {
 		}
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
-			shell.StartCmd(fmt.Sprintf("r=%v b=%v", r, b))
+			shell.StartServer(fmt.Sprintf("r=%v b=%v", r, b))
 
 			time.Sleep(time.Second * 1)
 			match_info_ntf := &match_proto.MatchInfoNtf{
-				R:        make([]string, 0),
-				B:        make([]string, 0),
+				R: make([]string, 0),
+				B: make([]string, 0),
+			}
+			game_info_ntf := &match_proto.GameInfoNtf{
 				GameAddr: common_config.Get("game.addr").(string),
 				GamePort: int32(common_config.Get("game.port").(int)),
 			}
@@ -68,21 +70,34 @@ func GetMatchManager() *MatchManager {
 				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
 			}
 
-			any := &anypb.Any{}
-			if err := any.MarshalFrom(match_info_ntf); err != nil {
+			any1 := &anypb.Any{}
+			if err := any1.MarshalFrom(match_info_ntf); err != nil {
 				klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal match_info_ntf err: %v", err)
+			}
+			any2 := &anypb.Any{}
+			if err := any2.MarshalFrom(game_info_ntf); err != nil {
+				klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+				return
 			}
 			for _, v := range match_info_ntf.R {
 				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
 					Id:  v,
-					Msg: any,
+					Msg: any1,
+				})
+				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
+					Id:  v,
+					Msg: any2,
 				})
 				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_user:%s", v))
 			}
 			for _, v := range match_info_ntf.B {
 				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
 					Id:  v,
-					Msg: any,
+					Msg: any1,
+				})
+				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
+					Id:  v,
+					Msg: any2,
 				})
 				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_user:%s", v))
 			}
@@ -126,6 +141,40 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s add match failed", userId)
 		return resp, nil
 	}
+
+	return resp, nil
+}
+
+func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *match_proto.PveResp, err error) {
+	resp = &match_proto.PveResp{
+		Code: common.ErrorCode_OK,
+	}
+
+	userId := ""
+	defer func() {
+		klog.CtxInfof(ctx, "[MATCH-RESULT] uuid: %s, resp: %d", userId, resp.Code)
+	}()
+
+	userId = ctx.Value("userId").(string)
+
+	shell.StartServer("")
+	shell.StartAiClient("")
+
+	game_info_ntf := &match_proto.GameInfoNtf{
+		GameAddr: common_config.Get("game.addr").(string),
+		GamePort: int32(common_config.Get("game.port").(int)),
+	}
+
+	any := &anypb.Any{}
+	if err = any.MarshalFrom(game_info_ntf); err != nil {
+		klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+		return
+	}
+
+	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+		Id:  userId,
+		Msg: any,
+	})
 
 	return resp, nil
 }

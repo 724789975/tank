@@ -31,24 +31,60 @@ public class Match : MonoBehaviour
 		string userChannelBody = JsonUtility.ToJson(userChannel);
 
 		Dictionary<string, string> headers = new Dictionary<string, string>
-							{
-								{ "user-channel", userChannelBody }
-							};
+		{
+			{ "user-channel", userChannelBody }
+		};
 
 		Debug.Log($"userChannelBody {userChannelBody}");
 
-				asyncWebRequest.Post("http://114.132.124.13:8081/api/1.0/public/match_server/match", "{}", headers, (ok, response) =>
-				{
-					if (!ok)
-					{
-						Debug.Log($"匹配请求失败，服务器响应异常：{response}");
-					}
-					else
-					{
-						string responseStr = Encoding.UTF8.GetString(response);
-						Debug.Log($"匹配请求成功，服务器响应：{responseStr}");
-						MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
-					}
-				});
+		asyncWebRequest.Post("http://114.132.124.13:8081/api/1.0/public/match_server/match", "{}", headers, (ok, response) =>
+		{
+			if (!ok)
+			{
+				Debug.Log($"匹配请求失败，服务器响应异常：{response}");
+			}
+			else
+			{
+				string responseStr = Encoding.UTF8.GetString(response);
+				Debug.Log($"匹配请求成功，服务器响应：{responseStr}");
+				MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
+			}
+		});
+	}
+
+	public void PVE()
+	{
+		AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
+
+		Login.UserChannel userChannel = new Login.UserChannel()
+		{
+			ver = "v1",
+			exp = (long)(DateTime.UtcNow.AddSeconds(30) - new DateTime(1970, 1, 1)).TotalSeconds,
+			userId = AccountInfo.Instance.Account.Openid,
+		};
+
+		string userChannelBody = JsonUtility.ToJson(userChannel);
+
+		Dictionary<string, string> headers = new Dictionary<string, string>
+		{
+			{ "user-channel", userChannelBody }
+		};
+
+		Debug.Log($"userChannelBody {userChannelBody}");
+
+		asyncWebRequest.Post("http://114.132.124.13:8081/api/1.0/public/match_server/pve", "{}", headers, (ok, response) =>
+		{
+			if (!ok)
+			{
+				Debug.Log($"pve请求失败，服务器响应异常：{response}");
+			}
+			else
+			{
+				string responseStr = Encoding.UTF8.GetString(response);
+				Debug.Log($"pve请求成功，服务器响应：{responseStr}");
+				MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
+			}
+		});
 	}
 }
+

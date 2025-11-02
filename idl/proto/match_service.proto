@@ -6,6 +6,6 @@ package match_service;
 option go_package = "match_service";
 
 service MatchService {
-    //µÇÂ¼
     rpc match(match_proto.MatchReq) returns (match_proto.MatchResp){};
+    rpc pve(match_proto.PveReq) returns (match_proto.PveResp){};
 }

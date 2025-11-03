@@ -38,6 +38,17 @@ public class NetClient : MonoBehaviour
 		msgs.Clear();
 	}
 
+	void OnApplicationQuit()
+	{
+#if UNITY_EDITOR
+		DLLImport.StopAllSockets();
+		for (int i = 0; i < 20; i++)
+		{
+			DLLImport.ProcessIOModule();
+		}
+#endif
+	}
+
 	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnLogCallback))]
 	static void OnLogCallback (byte[] pData, int dwLen)
 	{

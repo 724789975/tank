@@ -41,6 +41,18 @@ public class NetServer : MonoBehaviour
 		msgs.Clear();
 	}
 
+	void OnApplicationQuit()
+	{
+#if UNITY_EDITOR
+		DLLImport.StopAllSockets();
+		for (int i = 0; i < 20; i++)
+		{
+			DLLImport.ProcessIOModule();
+		}
+		Debug.Log($"OnApplicationQuit");
+#endif
+	}
+
 	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnLogCallback))]
 	static void OnLogCallback (byte[] pData, int dwLen)
 	{
@@ -119,4 +131,5 @@ public class NetServer : MonoBehaviour
 	static NetServer instance;
 	List<P> msgs = new List<P>();
 	delegate void P();
+
 }

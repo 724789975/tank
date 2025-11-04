@@ -25,8 +25,8 @@ public class GameStart : MonoBehaviour
 		}
 
 #if PLATFORM_STANDALONE_WIN || PLATFORM_STANDALONE_LINUX || PLATFORM_STANDALONE_OSX
-		standard_width = 1280;
-		standard_height = 720;
+		standard_width = 960;
+		standard_height = 540;
 #endif
 		Debug.LogFormat("Set Screen Resolution to {0}x{1}", standard_width, standard_height);
 		Screen.SetResolution(Convert.ToInt32(standard_width), Convert.ToInt32(standard_height), false);

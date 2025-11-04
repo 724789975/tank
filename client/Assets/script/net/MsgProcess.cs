@@ -11,11 +11,17 @@ public class MsgProcess : Singleton<MsgProcess>
 	public void ProcessMessage(IntPtr pConnector, Any msg)
 	{
 		string name = Any.GetTypeName(msg.TypeUrl);
-		//UnityEngine.Debug.Log($"ProcessMessage: {name}, {pConnector}");
 		if (handlerDict.ContainsKey(name))
 		{
 			var method = handlerDict[name];
-			method(pConnector, msg);
+			try
+			{
+				method(pConnector, msg);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError($"Error processing message: {name}\n{e.Message}\n{e.StackTrace}");
+			}
 		}
 		else
 		{

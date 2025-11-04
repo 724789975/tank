@@ -165,6 +165,8 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 		GamePort: int32(common_config.Get("game.port").(int)),
 	}
 
+	time.Sleep(time.Second * 1)
+
 	any := &anypb.Any{}
 	if err = any.MarshalFrom(game_info_ntf); err != nil {
 		klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)

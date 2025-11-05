@@ -10,7 +10,7 @@ FROM alpine:latest
 
 # 用来标识部署环境,一般为test或prod,
 # 对应etc/conf.test.yaml etc/conf.prod.yaml 以此区分线上和测试配置
-ARG DEPLOYENV=dev
+ARG DEPLOYENV=test
 
 WORKDIR /app
 COPY --from=builder /build/application .

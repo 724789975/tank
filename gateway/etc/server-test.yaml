@@ -1,0 +1,30 @@
+redis:
+  addrs:
+    - "127.0.0.1:6389"
+  password: "123#@!QAzx"
+
+user_http:
+  addr: ":8080"
+
+gateway_rpc:
+  addr: "0.0.0.0:11003"
+  service_name: "gateway"
+
+game:
+  addr: "114.132.124.13"
+  port: 10085
+
+etcd:
+  addrs:
+    - "127.0.0.1:2379"
+  password: "123#@!QAzx"
+  username: "root"
+
+nats:
+  addr: "127.0.0.1:4222"
+  username: "root"
+  password: "123#@!QAzx"
+
+ws:
+  addr: "0.0.0.0:20002"
+  uri: "/ws"

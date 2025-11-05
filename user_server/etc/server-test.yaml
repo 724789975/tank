@@ -1,0 +1,31 @@
+
+
+redis:
+  addrs:
+    - "127.0.0.1:6389"
+  password: "123#@!QAzx"
+
+user_http:
+  addr: ":8080"
+
+user_rpc:
+  addr: "0.0.0.0:11001"
+  service_name: "user_center_service"
+
+game:
+  addr: "114.132.124.13"
+  port: 10085
+
+tap:
+  host: "open.tapapis.cn"
+  client_id: "oy5mqqrghbgdlrfmf4"
+  base_info_uri: "/account/profile/v1"
+
+etcd:
+  addrs:
+    - "127.0.0.1:2379"
+  password: "123#@!QAzx"
+  username: "root"
+
+gateway:
+  service_name: "gateway"

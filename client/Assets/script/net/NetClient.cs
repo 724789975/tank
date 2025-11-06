@@ -105,7 +105,7 @@ public class NetClient : MonoBehaviour
 	{
 		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 
-		DLLImport.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+		DLLImport.UdpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
 	}
 
 	public void SendMessage(Google.Protobuf.IMessage message)

@@ -18,7 +18,7 @@ etcd:
   addrs:
     - "127.0.0.1:2379"
   password: "123#@!QAzx"
-  username: "root"
+  username: "tank"
 
 nats:
   addr: "127.0.0.1:4222"

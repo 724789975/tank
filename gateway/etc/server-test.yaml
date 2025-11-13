@@ -16,15 +16,15 @@ game:
 
 etcd:
   addrs:
-    - "127.0.0.1:2379"
+    - "etcd.tank.svc.cluster.local:2379"
   password: "123#@!QAzx"
-  username: "tank"
+  username: "root"
 
 nats:
-  addr: "127.0.0.1:4222"
+  addr: "nats.tank.svc.cluster.local:4222"
   username: "root"
   password: "123#@!QAzx"
 
 ws:
-  addr: "0.0.0.0:20002"
+  addr: "0.0.0.0:30002"
   uri: "/ws"

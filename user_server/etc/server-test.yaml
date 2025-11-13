@@ -2,7 +2,7 @@
 
 redis:
   addrs:
-    - "127.0.0.1:6389"
+    - "redis.tank.svc.cluster.local:6389"
   password: "123#@!QAzx"
 
 user_http:
@@ -23,9 +23,9 @@ tap:
 
 etcd:
   addrs:
-    - "127.0.0.1:2379"
+    - "etcd.tank.svc.cluster.local:2379"
   password: "123#@!QAzx"
-  username: "tank"
+  username: "root"
 
 gateway:
   service_name: "gateway"

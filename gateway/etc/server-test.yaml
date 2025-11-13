@@ -1,6 +1,6 @@
 redis:
   addrs:
-    - "127.0.0.1:6389"
+    - "redis.tank.svc.cluster.local:6389"
   password: "123#@!QAzx"
 
 user_http:

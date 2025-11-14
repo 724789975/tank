@@ -28,3 +28,9 @@ exe_path:
   linux: "./etc/linux.sh"
   ai_windows: ".\\etc\\ai_windows.bat"
   ai_linux: "./etc/ai_linux.sh"
+
+pod:
+  game_server:
+    name: "game-server"
+    namespace: "tank"
+    image: "ubuntu:latest"

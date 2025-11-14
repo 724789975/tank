@@ -12,6 +12,7 @@ import (
 	"gate_way_module/session/isession"
 	"gate_way_module/util"
 	"sync"
+	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/golang/protobuf/proto"
@@ -135,7 +136,7 @@ func InitUserMgr() {
 			session.Send(any1)
 			return nil
 		}
-		idx, _ := common_redis.GetRedis().Incr(context.TODO(), constant.UserLoginMsgIdx).Result()
+
 		loginRequest := &gate_way.LoginRequest{}
 		err := any.UnmarshalTo(loginRequest)
 		if err != nil {
@@ -143,6 +144,15 @@ func InitUserMgr() {
 			return err
 		}
 
+		if common_redis.GetRedis().SetNX(context.TODO(), fmt.Sprintf(constant.UserLoginRedisKey, loginRequest.Id), 1, time.Second*3).Val() == false {
+			loginResp.Code = common.ErrorCode_USER_SESSION_EXIST
+			any1.MarshalFrom(loginResp)
+			session.Send(any1)
+
+			klog.Errorf("[GATEWAY-SESSION-EXIST] session %s is logining", loginRequest.Id)
+			return nil
+		}
+		idx, _ := common_redis.GetRedis().Incr(context.TODO(), constant.UserLoginMsgIdx).Result()
 		klog.Infof("[GATEWAY-LOGIN-RECV] recv %s", loginRequest.String())
 		ncMsg := &gate_way.NatsLoginRequest{
 			Id:  loginRequest.Id,

@@ -48,7 +48,7 @@ func GetMatchManager() *MatchManager {
 		}
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
-			shell.StartServer(fmt.Sprintf("r=%v b=%v", r, b))
+			shell.StartServer(context.Background(), idClient.Generate().Int64(), fmt.Sprintf("r=%v b=%v", r, b))
 
 			time.Sleep(time.Second * 1)
 			match_info_ntf := &match_proto.MatchInfoNtf{
@@ -150,33 +150,35 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 		Code: common.ErrorCode_OK,
 	}
 
-	userId := ""
-	defer func() {
-		klog.CtxInfof(ctx, "[MATCH-RESULT] uuid: %s, resp: %d", userId, resp.Code)
-	}()
+	shell.StartClient(ctx, idClient.Generate().Int64(), "")
 
-	userId = ctx.Value("userId").(string)
+	// userId := ""
+	// defer func() {
+	// 	klog.CtxInfof(ctx, "[MATCH-RESULT] uuid: %s, resp: %d", userId, resp.Code)
+	// }()
 
-	shell.StartServer("")
-	shell.StartAiClient("")
+	// userId = ctx.Value("userId").(string)
 
-	game_info_ntf := &match_proto.GameInfoNtf{
-		GameAddr: common_config.Get("game.addr").(string),
-		GamePort: int32(common_config.Get("game.port").(int)),
-	}
+	// shell.StartServer(ctx, "")
+	// shell.StartAiClient(ctx, "")
 
-	time.Sleep(time.Second * 1)
+	// game_info_ntf := &match_proto.GameInfoNtf{
+	// 	GameAddr: common_config.Get("game.addr").(string),
+	// 	GamePort: int32(common_config.Get("game.port").(int)),
+	// }
 
-	any := &anypb.Any{}
-	if err = any.MarshalFrom(game_info_ntf); err != nil {
-		klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
-		return
-	}
+	// time.Sleep(time.Second * 1)
 
-	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
-		Id:  userId,
-		Msg: any,
-	})
+	// any := &anypb.Any{}
+	// if err = any.MarshalFrom(game_info_ntf); err != nil {
+	// 	klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+	// 	return
+	// }
+
+	// rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+	// 	Id:  userId,
+	// 	Msg: any,
+	// })
 
 	return resp, nil
 }

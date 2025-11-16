@@ -10,6 +10,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -79,7 +80,7 @@ func StartClient(ctx context.Context, id int64, params string) {
 							Protocol:      corev1.ProtocolUDP,
 						},
 					},
-					Command: []string{"sh", "-c", "exit 1"},
+					Command: []string{"./tank.x86_64"},
 					Env: []corev1.EnvVar{
 						{
 							Name:  "PARAMS",
@@ -92,11 +93,53 @@ func StartClient(ctx context.Context, id int64, params string) {
 		},
 	}
 
-	_, err = clientset.CoreV1().Pods(namespace).Create(ctx, pod, metav1.CreateOptions{})
+	_pod, err := clientset.CoreV1().Pods(namespace).Create(ctx, pod, metav1.CreateOptions{})
 	if err != nil {
 		klog.CtxErrorf(ctx, "create pod %s failed, err: %v", pod.Name, err)
 		return
 	}
-	klog.CtxInfof(ctx, "Pod %s created successfully.\n", podName)
+	klog.CtxInfof(ctx, "Pod %v created successfully.\n", _pod)
 
+	svc := &corev1.Service{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Service",
+			APIVersion: "v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      podName,
+			Namespace: namespace,
+		},
+		Spec: corev1.ServiceSpec{
+			Selector: map[string]string{
+				"app": podName,
+			},
+			Ports: []corev1.ServicePort{
+				{
+					Name:     "tcp",
+					Protocol: corev1.ProtocolTCP,
+					Port:     10085,
+					TargetPort: intstr.IntOrString{
+						Type:   intstr.Int,
+						IntVal: 10085,
+					},
+				},
+				{
+					Name:     "udp",
+					Protocol: corev1.ProtocolUDP,
+					Port:     10085,
+					TargetPort: intstr.IntOrString{
+						Type:   intstr.Int,
+						IntVal: 10085,
+					},
+				},
+			},
+			Type: corev1.ServiceTypeNodePort,
+		},
+	}
+	_svc, err := clientset.CoreV1().Services(namespace).Create(ctx, svc, metav1.CreateOptions{})
+	if err != nil {
+		klog.CtxErrorf(ctx, "create service %s failed, err: %v", svc.Name, err)
+		return
+	}
+	klog.CtxInfof(ctx, "Service %v created successfully.\n", _svc)
 }

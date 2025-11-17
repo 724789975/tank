@@ -150,13 +150,14 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 		Code: common.ErrorCode_OK,
 	}
 
-
 	userId := ""
 	defer func() {
 		klog.CtxInfof(ctx, "[MATCH-RESULT] uuid: %s, resp: %d", userId, resp.Code)
 	}()
 
 	userId = ctx.Value("userId").(string)
+
+	rpc.ServerMgrClient
 
 	shell.StartServer(ctx, "")
 	shell.StartAiClient(ctx, "")

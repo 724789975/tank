@@ -6,4 +6,7 @@ func InitRpc() {
 	}
 
 	//后续功能写在这里
+	if err := InitServerMgrClient(); err != nil {
+		panic(err)
+	}
 }

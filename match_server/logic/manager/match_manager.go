@@ -7,6 +7,7 @@ import (
 	"match_server/kitex_gen/common"
 	"match_server/kitex_gen/gate_way"
 	"match_server/kitex_gen/match_proto"
+	"match_server/kitex_gen/server_mgr"
 	"match_server/logic/match"
 	common_redis "match_server/redis"
 	"match_server/rpc"
@@ -157,7 +158,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	userId = ctx.Value("userId").(string)
 
-	rpc.ServerMgrClient
+	resp_create_server := rpc.ServerMgrClient.CreateServer(ctx, &server_mgr.CreateServerReq{})
 
 	shell.StartServer(ctx, "")
 	shell.StartAiClient(ctx, "")

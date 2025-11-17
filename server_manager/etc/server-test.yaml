@@ -4,10 +4,10 @@ redis:
   password: "123#@!QAzx"
 
 server_mgr_http:
-  addr: ":8081"
+  addr: ":8080"
 
 server_mgr_rpc:
-  addr: "0.0.0.0:11002"
+  addr: "0.0.0.0:11001"
   service_name: "server_mgr"
 
 etcd:

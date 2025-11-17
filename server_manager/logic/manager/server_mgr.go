@@ -46,7 +46,7 @@ func GetServerManager() *ServerManager {
 func (s *ServerManager) CreateServer(ctx context.Context, req *server_mgr.CreateServerReq) (resp *server_mgr.CreateServerRsp, err error) {
 	resp = &server_mgr.CreateServerRsp{
 		Code:     common.ErrorCode_OK,
-		GameAddr: common_config.Get("pod.game_addr").(string),
+		GameAddr: common_config.Get("pod.server_addr").(string),
 	}
 
 	userId := ""

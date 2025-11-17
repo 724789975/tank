@@ -142,7 +142,7 @@ func create_pod(ctx context.Context, podName string, namespace string, image str
 								},
 							},
 							Command: []string{"./tank.x86_64", params},
-							Env:     []corev1.EnvVar{{}},
+							// Env:     []corev1.EnvVar{},
 						},
 					},
 					RestartPolicy: corev1.RestartPolicyNever,

@@ -3,16 +3,12 @@ redis:
     - "114.132.124.13:6389"
   password: "123#@!QAzx"
 
-match_http:
+server_mgr_http:
   addr: ":8081"
 
-match_rpc:
+server_mgr_rpc:
   addr: "0.0.0.0:11002"
-  service_name: "match_server"
-
-game:
-  addr: "114.132.124.13"
-  port: 10085
+  service_name: "server_mgr"
 
 etcd:
   addrs:
@@ -30,7 +26,12 @@ exe_path:
   ai_linux: "./etc/ai_linux.sh"
 
 pod:
+  server_addr: "quchifan.wang"
   game_server:
     name: "game-server"
     namespace: "tank"
     image: "docker.io/library/game-server:v1.0.0"
+  ai_client:
+    name: "ai-client"
+    namespace: "tank"
+    image: "docker.io/library/ai-client:v1.0.0"

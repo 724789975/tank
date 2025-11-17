@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "proto/server_mgr.proto";
+package server_mgr_service;
+
+option go_package = "server_mgr_service";
+
+service ServerMgrService {
+    //创建服务器
+    rpc create_server(server_mgr.CreateServerReq) returns (server_mgr.CreateServerRsp){};
+    //创建AI客户端
+    rpc create_ai_client(server_mgr.CreateAiClientReq) returns (server_mgr.CreateAiClientRsp){};
+}

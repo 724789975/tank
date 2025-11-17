@@ -1,0 +1,26 @@
+syntax = "proto3";
+package server_mgr;
+
+option go_package = "server_mgr";
+
+import "proto/common.proto";
+
+message CreateServerReq {
+}
+
+message CreateServerRsp {
+	common.ErrorCode code     = 1;
+	string           msg      = 2;
+	string           gameAddr = 3;
+	int32            gamePort = 4;
+}
+
+message CreateAiClientReq {
+}
+
+message CreateAiClientRsp {
+	common.ErrorCode code     = 1;
+	string           msg      = 2;
+	string           gameAddr = 3;
+	int32            gamePort = 4;
+}

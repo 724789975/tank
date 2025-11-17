@@ -44,4 +44,12 @@ enum ErrorCode {
     
     // 系统错误
     PANIC_RECOVERY            = 900;  // 系统崩溃恢复
+    
+    // 服务器管理相关错误
+    SERVER_MGR_INIT_ERROR     = 1000; // 服务器管理器初始化错误
+    SERVER_MGR_CREATE_FAILED  = 1001; // 服务器创建失败
+    SERVER_MGR_POD_ERROR       = 1002; // Pod创建错误
+    SERVER_MGR_SERVICE_ERROR   = 1003; // 服务创建错误
+    SERVER_MGR_CONFIG_ERROR    = 1004; // 配置错误
+    SERVER_MGR_AI_CLIENT_ERROR = 1005; // AI客户端创建错误
 }

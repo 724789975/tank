@@ -1,0 +1,37 @@
+redis:
+  addrs:
+    - "redis.tank.svc.cluster.local:6389"
+  password: "123#@!QAzx"
+
+server_mgr_http:
+  addr: ":8080"
+
+server_mgr_rpc:
+  addr: "0.0.0.0:11001"
+  service_name: "server_mgr"
+
+etcd:
+  addrs:
+    - "etcd.tank.svc.cluster.local:2379"
+  password: "123#@!QAzx"
+  username: "root"
+
+gateway:
+  service_name: "gateway"
+
+exe_path:
+  windows: ".\\etc\\windows.bat"
+  linux: "./etc/linux.sh"
+  ai_windows: ".\\etc\\ai_windows.bat"
+  ai_linux: "./etc/ai_linux.sh"
+
+pod:
+  server_addr: "quchifan.wang"
+  game_server:
+    name: "game-server"
+    namespace: "tank"
+    image: "docker.io/library/game-server:v1.0.0"
+  ai_client:
+    name: "ai-client"
+    namespace: "tank"
+    image: "docker.io/library/ai-client:v1.0.0"

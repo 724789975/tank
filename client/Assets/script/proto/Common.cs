@@ -24,7 +24,7 @@ namespace Common {
     static CommonReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbirbBAoJRXJyb3JDb2RlEgYK",
+            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiqPBgoJRXJyb3JDb2RlEgYK",
             "Ak9LEAASCgoGRkFJTEVEEAESFwoTQVVUSF9NSVNTSU5HX0hFQURFUhBkEhUK",
             "EUFVVEhfSU5WQUxJRF9KU09OEGUSFwoTQVVUSF9JTlZBTElEX1VTRVJJRBBm",
             "EhQKEEFVVEhfSU5WQUxJRF9FWFAQZxIWChJBVVRIX1RPS0VOX0VYUElSRUQQ",
@@ -38,7 +38,11 @@ namespace Common {
             "QVlfSU5JVF9FUlJPUhD0AxIZChRSUENfTUVUSE9EX05PVF9GT1VORBD1AxId",
             "ChhSUENfTUVUSE9EX0hBTkRMRVJfRVJST1IQ9gMSFgoRQ09ORklHX0xPQURf",
             "RVJST1IQ2AQSEgoNSFRUUF9TTE9XX0FQSRC8BRITCg5QQU5JQ19SRUNPVkVS",
-            "WRCEB0IIWgZjb21tb25iBnByb3RvMw=="));
+            "WRCEBxIaChVTRVJWRVJfTUdSX0lOSVRfRVJST1IQ6AcSHQoYU0VSVkVSX01H",
+            "Ul9DUkVBVEVfRkFJTEVEEOkHEhkKFFNFUlZFUl9NR1JfUE9EX0VSUk9SEOoH",
+            "Eh0KGFNFUlZFUl9NR1JfU0VSVklDRV9FUlJPUhDrBxIcChdTRVJWRVJfTUdS",
+            "X0NPTkZJR19FUlJPUhDsBxIfChpTRVJWRVJfTUdSX0FJX0NMSUVOVF9FUlJP",
+            "UhDtB0IIWgZjb21tb25iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null, null));
@@ -144,6 +148,30 @@ namespace Common {
     /// 系统错误
     /// </summary>
     [pbr::OriginalName("PANIC_RECOVERY")] PanicRecovery = 900,
+    /// <summary>
+    /// 服务器管理相关错误
+    /// </summary>
+    [pbr::OriginalName("SERVER_MGR_INIT_ERROR")] ServerMgrInitError = 1000,
+    /// <summary>
+    /// 服务器创建失败
+    /// </summary>
+    [pbr::OriginalName("SERVER_MGR_CREATE_FAILED")] ServerMgrCreateFailed = 1001,
+    /// <summary>
+    /// Pod创建错误
+    /// </summary>
+    [pbr::OriginalName("SERVER_MGR_POD_ERROR")] ServerMgrPodError = 1002,
+    /// <summary>
+    /// 服务创建错误
+    /// </summary>
+    [pbr::OriginalName("SERVER_MGR_SERVICE_ERROR")] ServerMgrServiceError = 1003,
+    /// <summary>
+    /// 配置错误
+    /// </summary>
+    [pbr::OriginalName("SERVER_MGR_CONFIG_ERROR")] ServerMgrConfigError = 1004,
+    /// <summary>
+    /// AI客户端创建错误
+    /// </summary>
+    [pbr::OriginalName("SERVER_MGR_AI_CLIENT_ERROR")] ServerMgrAiClientError = 1005,
   }
 
   #endregion

@@ -22,19 +22,23 @@ var (
 )
 
 func init() {
-	kubeconfig := os.Getenv("KUBECONFIG")                         // 获取kubeconfig路径，通常在集群外部运行时需要设置此环境变量。
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig) // 构建配置对象。如果是在集群内部，则可以省略kubeconfig。
+	kubeconfig := os.Getenv("KUBECONFIG")
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
-		klog.CtxErrorf(context.Background(), "build config from flags failed, err: %v", err)
+		klog.CtxErrorf(context.Background(), "[POD-INIT-001] failed to build kubernetes config, kubeconfig: %s, error: %v", kubeconfig, err)
 		return
 	}
-	clientset, err = kubernetes.NewForConfig(config) // 创建客户端对象。
+	clientset, err = kubernetes.NewForConfig(config)
 	if err != nil {
+		klog.CtxErrorf(context.Background(), "[POD-INIT-002] failed to create kubernetes clientset, error: %v", err)
 		panic(err)
 	}
+	klog.CtxInfof(context.Background(), "[POD-INIT-003] successfully initialized kubernetes clientset")
 }
 
 func create_pod(ctx context.Context, podName string, namespace string, image string, params string) (err error, tcpPort int32, udpPort int32) {
+	klog.CtxInfof(ctx, "[POD-CREATE-004] starting pod creation, podName: %s, namespace: %s, image: %s", podName, namespace, image)
+	
 	job, err := clientset.BatchV1().Jobs(namespace).Create(ctx, &batchv1.Job{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Job",
@@ -45,11 +49,6 @@ func create_pod(ctx context.Context, podName string, namespace string, image str
 			Namespace: namespace,
 		},
 		Spec: batchv1.JobSpec{
-			// Selector: &metav1.LabelSelector{
-			// 	MatchLabels: map[string]string{
-			// 		"app": podName,
-			// 	},
-			// },
 			TTLSecondsAfterFinished: func() *int32 {
 				ttlSecondsAfterFinished := int32(2)
 				return &ttlSecondsAfterFinished
@@ -77,7 +76,6 @@ func create_pod(ctx context.Context, podName string, namespace string, image str
 								},
 							},
 							Command: []string{"./tank.x86_64", params},
-							// Env:     []corev1.EnvVar{},
 						},
 					},
 					RestartPolicy: corev1.RestartPolicyNever,
@@ -89,11 +87,12 @@ func create_pod(ctx context.Context, podName string, namespace string, image str
 			}(),
 		},
 	}, metav1.CreateOptions{})
+	
 	if err != nil {
-		klog.CtxErrorf(ctx, "create job %s failed, err: %v", job.Name, err)
+		klog.CtxErrorf(ctx, "[POD-CREATE-005] failed to create job, podName: %s, namespace: %s, error: %v", podName, namespace, err)
 		return err, 0, 0
 	}
-	klog.CtxInfof(ctx, "Job %v created successfully.\n", job)
+	klog.CtxInfof(ctx, "[POD-CREATE-006] successfully created job, podName: %s, jobName: %s", podName, job.Name)
 
 	svc, err := clientset.CoreV1().Services(namespace).Create(ctx, &corev1.Service{
 		TypeMeta: metav1.TypeMeta{
@@ -105,8 +104,8 @@ func create_pod(ctx context.Context, podName string, namespace string, image str
 			Namespace: namespace,
 			Labels: map[string]string{
 				"app":        podName,
-				"auto-clean": "true",                               // 标记为需要自动清理
-				"created-at": fmt.Sprintf("%d", time.Now().Unix()), // 创建时间戳
+				"auto-clean": "true",
+				"created-at": fmt.Sprintf("%d", time.Now().Unix()),
 			},
 		},
 		Spec: corev1.ServiceSpec{
@@ -134,11 +133,14 @@ func create_pod(ctx context.Context, podName string, namespace string, image str
 			Type: corev1.ServiceTypeNodePort,
 		},
 	}, metav1.CreateOptions{})
+	
 	if err != nil {
-		klog.CtxErrorf(ctx, "create service %s failed, err: %v", svc.Name, err)
+		klog.CtxErrorf(ctx, "[POD-CREATE-007] failed to create service, podName: %s, namespace: %s, error: %v", podName, namespace, err)
 		return err, 0, 0
 	}
-	klog.CtxInfof(ctx, "Service %v created successfully.\n", svc)
+	klog.CtxInfof(ctx, "[POD-CREATE-008] successfully created service, podName: %s, serviceName: %s, tcpPort: %d, udpPort: %d", 
+		podName, svc.Name, svc.Spec.Ports[0].NodePort, svc.Spec.Ports[1].NodePort)
+	
 	return nil, svc.Spec.Ports[0].NodePort, svc.Spec.Ports[1].NodePort
 }
 
@@ -146,11 +148,32 @@ func StartGameServer(ctx context.Context, id int64, params string) (err error, t
 	podName := fmt.Sprintf("%s-%d", common_config.Get("pod.game_server.name").(string), id)
 	image := common_config.Get("pod.game_server.image").(string)
 
+	klog.CtxInfof(ctx, "[POD-START-009] starting game server, id: %d, podName: %s, image: %s, params: %s", id, podName, image, params)
+
 	err, tcpPort, udpPort = create_pod(ctx, podName, common_config.Get("pod.game_server.namespace").(string), image, params)
 	if err != nil {
-		klog.CtxErrorf(ctx, "create pod %s failed, err: %v", podName, err)
+		klog.CtxErrorf(ctx, "[POD-START-010] failed to create pod for game server, id: %d, podName: %s, error: %v", id, podName, err)
 		return err, 0, 0
 	}
 
+	klog.CtxInfof(ctx, "[POD-START-011] successfully started game server, id: %d, podName: %s, tcpPort: %d, udpPort: %d", 
+		id, podName, tcpPort, udpPort)
+	return nil, tcpPort, udpPort
+}
+
+func StartAiClient(ctx context.Context, id int64, params string) (err error, tcpPort int32, udpPort int32) {
+	podName := fmt.Sprintf("%s-%d", common_config.Get("pod.ai_client.name").(string), id)
+	image := common_config.Get("pod.ai_client.image").(string)
+
+	klog.CtxInfof(ctx, "[POD-START-012] starting ai client, id: %d, podName: %s, image: %s, params: %s", id, podName, image, params)
+
+	err, tcpPort, udpPort = create_pod(ctx, podName, common_config.Get("pod.ai_client.namespace").(string), image, params)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[POD-START-013] failed to create pod for ai client, id: %d, podName: %s, error: %v", id, podName, err)
+		return err, 0, 0
+	}
+
+	klog.CtxInfof(ctx, "[POD-START-014] successfully started ai client, id: %d, podName: %s, tcpPort: %d, udpPort: %d", 
+		id, podName, tcpPort, udpPort)
 	return nil, tcpPort, udpPort
 }

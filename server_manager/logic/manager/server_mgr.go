@@ -29,14 +29,14 @@ func GetServerManager() *ServerManager {
 		key := "match_server:snowflake:node"
 		n, err := common_redis.GetRedis().Incr(context.Background(), key).Result()
 		if err != nil {
-			klog.Fatal("[MATCH-MANAGER-INIT] MatchManager: gen uuid creator err: %v", err)
+			klog.Fatal("[SERVER-MGR-INIT-001] ServerManager: failed to generate UUID creator, key: %s, error: %v", key, err)
 		}
 
 		nodeIdx := n % (1 << snowflake.NodeBits)
 		if node, err := snowflake.NewNode(nodeIdx); err != nil {
-			klog.Fatal("[MATCH-MANAGER-NODE] MatchManager: gen uuid creator err: %v", err)
+			klog.Fatal("[SERVER-MGR-INIT-002] ServerManager: failed to create snowflake node, nodeIdx: %d, error: %v", nodeIdx, err)
 		} else {
-			klog.Infof("[MATCH-MANAGER-NODE-OK] MatchManager: gen uuid creator success, node: %d", nodeIdx)
+			klog.Infof("[SERVER-MGR-INIT-003] ServerManager: successfully initialized UUID creator, nodeIdx: %d", nodeIdx)
 			idClient = node
 		}
 	})
@@ -51,24 +51,42 @@ func (s *ServerManager) CreateServer(ctx context.Context, req *server_mgr.Create
 
 	userId := ""
 	defer func() {
-		klog.CtxInfof(ctx, "[MATCH-RESULT] uuid: %s, resp: %d", userId, resp.Code)
+		klog.CtxInfof(ctx, "[SERVER-MGR-CREATE-004] uuid: %s, resp: %d", userId, resp.Code)
 	}()
 
 	userId = ctx.Value("userId").(string)
 
 	if err, tcpPort, _ := pod.StartGameServer(ctx, idClient.Generate().Int64(), userId); err != nil {
-		klog.CtxErrorf(ctx, "start game server failed, err: %v", err)
+		klog.CtxErrorf(ctx, "[SERVER-MGR-CREATE-007] CreateServer: userId: %s, failed to start game server, error: %v", userId, err)
 		return &server_mgr.CreateServerRsp{
-			Code: common.ErrorCode_FAILED,
-			Msg:  "start game server failed",
+			Code: common.ErrorCode_SERVER_MGR_CREATE_FAILED,
+			Msg:  "failed to start game server",
 		}, err
 	} else {
 		resp.GamePort = tcpPort
+		klog.CtxInfof(ctx, "[SERVER-MGR-CREATE-008] CreateServer: userId: %s, successfully created server, tcpPort: %d", userId, tcpPort)
 	}
+	
 	resp.Msg = resp.Code.String()
 	return resp, nil
 }
 
 func (s *ServerManager) CreateAiClient(ctx context.Context, req *server_mgr.CreateAiClientReq) (resp *server_mgr.CreateAiClientRsp, err error) {
-	return &server_mgr.CreateAiClientRsp{}, nil
+	resp = &server_mgr.CreateAiClientRsp{
+		Code:     common.ErrorCode_OK,
+		GameAddr: common_config.Get("pod.server_addr").(string),
+	}
+	userId := ""
+	defer func() {
+		klog.CtxInfof(ctx, "[SERVER-MGR-CREATE-005] uuid: %s, resp: %d", userId, resp.Code)
+	}()
+
+	userId = ctx.Value("userId").(string)
+	
+
+	
+	return &server_mgr.CreateAiClientRsp{
+		Code: common.ErrorCode_SERVER_MGR_AI_CLIENT_ERROR,
+		Msg:  "AI client creation not implemented yet",
+	}, nil
 }

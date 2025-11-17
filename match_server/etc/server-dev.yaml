@@ -23,6 +23,9 @@ etcd:
 gateway:
   service_name: "gateway"
 
+server_mgr:
+  service_name: "server-mgr"
+
 exe_path:
   windows: ".\\etc\\windows.bat"
   linux: "./etc/linux.sh"

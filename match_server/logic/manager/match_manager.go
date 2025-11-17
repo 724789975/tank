@@ -150,35 +150,34 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 		Code: common.ErrorCode_OK,
 	}
 
-	shell.StartClient(ctx, idClient.Generate().Int64(), "")
 
-	// userId := ""
-	// defer func() {
-	// 	klog.CtxInfof(ctx, "[MATCH-RESULT] uuid: %s, resp: %d", userId, resp.Code)
-	// }()
+	userId := ""
+	defer func() {
+		klog.CtxInfof(ctx, "[MATCH-RESULT] uuid: %s, resp: %d", userId, resp.Code)
+	}()
 
-	// userId = ctx.Value("userId").(string)
+	userId = ctx.Value("userId").(string)
 
-	// shell.StartServer(ctx, "")
-	// shell.StartAiClient(ctx, "")
+	shell.StartServer(ctx, "")
+	shell.StartAiClient(ctx, "")
 
-	// game_info_ntf := &match_proto.GameInfoNtf{
-	// 	GameAddr: common_config.Get("game.addr").(string),
-	// 	GamePort: int32(common_config.Get("game.port").(int)),
-	// }
+	game_info_ntf := &match_proto.GameInfoNtf{
+		GameAddr: common_config.Get("game.addr").(string),
+		GamePort: int32(common_config.Get("game.port").(int)),
+	}
 
-	// time.Sleep(time.Second * 1)
+	time.Sleep(time.Second * 1)
 
-	// any := &anypb.Any{}
-	// if err = any.MarshalFrom(game_info_ntf); err != nil {
-	// 	klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
-	// 	return
-	// }
+	any := &anypb.Any{}
+	if err = any.MarshalFrom(game_info_ntf); err != nil {
+		klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+		return
+	}
 
-	// rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
-	// 	Id:  userId,
-	// 	Msg: any,
-	// })
+	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+		Id:  userId,
+		Msg: any,
+	})
 
 	return resp, nil
 }

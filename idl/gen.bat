@@ -29,6 +29,7 @@ move .\kitex_gen ..\gateway\
 del go.mod
 .\bin\kitex -module match_server -type protobuf -no-fast-api proto/gateway_service.proto
 .\bin\kitex -module match_server -type protobuf -no-fast-api proto/match_service.proto
+.\bin\kitex -module match_server -type protobuf -no-fast-api proto/server_mgr_service.proto
 rmdir /s /q ..\match_server\kitex_gen
 move .\kitex_gen ..\match_server\
 

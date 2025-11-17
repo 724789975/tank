@@ -16,6 +16,7 @@ message CreateServerRsp {
 }
 
 message CreateAiClientReq {
+	string gameAddr = 1;
 }
 
 message CreateAiClientRsp {

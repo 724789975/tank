@@ -49,6 +49,7 @@ public class GameStart : MonoBehaviour
 		}
 
 		// Initialize the CommandLine
+		Debug.Log("CommandLine: " + text);
 		Oddworm.Framework.CommandLine.Init(text);
 
 		GameStart.Instance.ToString();
@@ -62,7 +63,7 @@ public class GameStart : MonoBehaviour
 		AccountInfo.Instance.Account.Openid = AccountInfo.Instance.Account.Openid == "" ? Oddworm.Framework.CommandLine.GetString("-openid", "mzw0536knQSO+bhbdL6dtw==") : AccountInfo.Instance.Account.Openid;
 		AccountInfo.Instance.Account.Unionid = AccountInfo.Instance.Account.Unionid == "" ? Oddworm.Framework.CommandLine.GetString("-unionid", "SnwhJ5s2EURKCKt0LBsDLw==") : AccountInfo.Instance.Account.Unionid;
 
-		Config.Instance.serverIP = Config.Instance.serverIP == "0.0.0.0" ? Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1") : Config.Instance.serverIP;
+		Config.Instance.serverIP = Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1");
 		Debug.Log(Config.Instance.serverIP);
 
 		GameStart.Instance.ToString();

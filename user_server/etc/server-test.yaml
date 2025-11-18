@@ -10,7 +10,7 @@ user_http:
 
 user_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "user_center_service"
+  service_name: "user_center"
 
 game:
   addr: "114.132.124.13"

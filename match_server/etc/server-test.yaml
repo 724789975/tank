@@ -11,7 +11,7 @@ match_rpc:
   service_name: "match_server"
 
 game:
-  addr: "114.132.124.13"
+  addr: "115.190.230.47"
   port: 10085
 
 etcd:

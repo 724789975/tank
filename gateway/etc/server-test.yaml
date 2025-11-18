@@ -7,7 +7,7 @@ user_http:
   addr: ":8080"
 
 gateway_rpc:
-  addr: "0.0.0.0:11003"
+  addr: "0.0.0.0:11001"
   service_name: "gateway"
 
 game:

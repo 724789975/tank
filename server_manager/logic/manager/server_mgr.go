@@ -2,7 +2,6 @@ package manager
 
 import (
 	"context"
-	"fmt"
 	"server_manager/kitex_gen/common"
 	"server_manager/kitex_gen/server_mgr"
 	"server_manager/pod"
@@ -45,7 +44,7 @@ func GetServerManager() *ServerManager {
 
 func (s *ServerManager) CreateServer(ctx context.Context, req *server_mgr.CreateServerReq) (resp *server_mgr.CreateServerRsp, err error) {
 	resp = &server_mgr.CreateServerRsp{
-		Code:     common.ErrorCode_OK,
+		Code: common.ErrorCode_OK,
 	}
 
 	userId := ""
@@ -55,7 +54,7 @@ func (s *ServerManager) CreateServer(ctx context.Context, req *server_mgr.Create
 
 	userId = ctx.Value("userId").(string)
 
-	if err1, clusterIP, tcpPort, _ := pod.StartGameServer(ctx, idClient.Generate().Int64(), userId); err1 != nil {
+	if err1, clusterIP, tcpPort, _ := pod.StartGameServer(ctx, idClient.Generate().Int64(), []string{userId}); err1 != nil {
 		klog.CtxErrorf(ctx, "[SERVER-MGR-CREATE-007] CreateServer: userId: %s, failed to start game server, error: %v", userId, err1)
 		resp.Code = common.ErrorCode_SERVER_MGR_CREATE_FAILED
 		resp.Msg = "failed to start game server"
@@ -65,14 +64,14 @@ func (s *ServerManager) CreateServer(ctx context.Context, req *server_mgr.Create
 		resp.GameAddr = clusterIP
 		klog.CtxInfof(ctx, "[SERVER-MGR-CREATE-008] CreateServer: userId: %s, successfully created server, tcpPort: %d", userId, tcpPort)
 	}
-	
+
 	resp.Msg = resp.Code.String()
 	return resp, err
 }
 
 func (s *ServerManager) CreateAiClient(ctx context.Context, req *server_mgr.CreateAiClientReq) (resp *server_mgr.CreateAiClientRsp, err error) {
 	resp = &server_mgr.CreateAiClientRsp{
-		Code:     common.ErrorCode_OK,
+		Code: common.ErrorCode_OK,
 	}
 	userId := ""
 	defer func() {
@@ -80,8 +79,8 @@ func (s *ServerManager) CreateAiClient(ctx context.Context, req *server_mgr.Crea
 	}()
 
 	userId = ctx.Value("userId").(string)
-	
-	if err1, clusterIP, tcpPort, _ := pod.StartAiClient(ctx, idClient.Generate().Int64(), fmt.Sprintf("-server_ip=%s", req.GameAddr)); err1 != nil {
+
+	if err1, clusterIP, tcpPort, _ := pod.StartAiClient(ctx, idClient.Generate().Int64(), []string{"-server_ip", req.GameAddr}); err1 != nil {
 		klog.CtxErrorf(ctx, "[SERVER-MGR-CREATE-007] CreateServer: userId: %s, failed to start game server, error: %v", userId, err1)
 		resp.Code = common.ErrorCode_SERVER_MGR_CREATE_FAILED
 		resp.Msg = "failed to start ai client"
@@ -91,6 +90,6 @@ func (s *ServerManager) CreateAiClient(ctx context.Context, req *server_mgr.Crea
 		resp.GameAddr = clusterIP
 		klog.CtxInfof(ctx, "[SERVER-MGR-CREATE-008] CreateAiClient: userId: %s, successfully created ai client, tcpPort: %d", userId, tcpPort)
 	}
-	
+
 	return resp, err
 }

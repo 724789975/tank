@@ -11,7 +11,6 @@ import (
 	"match_server/logic/match"
 	common_redis "match_server/redis"
 	"match_server/rpc"
-	"match_server/shell"
 	"sync"
 	"time"
 
@@ -49,7 +48,11 @@ func GetMatchManager() *MatchManager {
 		}
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
-			shell.StartServer(context.Background(), idClient.Generate().Int64(), fmt.Sprintf("r=%v b=%v", r, b))
+			resp_create_server, err := rpc.ServerMgrClient.CreateServer(context.Background(), &server_mgr.CreateServerReq{})
+			if err != nil {
+				klog.CtxErrorf(context.Background(), "[MATCH-EXIST] uuid: %v %v create server failed, err: %v", r, b, err)
+				return
+			}
 
 			time.Sleep(time.Second * 1)
 			match_info_ntf := &match_proto.MatchInfoNtf{
@@ -58,7 +61,7 @@ func GetMatchManager() *MatchManager {
 			}
 			game_info_ntf := &match_proto.GameInfoNtf{
 				GameAddr: common_config.Get("game.addr").(string),
-				GamePort: int32(common_config.Get("game.port").(int)),
+				GamePort: int32(resp_create_server.GamePort),
 			}
 			for _, v := range r {
 				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
@@ -158,14 +161,24 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	userId = ctx.Value("userId").(string)
 
-	resp_create_server := rpc.ServerMgrClient.CreateServer(ctx, &server_mgr.CreateServerReq{})
-
-	shell.StartServer(ctx, "")
-	shell.StartAiClient(ctx, "")
+	resp_create_server, err := rpc.ServerMgrClient.CreateServer(ctx, &server_mgr.CreateServerReq{})
+	if err != nil {
+		resp.Code = common.ErrorCode_FAILED
+		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create server failed, err: %v", userId, err)
+		return resp, err
+	}
+	_, err = rpc.ServerMgrClient.CreateAiClient(ctx, &server_mgr.CreateAiClientReq{
+		GameAddr: resp_create_server.GameAddr,
+	})
+	if err != nil {
+		resp.Code = common.ErrorCode_FAILED
+		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create ai client failed, err: %v", userId, err)
+		return resp, err
+	}
 
 	game_info_ntf := &match_proto.GameInfoNtf{
 		GameAddr: common_config.Get("game.addr").(string),
-		GamePort: int32(common_config.Get("game.port").(int)),
+		GamePort: resp_create_server.GamePort,
 	}
 
 	time.Sleep(time.Second * 1)

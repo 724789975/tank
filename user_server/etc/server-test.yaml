@@ -8,7 +8,7 @@ user_http:
 
 user_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "user_center"
+  service_name: "user-center"
 
 game:
   addr: "114.132.124.13"
@@ -21,7 +21,7 @@ tap:
 
 etcd:
   addrs:
-    - "192.168.158.37:12379"
+    - "etcd.tank.svc.cluster.local:2379"
   password: "123#@!QAzx"
   username: "root"
 

@@ -8,7 +8,7 @@ match_http:
 
 match_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "match_server"
+  service_name: "match-server"
 
 game:
   addr: "115.190.230.47"
@@ -16,7 +16,7 @@ game:
 
 etcd:
   addrs:
-    - "192.168.158.37:12379"
+    - "etcd.tank.svc.cluster.local:2379"
   password: "123#@!QAzx"
   username: "root"
 

@@ -8,11 +8,11 @@ server_mgr_http:
 
 server_mgr_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "server_mgr"
+  service_name: "server-mgr"
 
 etcd:
   addrs:
-    - "192.168.158.37:12379"
+    - "etcd.tank.svc.cluster.local:2379"
   password: "123#@!QAzx"
   username: "root"
 

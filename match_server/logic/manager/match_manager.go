@@ -167,6 +167,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create server failed, err: %v", userId, err)
 		return resp, err
 	}
+	time.Sleep(time.Second * 1)
 	_, err = rpc.ServerMgrClient.CreateAiClient(ctx, &server_mgr.CreateAiClientReq{
 		GameAddr: resp_create_server.GameAddr,
 	})

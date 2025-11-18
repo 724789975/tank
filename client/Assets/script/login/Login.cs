@@ -103,7 +103,7 @@ public class Login : MonoBehaviour
 							{
 								loginCallback.Add(() =>
 								{
-									asyncWebRequest.Post("http://114.132.124.13:8080/api/1.0/public/user_server/login", body, headers, (ok, response) =>
+									asyncWebRequest.Post("http://quchifan.wang:30080/api/1.0/public/user_server/login", body, headers, (ok, response) =>
 									{
 										if (!ok)
 										{

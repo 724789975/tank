@@ -21,4 +21,5 @@ ENV  CONF_ENV_FILE server-${DEPLOYENV}.yaml
 # http端口，固定不变
 EXPOSE 8080
 EXPOSE 11001
+EXPOSE 12001
 CMD ["./application"]

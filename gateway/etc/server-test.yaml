@@ -16,7 +16,7 @@ game:
 
 etcd:
   addrs:
-    - "etcd.tank.svc.cluster.local:2379"
+    - "192.168.158.37:12379"
   password: "123#@!QAzx"
   username: "root"
 

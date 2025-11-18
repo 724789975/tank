@@ -37,7 +37,7 @@ public class Match : MonoBehaviour
 
 		Debug.Log($"userChannelBody {userChannelBody}");
 
-		asyncWebRequest.Post("http://114.132.124.13:8081/api/1.0/public/match_server/match", "{}", headers, (ok, response) =>
+		asyncWebRequest.Post("http://quchifan.wang:30080/api/1.0/public/match_server/match", "{}", headers, (ok, response) =>
 		{
 			if (!ok)
 			{
@@ -72,7 +72,7 @@ public class Match : MonoBehaviour
 
 		Debug.Log($"userChannelBody {userChannelBody}");
 
-		asyncWebRequest.Post("http://114.132.124.13:8081/api/1.0/public/match_server/pve", "{}", headers, (ok, response) =>
+		asyncWebRequest.Post("http://quchifan.wang:30080/api/1.0/public/match_server/pve", "{}", headers, (ok, response) =>
 		{
 			if (!ok)
 			{

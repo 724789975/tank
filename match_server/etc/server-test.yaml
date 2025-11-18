@@ -21,7 +21,7 @@ etcd:
   username: "root"
 
 gateway:
-  service_name: "gateway"
+  service_name: "gate-server"
 
 server_mgr:
   service_name: "server-mgr"

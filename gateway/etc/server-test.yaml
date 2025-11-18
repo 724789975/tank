@@ -8,7 +8,7 @@ user_http:
 
 gateway_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "gateway"
+  service_name: "gate-server"
 
 game:
   addr: "114.132.124.13"
@@ -26,5 +26,5 @@ nats:
   password: "123#@!QAzx"
 
 ws:
-  addr: "0.0.0.0:30002"
+  addr: "0.0.0.0:12001"
   uri: "/ws"

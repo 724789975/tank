@@ -27,4 +27,4 @@ nats:
 
 ws:
   addr: "0.0.0.0:12001"
-  uri: "ws"
+  uri: "/ws"

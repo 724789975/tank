@@ -77,7 +77,9 @@ func (mp *MatchProcess) update() {
 					// 在这里处理匹配成功的情况
 					klog.Infof("match success, r: %v, b: %v", mr, mb)
 					if mp.afterMatched != nil {
-						mp.afterMatched(mr, mb)
+						go func() {
+							mp.afterMatched(r, b)
+						}()
 					}
 				}(mr, mb)
 				// 从groups中删除 mr 和 mb 对应的匹配组

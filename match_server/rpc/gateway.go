@@ -18,11 +18,10 @@ var (
 
 func InitGateWayClient() (err error) {
 	once_gateway.Do(func() {
-		Cli, err := gatewayservice.NewClient(common_config.Get("gateway.service_name").(string), client.WithResolver(etcd.GetEtcdResolver()), client.WithSuite(tracing.NewClientSuite()))
+		GatewayClient, err = gatewayservice.NewClient(common_config.Get("gateway.service_name").(string), client.WithResolver(etcd.GetEtcdResolver()), client.WithSuite(tracing.NewClientSuite()))
 		if err != nil {
 			klog.Error("[RPC-GATEWAY-INIT] Failed to initialize gateway client: ", err)
 		}
-		GatewayClient = Cli
 	})
 	return err
 }

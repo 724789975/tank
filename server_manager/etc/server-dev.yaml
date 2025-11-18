@@ -17,7 +17,7 @@ etcd:
   username: "tank"
 
 gateway:
-  service_name: "gateway"
+  service_name: "gate-server"
 
 exe_path:
   windows: ".\\etc\\windows.bat"

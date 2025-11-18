@@ -8,10 +8,10 @@ match_http:
 
 match_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "match_server"
+  service_name: "match-server"
 
 game:
-  addr: "114.132.124.13"
+  addr: "115.190.230.47"
   port: 10085
 
 etcd:
@@ -21,7 +21,7 @@ etcd:
   username: "root"
 
 gateway:
-  service_name: "gateway"
+  service_name: "gate-server"
 
 server_mgr:
   service_name: "server-mgr"

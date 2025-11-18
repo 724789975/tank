@@ -8,7 +8,7 @@ server_mgr_http:
 
 server_mgr_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "server_mgr"
+  service_name: "server-mgr"
 
 etcd:
   addrs:
@@ -17,7 +17,7 @@ etcd:
   username: "root"
 
 gateway:
-  service_name: "gateway"
+  service_name: "gate-server"
 
 exe_path:
   windows: ".\\etc\\windows.bat"

@@ -13,16 +13,15 @@ import (
 
 var (
 	ServerMgrClient servermgrservice.Client
-	once_server_mgr  sync.Once
+	once_server_mgr sync.Once
 )
 
 func InitServerMgrClient() (err error) {
 	once_server_mgr.Do(func() {
-		Cli, err := servermgrservice.NewClient(common_config.Get("server_mgr.service_name").(string), client.WithResolver(etcd.GetEtcdResolver()), client.WithSuite(tracing.NewClientSuite()))
+		ServerMgrClient, err = servermgrservice.NewClient(common_config.Get("server_mgr.service_name").(string), client.WithResolver(etcd.GetEtcdResolver()), client.WithSuite(tracing.NewClientSuite()))
 		if err != nil {
 			klog.Error("[RPC-SERVER-MGR-INIT] Failed to initialize server_mgr client: ", err)
 		}
-		ServerMgrClient = Cli
 	})
 	return err
 }

@@ -1,5 +1,3 @@
-
-
 redis:
   addrs:
     - "redis.tank.svc.cluster.local:6389"
@@ -10,7 +8,7 @@ user_http:
 
 user_rpc:
   addr: "0.0.0.0:11001"
-  service_name: "user_center_service"
+  service_name: "user-center"
 
 game:
   addr: "114.132.124.13"
@@ -28,4 +26,4 @@ etcd:
   username: "root"
 
 gateway:
-  service_name: "gateway"
+  service_name: "gate-server"

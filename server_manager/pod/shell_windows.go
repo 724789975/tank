@@ -9,9 +9,9 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
-func StartGameServer(ctx context.Context, id int64, params string) (err error, clusterIP string, tcpPort int32, udpPort int32) {
+func StartGameServer(ctx context.Context, id int64, params []string) (err error, clusterIP string, tcpPort int32, udpPort int32) {
 	cmdPath := "C:\\Windows\\System32\\cmd.exe"
-	if _, err := os.StartProcess(cmdPath, []string{cmdPath, "/k", common_config.Get("exe_path.windows").(string), params}, &os.ProcAttr{
+	if _, err := os.StartProcess(cmdPath, append([]string{cmdPath, "/k", common_config.Get("exe_path.windows").(string)}, params...), &os.ProcAttr{
 		Sys:   &syscall.SysProcAttr{HideWindow: false},
 		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
 	}); err != nil {
@@ -23,9 +23,9 @@ func StartGameServer(ctx context.Context, id int64, params string) (err error, c
 	return nil, "", 0, 0
 }
 
-func StartAiClient(ctx context.Context, id int64, params string) (err error, clusterIP string, tcpPort int32, udpPort int32) {
+func StartAiClient(ctx context.Context, id int64, params []string) (err error, clusterIP string, tcpPort int32, udpPort int32) {
 	cmdPath := "C:\\Windows\\System32\\cmd.exe"
-	if _, err := os.StartProcess(cmdPath, []string{cmdPath, "/k", common_config.Get("exe_path.ai_windows").(string), params}, &os.ProcAttr{
+	if _, err := os.StartProcess(cmdPath, append([]string{cmdPath, "/k", common_config.Get("exe_path.ai_windows").(string)}, params...), &os.ProcAttr{
 		Sys:   &syscall.SysProcAttr{HideWindow: false},
 		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
 	}); err != nil {

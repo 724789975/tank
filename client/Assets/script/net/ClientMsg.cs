@@ -23,7 +23,15 @@ public class ClientMsg : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(gameOver)
+        {
+			waitingForLeave -= Time.deltaTime;
+			if(waitingForLeave <= 0)
+			{
+				// 转场
+				UnityEngine.SceneManagement.SceneManager.LoadScene("match");
+			}
+		}
     }
 
     static ClientMsg instance;
@@ -218,12 +226,17 @@ public class ClientMsg : MonoBehaviour
 		string notice = $"游戏结束，你获得了胜利";
 		PlayerControl.Instance.ShowNotice(notice);
 
-		// 转场
-		UnityEngine.SceneManagement.SceneManager.LoadScene("match");
+        NetClient.Instance.Disconnect();
+
+        instance.gameOver = true;
+        instance.waitingForLeave = 3f;
+
 #endif
 #endif
     }
 
 	public GameObject boomPrefab;
+    bool gameOver = false;
+    float waitingForLeave = 3f;
 }
 

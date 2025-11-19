@@ -18,7 +18,9 @@ public class PlayerControl : MonoBehaviour
         NetClient.Instance.AddOnConnected(()=> {
             StartGame();
 		});
-    }
+		NetClient.Instance.Connect();
+        Debug.Log("PlayerControl Start");
+	}
 
     // Update is called once per frame
     void Update()

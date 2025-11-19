@@ -13,10 +13,10 @@ public class NetClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+#if !UNITY_EDITOR
 		DLLImport.StartIOModule();
+#endif
 		DLLImport.SetLogCallback(OnLogCallback);
-
-		Connect();
 	}
 
 	// Update is called once per frame
@@ -98,6 +98,7 @@ public class NetClient : MonoBehaviour
 		if (instance.connector == pConnector)
 		{
 			instance.connector = IntPtr.Zero;
+			instance.onConnected.Clear();
 		}
 	}
 
@@ -126,6 +127,14 @@ public class NetClient : MonoBehaviour
 
 	public void OnConnected()
 	{
+	}
+
+	public void Disconnect()
+	{
+		if(connector != IntPtr.Zero)
+		{
+			DLLImport.Close(connector);
+		}
 	}
 
 	public static NetClient Instance

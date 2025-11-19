@@ -67,6 +67,10 @@ public class GameStart : MonoBehaviour
 		Debug.Log(Config.Instance.serverIP);
 
 		GameStart.Instance.ToString();
+#if UNITY_SERVER && !AI_RUNNING
+#else
+		NetClient.Instance.ToString();
+#endif
 	}
 
 	// Start is called before the first frame update

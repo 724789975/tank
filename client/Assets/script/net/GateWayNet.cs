@@ -23,7 +23,14 @@ public class GateWayNet : MonoBehaviour
 		webSocket.OnOpen += (sender, e) =>
 		{
 			Debug.Log("WebSocket连接成功");
-			delayConnect = 3f;
+
+			if (needReconnect)
+			{
+				GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
+				loginRequest.Id = AccountInfo.Instance.Account.Openid;
+
+				SendGW(Any.Pack(loginRequest).ToByteArray());
+			}
 		};
 
 		webSocket.OnError += (sender, e) =>
@@ -34,7 +41,13 @@ public class GateWayNet : MonoBehaviour
 		webSocket.OnClose += (sender, e) =>
 		{
 			Debug.Log("WebSocket连接已关闭");
+			needReconnect = true;
+			Timer.Instance.AddTask(3f, () =>
+			{
+				webSocket.ConnectAsync();
+			});
 		};
+
 		webSocket.OnMessage += (sender, e) =>
 		{
 			Any any = Any.Parser.ParseFrom(e.RawData);
@@ -46,15 +59,6 @@ public class GateWayNet : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		if(webSocket.ReadyState == WebSocketState.Closed)
-		{
-			delayConnect -= Time.deltaTime;
-			if(delayConnect <= 0)
-			{
-				webSocket.ConnectAsync();
-				delayConnect = 3f;
-			}
-		}
 	}
 
 	private GateWayNet() { }
@@ -103,5 +107,8 @@ public class GateWayNet : MonoBehaviour
 
 	private WebSocket webSocket;
 
-	float delayConnect = 3f;
+	bool needReconnect = false;
+
 }
+
+

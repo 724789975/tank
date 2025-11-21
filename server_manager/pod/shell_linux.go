@@ -53,7 +53,7 @@ func create_job(ctx context.Context, podName string, namespace string, image str
 				return &ttlSecondsAfterFinished
 			}(),
 			ActiveDeadlineSeconds: func() *int64 {
-				activeDeadlineSeconds := int64(15 * time.Minute)
+				activeDeadlineSeconds := int64(15 * 60)
 				return &activeDeadlineSeconds
 			}(),
 			Template: corev1.PodTemplateSpec{

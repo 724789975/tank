@@ -8,6 +8,10 @@ using UnityEngine;
 
 public class WSMsgProcess : Singleton<WSMsgProcess>
 {
+	public WSMsgProcess()
+	{
+		RegisterHandler(WSMsg.Instance);
+	}
 	public void ProcessMessage(object sender, Any msg)
 	{
 		string name = Any.GetTypeName(msg.TypeUrl);
@@ -23,7 +27,7 @@ public class WSMsgProcess : Singleton<WSMsgProcess>
 		}
 	}
 
-	public void RegisterHandler(object handler)
+	void RegisterHandler(object handler)
 	{
 		foreach (var method in handler.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Static))
 		{

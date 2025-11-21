@@ -11,7 +11,7 @@ public class GateWayNet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		WSMsgProcess.Instance.RegisterHandler(WSMsg.Instance);
+		WSMsgProcess.Instance.ToString();
 		string serverUrl = "ws://115.190.230.47:32001/ws";
 
 		// 创建一个新的WebSocket实例并与指定URL建立连接

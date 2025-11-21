@@ -52,6 +52,10 @@ func create_job(ctx context.Context, podName string, namespace string, image str
 				ttlSecondsAfterFinished := int32(2)
 				return &ttlSecondsAfterFinished
 			}(),
+			ActiveDeadlineSeconds: func() *int64 {
+				activeDeadlineSeconds := int64(15 * time.Minute)
+				return &activeDeadlineSeconds
+			}(),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{

@@ -23,15 +23,6 @@ public class ClientMsg : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(gameOver)
-        {
-			waitingForLeave -= Time.deltaTime;
-			if(waitingForLeave <= 0)
-			{
-				// ×ª³¡
-				UnityEngine.SceneManagement.SceneManager.LoadScene("match");
-			}
-		}
     }
 
     static ClientMsg instance;
@@ -228,15 +219,14 @@ public class ClientMsg : MonoBehaviour
 
         NetClient.Instance.Disconnect();
 
-        instance.gameOver = true;
-        instance.waitingForLeave = 3f;
+        Timer.Instance.AddTask(3f, () => {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("match");
+		});
 
 #endif
 #endif
     }
 
 	public GameObject boomPrefab;
-    bool gameOver = false;
-    float waitingForLeave = 3f;
 }
 

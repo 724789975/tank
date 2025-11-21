@@ -95,10 +95,20 @@ public class NetClient : MonoBehaviour
 		Debug.Log("connector destroy");
 		DLLImport.DestroyConnector(pConnector);
 
-		if (instance.connector == pConnector)
+		if (instance.needReconnect)
 		{
-			instance.connector = IntPtr.Zero;
-			instance.onConnected.Clear();
+			Timer.Instance.AddTask(3f, () =>
+			{
+				instance.Connect();
+			});
+		}
+		else
+		{
+			if (instance.connector == pConnector)
+			{
+				instance.connector = IntPtr.Zero;
+				instance.onConnected.Clear();
+			}
 		}
 	}
 
@@ -135,6 +145,7 @@ public class NetClient : MonoBehaviour
 		{
 			DLLImport.Close(connector);
 		}
+		needReconnect = false;
 	}
 
 	public static NetClient Instance
@@ -173,4 +184,5 @@ public class NetClient : MonoBehaviour
 	List<P> msgs = new List<P>();
 	delegate void P();
 	List<Action> onConnected = new List<Action>();
+	bool needReconnect = true;
 }

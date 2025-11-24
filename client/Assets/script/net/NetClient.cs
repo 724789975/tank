@@ -13,9 +13,7 @@ public class NetClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-#if !UNITY_EDITOR
 		DLLImport.StartIOModule();
-#endif
 		DLLImport.SetLogCallback(OnLogCallback);
 	}
 

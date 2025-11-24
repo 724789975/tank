@@ -79,6 +79,7 @@ public class GameStart : MonoBehaviour
 #if AI_RUNNING
 		AIStart.Instance.ToString();
 #endif
+		Application.runInBackground = true;
 	}
 
 	// Update is called once per frame

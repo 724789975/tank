@@ -39,7 +39,7 @@ public class MsgProcess : Singleton<MsgProcess>
 				var name = attr.Name;
 				if (handlerDict.ContainsKey(name))
 				{
-					UnityEngine.Debug.Assert(false, "Duplicate RpcHandlerAttribute name: " + name);
+					UnityEngine.Debug.LogError("Duplicate RpcHandlerAttribute name: " + name);
 				}
 				else
 				{

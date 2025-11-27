@@ -29,9 +29,9 @@ public class MsgProcess : Singleton<MsgProcess>
 		}
 	}
 
-	public void RegisterHandler(object handler)
+	public void RegisterHandler(System.Type handler)
 	{
-		foreach (var method in handler.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Static))
+		foreach (var method in handler.GetMethods(BindingFlags.NonPublic | BindingFlags.Static))
 		{
 			var attr = method.GetCustomAttribute<RpcHandlerAttribute>();
 			if (attr != null)

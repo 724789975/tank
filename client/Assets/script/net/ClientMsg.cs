@@ -17,7 +17,7 @@ public class ClientMsg : MonoBehaviour
     void Start()
     {
         instance = this;
-        MsgProcess.Instance.RegisterHandler(this);
+
     }
 
     // Update is called once per frame

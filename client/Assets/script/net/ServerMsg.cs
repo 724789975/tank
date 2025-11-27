@@ -12,7 +12,6 @@ public class ServerMsg : MonoBehaviour
     void Start()
     {
 		instance = this;
-		MsgProcess.Instance.RegisterHandler(this);
 	}
 
 	// Update is called once per frame
@@ -22,7 +21,7 @@ public class ServerMsg : MonoBehaviour
     }
 
 	[RpcHandler("tank_game.Ping")]
-	static void Ping(IntPtr pConnector, Any anyMessage)
+	static void Ping(object pConnector, Any anyMessage)
 	{
 		TankGame.Ping ping = anyMessage.Unpack<TankGame.Ping>();
 
@@ -35,7 +34,7 @@ public class ServerMsg : MonoBehaviour
 	}
 
 	[RpcHandler("tank_game.LoginReq")]
-	static void LoginReq(IntPtr pConnector, Any anyMessage)
+	static void LoginReq(object pConnector, Any anyMessage)
 	{
 #if UNITY_SERVER && !AI_RUNNING
 		TankGame.LoginReq loginReq = anyMessage.Unpack<TankGame.LoginReq>();
@@ -52,8 +51,7 @@ public class ServerMsg : MonoBehaviour
 			Debug.Log("into players");
 			loginRspMessage.Code = 0;
 			loginRspMessage.Msg = "Login successful";
-			byte[] messageBytes = Any.Pack(loginRspMessage).ToByteArray();
-			DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
+			NetServer.Instance.SendMessage(pConnector, loginRspMessage);
 
 			TankInstance tankInstance = TankManager.Instance.AddTank(loginReq.Id, loginReq.Name, out bool isAdd);
 			tankInstance.name = "tank:" + loginReq.Id;
@@ -75,15 +73,15 @@ public class ServerMsg : MonoBehaviour
 			playerApperanceNtf.RebornProtectTime = tankInstance.rebornTime + ServerFrame.Instance.CurrentTime;
 
 			byte[] messageBytes2 = Any.Pack(playerApperanceNtf).ToByteArray();
-			DLLImport.Send(pConnector, messageBytes2, (uint)messageBytes2.Length);
+			NetServer.Instance.SendMessage(pConnector, messageBytes2);
 			Debug.Log("send appearance");
 			PlayerManager.Instance.ForEach((playerData) =>
 				{
 					if (playerData.Id != loginReq.Id)
 					{
 						if (!bRemovePlayer)
-						{ 
-							DLLImport.Send(((ServerPlayer)playerData).session, messageBytes2, (uint)messageBytes2.Length);
+						{
+							NetServer.Instance.SendMessage(playerData.session, messageBytes2);
 						}
 						TankGame.PlayerApperanceNtf playerJoinNtf = new TankGame.PlayerApperanceNtf();
 						playerJoinNtf.Id = playerData.Id;
@@ -96,8 +94,7 @@ public class ServerMsg : MonoBehaviour
 							playerJoinNtf.Transform.Position = new TankCommon.Vector3() { X = otherTankInstance.transform.position.x, Y = otherTankInstance.transform.position.y, Z = otherTankInstance.transform.position.z };
 							playerJoinNtf.Transform.Rotation = new TankCommon.Quaternion() { X = otherTankInstance.transform.rotation.x, Y = otherTankInstance.transform.rotation.y, Z = otherTankInstance.transform.rotation.z, W = otherTankInstance.transform.rotation.w };
 						}
-						byte[] messageBytes3 = Any.Pack(playerJoinNtf).ToByteArray();
-						DLLImport.Send(pConnector, messageBytes3, (uint)messageBytes3.Length);
+						NetServer.Instance.SendMessage(pConnector, playerJoinNtf);
 					}
 				});
 
@@ -106,14 +103,13 @@ public class ServerMsg : MonoBehaviour
 		{
 			loginRspMessage.Code = Common.ErrorCode.Failed;
 			loginRspMessage.Msg = "Duplicate login";
-			byte[] messageBytes = Any.Pack(loginRspMessage).ToByteArray();
-			DLLImport.Send(pConnector, messageBytes, (uint)messageBytes.Length);
+			NetServer.Instance.SendMessage(pConnector, loginRspMessage);
 		}
 #endif
 	}
 
 	[RpcHandler("tank_game.PlayerStateSyncReq")]
-	static void PlayerStateSyncReq(IntPtr pConnector, Any anyMessage)
+	static void PlayerStateSyncReq(object pConnector, Any anyMessage)
 	{
 #if UNITY_SERVER && !AI_RUNNING
 		TankGame.PlayerStateSyncReq playerStateSyncReq = anyMessage.Unpack<TankGame.PlayerStateSyncReq>();
@@ -167,9 +163,9 @@ public class ServerMsg : MonoBehaviour
 		{
 			if (pd.Id != playerData.Id)
 			{
-				if (((ServerPlayer)pd).session != IntPtr.Zero)
+				if (((ServerPlayer)pd).session != null)
 				{
-					DLLImport.Send(((ServerPlayer)pd).session, messageBytes, (uint)messageBytes.Length);
+					NetServer.Instance.SendMessage(((ServerPlayer)pd).session, messageBytes);
 				}
 			}
 		});
@@ -178,7 +174,7 @@ public class ServerMsg : MonoBehaviour
 	}
 
 	[RpcHandler("tank_game.PlayerShootReq")]
-	static void PlayerShootReq(IntPtr pConnector, Any anyMessage)
+	static void PlayerShootReq(object pConnector, Any anyMessage)
 	{
 #if UNITY_SERVER && !AI_RUNNING
 		TankGame.PlayerShootReq playerShootReq = anyMessage.Unpack<TankGame.PlayerShootReq>();
@@ -206,10 +202,7 @@ public class ServerMsg : MonoBehaviour
 		{
 			if (pd.Id != playerData.Id)
 			{
-				if (((ServerPlayer)pd).session != IntPtr.Zero)
-				{
-					DLLImport.Send(((ServerPlayer)pd).session, messageBytes, (uint)messageBytes.Length);
-				}
+				NetServer.Instance.SendMessage(((ServerPlayer)pd).session, messageBytes);
 			}
 		});
 #endif

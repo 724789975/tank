@@ -27,7 +27,7 @@ public class PlayerManager : Singleton<PlayerManager>
             Debug.LogWarning($"Player ID {id} already exists, cannot add again.");
         }
 #if UNITY_SERVER && !AI_RUNNING
-        if(data.session != IntPtr.Zero)
+        if(data.session != null)
         {
             if (!sessions.ContainsKey(data.session))
             {
@@ -54,7 +54,7 @@ public class PlayerManager : Singleton<PlayerManager>
     }
 
 #if UNITY_SERVER && !AI_RUNNING
-    public PLAYERDATA GetPlayerBySession(IntPtr pConnector)
+    public PLAYERDATA GetPlayerBySession(object pConnector)
 	{
         sessions.TryGetValue(pConnector, out string id);
         if (id != null)
@@ -76,14 +76,23 @@ public class PlayerManager : Singleton<PlayerManager>
         if (players.ContainsKey(id))
         {
 #if UNITY_SERVER && !AI_RUNNING
-            if (players[id].session!= IntPtr.Zero)
+#if CLIENT_WS
+            if (players[id].session != null)
             {
-				DLLImport.Close(players[id].session);
-				players[id].session = IntPtr.Zero;
+				((NetServer.Laputa)players[id].session).Close();
+                players[id].session = null;
+                sessions.Remove(players[id].session);
+			}
+#else
+            if ((IntPtr)(players[id].session)!= IntPtr.Zero)
+            {
+				DLLImport.Close((IntPtr)players[id].session);
+				players[id].session = null;
 				sessions.Remove(players[id].session);
             }
 #endif
-            return players.Remove(id);
+#endif
+			return players.Remove(id);
         }
         Debug.Log($"Player data with ID {id} not found, cannot remove.");
         return false;
@@ -116,6 +125,6 @@ public class PlayerManager : Singleton<PlayerManager>
 
 	Dictionary<string, PLAYERDATA> players = new Dictionary<string, PLAYERDATA>();
 #if UNITY_SERVER && !AI_RUNNING
-    Dictionary<IntPtr, string> sessions = new Dictionary<IntPtr, string>();
+    Dictionary<object, string> sessions = new Dictionary<object, string>();
 #endif
 }

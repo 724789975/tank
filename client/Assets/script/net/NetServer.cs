@@ -5,6 +5,7 @@ using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NetServer : MonoBehaviour
@@ -17,6 +18,8 @@ public class NetServer : MonoBehaviour
 #if CLIENT_WS
 		wsServer = new WebSocketSharp.Server.WebSocketServer(Config.Instance.port);
 		wsServer.AddWebSocketService<Laputa>("/game");
+		wsServer.Start();
+		Debug.Log($"WebSocket server started at {wsServer.Address}, port {wsServer.Port}, path {wsServer.WebSocketServices.Paths.ElementAt(0)}");
 #else
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(OnLogCallback);
@@ -24,29 +27,37 @@ public class NetServer : MonoBehaviour
 		DLLImport.TcpListen("0.0.0.0", Config.Instance.port);
 		DLLImport.UdpListen("0.0.0.0", Config.Instance.port);
 #endif
+		MsgProcess.Instance.RegisterHandler(typeof(ServerMsg));
 	}
 
 	// Update is called once per frame
 	void Update()
     {
+		List<P> _msg = new List<P>();
 #if CLIENT_WS
+		lock (Lock)
+		{
 #else
 		DLLImport.ProcessIOModule();
-		// 使用 for 循环遍历 msgs 列表并执行其中的委托
-		int count = msgs.Count;
+#endif
+		_msg.AddRange(msgs);
+		msgs.Clear();
+#if CLIENT_WS
+		}
+#endif
+			// 使用 for 循环遍历 msgs 列表并执行其中的委托
+		int count = _msg.Count;
 		for (int i = 0; i < count; i++)
 		{
 			try
 			{
-				msgs[i]();
+				_msg[i]();
 			}
 			catch (Exception e)
 			{
 				Debug.LogError($"Error executing message processing delegate: {e.Message}\n{e.StackTrace}");
 			}
 		}
-		msgs.Clear();
-#endif
 	}
 
 	void OnApplicationQuit()
@@ -76,7 +87,7 @@ public class NetServer : MonoBehaviour
 
 		protected override void OnError(WebSocketSharp.ErrorEventArgs e)
 		{
-			Debug.LogError("Laputa error: " + e.Message);
+			Debug.LogError($"Laputa error: {e.Message}\n{e.Exception.ToString()}");
 		}
 
 		protected override void OnMessage(WebSocketSharp.MessageEventArgs evnt)
@@ -84,7 +95,13 @@ public class NetServer : MonoBehaviour
 			try
 			{
 				Any anyMessage = Any.Parser.ParseFrom(evnt.RawData, 0, evnt.RawData.Length);
-				MsgProcess.Instance.ProcessMessage(this, anyMessage);
+				lock (NetServer.Instance.Lock)
+				{
+					instance.msgs.Add(delegate ()
+					{
+						MsgProcess.Instance.ProcessMessage(this, anyMessage);
+					});
+				}
 			}
 			catch (Exception e)
 			{
@@ -95,6 +112,11 @@ public class NetServer : MonoBehaviour
 		public new void Send(byte[] messageBytes)
 		{
 			base.Send(messageBytes);
+		}
+
+		public new void Close()
+		{
+			base.Close();
 		}
 	}
 
@@ -179,8 +201,9 @@ public class NetServer : MonoBehaviour
 #if CLIENT_WS
 	WebSocketSharp.Server.WebSocketServer wsServer;
 #else
+#endif
 	List<P> msgs = new List<P>();
 	delegate void P();
-#endif
+	readonly object Lock = new object();
 
 }

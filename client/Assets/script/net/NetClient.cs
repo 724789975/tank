@@ -19,6 +19,7 @@ public class NetClient : MonoBehaviour
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(OnLogCallback);
 #endif
+		MsgProcess.Instance.RegisterHandler(typeof(ClientMsg));
 	}
 
 	// Update is called once per frame

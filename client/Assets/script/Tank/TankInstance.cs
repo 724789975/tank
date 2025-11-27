@@ -44,7 +44,7 @@ public class TankInstance : MonoBehaviour
             Debug.LogWarning($"get player error {ID}");
             return;
 		}
-        if (playerData.session == System.IntPtr.Zero)
+        if (playerData.session == null)
         {
             offLineTime += Time.deltaTime;
         }

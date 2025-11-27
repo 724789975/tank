@@ -26,7 +26,7 @@ public class ServerControl : MonoBehaviour
         List<string> waitDestroy = new List<string>();
         PlayerManager.Instance.ForEach((data =>
         {
-            if (data.session == System.IntPtr.Zero)
+            if (data.session == null)
             {
                 TankInstance tankInstance = TankManager.Instance.GetTank(data.Id);
                 if (tankInstance != null && tankInstance.offLineTime > 10)
@@ -45,10 +45,7 @@ public class ServerControl : MonoBehaviour
             byte[] buffer = Any.Pack(playerDisappearNtf).ToByteArray();
             PlayerManager.Instance.ForEach((data =>
             {
-                if (data.session != System.IntPtr.Zero)
-                {
-                    DLLImport.Send(data.session, buffer, (uint)buffer.Length);
-                }
+				NetServer.Instance.SendMessage(data.session, buffer);
             }));
 		}
 #endif

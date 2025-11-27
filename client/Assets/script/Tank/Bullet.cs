@@ -77,9 +77,9 @@ public class Bullet : MonoBehaviour
 
 				PlayerManager.Instance.ForEach((p) =>
                 {
-                    if (p.session != IntPtr.Zero)
+                    if (p.session != null)
                     {
-                        DLLImport.Send(p.session, hpBytes, (uint)hpBytes.Length);
+                        NetServer.Instance.SendMessage(p.session, hpBytes);
                     }
                 });
 
@@ -92,17 +92,14 @@ public class Bullet : MonoBehaviour
                     byte[] dieBytes = Any.Pack(dieNtf).ToByteArray();
                     PlayerManager.Instance.ForEach((p) =>
                     {
-                        DLLImport.Send(p.session, dieBytes, (uint)dieBytes.Length);
+						NetServer.Instance.SendMessage(p.session, dieBytes);
                     });
                     tankInstance.HP = Config.Instance.maxHp;
                     TankGame.TankHpSyncNtf tankHpSyncNtf = new TankGame.TankHpSyncNtf() { Id = tankInstance.ID, Hp = tankInstance.HP };
                     byte[] tankHpBytes = Any.Pack(tankHpSyncNtf).ToByteArray();
                     PlayerManager.Instance.ForEach((p) =>
                     {
-                        if (p.session != IntPtr.Zero)
-                        {
-                            DLLImport.Send(p.session, tankHpBytes, (uint)tankHpBytes.Length);
-                        }
+						NetServer.Instance.SendMessage(p.session, tankHpBytes);
                     });
                     tankInstance.rebornTime = Config.Instance.rebornProtectionTime;
                     Debug.Log($"Tank {tankInstance.ID} will be in reborn protection until {tankInstance.rebornTime}");
@@ -121,10 +118,7 @@ public class Bullet : MonoBehaviour
 			byte[] messageBytes = Any.Pack(bulletDestoryNtf).ToByteArray();
 			PlayerManager.Instance.ForEach((p) =>
 			{
-				if (p.session != IntPtr.Zero)
-				{
-					DLLImport.Send(p.session, messageBytes, (uint)messageBytes.Length);
-				}
+				NetServer.Instance.SendMessage(p.session, messageBytes);
 			});
 
 			BulletManager.Instance.RemoveBullet(bulletId);

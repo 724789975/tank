@@ -15,10 +15,10 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         instance = this;
+		NetClient.Instance.Connect();
         NetClient.Instance.AddOnConnected(()=> {
             StartGame();
 		});
-		NetClient.Instance.Connect();
         Debug.Log("PlayerControl Start");
 	}
 

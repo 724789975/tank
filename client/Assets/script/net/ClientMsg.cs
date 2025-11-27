@@ -28,7 +28,7 @@ public class ClientMsg : MonoBehaviour
     static ClientMsg instance;
 
     [RpcHandler("tank_game.Pong")]
-    static void Pong(IntPtr pConnection, Any anyMessage)
+    static void Pong(object pConnection, Any anyMessage)
     {
         TankGame.Pong pong = anyMessage.Unpack<TankGame.Pong>();
         ClientFrame.Instance.CorrectFrame(pong.CurrentTime, Time.time - pong.Ts);
@@ -36,14 +36,14 @@ public class ClientMsg : MonoBehaviour
 	}
 
     [RpcHandler("tank_game.LoginRsp")]
-    static void LoginRsp(IntPtr pConnection, Any anyMessage)
+    static void LoginRsp(object pConnection, Any anyMessage)
     {
         TankGame.LoginRsp loginRsp = anyMessage.Unpack<TankGame.LoginRsp>();
         Debug.Log($"OnLoginRsp {loginRsp.Code} {loginRsp.Msg}");
     }
 
     [RpcHandler("tank_game.PlayerApperanceNtf")]
-    static void PlayerApperanceNtf(IntPtr pConnection, Any anyMessage)
+    static void PlayerApperanceNtf(object pConnection, Any anyMessage)
     {
         TankGame.PlayerApperanceNtf playerApperanceNtf = anyMessage.Unpack<TankGame.PlayerApperanceNtf>();
 		TankInstance tankInstance = TankManager.Instance.AddTank(playerApperanceNtf.Id, playerApperanceNtf.Name, out bool isAdd);
@@ -74,7 +74,7 @@ public class ClientMsg : MonoBehaviour
     }
 
     [RpcHandler("tank_game.PlayerStateNtf")]
-    static void PlayerStateNtf(IntPtr pConnection, Any anyMessage)
+    static void PlayerStateNtf(object pConnection, Any anyMessage)
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
@@ -95,7 +95,7 @@ public class ClientMsg : MonoBehaviour
 
 
     [RpcHandler("tank_game.PlayerDisappearNtf")]
-    static void PlayerDisappearNtf(IntPtr pConnection, Any anyMessage)
+    static void PlayerDisappearNtf(object pConnection, Any anyMessage)
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
@@ -106,7 +106,7 @@ public class ClientMsg : MonoBehaviour
 	}
 
 	[RpcHandler("tank_game.PlayerShootNtf")]
-    static void PlayerShootNtf(IntPtr pConnection, Any anyMessage)
+    static void PlayerShootNtf(object pConnection, Any anyMessage)
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
@@ -129,7 +129,7 @@ public class ClientMsg : MonoBehaviour
 	}
 
 	[RpcHandler("tank_game.BulletDestoryNtf")]
-	static void BulletDestoryNtf(IntPtr pConnection, Any anyMessage)
+	static void BulletDestoryNtf(object pConnection, Any anyMessage)
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
@@ -140,7 +140,7 @@ public class ClientMsg : MonoBehaviour
     }
 
     [RpcHandler("tank_game.TankHpSyncNtf")]
-    static void TankHpSyncNtf(IntPtr pConnection, Any anyMessage)
+    static void TankHpSyncNtf(object pConnection, Any anyMessage)
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
@@ -156,7 +156,7 @@ public class ClientMsg : MonoBehaviour
     }
 
 	[RpcHandler("tank_game.PlayerDieNtf")]
-	static void PlayerDieNtf(IntPtr pConnection, Any anyMessage)
+	static void PlayerDieNtf(object pConnection, Any anyMessage)
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
@@ -205,7 +205,7 @@ public class ClientMsg : MonoBehaviour
 
 
 	[RpcHandler("tank_game.GameOverNtf")]
-	static void GameOverNtf(IntPtr pConnection, Any anyMessage)
+	static void GameOverNtf(object pConnection, Any anyMessage)
     {
 #if UNITY_SERVER && !AI_RUNNING
 #else
@@ -219,7 +219,7 @@ public class ClientMsg : MonoBehaviour
 
         NetClient.Instance.Disconnect();
 
-        Timer.Instance.AddTask(3f, () => {
+		TimerU.Instance.AddTask(3f, () => {
             UnityEngine.SceneManagement.SceneManager.LoadScene("match");
 		});
 

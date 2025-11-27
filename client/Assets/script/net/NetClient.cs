@@ -7,19 +7,25 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using TankGame;
 using AOT;
+using UnityWebSocket;
 
 public class NetClient : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
+#if CLIENT_WS
+#else
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(OnLogCallback);
+#endif
 	}
 
 	// Update is called once per frame
 	void Update()
     {
+#if CLIENT_WS
+#else
 		DLLImport.ProcessIOModule();
 		int count = msgs.Count;
 		for (int i = 0; i < count; i++)
@@ -34,11 +40,12 @@ public class NetClient : MonoBehaviour
 			}
 		}
 		msgs.Clear();
+#endif
 	}
 
 	void OnApplicationQuit()
 	{
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !CLIENT_WS
 		DLLImport.StopAllSockets();
 		for (int i = 0; i < 20; i++)
 		{
@@ -47,6 +54,8 @@ public class NetClient : MonoBehaviour
 #endif
 	}
 
+#if CLIENT_WS
+#else
 	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnLogCallback))]
 	static void OnLogCallback (byte[] pData, int dwLen)
 	{
@@ -95,7 +104,7 @@ public class NetClient : MonoBehaviour
 
 		if (instance.needReconnect)
 		{
-			Timer.Instance.AddTask(3f, () =>
+			TimerU.Instance.AddTask(3f, () =>
 			{
 				instance.Connect();
 			});
@@ -109,16 +118,59 @@ public class NetClient : MonoBehaviour
 			}
 		}
 	}
+#endif
 
 	public void Connect()
 	{
-		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
+#if CLIENT_WS
+		string serverUrl = $"ws://{Config.Instance.serverIP}:{Config.Instance.port}/game";
 
+		// 创建一个新的WebSocket实例并与指定URL建立连接
+		webSocket = new WebSocket(serverUrl);
+
+		webSocket.ConnectAsync();
+
+		// 注册事件回调
+		webSocket.OnOpen += (sender, e) =>
+		{
+			Debug.Log("WebSocket连接成功");
+		};
+
+		webSocket.OnError += (sender, e) =>
+		{
+			Debug.LogError("Client WebSocket连接错误：" + e.Message);
+		};
+
+		webSocket.OnClose += (sender, e) =>
+		{
+			Debug.Log("Client WebSocket连接已关闭");
+			if(needReconnect)
+			{
+				TimerU.Instance.AddTask(3f, () =>
+				{
+					webSocket.ConnectAsync();
+				});
+			}
+		};
+
+		webSocket.OnMessage += (sender, e) =>
+		{
+			Any any = Any.Parser.ParseFrom(e.RawData);
+			//Debug.Log("client WebSocket收到消息类型：" + any.TypeUrl);
+			MsgProcess.Instance.ProcessMessage(sender, any);
+		};
+#else
+		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 		DLLImport.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+#endif
 	}
 
 	public void SendMessage(Google.Protobuf.IMessage message)
 	{
+#if CLIENT_WS
+		byte[] messageBytes = Any.Pack(message).ToByteArray();
+		webSocket.SendAsync(messageBytes);
+#else
 		if (connector == IntPtr.Zero)
 		{
 			Debug.LogError("connector is null");
@@ -126,12 +178,23 @@ public class NetClient : MonoBehaviour
 		}
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
 		DLLImport.Send(connector, messageBytes, (uint)messageBytes.Length);
+#endif
 	}
 
 	public void AddOnConnected(Action action)
 	{
+#if CLIENT_WS
+		webSocket.OnOpen += (sender, e) =>
+		{
+			if (needReconnect)
+			{
+				action();
+			}
+		};
+#else
 		onConnected.Add(action);
-	}
+#endif
+		}
 
 	public void OnConnected()
 	{
@@ -139,10 +202,15 @@ public class NetClient : MonoBehaviour
 
 	public void Disconnect()
 	{
+#if CLIENT_WS
+		webSocket.CloseAsync();
+		webSocket = null;
+#else
 		if(connector != IntPtr.Zero)
 		{
 			DLLImport.Close(connector);
 		}
+#endif
 		needReconnect = false;
 	}
 
@@ -175,12 +243,16 @@ public class NetClient : MonoBehaviour
 		}
 	}
 
-	IntPtr connector = IntPtr.Zero;
 
 	static NetClient instance;
 	static readonly object Lock = new object();
+#if CLIENT_WS
+	WebSocket webSocket;
+#else
+	IntPtr connector = IntPtr.Zero;
 	List<P> msgs = new List<P>();
 	delegate void P();
 	List<Action> onConnected = new List<Action>();
+#endif
 	bool needReconnect = true;
 }

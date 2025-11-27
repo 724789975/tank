@@ -7,23 +7,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class NetServer : MonoBehaviour
 {
+
 	// Start is called before the first frame update
 	void Start()
     {
 		instance = this;
+#if CLIENT_WS
+		wsServer = new WebSocketSharp.Server.WebSocketServer(Config.Instance.port);
+		wsServer.AddWebSocketService<Laputa>("/game");
+#else
 		DLLImport.StartIOModule();
 		DLLImport.SetLogCallback(OnLogCallback);
 		DLLImport.CreateSessionMake(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 		DLLImport.TcpListen("0.0.0.0", Config.Instance.port);
 		DLLImport.UdpListen("0.0.0.0", Config.Instance.port);
+#endif
 	}
 
 	// Update is called once per frame
 	void Update()
     {
+#if CLIENT_WS
+#else
 		DLLImport.ProcessIOModule();
 		// 使用 for 循环遍历 msgs 列表并执行其中的委托
 		int count = msgs.Count;
@@ -39,11 +46,12 @@ public class NetServer : MonoBehaviour
 			}
 		}
 		msgs.Clear();
+#endif
 	}
 
 	void OnApplicationQuit()
 	{
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !CLIENT_WS
 		DLLImport.StopAllSockets();
 		for (int i = 0; i < 20; i++)
 		{
@@ -53,6 +61,44 @@ public class NetServer : MonoBehaviour
 #endif
 	}
 
+#if CLIENT_WS
+	public class Laputa : WebSocketSharp.Server.WebSocketBehavior
+	{
+		protected override void OnOpen()
+		{
+			Debug.Log("Laputa opened");
+		}
+
+		protected override void OnClose(WebSocketSharp.CloseEventArgs e)
+		{
+			Debug.Log($"Laputa closed {e.Reason}");
+		}
+
+		protected override void OnError(WebSocketSharp.ErrorEventArgs e)
+		{
+			Debug.LogError("Laputa error: " + e.Message);
+		}
+
+		protected override void OnMessage(WebSocketSharp.MessageEventArgs evnt)
+		{
+			try
+			{
+				Any anyMessage = Any.Parser.ParseFrom(evnt.RawData, 0, evnt.RawData.Length);
+				MsgProcess.Instance.ProcessMessage(this, anyMessage);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"Failed to parse message: {e.Message}\n{e.StackTrace}");
+			}
+		}
+
+		public new void Send(byte[] messageBytes)
+		{
+			base.Send(messageBytes);
+		}
+	}
+
+#else
 	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnLogCallback))]
 	static void OnLogCallback (byte[] pData, int dwLen)
 	{
@@ -97,26 +143,26 @@ public class NetServer : MonoBehaviour
 		DLLImport.DestroyConnector(pConnector);
 		PlayerManager.Instance.AfterCloseCallback(pConnector);
 	}
+#endif
 
-	public void SendMessage(IntPtr pSession, Google.Protobuf.IMessage message)
+	public void SendMessage(object pSession, Google.Protobuf.IMessage message)
 	{
-		if (pSession == IntPtr.Zero)
-		{
-			Debug.LogError("connector is null");
-			return;
-		}
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
-		DLLImport.Send(pSession, messageBytes, (uint)messageBytes.Length);
+		SendMessage(pSession, messageBytes);
 	}
 
-	public void SendMessage(IntPtr pSession, byte[] messageBytes)
+	public void SendMessage(object pSession, byte[] messageBytes)
 	{
-		if (pSession == IntPtr.Zero)
+#if CLIENT_WS
+		((Laputa)pSession).Send(messageBytes);
+#else
+		if ((IntPtr)pSession == IntPtr.Zero)
 		{
 			Debug.LogError("connector is null");
 			return;
 		}
-		DLLImport.Send(pSession, messageBytes, (uint)messageBytes.Length);
+		DLLImport.Send((IntPtr)pSession, messageBytes, (uint)messageBytes.Length);
+#endif
 	}
 
 	public static NetServer Instance
@@ -129,7 +175,12 @@ public class NetServer : MonoBehaviour
 
 	
 	static NetServer instance;
+
+#if CLIENT_WS
+	WebSocketSharp.Server.WebSocketServer wsServer;
+#else
 	List<P> msgs = new List<P>();
 	delegate void P();
+#endif
 
 }

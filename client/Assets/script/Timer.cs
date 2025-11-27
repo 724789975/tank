@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class Timer : MonoBehaviour
+public class TimerU : MonoBehaviour
 {
 	class Task
 	{
@@ -41,7 +41,7 @@ public class Timer : MonoBehaviour
 	}
 
 	// 公共访问接口
-	public static Timer Instance
+	public static TimerU Instance
 	{
 		get
 		{
@@ -51,13 +51,13 @@ public class Timer : MonoBehaviour
 				{
 					if (instance == null)
 					{
-						instance = FindObjectOfType<Timer>();
+						instance = FindObjectOfType<TimerU>();
 						if (instance == null)
 						{
 							// 创建新的实例
 							GameObject singletonObject = new GameObject();
-							instance = singletonObject.AddComponent<Timer>();
-							singletonObject.name = typeof(Timer).ToString();
+							instance = singletonObject.AddComponent<TimerU>();
+							singletonObject.name = typeof(TimerU).ToString();
 
 							// 确保单例不会被销毁
 							DontDestroyOnLoad(singletonObject);
@@ -70,7 +70,7 @@ public class Timer : MonoBehaviour
 		}
 	}
 
-	static Timer instance;
+	static TimerU instance;
 	static readonly object Lock = new object();
 
 	List<Task> tasks = new List<Task>();

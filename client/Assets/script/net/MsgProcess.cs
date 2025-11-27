@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class MsgProcess : Singleton<MsgProcess>
 {
-	public void ProcessMessage(IntPtr pConnector, Any msg)
+	public void ProcessMessage(object pConnector, Any msg)
 	{
 		string name = Any.GetTypeName(msg.TypeUrl);
 		if (handlerDict.ContainsKey(name))
@@ -43,7 +43,7 @@ public class MsgProcess : Singleton<MsgProcess>
 				}
 				else
 				{
-					handlerDict[name] = delegate (IntPtr pConnector, Any msg) {
+					handlerDict[name] = delegate (object pConnector, Any msg) {
 						method.Invoke(null, new object[] { pConnector, msg });
 					};
 				}
@@ -51,7 +51,7 @@ public class MsgProcess : Singleton<MsgProcess>
 		}
 	}
 
-	delegate void MsgHandler(IntPtr pConnector, Any msg);
+	delegate void MsgHandler(object pConnector, Any msg);
 
 	private Dictionary<string, MsgHandler> handlerDict = new Dictionary<string, MsgHandler>();
 

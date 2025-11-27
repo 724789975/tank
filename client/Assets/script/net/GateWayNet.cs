@@ -42,7 +42,7 @@ public class GateWayNet : MonoBehaviour
 		{
 			Debug.Log("WebSocket连接已关闭");
 			needReconnect = true;
-			Timer.Instance.AddTask(3f, () =>
+			TimerU.Instance.AddTask(3f, () =>
 			{
 				webSocket.ConnectAsync();
 			});

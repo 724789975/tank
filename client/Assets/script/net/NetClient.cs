@@ -134,7 +134,7 @@ public class NetClient : MonoBehaviour
 		// 注册事件回调
 		webSocket.OnOpen += (sender, e) =>
 		{
-			Debug.Log("WebSocket连接成功");
+			Debug.Log("Client WebSocket连接成功");
 		};
 
 		webSocket.OnError += (sender, e) =>

@@ -200,10 +200,10 @@ public class NetServer : MonoBehaviour
 
 #if CLIENT_WS
 	WebSocketSharp.Server.WebSocketServer wsServer;
+	readonly object Lock = new object();
 #else
 #endif
 	List<P> msgs = new List<P>();
 	delegate void P();
-	readonly object Lock = new object();
 
 }

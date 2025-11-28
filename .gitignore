@@ -40,4 +40,4 @@ client/*.sln
 client/build*
 
 3rdpkg/*/*
-server/
+/server

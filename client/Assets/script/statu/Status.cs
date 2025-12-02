@@ -10,6 +10,7 @@ public class Status : MonoBehaviour
         Ready,      // 准备中
         Fight,      // 战斗中
         End,        // 战斗结束
+        Destory,    // 被摧毁
     }
 
     // Start is called before the first frame update
@@ -20,18 +21,23 @@ public class Status : MonoBehaviour
 #if UNITY_SERVER && !AI_RUNNING
         statusType = StatusType.Ready;
         Debug.Log("Server is Ready");
-        OnStatusChange?.Invoke(statusType);
         TimerU.Instance.AddTask(10, () => {
             statusType = StatusType.Fight;
             Debug.Log("Server is Fight");
-            OnStatusChange?.Invoke(statusType);
 
             TimerU.Instance.AddTask(3 * 60, () => {
                 statusType = StatusType.End;
                 Debug.Log("Server is End");
+                TimerU.Instance.AddTask(10, () =>
+                {
+                    statusType = StatusType.Destory;
+                    Debug.Log("Server is Destory");
+                });
                 OnStatusChange?.Invoke(statusType);
             });
+            OnStatusChange?.Invoke(statusType);
         });
+        OnStatusChange?.Invoke(statusType);
 #endif
     }
 
@@ -55,3 +61,4 @@ public class Status : MonoBehaviour
     public delegate void StatusChangeHandler(StatusType statusType);
     public StatusChangeHandler OnStatusChange;
 }
+

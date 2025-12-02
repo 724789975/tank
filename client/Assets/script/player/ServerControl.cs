@@ -10,11 +10,32 @@ public class ServerControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
+#if UNITY_SERVER && !AI_RUNNING
+		Status.Instance.OnStatusChange += delegate (Status.StatusType status)
+		{
+			if (status == Status.StatusType.End)
+			{
+				TankGame.GameOverNtf ntf = new TankGame.GameOverNtf();
 
-    // Update is called once per frame
-    void Update()
+				Any any = Any.Pack(ntf);
+				byte[] data = any.ToByteArray();
+				PlayerManager.Instance.ForEach((player) =>
+				{
+					NetServer.Instance.SendMessage(player.session, data);
+				});
+
+				Debug.Log("Server will be shutdown in 10 seconds");
+			}
+			if (status == Status.StatusType.Destory)
+			{
+				Application.Quit();
+			}
+		};
+#endif
+	}
+
+	// Update is called once per frame
+	void Update()
     {
 #if UNITY_SERVER && !AI_RUNNING
         updateTime += Time.deltaTime;

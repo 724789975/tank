@@ -15,30 +15,6 @@ public class ServerFrame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-#if UNITY_SERVER && !AI_RUNNING
-        currentTime = Time.time;
-        if (currentTime > 600)
-        { 
-			if (!isEnd)
-            {
-                isEnd = true;
-                TankGame.GameOverNtf ntf = new TankGame.GameOverNtf();
-
-                Any any = Any.Pack(ntf);
-                byte[] data = any.ToByteArray();
-                PlayerManager.Instance.ForEach((player) => {
-                    NetServer.Instance.SendMessage(player.session, data);
-				});
-
-				Debug.Log("Server will be shutdown in 10 seconds");
-            }
-        }
-        if (currentTime > 610)
-        {
-            Debug.Log("Server will be shutdown");
-            Application.Quit();
-        }
-#endif
 	}
 
 	public static ServerFrame Instance
@@ -59,7 +35,5 @@ public class ServerFrame : MonoBehaviour
 
 	static ServerFrame instane;
     float currentTime = 0;
-#if UNITY_SERVER && !AI_RUNNING
-    bool isEnd = false;
-#endif
+
 }

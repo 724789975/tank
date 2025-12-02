@@ -17,6 +17,10 @@ public class TankControl : MonoBehaviour
 	void Update()
     {
 #if !AI_RUNNING
+        if (Status.Instance.status != TankGame.GameState.Fight)
+        {
+            return;
+        }
         float t = Time.time;
         if (t - lastUpdateTime < UPDATE_INTERVAL)
         {
@@ -65,7 +69,11 @@ public class TankControl : MonoBehaviour
 
     public void Shoot()
     {
-        TankInstance tankInstance = TankManager.Instance.GetTank(AccountInfo.Instance.Account.Openid);
+		if (Status.Instance.status != TankGame.GameState.Fight)
+		{
+			return;
+		}
+		TankInstance tankInstance = TankManager.Instance.GetTank(AccountInfo.Instance.Account.Openid);
 		if (tankInstance == null)
         {
             return;

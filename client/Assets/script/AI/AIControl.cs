@@ -33,7 +33,10 @@ public class AIControl : Unity.MLAgents.Agent
 				lastShootTime = Time.time;
 				canShoot = true;
 			}
-			RequestDecision();
+			if (Status.Instance.status == TankGame.GameState.Fight)
+			{
+				RequestDecision();
+			}
 		}
     }
 

@@ -234,6 +234,7 @@ public class ClientMsg : MonoBehaviour
 #else
         TankGame.GameStateNtf gameStateNtf = anyMessage.Unpack<TankGame.GameStateNtf>();
         Status.Instance.status = gameStateNtf.State;
+        Status.Instance.stateTime = gameStateNtf.Time;
         Debug.Log($"OnGameStateNtf {gameStateNtf.ToString()}");
 #endif
     }

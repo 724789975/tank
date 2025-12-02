@@ -12,22 +12,22 @@ public class Status : MonoBehaviour
 #if UNITY_SERVER && !AI_RUNNING
         status = TankGame.GameState.Ready;
         Debug.Log("Server is Ready");
-        TimerU.Instance.AddTask(10, () => {
+        stateTime = TimerU.Instance.AddTask(10, () => {
             status = TankGame.GameState.Fight;
             Debug.Log("Server is Fight");
 
-            TimerU.Instance.AddTask(3 * 60, () => {
+            stateTime = TimerU.Instance.AddTask(3 * 60, () => {
                 status = TankGame.GameState.End;
 				Debug.Log("Server will be shutdown in 10 seconds");
-                TimerU.Instance.AddTask(10, () =>
+                stateTime = TimerU.Instance.AddTask(10, () =>
                 {
                     status = TankGame.GameState.Destory;
                     Debug.Log("Server is Destory");
-                });
+                }).time;
                 OnStatusChange?.Invoke(status);
-            });
+            }).time;
             OnStatusChange?.Invoke(status);
-        });
+        }).time;
         OnStatusChange?.Invoke(status);
 #endif
     }
@@ -48,6 +48,7 @@ public class Status : MonoBehaviour
     }
 
     public TankGame.GameState status =  TankGame.GameState.None;
+    public float stateTime = 0;
 
 #if UNITY_SERVER && !AI_RUNNING
 	public delegate void StatusChangeHandler(TankGame.GameState statusType);

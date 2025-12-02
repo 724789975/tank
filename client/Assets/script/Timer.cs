@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class TimerU : MonoBehaviour
 {
-	class Task
+	public class Task
 	{
 		public float time;
 		public Action callback;
@@ -31,13 +31,14 @@ public class TimerU : MonoBehaviour
 		}
 	}
 
-	public void AddTask(float time, Action callback)
+	public Task AddTask(float time, Action callback)
 	{
 		Task task = new Task();
-		task.time = time;
+		task.time = Time.time + time;
 		task.callback = callback;
 		tasks.Add(task);
 		tasks.Sort((a, b) => a.time.CompareTo(b.time));
+		return task;
 	}
 
 	// 公共访问接口

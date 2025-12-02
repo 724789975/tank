@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Status : MonoBehaviour
+{
+    public enum StatusType
+    {
+        None,
+        Ready,      // 准备中
+        Fight,      // 战斗中
+        End,        // 战斗结束
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        instance = this;
+        statusType = StatusType.None;
+#if UNITY_SERVER && !AI_RUNNING
+        statusType = StatusType.Ready;
+        Debug.Log("Server is Ready");
+        OnStatusChange?.Invoke(statusType);
+        TimerU.Instance.AddTask(10, () => {
+            statusType = StatusType.Fight;
+            Debug.Log("Server is Fight");
+            OnStatusChange?.Invoke(statusType);
+
+            TimerU.Instance.AddTask(3 * 60, () => {
+                statusType = StatusType.End;
+                Debug.Log("Server is End");
+                OnStatusChange?.Invoke(statusType);
+            });
+        });
+#endif
+    }
+
+	// Update is called once per frame
+	void Update()
+    {
+        
+    }
+
+    static Status instance;
+    public static Status Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+
+    public StatusType statusType = StatusType.None;
+
+    public delegate void StatusChangeHandler(StatusType statusType);
+    public StatusChangeHandler OnStatusChange;
+}

@@ -13,6 +13,14 @@ message Pong {
     float currentTime = 2;
 }
 
+enum GameState {
+    None    = 0;
+    Ready   = 1;   // 准备中
+    Fight   = 2;   // 战斗中
+    End     = 3;   // 战斗结束
+    Destory = 4;   // 被摧毁
+}
+
 //登录请求
 message LoginReq {
     string name = 1;
@@ -72,6 +80,10 @@ message PlayerDieNtf {
     string killedId          = 1;  //被击杀的玩家ID
     string killerId          = 2;  //击杀者ID
     float  rebornProtectTime = 3;  //重生保护时间
+}
+
+message GameStateNtf {
+    GameState state = 1;
 }
 
 message GameOverNtf {

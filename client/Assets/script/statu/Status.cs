@@ -6,7 +6,7 @@ public class Status : MonoBehaviour
 {
     public enum StatusType
     {
-        None,
+        None = 0,
         Ready,      // 准备中
         Fight,      // 战斗中
         End,        // 战斗结束

@@ -44,10 +44,10 @@ namespace TankGame {
             "IAEoCzIULnRhbmtfY29tbW9uLlZlY3RvcjMiJwoNVGFua0hwU3luY050ZhIK",
             "CgJpZBgBIAEoCRIKCgJocBgCIAEoBSJNCgxQbGF5ZXJEaWVOdGYSEAoIa2ls",
             "bGVkSWQYASABKAkSEAoIa2lsbGVySWQYAiABKAkSGQoRcmVib3JuUHJvdGVj",
-            "dFRpbWUYAyABKAIiMwoMR2FtZVN0YXRlTnRmEiMKBXN0YXRlGAEgASgOMhQu",
-            "dGFua19nYW1lLkdhbWVTdGF0ZSINCgtHYW1lT3Zlck50ZipBCglHYW1lU3Rh",
-            "dGUSCAoETm9uZRAAEgkKBVJlYWR5EAESCQoFRmlnaHQQAhIHCgNFbmQQAxIL",
-            "CgdEZXN0b3J5EARiBnByb3RvMw=="));
+            "dFRpbWUYAyABKAIiQQoMR2FtZVN0YXRlTnRmEiMKBXN0YXRlGAEgASgOMhQu",
+            "dGFua19nYW1lLkdhbWVTdGF0ZRIMCgR0aW1lGAIgASgCIg0KC0dhbWVPdmVy",
+            "TnRmKkEKCUdhbWVTdGF0ZRIICgROb25lEAASCQoFUmVhZHkQARIJCgVGaWdo",
+            "dBACEgcKA0VuZBADEgsKB0Rlc3RvcnkQBGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::TankCommon.TankCommonReflection.Descriptor, global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::TankGame.GameState), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -64,7 +64,7 @@ namespace TankGame {
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.BulletDestoryNtf), global::TankGame.BulletDestoryNtf.Parser, new[]{ "Id", "Pos" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.TankHpSyncNtf), global::TankGame.TankHpSyncNtf.Parser, new[]{ "Id", "Hp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.PlayerDieNtf), global::TankGame.PlayerDieNtf.Parser, new[]{ "KilledId", "KillerId", "RebornProtectTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.GameStateNtf), global::TankGame.GameStateNtf.Parser, new[]{ "State" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.GameStateNtf), global::TankGame.GameStateNtf.Parser, new[]{ "State", "Time" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TankGame.GameOverNtf), global::TankGame.GameOverNtf.Parser, null, null, null, null, null)
           }));
     }
@@ -3248,6 +3248,7 @@ namespace TankGame {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public GameStateNtf(GameStateNtf other) : this() {
       state_ = other.state_;
+      time_ = other.time_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3269,6 +3270,18 @@ namespace TankGame {
       }
     }
 
+    /// <summary>Field number for the "time" field.</summary>
+    public const int TimeFieldNumber = 2;
+    private float time_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -3285,6 +3298,7 @@ namespace TankGame {
         return true;
       }
       if (State != other.State) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Time, other.Time)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3293,6 +3307,7 @@ namespace TankGame {
     public override int GetHashCode() {
       int hash = 1;
       if (State != global::TankGame.GameState.None) hash ^= State.GetHashCode();
+      if (Time != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Time);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3315,6 +3330,10 @@ namespace TankGame {
         output.WriteRawTag(8);
         output.WriteEnum((int) State);
       }
+      if (Time != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Time);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3329,6 +3348,10 @@ namespace TankGame {
         output.WriteRawTag(8);
         output.WriteEnum((int) State);
       }
+      if (Time != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Time);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3341,6 +3364,9 @@ namespace TankGame {
       int size = 0;
       if (State != global::TankGame.GameState.None) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
+      }
+      if (Time != 0F) {
+        size += 1 + 4;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3356,6 +3382,9 @@ namespace TankGame {
       }
       if (other.State != global::TankGame.GameState.None) {
         State = other.State;
+      }
+      if (other.Time != 0F) {
+        Time = other.Time;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3376,6 +3405,10 @@ namespace TankGame {
             State = (global::TankGame.GameState) input.ReadEnum();
             break;
           }
+          case 21: {
+            Time = input.ReadFloat();
+            break;
+          }
         }
       }
     #endif
@@ -3393,6 +3426,10 @@ namespace TankGame {
             break;
           case 8: {
             State = (global::TankGame.GameState) input.ReadEnum();
+            break;
+          }
+          case 21: {
+            Time = input.ReadFloat();
             break;
           }
         }

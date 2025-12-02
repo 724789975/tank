@@ -4,40 +4,31 @@ using UnityEngine;
 
 public class Status : MonoBehaviour
 {
-    public enum StatusType
-    {
-        None = 0,
-        Ready,      // 准备中
-        Fight,      // 战斗中
-        End,        // 战斗结束
-        Destory,    // 被摧毁
-    }
-
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
-        statusType = StatusType.None;
+        status = TankGame.GameState.None;
 #if UNITY_SERVER && !AI_RUNNING
-        statusType = StatusType.Ready;
+        status = TankGame.GameState.Ready;
         Debug.Log("Server is Ready");
         TimerU.Instance.AddTask(10, () => {
-            statusType = StatusType.Fight;
+            status = TankGame.GameState.Fight;
             Debug.Log("Server is Fight");
 
             TimerU.Instance.AddTask(3 * 60, () => {
-                statusType = StatusType.End;
-                Debug.Log("Server is End");
+                status = TankGame.GameState.End;
+				Debug.Log("Server will be shutdown in 10 seconds");
                 TimerU.Instance.AddTask(10, () =>
                 {
-                    statusType = StatusType.Destory;
+                    status = TankGame.GameState.Destory;
                     Debug.Log("Server is Destory");
                 });
-                OnStatusChange?.Invoke(statusType);
+                OnStatusChange?.Invoke(status);
             });
-            OnStatusChange?.Invoke(statusType);
+            OnStatusChange?.Invoke(status);
         });
-        OnStatusChange?.Invoke(statusType);
+        OnStatusChange?.Invoke(status);
 #endif
     }
 
@@ -56,9 +47,11 @@ public class Status : MonoBehaviour
         }
     }
 
-    public StatusType statusType = StatusType.None;
+    public TankGame.GameState status =  TankGame.GameState.None;
 
-    public delegate void StatusChangeHandler(StatusType statusType);
+#if UNITY_SERVER && !AI_RUNNING
+	public delegate void StatusChangeHandler(TankGame.GameState statusType);
     public StatusChangeHandler OnStatusChange;
+#endif
 }
 

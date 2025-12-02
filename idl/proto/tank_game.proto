@@ -84,6 +84,7 @@ message PlayerDieNtf {
 
 message GameStateNtf {
     GameState state = 1;
+    float     time  = 2;
 }
 
 message GameOverNtf {

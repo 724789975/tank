@@ -227,6 +227,17 @@ public class ClientMsg : MonoBehaviour
 #endif
     }
 
+    [RpcHandler("tank_game.GameStateNtf")]
+    static void GameStateNtf(object pConnection, Any anyMessage)
+    {
+#if UNITY_SERVER && !AI_RUNNING
+#else
+        TankGame.GameStateNtf gameStateNtf = anyMessage.Unpack<TankGame.GameStateNtf>();
+        Status.Instance.status = gameStateNtf.State;
+        Debug.Log($"OnGameStateNtf {gameStateNtf.ToString()}");
+#endif
+    }
+
 	public GameObject boomPrefab;
 }
 

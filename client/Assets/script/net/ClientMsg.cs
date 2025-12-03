@@ -236,9 +236,11 @@ public class ClientMsg : MonoBehaviour
         Status.Instance.status = gameStateNtf.State;
         Status.Instance.stateTime = gameStateNtf.Time;
         Debug.Log($"OnGameStateNtf {gameStateNtf.ToString()}");
+        instance.readyNotice.SetActive(gameStateNtf.State == TankGame.GameState.Ready);
 #endif
     }
 
 	public GameObject boomPrefab;
+    public GameObject readyNotice;
 }
 

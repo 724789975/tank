@@ -15,6 +15,7 @@ public class ServerControl : MonoBehaviour
 		{
             TankGame.GameStateNtf state_ntf = new TankGame.GameStateNtf();
             state_ntf.State = status;
+            state_ntf.Time = Status.Instance.stateTime;
 
 			Any state_any = Any.Pack(state_ntf);
 			byte[] state_data = state_any.ToByteArray();

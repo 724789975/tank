@@ -75,6 +75,14 @@ public class ServerMsg : MonoBehaviour
 			byte[] messageBytes2 = Any.Pack(playerApperanceNtf).ToByteArray();
 			NetServer.Instance.SendMessage(pConnector, messageBytes2);
 			Debug.Log("send appearance");
+
+			TankGame.GameStateNtf state_ntf = new TankGame.GameStateNtf();
+			state_ntf.State = Status.Instance.status;
+			state_ntf.Time = Status.Instance.stateTime;
+
+			Any state_any = Any.Pack(state_ntf);
+			NetServer.Instance.SendMessage(pConnector, state_any);
+
 			PlayerManager.Instance.ForEach((playerData) =>
 				{
 					if (playerData.Id != loginReq.Id)

@@ -80,8 +80,7 @@ public class ServerMsg : MonoBehaviour
 			state_ntf.State = Status.Instance.status;
 			state_ntf.Time = Status.Instance.stateTime;
 
-			Any state_any = Any.Pack(state_ntf);
-			NetServer.Instance.SendMessage(pConnector, state_any);
+			NetServer.Instance.SendMessage(pConnector, state_ntf);
 
 			PlayerManager.Instance.ForEach((playerData) =>
 				{
@@ -134,7 +133,6 @@ public class ServerMsg : MonoBehaviour
 			Debug.LogWarning($"Tank instance not found: {playerData.Id}");
 			return;
 		}
-
 
 		if (playerStateSyncReq.Transform != null)
 		{

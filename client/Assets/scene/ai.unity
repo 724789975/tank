@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 152211668}
+  - component: {fileID: 152211674}
   - component: {fileID: 152211669}
   - component: {fileID: 152211671}
   - component: {fileID: 152211672}
@@ -184,6 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boomPrefab: {fileID: 8367907410985086596, guid: bd62c878c7572084394dd474ba485675,
     type: 3}
+  readyNotice: {fileID: 0}
 --- !u!114 &152211672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +212,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncRate: 0
+--- !u!114 &152211674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152211667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68772227b196644468192c0291ebe43b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  status: 0
+  stateTime: 0
 --- !u!1 &1030744483
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Status : MonoBehaviour
 {
+    void Awake()
+    {
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        instance = this;
         status = TankGame.GameState.None;
 #if UNITY_SERVER && !AI_RUNNING
         status = TankGame.GameState.Ready;
@@ -24,11 +27,11 @@ public class Status : MonoBehaviour
                     status = TankGame.GameState.Destory;
                     Debug.Log("Server is Destory");
                 }).time;
-                OnStatusChange?.Invoke(status);
+                OnStatusChange?.Invoke(status, stateTime);
             }).time;
-            OnStatusChange?.Invoke(status);
+            OnStatusChange?.Invoke(status, stateTime);
         }).time;
-        OnStatusChange?.Invoke(status);
+        OnStatusChange?.Invoke(status, stateTime);
 #endif
     }
 
@@ -51,7 +54,7 @@ public class Status : MonoBehaviour
     public float stateTime = 0;
 
 #if UNITY_SERVER && !AI_RUNNING
-	public delegate void StatusChangeHandler(TankGame.GameState statusType);
+	public delegate void StatusChangeHandler(TankGame.GameState statusType, float stateTime);
     public StatusChangeHandler OnStatusChange;
 #endif
 }

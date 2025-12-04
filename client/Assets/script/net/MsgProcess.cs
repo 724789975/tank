@@ -25,7 +25,7 @@ public class MsgProcess : Singleton<MsgProcess>
 		}
 		else
 		{
-			UnityEngine.Debug.LogError($"No handler for message: {name}");
+			UnityEngine.Debug.LogError($"game: No handler for message: {name}");
 		}
 	}
 

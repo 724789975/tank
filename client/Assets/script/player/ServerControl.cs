@@ -11,11 +11,11 @@ public class ServerControl : MonoBehaviour
     void Start()
     {
 #if UNITY_SERVER && !AI_RUNNING
-		Status.Instance.OnStatusChange += delegate (TankGame.GameState status)
+		Status.Instance.OnStatusChange += delegate (TankGame.GameState status, float stateTime)
 		{
             TankGame.GameStateNtf state_ntf = new TankGame.GameStateNtf();
             state_ntf.State = status;
-            state_ntf.Time = Status.Instance.stateTime;
+            state_ntf.Time = stateTime;
 
 			Any state_any = Any.Pack(state_ntf);
 			byte[] state_data = state_any.ToByteArray();
@@ -24,6 +24,7 @@ public class ServerControl : MonoBehaviour
 				NetServer.Instance.SendMessage(player.session, state_data);
 			});
 
+            Debug.Log("ServerControl.StatusChange: " + status);
 			if (status == TankGame.GameState.End)
 			{
 				TankGame.GameOverNtf ntf = new TankGame.GameOverNtf();

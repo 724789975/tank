@@ -23,7 +23,7 @@ public class WSMsgProcess : Singleton<WSMsgProcess>
 		}
 		else
 		{
-			UnityEngine.Debug.LogError($"No handler for message: {name}");
+			UnityEngine.Debug.LogError($"gate: No handler for message: {name}");
 		}
 	}
 

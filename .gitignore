@@ -41,3 +41,6 @@ client/build*
 
 3rdpkg/*/*
 /server
+/match_server/match-server.tar.gz
+/server_manager/server-mgr.tar.gz
+/user_server/user-server.tar.gz

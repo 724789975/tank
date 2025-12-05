@@ -121,7 +121,7 @@ public class NetClient : MonoBehaviour
 	}
 #endif
 
-	public void Connect()
+	public void Create()
 	{
 #if CLIENT_WS
 		string serverUrl = $"ws://{Config.Instance.serverIP}:{Config.Instance.port}/game";
@@ -129,12 +129,11 @@ public class NetClient : MonoBehaviour
 		// 创建一个新的WebSocket实例并与指定URL建立连接
 		webSocket = new WebSocket(serverUrl);
 
-		webSocket.ConnectAsync();
-
 		// 注册事件回调
 		webSocket.OnOpen += (sender, e) =>
 		{
 			Debug.Log("Client WebSocket连接成功");
+			PlayerControl.Instance.StartGame();
 		};
 
 		webSocket.OnError += (sender, e) =>
@@ -144,13 +143,46 @@ public class NetClient : MonoBehaviour
 
 		webSocket.OnClose += (sender, e) =>
 		{
+			webSocket = null;
+			Create();
 			Debug.Log("Client WebSocket连接已关闭");
 			if(needReconnect)
 			{
-				TimerU.Instance.AddTask(3f, () =>
+				int retryNum = 0;
+				Action action = null;
+				action = () =>
 				{
-					webSocket.ConnectAsync();
-				});
+					if (needReconnect)
+					{
+						switch (instance.webSocket.ReadyState)
+						{
+							case WebSocketState.Open:
+								Debug.Log("game WebSocket已重新连接");
+								break;
+							case WebSocketState.Closed:
+								TimerU.Instance.AddTask(1f, action);
+								Connect();
+								Debug.Log("game WebSocket尝试重新连接");
+								break;
+							case WebSocketState.Closing:
+								TimerU.Instance.AddTask(1f, action);
+								Debug.Log("game WebSocket正在关闭");
+								break;
+							case WebSocketState.Connecting:
+								TimerU.Instance.AddTask(1f, action);
+								if (retryNum++ % 10 == 0)
+								{
+									instance.webSocket.CloseAsync();
+								}
+								Debug.Log("game WebSocket正在连接");
+								break;
+							default:
+								Debug.LogError("game WebSocket状态异常");
+								break;
+						}
+					}
+				};
+				TimerU.Instance.AddTask(3f, action);
 			}
 		};
 
@@ -162,6 +194,25 @@ public class NetClient : MonoBehaviour
 		};
 #else
 		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
+#endif
+		needReconnect = true;
+	}
+
+	public void Connect()
+	{
+#if CLIENT_WS
+		if (webSocket == null)
+		{
+			Debug.Log("webSocket is null");
+			return;
+		}
+		webSocket.ConnectAsync();
+#else
+		if (connector == IntPtr.Zero)
+		{
+			Debug.LogError("connector is null");
+			return;
+		}
 		DLLImport.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
 #endif
 	}
@@ -169,6 +220,11 @@ public class NetClient : MonoBehaviour
 	public void SendMessage(Google.Protobuf.IMessage message)
 	{
 #if CLIENT_WS
+		if (webSocket == null)
+		{
+			Debug.Log("webSocket is null");
+			return;
+		}
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
 		webSocket.SendAsync(messageBytes);
 #else

@@ -23,6 +23,7 @@ public class TimerU : MonoBehaviour
 		if (tasks.Count > 0)
 		{
 			Task task = tasks[0];
+			//Debug.Log($"task time: {task.time},   Time.time: {Time.time}");
 			if (task.time <= Time.time)
 			{
 				task.callback();

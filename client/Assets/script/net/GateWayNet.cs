@@ -11,41 +11,74 @@ public class GateWayNet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		WSMsgProcess.Instance.ToString();
+		Create();
+	}
+
+	// Update is called once per frame
+	void Update()
+    {
+	}
+
+	void Create()
+	{
 		string serverUrl = "ws://115.190.230.47:32001/ws";
 
 		// 创建一个新的WebSocket实例并与指定URL建立连接
 		webSocket = new WebSocket(serverUrl);
-
-		webSocket.ConnectAsync();
 
 		// 注册事件回调
 		webSocket.OnOpen += (sender, e) =>
 		{
 			Debug.Log("WebSocket连接成功");
 
-			if (needReconnect)
-			{
-				GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
-				loginRequest.Id = AccountInfo.Instance.Account.Openid;
+			GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
+			loginRequest.Id = AccountInfo.Instance.Account.Openid;
 
-				SendGW(Any.Pack(loginRequest).ToByteArray());
-			}
+			SendGW(Any.Pack(loginRequest).ToByteArray());
 		};
 
 		webSocket.OnError += (sender, e) =>
 		{
-			Debug.LogError("WebSocket连接错误：" + e.Message);
+			Debug.LogError($"WebSocket连接错误：{e.Message}\n {(e.Exception != null ? e.Exception.StackTrace : string.Empty)}");
 		};
 
 		webSocket.OnClose += (sender, e) =>
 		{
+			webSocket = null;
+			Create();
 			Debug.Log("WebSocket连接已关闭");
-			needReconnect = true;
-			TimerU.Instance.AddTask(3f, () =>
+			Action action = null;
+			int retryNum = 0;
+			action = () =>
 			{
-				webSocket.ConnectAsync();
-			});
+				switch(instance.webSocket.ReadyState)
+				{
+					case WebSocketState.Open:
+						Debug.Log("WebSocket已重新连接");
+						break;
+					case WebSocketState.Closed:
+						TimerU.Instance.AddTask(1f, action);
+						Connect();
+						Debug.Log("WebSocket尝试重新连接");
+						break;
+					case WebSocketState.Closing:
+						TimerU.Instance.AddTask(1f, action);
+						Debug.Log("WebSocket正在关闭");
+						break;
+					case WebSocketState.Connecting:
+						TimerU.Instance.AddTask(3f, action);
+						if(retryNum ++ % 10 == 0)
+						{
+							instance.webSocket.CloseAsync();
+						}
+						Debug.Log("WebSocket正在连接");
+						break;
+					default:
+						Debug.LogError("WebSocket状态异常");
+						break;
+				}
+			};
+			TimerU.Instance.AddTask(3f, action);
 		};
 
 		webSocket.OnMessage += (sender, e) =>
@@ -56,9 +89,9 @@ public class GateWayNet : MonoBehaviour
 		};
 	}
 
-	// Update is called once per frame
-	void Update()
-    {
+	public void Connect()
+	{
+		webSocket.ConnectAsync();
 	}
 
 	private GateWayNet() { }
@@ -106,9 +139,6 @@ public class GateWayNet : MonoBehaviour
 	static GateWayNet instance;
 
 	private WebSocket webSocket;
-
-	bool needReconnect = false;
-
 }
 
 

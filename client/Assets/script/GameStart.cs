@@ -53,6 +53,8 @@ public class GameStart : MonoBehaviour
 		Oddworm.Framework.CommandLine.Init(text);
 
 		GameStart.Instance.ToString();
+		TimerU.Instance.ToString();
+
 	}
 
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -70,6 +72,7 @@ public class GameStart : MonoBehaviour
 #if UNITY_SERVER && !AI_RUNNING
 #else
 		NetClient.Instance.ToString();
+		WSMsgProcess.Instance.ToString();
 #endif
 	}
 

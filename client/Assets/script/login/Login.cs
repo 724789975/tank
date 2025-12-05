@@ -118,10 +118,7 @@ public class Login : MonoBehaviour
 											//Config.Instance.serverIP = rsp.ServerAddr;
 											//Config.Instance.port = (ushort)rsp.ServerPort;
 
-											GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
-											loginRequest.Id = AccountInfo.Instance.Account.Openid;
-
-											GateWayNet.Instance.SendGW(Any.Pack(loginRequest).ToByteArray());
+											GateWayNet.Instance.Connect();
 
 											UnityEngine.SceneManagement.SceneManager.LoadScene("match");
 										}

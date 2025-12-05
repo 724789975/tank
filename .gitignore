@@ -44,3 +44,7 @@ client/build*
 /match_server/match-server.tar.gz
 /server_manager/server-mgr.tar.gz
 /user_server/user-server.tar.gz
+/client/pongpongpong.apk
+/client/tds_getsign.apk
+/gateway/gate-server.tar.gz
+/idl/go.mod

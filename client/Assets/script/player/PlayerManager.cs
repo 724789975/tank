@@ -80,25 +80,46 @@ public class PlayerManager : Singleton<PlayerManager>
             if (players[id].session != null)
             {
 				((NetServer.Laputa)players[id].session).Close();
-                players[id].session = null;
-                sessions.Remove(players[id].session);
 			}
 #else
             if ((IntPtr)(players[id].session)!= IntPtr.Zero)
             {
 				DLLImport.Close((IntPtr)players[id].session);
-				players[id].session = null;
-				sessions.Remove(players[id].session);
             }
 #endif
 #endif
-			return players.Remove(id);
+			return RemovePlayer2(id);
         }
         Debug.Log($"Player data with ID {id} not found, cannot remove.");
         return false;
     }
+	public bool RemovePlayer2(string id)
+	{
+		Debug.Log($"Removing2 player data with ID {id}.");
+		if (players.ContainsKey(id))
+		{
+#if UNITY_SERVER && !AI_RUNNING
+#if CLIENT_WS
+			if (players[id].session != null)
+			{
+				sessions.Remove(players[id].session);
+                players[id].session = null;
+			}
+#else
+            if ((IntPtr)(players[id].session)!= IntPtr.Zero)
+            {
+				sessions.Remove(players[id].session);
+				players[id].session = null;;
+            }
+#endif
+#endif
+			return players.Remove(id);
+		}
+		Debug.Log($"Player data with ID {id} not found, cannot remove.");
+		return false;
+	}
 
-    public delegate void PlayerAction(PLAYERDATA data);
+	public delegate void PlayerAction(PLAYERDATA data);
     public void ForEach(PlayerAction action)
     {
         foreach (PLAYERDATA data in players.Values)

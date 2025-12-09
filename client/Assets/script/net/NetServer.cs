@@ -8,6 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+#if UNITY_SERVER && !AI_RUNNING
+using PLAYERDATA = ServerPlayer;
+#else
+using PLAYERDATA = ClientPlayer;
+#endif
+
 public class NetServer : MonoBehaviour
 {
 
@@ -83,6 +89,13 @@ public class NetServer : MonoBehaviour
 		protected override void OnClose(WebSocketSharp.CloseEventArgs e)
 		{
 			Debug.Log($"Laputa closed {e.Reason}");
+#if UNITY_SERVER && !AI_RUNNING
+			PLAYERDATA playerData = PlayerManager.Instance.GetPlayerBySession(this);
+			if (playerData != null)
+			{
+				playerData.session = null;
+			}
+#endif
 		}
 
 		protected override void OnError(WebSocketSharp.ErrorEventArgs e)
@@ -176,6 +189,11 @@ public class NetServer : MonoBehaviour
 	public void SendMessage(object pSession, byte[] messageBytes)
 	{
 #if CLIENT_WS
+		if (pSession == null)
+		{
+			Debug.LogError("session is null");
+			return;
+		}
 		((Laputa)pSession).Send(messageBytes);
 #else
 		if ((IntPtr)pSession == IntPtr.Zero)
@@ -184,6 +202,21 @@ public class NetServer : MonoBehaviour
 			return;
 		}
 		DLLImport.Send((IntPtr)pSession, messageBytes, (uint)messageBytes.Length);
+#endif
+	}
+
+	public void CloseSession(object pSession)
+	{
+#if CLIENT_WS
+		((Laputa)pSession).Close();
+
+#else
+		if ((IntPtr)pSession == IntPtr.Zero)
+		{
+			Debug.LogError("connector is null");
+			return;
+		}
+		DLLImport.Close((IntPtr)pSession);
 #endif
 	}
 

@@ -56,6 +56,55 @@ public class NetClient : MonoBehaviour
 	}
 
 #if CLIENT_WS
+	protected void OnOpen(object sender, OpenEventArgs e)
+	{
+		Debug.Log("Client WebSocket连接成功");
+		PlayerControl.Instance.StartGame();
+	}
+
+	protected void OnMessage(object sender, MessageEventArgs e)
+	{
+		Any any = Any.Parser.ParseFrom(e.RawData);
+		//Debug.Log("client WebSocket收到消息类型：" + any.TypeUrl);
+		MsgProcess.Instance.ProcessMessage(sender, any);
+	}
+
+	protected void OnError(object sender, ErrorEventArgs e)
+	{
+		Debug.LogError("Client WebSocket连接错误：" + e.Message);
+	}
+
+	protected void OnClose(object sender, CloseEventArgs e)
+	{
+		if(!needReconnect)
+		{
+			Debug.Log("Client WebSocket连接已关闭");
+			return;
+		}
+		webSocket.CloseAsync();
+		webSocket = null;
+		Debug.Log("Client WebSocket连接已关闭");
+		TimerU.Instance.AddTask(3f, () =>
+		{
+			Reconnect();
+		});
+	}
+
+	void Reconnect()
+	{
+		if (!needReconnect)
+		{
+			Debug.Log("Client WebSocket连接已关闭 不需重连");
+			return;
+		}
+		if (webSocket == null || webSocket.ReadyState != WebSocketState.Open)
+		{
+			TimerU.Instance.AddTask(3f, Reconnect);
+			Debug.Log("Client WebSocket连接断开，尝试重新连接");
+			Instance.Create();
+			Instance.Connect();
+		}
+	}
 #else
 	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnLogCallback))]
 	static void OnLogCallback (byte[] pData, int dwLen)
@@ -130,68 +179,10 @@ public class NetClient : MonoBehaviour
 		webSocket = new WebSocket(serverUrl);
 
 		// 注册事件回调
-		webSocket.OnOpen += (sender, e) =>
-		{
-			Debug.Log("Client WebSocket连接成功");
-			PlayerControl.Instance.StartGame();
-		};
-
-		webSocket.OnError += (sender, e) =>
-		{
-			Debug.LogError("Client WebSocket连接错误：" + e.Message);
-		};
-
-		webSocket.OnClose += (sender, e) =>
-		{
-			webSocket = null;
-			Create();
-			Debug.Log("Client WebSocket连接已关闭");
-			if(needReconnect)
-			{
-				int retryNum = 0;
-				Action action = null;
-				action = () =>
-				{
-					if (needReconnect)
-					{
-						switch (instance.webSocket.ReadyState)
-						{
-							case WebSocketState.Open:
-								Debug.Log("game WebSocket已重新连接");
-								break;
-							case WebSocketState.Closed:
-								TimerU.Instance.AddTask(1f, action);
-								Connect();
-								Debug.Log("game WebSocket尝试重新连接");
-								break;
-							case WebSocketState.Closing:
-								TimerU.Instance.AddTask(1f, action);
-								Debug.Log("game WebSocket正在关闭");
-								break;
-							case WebSocketState.Connecting:
-								TimerU.Instance.AddTask(1f, action);
-								if (retryNum++ % 10 == 0)
-								{
-									instance.webSocket.CloseAsync();
-								}
-								Debug.Log("game WebSocket正在连接");
-								break;
-							default:
-								Debug.LogError("game WebSocket状态异常");
-								break;
-						}
-					}
-				};
-				TimerU.Instance.AddTask(3f, action);
-			}
-		};
-
-		webSocket.OnMessage += (sender, e) =>
-		{
-			Any any = Any.Parser.ParseFrom(e.RawData);
-			//Debug.Log("client WebSocket收到消息类型：" + any.TypeUrl);
-			MsgProcess.Instance.ProcessMessage(sender, any);
-		};
+		webSocket.OnOpen += OnOpen;
+		webSocket.OnMessage += OnMessage;
+		webSocket.OnError += OnError;
+		webSocket.OnClose += OnClose;
 #else
 		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 #endif

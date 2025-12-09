@@ -38,15 +38,23 @@ public class TankInstance : MonoBehaviour
 			}
         }
 
+        bool onLine = true;
         ServerPlayer playerData = PlayerManager.Instance.GetPlayer(ID);
         if (playerData == null)
         {
-            Debug.LogWarning($"get player error {ID}");
+            Debug.Log($"get player error {ID}");
+            offLineTime += Time.deltaTime;
+            onLine = false;
             return;
 		}
         if (playerData.session == null)
         {
             offLineTime += Time.deltaTime;
+            onLine = false;
+        }
+        if (onLine)
+        {
+            offLineTime = 0;
         }
 #else
 		// 客户端模式下的同步

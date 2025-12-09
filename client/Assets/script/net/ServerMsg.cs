@@ -40,10 +40,18 @@ public class ServerMsg : MonoBehaviour
 		TankGame.LoginReq loginReq = anyMessage.Unpack<TankGame.LoginReq>();
 		Debug.Log($"OnLoginReq {loginReq.Name} {loginReq.Id}");
 
-		bool bRemovePlayer = PlayerManager.Instance.RemovePlayer(loginReq.Id);
+		bool bRemovePlayer = false;
 
 		// 回复 LoginReq 消息
 		TankGame.LoginRsp loginRspMessage = new TankGame.LoginRsp();
+		ServerPlayer playerData = PlayerManager.Instance.GetPlayer(loginReq.Id);
+		if (playerData != null)
+		{
+			//踢出老用户
+			PlayerManager.Instance.RemovePlayer(playerData.Id);
+			Debug.Log("kick old player");
+			bRemovePlayer = true;
+		}
 		if (PlayerManager.Instance.AddPlayer(loginReq.Id, new ServerPlayer() { Id = loginReq.Id, Name = loginReq.Name,
 			session = pConnector,
 		}))

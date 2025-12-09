@@ -27,71 +27,59 @@ public class GateWayNet : MonoBehaviour
 		webSocket = new WebSocket(serverUrl);
 
 		// 注册事件回调
-		webSocket.OnOpen += (sender, e) =>
-		{
-			Debug.Log("WebSocket连接成功");
-
-			GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
-			loginRequest.Id = AccountInfo.Instance.Account.Openid;
-
-			SendGW(Any.Pack(loginRequest).ToByteArray());
-		};
-
-		webSocket.OnError += (sender, e) =>
-		{
-			Debug.LogError($"WebSocket连接错误：{e.Message}\n {(e.Exception != null ? e.Exception.StackTrace : string.Empty)}");
-		};
-
-		webSocket.OnClose += (sender, e) =>
-		{
-			webSocket = null;
-			Create();
-			Debug.Log("WebSocket连接已关闭");
-			Action action = null;
-			int retryNum = 0;
-			action = () =>
-			{
-				switch(instance.webSocket.ReadyState)
-				{
-					case WebSocketState.Open:
-						Debug.Log("WebSocket已重新连接");
-						break;
-					case WebSocketState.Closed:
-						TimerU.Instance.AddTask(1f, action);
-						Connect();
-						Debug.Log("WebSocket尝试重新连接");
-						break;
-					case WebSocketState.Closing:
-						TimerU.Instance.AddTask(1f, action);
-						Debug.Log("WebSocket正在关闭");
-						break;
-					case WebSocketState.Connecting:
-						TimerU.Instance.AddTask(3f, action);
-						if(retryNum ++ % 10 == 0)
-						{
-							instance.webSocket.CloseAsync();
-						}
-						Debug.Log("WebSocket正在连接");
-						break;
-					default:
-						Debug.LogError("WebSocket状态异常");
-						break;
-				}
-			};
-			TimerU.Instance.AddTask(3f, action);
-		};
-
-		webSocket.OnMessage += (sender, e) =>
-		{
-			Any any = Any.Parser.ParseFrom(e.RawData);
-			Debug.Log("WebSocket收到消息类型：" + any.TypeUrl);
-			WSMsgProcess.Instance.ProcessMessage(sender, any);
-		};
+		webSocket.OnOpen += Instance.OnOpen;
+		webSocket.OnMessage += Instance.OnMessage;
+		webSocket.OnError += Instance.OnError;
+		webSocket.OnClose += Instance.OnClose;
 	}
 
 	public void Connect()
 	{
 		webSocket.ConnectAsync();
+	}
+
+	protected void OnOpen(object sender, OpenEventArgs e)
+	{
+		Debug.Log("WebSocket连接成功");
+
+		GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
+		loginRequest.Id = AccountInfo.Instance.Account.Openid;
+
+		SendGW(Any.Pack(loginRequest).ToByteArray());
+	}
+
+	protected void OnMessage(object sender, MessageEventArgs e)
+	{
+		Any any = Any.Parser.ParseFrom(e.RawData);
+		Debug.Log("WebSocket收到消息类型：" + any.TypeUrl);
+		WSMsgProcess.Instance.ProcessMessage(sender, any);
+	}
+
+	protected void OnError(object sender, ErrorEventArgs e)
+	{
+		Debug.LogError($"WebSocket连接错误：{e.Message}\n {(e.Exception != null ? e.Exception.StackTrace : string.Empty)}");
+	}
+
+	protected void OnClose(object sender, CloseEventArgs e)
+	{
+		webSocket.CloseAsync();
+		webSocket = null;
+		Debug.Log("WebSocket连接已关闭");
+		TimerU.Instance.AddTask(3f, () => 
+		{
+			Reconnect();
+		});
+	}
+
+	void Reconnect()
+	{
+		if(webSocket == null || webSocket.ReadyState != WebSocketState.Open)
+		{
+			TimerU.Instance.AddTask(3f, Reconnect);
+			Debug.Log("WebSocket连接断开，尝试重新连接");
+			Instance.Create();
+			Instance.Connect();
+		}
 	}
 
 	private GateWayNet() { }
@@ -139,6 +127,7 @@ public class GateWayNet : MonoBehaviour
 	static GateWayNet instance;
 
 	private WebSocket webSocket;
+	bool neetReconnect = false;
 }
 
 

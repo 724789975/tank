@@ -26,6 +26,7 @@ public class Status : MonoBehaviour
                 {
                     status = TankGame.GameState.Destory;
                     Debug.Log("Server is Destory");
+                    OnStatusChange?.Invoke(status, stateTime);
                 }).time;
                 OnStatusChange?.Invoke(status, stateTime);
             }).time;

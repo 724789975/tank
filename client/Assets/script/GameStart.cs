@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Dirichlet.Mediation;
 
 public class GameStart : MonoBehaviour
 {
@@ -73,6 +74,10 @@ public class GameStart : MonoBehaviour
 #else
 		NetClient.Instance.ToString();
 		WSMsgProcess.Instance.ToString();
+#endif
+
+#if UNITY_EDITOR || UNITY_ANDROID
+		DirichletSdk.RequestPermissionIfNecessary();
 #endif
 	}
 

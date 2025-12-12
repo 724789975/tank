@@ -273,7 +273,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	common_redis.GetRedis().HSet(ctx, fmt.Sprintf(UserGameInfoKey, userId), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)), "game_addr", resp_create_server.GameAddr)
 
-	common_redis.GetRedis().Expire(ctx, fmt.Sprintf(UserGameInfoKey, userId), time.Second*60*50)
+	common_redis.GetRedis().Expire(ctx, fmt.Sprintf(UserGameInfoKey, userId), time.Second*60*5)
 
 	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
 		Id: userId,

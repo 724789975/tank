@@ -11,6 +11,8 @@ import (
 	"match_server/logic/match"
 	common_redis "match_server/redis"
 	"match_server/rpc"
+	"net"
+	"strconv"
 	"sync"
 	"time"
 
@@ -27,6 +29,8 @@ var (
 	match_mgr      MatchManager
 	once_match_mgr sync.Once
 	idClient       *snowflake.Node
+
+	UserGameInfoKey = "match_server:user_game:%s"
 )
 
 func GetMatchManager() *MatchManager {
@@ -67,11 +71,21 @@ func GetMatchManager() *MatchManager {
 				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
 				match_info_ntf.R = append(match_info_ntf.R, members...)
 				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
+
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+
+				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), time.Second*60*50)
 			}
 			for _, v := range b {
 				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
 				match_info_ntf.B = append(match_info_ntf.B, members...)
 				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
+
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+
+				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), time.Second*60*50)
 			}
 
 			any1 := &anypb.Any{}
@@ -122,6 +136,43 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 
 	userId = ctx.Value("userId").(string)
 
+	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(UserGameInfoKey, userId)).Result()
+	if err != nil {
+		if err != redis.Nil {
+			resp.Code = common.ErrorCode_FAILED
+			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s get game info failed, err: %v", userId, err)
+			return resp, err
+		}
+	} else {
+		game_info_ntf := &match_proto.GameInfoNtf{
+			GameAddr: common_config.Get("game.addr").(string),
+			GamePort: 0,
+		}
+		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], "10085"), time.Second*1); err == nil {
+			conn.Close()
+			if port, ok := game_info["game_port"]; ok {
+				if p, err := strconv.Atoi(port); err == nil {
+					game_info_ntf.GamePort = int32(p)
+				}
+				game_info_ntf.GameAddr = common_config.Get("game.addr").(string)
+			}
+			game_info_ntf.GameAddr = common_config.Get("game.addr").(string)
+			rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+				Id: userId,
+				Msg: func() *anypb.Any {
+					any := &anypb.Any{}
+					if err = any.MarshalFrom(game_info_ntf); err != nil {
+						klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+					}
+					return any
+				}(),
+			})
+			return resp, nil
+		} else {
+			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
+		}
+	}
+
 	if common_redis.GetRedis().SetNX(ctx, fmt.Sprintf("match_server_op:user:%s", userId), userId, time.Second*1).Val() == false {
 		resp.Code = common.ErrorCode_FAILED
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s", userId)
@@ -161,6 +212,44 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	userId = ctx.Value("userId").(string)
 
+	game_info_ntf := &match_proto.GameInfoNtf{
+		GameAddr: common_config.Get("game.addr").(string),
+		GamePort: 0,
+	}
+
+	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(UserGameInfoKey, userId)).Result()
+	if err != nil {
+		if err != redis.Nil {
+			resp.Code = common.ErrorCode_FAILED
+			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s get game info failed, err: %v", userId, err)
+			return resp, err
+		}
+	} else {
+		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], "10085"), time.Second*1); err == nil {
+			conn.Close()
+			if port, ok := game_info["game_port"]; ok {
+				if p, err := strconv.Atoi(port); err == nil {
+					game_info_ntf.GamePort = int32(p)
+				}
+				game_info_ntf.GameAddr = common_config.Get("game.addr").(string)
+			}
+			game_info_ntf.GameAddr = common_config.Get("game.addr").(string)
+			rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+				Id: userId,
+				Msg: func() *anypb.Any {
+					any := &anypb.Any{}
+					if err = any.MarshalFrom(game_info_ntf); err != nil {
+						klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+					}
+					return any
+				}(),
+			})
+			return resp, nil
+		} else {
+			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
+		}
+	}
+
 	resp_create_server, err := rpc.ServerMgrClient.CreateServer(ctx, &server_mgr.CreateServerReq{})
 	if err != nil {
 		resp.Code = common.ErrorCode_FAILED
@@ -177,22 +266,24 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 		return resp, err
 	}
 
-	game_info_ntf := &match_proto.GameInfoNtf{
-		GameAddr: common_config.Get("game.addr").(string),
-		GamePort: resp_create_server.GamePort,
-	}
+	game_info_ntf.GameAddr = common_config.Get("game.addr").(string)
+	game_info_ntf.GamePort = resp_create_server.GamePort
 
 	time.Sleep(time.Second * 1)
 
-	any := &anypb.Any{}
-	if err = any.MarshalFrom(game_info_ntf); err != nil {
-		klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
-		return
-	}
+	common_redis.GetRedis().HSet(ctx, fmt.Sprintf(UserGameInfoKey, userId), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)), "game_addr", resp_create_server.GameAddr)
+
+	common_redis.GetRedis().Expire(ctx, fmt.Sprintf(UserGameInfoKey, userId), time.Second*60*50)
 
 	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
-		Id:  userId,
-		Msg: any,
+		Id: userId,
+		Msg: func() *anypb.Any {
+			any := &anypb.Any{}
+			if err = any.MarshalFrom(game_info_ntf); err != nil {
+				klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+			}
+			return any
+		}(),
 	})
 
 	return resp, nil

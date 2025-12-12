@@ -14,7 +14,7 @@ public class Match : MonoBehaviour
 		advertisement.SetActive(true);
 
 		DirichletAdConfig config = new DirichletAdConfig.Builder()
-			.WithMediaId(349065)
+			.WithMediaId(1014652)
 			.WithMediaName("pongpongpong")
 			.WithMediaKey("f9DNEKTt194oz4zyr4XuIA1vbW3XIA4dV3e4qwh6eZGf6waPEPp3DF8W4pFz0Sxh")
 			.EnableDebug(true)       // 默认关闭，如需查看日志请改为 true
@@ -124,7 +124,7 @@ public class Match : MonoBehaviour
 		DirichletRewardVideoAd rewardAd;
 		DirichletAdNative adNative = DirichletAdManager.CreateAdNative();
 		var request = new DirichletAdRequest.Builder()
-		.WithSpaceId(124)
+		.WithSpaceId(1050830)
 		.WithUserId(SystemInfo.deviceUniqueIdentifier)
 		.WithRewardName("金币")
 		.WithRewardAmount(100)
@@ -153,6 +153,7 @@ public class Match : MonoBehaviour
 					rewardAd.Destroy();
 					rewardAd = null;
 				};
+				rewardAd.Show();
 			},
 			onFailure: error => Debug.LogError($"激励视频加载失败 {error.Code}:{error.Message}"));
 	}

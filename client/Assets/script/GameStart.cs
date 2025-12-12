@@ -76,9 +76,6 @@ public class GameStart : MonoBehaviour
 		WSMsgProcess.Instance.ToString();
 #endif
 
-#if UNITY_EDITOR || UNITY_ANDROID
-		DirichletSdk.RequestPermissionIfNecessary();
-#endif
 	}
 
 	// Start is called before the first frame update
@@ -88,6 +85,9 @@ public class GameStart : MonoBehaviour
 		AIStart.Instance.ToString();
 #endif
 		Application.runInBackground = true;
+#if UNITY_EDITOR || UNITY_ANDROID
+		DirichletSdk.RequestPermissionIfNecessary();
+#endif
 	}
 
 	// Update is called once per frame

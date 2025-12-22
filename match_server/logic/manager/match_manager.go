@@ -30,7 +30,8 @@ var (
 	once_match_mgr sync.Once
 	idClient       *snowflake.Node
 
-	UserGameInfoKey = "match_server:user_game:%s"
+	userGameInfoKey = "match_server:user_game:%s"
+	createGameKey   = "match_server:create_game:%s"
 )
 
 func GetMatchManager() *MatchManager {
@@ -72,20 +73,20 @@ func GetMatchManager() *MatchManager {
 				match_info_ntf.R = append(match_info_ntf.R, members...)
 				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
 
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), time.Second*60*50)
+				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
 			}
 			for _, v := range b {
 				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
 				match_info_ntf.B = append(match_info_ntf.B, members...)
 				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
 
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(UserGameInfoKey, v), time.Second*60*50)
+				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
 			}
 
 			any1 := &anypb.Any{}
@@ -136,7 +137,21 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 
 	userId = ctx.Value("userId").(string)
 
-	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(UserGameInfoKey, userId)).Result()
+	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Second*1).Result(); err != nil {
+		resp.Code = common.ErrorCode_FAILED
+		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		return resp, err
+	} else if !r {
+		resp.Code = common.ErrorCode_FAILED
+		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		return resp, err
+	}
+
+	defer func() {
+		common_redis.GetRedis().Del(ctx, fmt.Sprintf(createGameKey, userId))
+	}()
+
+	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(userGameInfoKey, userId)).Result()
 	if err != nil {
 		if err != redis.Nil {
 			resp.Code = common.ErrorCode_FAILED
@@ -212,12 +227,26 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	userId = ctx.Value("userId").(string)
 
+	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Second*1).Result(); err != nil {
+		resp.Code = common.ErrorCode_FAILED
+		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		return resp, err
+	} else if !r {
+		resp.Code = common.ErrorCode_FAILED
+		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		return resp, err
+	}
+
+	defer func() {
+		common_redis.GetRedis().Del(ctx, fmt.Sprintf(createGameKey, userId))
+	}()
+
 	game_info_ntf := &match_proto.GameInfoNtf{
 		GameAddr: common_config.Get("game.addr").(string),
 		GamePort: 0,
 	}
 
-	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(UserGameInfoKey, userId)).Result()
+	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(userGameInfoKey, userId)).Result()
 	if err != nil {
 		if err != redis.Nil {
 			resp.Code = common.ErrorCode_FAILED
@@ -271,9 +300,9 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	time.Sleep(time.Second * 1)
 
-	common_redis.GetRedis().HSet(ctx, fmt.Sprintf(UserGameInfoKey, userId), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)), "game_addr", resp_create_server.GameAddr)
+	common_redis.GetRedis().HSet(ctx, fmt.Sprintf(userGameInfoKey, userId), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)), "game_addr", resp_create_server.GameAddr)
 
-	common_redis.GetRedis().Expire(ctx, fmt.Sprintf(UserGameInfoKey, userId), time.Second*60*5)
+	common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, userId), time.Second*60*5)
 
 	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
 		Id: userId,

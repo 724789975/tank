@@ -227,7 +227,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	userId = ctx.Value("userId").(string)
 
-	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Second*1).Result(); err != nil {
+	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Second*5).Result(); err != nil {
 		resp.Code = common.ErrorCode_FAILED
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
 		return resp, err

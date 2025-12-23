@@ -18,6 +18,7 @@ COPY --from=builder /build/etc/* /app/etc/
 ENV  CONF_ENV_PATH /app/etc
 ENV  CONF_ENV_FILE server-${DEPLOYENV}.yaml
 #CMD ["tail", "-f", "/dev/null"]
+RUN echo 'Asia/Shanghai' >/etc/timezone
 # http端口，固定不变
 EXPOSE 8080
 EXPOSE 11001

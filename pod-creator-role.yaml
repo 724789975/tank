@@ -1,0 +1,71 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: tank
+  name: pod-creator
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "deployments"]
+  verbs: ["create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: allow-pod-creation
+  namespace: tank
+subjects:
+- kind: ServiceAccount
+  name: default  # 替换为实际使用的 ServiceAccount 名称
+  namespace: tank
+roleRef:
+  kind: Role
+  name: pod-creator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: tank
+  name: deployments-pow
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: allow-deployment-pow
+  namespace: tank
+subjects:
+- kind: ServiceAccount
+  name: default  # 替换为实际使用的 ServiceAccount 名称
+  namespace: tank
+roleRef:
+  kind: Role
+  name: deployments-pow
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: tank  # 目标命名空间
+  name: pod-watch-role
+rules:
+- apiGroups: ["*"]  # 核心 API 组（Pod 属于核心组）
+  resources: ["*"]  # 目标资源类型
+  verbs: ["create", "list", "watch"]  # 授予 watch 权限
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-watch-binding
+  namespace: tank  # 与 Role 同命名空间
+subjects:
+- kind: ServiceAccount
+  name: default  # 目标用户名（需提前存在）
+roleRef:
+  kind: Role
+  name: pod-watch-role  # 关联上述 Role
+  apiGroup: rbac.authorization.k8s.io
+

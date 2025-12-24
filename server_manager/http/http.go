@@ -25,34 +25,34 @@ func AuthForClient(offset int64) gin.HandlerFunc {
 		}
 		userInfoRaw := c.GetHeader("user-channel")
 		if userInfoRaw == "" {
-			klog.Errorf("[AUTH-MISSING-HEADER] user-channel header is missing %s", c.Request.URL.Path)
+			klog.Errorf("[SERVER-MGR-AUTH-MISSING-HEADER] user-channel header is missing %s", c.Request.URL.Path)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		userInfo := UserInfo{}
 		if err := json.Unmarshal([]byte(userInfoRaw), &userInfo); err != nil {
-			klog.Errorf("[AUTH-INVALID-JSON] Invalid JSON in user-channel header %s", err.Error())
+			klog.Errorf("[SERVER-MGR-AUTH-INVALID-JSON] Invalid JSON in user-channel header %s", err.Error())
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.UserId == "" {
-			klog.Errorf("[AUTH-INVALID-USERID] Invalid userId in user-channel header %s", userInfoRaw)
+			klog.Errorf("[SERVER-MGR-AUTH-INVALID-USERID] Invalid userId in user-channel header %s", userInfoRaw)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.Exp == 0 {
-			klog.Errorf("[AUTH-INVALID-EXP] Invalid exp in user-channel header %s", userInfoRaw)
+			klog.Errorf("[SERVER-MGR-AUTH-INVALID-EXP] Invalid exp in user-channel header %s", userInfoRaw)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		now := time.Now().Unix()
 		if now-offset >= userInfo.Exp {
-			klog.Errorf("[AUTH-TOKEN-EXPIRED] Token expired %s", userInfoRaw)
-			c.AbortWithStatus(http.StatusUnauthorized)
+			klog.Errorf("[SERVER-MGR-AUTH-TOKEN-EXPIRED] Token expired %s", userInfoRaw)
+			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
@@ -99,11 +99,9 @@ func Logger() gin.HandlerFunc {
 			return
 		}
 		if rt > 150 {
-			klog.CtxErrorf(ctx, "[HTTP-SLOW-API] path = %s  , rt = %d , userId = %s , body = %v , slow api", path, rt, context.GetString("userId"))
+			klog.CtxErrorf(ctx, "[SERVER-MGR-HTTP-SLOW-API] path = %s  , rt = %d , userId = %s , body = %v , slow api", path, rt, context.GetString("userId"))
 		} else {
-
-			klog.CtxInfof(ctx, "[HTTP-ACCESS] path = %s  , rt = %d , userId = %s , body = %v", path, rt, context.GetString("userId"))
+			klog.CtxInfof(ctx, "[SERVER-MGR-HTTP-ACCESS] path = %s  , rt = %d , userId = %s , body = %v", path, rt, context.GetString("userId"))
 		}
 	}
 }
-

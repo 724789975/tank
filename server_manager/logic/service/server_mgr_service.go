@@ -53,7 +53,7 @@ func (s *ServerMgrService) ListenAndServe(ctx context.Context) {
 	}
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			klog.Errorf("[HTTP-SERVER-START] run server http error:%s", err.Error())
+			klog.Errorf("[SERVER-MGR-HTTP-SERVER-START] run server http error:%s", err.Error())
 			panic(err)
 		}
 	}()
@@ -82,7 +82,7 @@ func (s *ServerMgrService) ListenAndServe(ctx context.Context) {
 
 	go func() {
 		if err := ser.Run(); err != nil {
-			klog.Errorf("[RPC-SERVER-START] run server rpc error:%s", err.Error())
+			klog.Errorf("[SERVER-MGR-RPC-SERVER-START] run server rpc error:%s", err.Error())
 			panic(err)
 		}
 	}()
@@ -94,13 +94,13 @@ func (s *ServerMgrService) ginRoute(ctx *gin.Context) {
 	// c := context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(int64))
 	info, ok := s.ServiceInfo.Methods[methodName]
 	if !ok {
-		klog.CtxErrorf(ctx, "[METHOD-NOT-FOUND] not found: %s", ctx.FullPath())
+		klog.CtxErrorf(ctx, "[SERVER-MGR-METHOD-NOT-FOUND] not found: %s", ctx.FullPath())
 		return
 	}
 	str := driver.NewHttpStream(ctx.Writer, ctx.Request)
 	handler := info.Handler()
 	if err := handler(ctx, s, &streaming.Args{Stream: str}, nil); err != nil {
-		klog.CtxErrorf(ctx, "[METHOD-HANDLER-ERROR] %s", err.Error())
+		klog.CtxErrorf(ctx, "[SERVER-MGR-METHOD-HANDLER-ERROR] %s", err.Error())
 	}
 }
 

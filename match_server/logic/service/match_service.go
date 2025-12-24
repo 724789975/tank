@@ -53,7 +53,7 @@ func (s *MatchService) ListenAndServe(ctx context.Context) {
 	}
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			klog.Errorf("[HTTP-SERVER-START] run server http error:%s", err.Error())
+			klog.Errorf("[MATCH-HTTP-SERVER-START] run server http error:%s", err.Error())
 			panic(err)
 		}
 	}()
@@ -82,7 +82,7 @@ func (s *MatchService) ListenAndServe(ctx context.Context) {
 
 	go func() {
 		if err := ser.Run(); err != nil {
-			klog.Errorf("[RPC-SERVER-START] run server rpc error:%s", err.Error())
+			klog.Errorf("[MATCH-RPC-SERVER-START] run server rpc error:%s", err.Error())
 			panic(err)
 		}
 	}()

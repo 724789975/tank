@@ -20,7 +20,7 @@ func InitServerMgrClient() (err error) {
 	once_server_mgr.Do(func() {
 		ServerMgrClient, err = servermgrservice.NewClient(common_config.Get("server_mgr.service_name").(string), client.WithResolver(etcd.GetEtcdResolver()), client.WithSuite(tracing.NewClientSuite()))
 		if err != nil {
-			klog.Error("[RPC-SERVER-MGR-INIT] Failed to initialize server_mgr client: ", err)
+			klog.Error("[MATCH-RPC-SERVER-MGR-INIT] Failed to initialize server_mgr client: ", err)
 		}
 	})
 	return err

@@ -20,8 +20,9 @@ func InitGateWayClient() (err error) {
 	once_gateway.Do(func() {
 		GatewayClient, err = gatewayservice.NewClient(common_config.Get("gateway.service_name").(string), client.WithResolver(etcd.GetEtcdResolver()), client.WithSuite(tracing.NewClientSuite()))
 		if err != nil {
-			klog.Error("[RPC-GATEWAY-INIT] Failed to initialize gateway client: ", err)
+			klog.Error("[MATCH-RPC-GATEWAY-INIT] Failed to initialize gateway client: ", err)
 		}
 	})
 	return err
 }
+

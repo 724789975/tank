@@ -25,33 +25,33 @@ func AuthForClient(offset int64) gin.HandlerFunc {
 		}
 		userInfoRaw := c.GetHeader("user-channel")
 		if userInfoRaw == "" {
-			klog.Error("[AUTH-MISSING-HEADER] user-channel header is missing ", c.Request.URL.Path)
+			klog.Errorf("[AUTH-MISSING-HEADER] user-channel header is missing %s", c.Request.URL.Path)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		userInfo := UserInfo{}
 		if err := json.Unmarshal([]byte(userInfoRaw), &userInfo); err != nil {
-			klog.Error("[AUTH-INVALID-JSON] Invalid JSON in user-channel header")
+			klog.Errorf("[AUTH-INVALID-JSON] Invalid JSON in user-channel header %s", err.Error())
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.UserId == "" {
-			klog.Error("[AUTH-INVALID-USERID] Invalid userId in user-channel header")
+			klog.Errorf("[AUTH-INVALID-USERID] Invalid userId in user-channel header %s", userInfoRaw)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.Exp == 0 {
-			klog.Error("[AUTH-INVALID-EXP] Invalid exp in user-channel header")
+			klog.Errorf("[AUTH-INVALID-EXP] Invalid exp in user-channel header %s", userInfoRaw)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		now := time.Now().Unix()
 		if now-offset >= userInfo.Exp {
-			klog.Error("[AUTH-TOKEN-EXPIRED] Token expired")
+			klog.Errorf("[AUTH-TOKEN-EXPIRED] Token expired %s", userInfoRaw)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -106,3 +106,4 @@ func Logger() gin.HandlerFunc {
 		}
 	}
 }
+

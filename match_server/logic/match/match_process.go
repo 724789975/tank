@@ -75,7 +75,7 @@ func (mp *MatchProcess) update() {
 			if r {
 				go func(r, b []int64) {
 					// 在这里处理匹配成功的情况
-					klog.Infof("match success, r: %v, b: %v", mr, mb)
+					klog.Infof("[MATCH-SUCCESS] match success, r: %v, b: %v", mr, mb)
 					if mp.afterMatched != nil {
 						go func() {
 							mp.afterMatched(r, b)
@@ -106,7 +106,6 @@ func (mp *MatchProcess) update() {
 				break
 			}
 		}
-
 	}
 }
 
@@ -189,7 +188,7 @@ func (mp *MatchProcess) AddMatch(id int64, level uint32, count int) bool {
 	mp.opchan <- func() {
 		if _, ok := mp.matchGroups[id]; ok {
 			// 匹配组已存在
-			klog.Errorf("match group %d already exists", id)
+			klog.Errorf("[MATCH-ADD-EXIST] match group %d already exists", id)
 			ch <- false
 			return
 		}
@@ -204,7 +203,7 @@ func (mp *MatchProcess) CancelMatch(id int64) bool {
 	mp.opchan <- func() {
 		if _, ok := mp.matchGroups[id]; !ok {
 			// 匹配组不存在
-			klog.Errorf("match group %d not found", id)
+			klog.Errorf("[MATCH-CANCEL-NOT-FOUND] match group %d not found", id)
 			ch <- false
 			return
 		}

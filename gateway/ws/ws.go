@@ -23,7 +23,7 @@ func WebSocketServer(addr string, uri string, sessionFactory func() isession.ISe
 		s := sessionFactory()
 		conn, err := upgrader.Upgrade(resp, req, nil)
 		if err != nil {
-			klog.Error("[WS-UPGRADE-ERROR] WebSocket upgrade error: %v", err)
+			klog.Errorf("[WS-UPGRADE-ERROR] WebSocket upgrade error: %v", err)
 			return
 		}
 		defer conn.Close()

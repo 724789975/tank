@@ -94,13 +94,14 @@ func (s *MatchService) ginRoute(ctx *gin.Context) {
 	// c := context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(int64))
 	info, ok := s.ServiceInfo.Methods[methodName]
 	if !ok {
-		klog.CtxErrorf(ctx, "[METHOD-NOT-FOUND] not found: %s", ctx.FullPath())
+		klog.CtxErrorf(ctx.Request.Context(), "[METHOD-NOT-FOUND] not found: %s", ctx.FullPath())
 		return
 	}
 	str := driver.NewHttpStream(ctx.Writer, ctx.Request)
 	handler := info.Handler()
-	if err := handler(ctx, s, &streaming.Args{Stream: str}, nil); err != nil {
-		klog.CtxErrorf(ctx, "[METHOD-HANDLER-ERROR] %s", err.Error())
+
+	if err := handler(context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(string)), s, &streaming.Args{Stream: str}, nil); err != nil {
+		klog.CtxErrorf(ctx.Request.Context(), "[METHOD-HANDLER-ERROR] %s", err.Error())
 	}
 }
 

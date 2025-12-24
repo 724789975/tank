@@ -11,6 +11,7 @@ import (
 	"match_server/logic/match"
 	common_redis "match_server/redis"
 	"match_server/rpc"
+	"match_server/tracer"
 	"net"
 	"strconv"
 	"sync"
@@ -53,73 +54,76 @@ func GetMatchManager() *MatchManager {
 		}
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
-			resp_create_server, err := rpc.ServerMgrClient.CreateServer(context.Background(), &server_mgr.CreateServerReq{})
+			ctx, span := tracer.GetCtxSpan()
+			defer span.End()
+			resp_create_server, err := rpc.ServerMgrClient.CreateServer(ctx, &server_mgr.CreateServerReq{})
 			if err != nil {
-				klog.CtxErrorf(context.Background(), "[MATCH-EXIST] uuid: %v %v create server failed, err: %v", r, b, err)
+				klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %v %v create server failed, err: %v", r, b, err)
 				return
 			}
+			go func() {
+				time.Sleep(time.Second * 1)
+				match_info_ntf := &match_proto.MatchInfoNtf{
+					R: make([]string, 0),
+					B: make([]string, 0),
+				}
+				game_info_ntf := &match_proto.GameInfoNtf{
+					GameAddr: common_config.Get("game.addr").(string),
+					GamePort: int32(resp_create_server.GamePort),
+				}
+				for _, v := range r {
+					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf("match_group:%d", v)).Result()
+					match_info_ntf.R = append(match_info_ntf.R, members...)
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_group:%d", v))
 
-			time.Sleep(time.Second * 1)
-			match_info_ntf := &match_proto.MatchInfoNtf{
-				R: make([]string, 0),
-				B: make([]string, 0),
-			}
-			game_info_ntf := &match_proto.GameInfoNtf{
-				GameAddr: common_config.Get("game.addr").(string),
-				GamePort: int32(resp_create_server.GamePort),
-			}
-			for _, v := range r {
-				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
-				match_info_ntf.R = append(match_info_ntf.R, members...)
-				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+					common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
+				}
+				for _, v := range b {
+					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf("match_group:%d", v)).Result()
+					match_info_ntf.B = append(match_info_ntf.B, members...)
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_group:%d", v))
 
-				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
-			}
-			for _, v := range b {
-				members, _ := common_redis.GetRedis().SMembers(context.Background(), fmt.Sprintf("match_group:%d", v)).Result()
-				match_info_ntf.B = append(match_info_ntf.B, members...)
-				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_group:%d", v))
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-				common_redis.GetRedis().HSetEX(context.TODO(), fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+					common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
+				}
 
-				common_redis.GetRedis().Expire(context.TODO(), fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
-			}
-
-			any1 := &anypb.Any{}
-			if err := any1.MarshalFrom(match_info_ntf); err != nil {
-				klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal match_info_ntf err: %v", err)
-			}
-			any2 := &anypb.Any{}
-			if err := any2.MarshalFrom(game_info_ntf); err != nil {
-				klog.Errorf("[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
-				return
-			}
-			for _, v := range match_info_ntf.R {
-				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
-					Id:  v,
-					Msg: any1,
-				})
-				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
-					Id:  v,
-					Msg: any2,
-				})
-				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_user:%s", v))
-			}
-			for _, v := range match_info_ntf.B {
-				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
-					Id:  v,
-					Msg: any1,
-				})
-				rpc.GatewayClient.UserMsg(context.Background(), &gate_way.UserMsgReq{
-					Id:  v,
-					Msg: any2,
-				})
-				common_redis.GetRedis().Del(context.Background(), fmt.Sprintf("match_user:%s", v))
-			}
+				any1 := &anypb.Any{}
+				if err := any1.MarshalFrom(match_info_ntf); err != nil {
+					klog.CtxErrorf(ctx, "[MATCH-MANAGER-NTF] MatchManager: marshal match_info_ntf err: %v", err)
+				}
+				any2 := &anypb.Any{}
+				if err := any2.MarshalFrom(game_info_ntf); err != nil {
+					klog.CtxErrorf(ctx, "[MATCH-MANAGER-NTF] MatchManager: marshal game_info_ntf err: %v", err)
+					return
+				}
+				for _, v := range match_info_ntf.R {
+					rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+						Id:  v,
+						Msg: any1,
+					})
+					rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+						Id:  v,
+						Msg: any2,
+					})
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_user:%s", v))
+				}
+				for _, v := range match_info_ntf.B {
+					rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+						Id:  v,
+						Msg: any1,
+					})
+					rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
+						Id:  v,
+						Msg: any2,
+					})
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_user:%s", v))
+				}
+			}()
 		})
 	})
 	return &match_mgr

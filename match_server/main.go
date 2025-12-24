@@ -22,7 +22,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	common_config.LoadConfig()
-	tracer.InitTracer(common_config.Get("match_rpc.service_name").(string), "")
+	tracer.InitTracer(common_config.Get("match_rpc.service_name").(string), common_config.Get("tracer.address").(string))
 	defer tracer.FinitTracer()
 	common_redis.GetRedis()
 	service.GetMatchService().ListenAndServe(ctx)

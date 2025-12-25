@@ -194,7 +194,7 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 		}
 	}
 
-	if common_redis.GetRedis().SetNX(ctx, fmt.Sprintf("match_server_op:user:%s", userId), userId, time.Second*1).Val() == false {
+	if common_redis.GetRedis().SetNX(ctx, fmt.Sprintf("match_server_op:user:%s", userId), userId, time.Duration(1)*time.Second).Val() == false {
 		resp.Code = common.ErrorCode_FAILED
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s", userId)
 		return resp, nil
@@ -233,7 +233,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	userId = ctx.Value("userId").(string)
 
-	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Second*5).Result(); err != nil {
+	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Duration(5)*time.Second).Result(); err != nil {
 		resp.Code = common.ErrorCode_FAILED
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
 		return resp, err
@@ -260,7 +260,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 			return resp, err
 		}
 	} else {
-		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], "10085"), time.Second*1); err == nil {
+		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], "10085"), time.Duration(1)*time.Second); err == nil {
 			conn.Close()
 			if port, ok := game_info["game_port"]; ok {
 				if p, err := strconv.Atoi(port); err == nil {
@@ -308,7 +308,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 
 	common_redis.GetRedis().HSet(ctx, fmt.Sprintf(userGameInfoKey, userId), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)), "game_addr", resp_create_server.GameAddr)
 
-	common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, userId), time.Second*60*5)
+	common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, userId), time.Duration(60*5)*time.Second)
 
 	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
 		Id: userId,

@@ -17,6 +17,10 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/golang/protobuf/proto"
 	_nats "github.com/nats-io/nats.go"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/anypb"
 )
@@ -31,7 +35,7 @@ type UserMgr struct {
 	users *util.RWMap[string, *User]
 
 	sessions *util.RWMap[isession.ISession, string]
-	ops      *util.RWMap[int64, func()]
+	ops      *util.RWMap[int64, func(ctx context.Context)]
 }
 
 func (u *UserMgr) addUser(userId string, _session isession.ISession, _sub *_nats.Subscription) {
@@ -65,7 +69,7 @@ func (u *UserMgr) getUserSession(userId string) (isession.ISession, bool) {
 	return nil, false
 }
 
-func (u *UserMgr) addOp(idx int64, f func()) {
+func (u *UserMgr) addOp(idx int64, f func(ctx context.Context)) {
 	u.ops.Set(idx, f)
 }
 
@@ -73,7 +77,7 @@ func (u *UserMgr) removeOp(idx int64) {
 	u.ops.Delete(idx)
 }
 
-func (u *UserMgr) getOp(idx int64) (func(), bool) {
+func (u *UserMgr) getOp(idx int64) (func(ctx context.Context), bool) {
 	return u.ops.Get(idx)
 }
 
@@ -87,7 +91,7 @@ func GetUserMgr() *UserMgr {
 		usermgr = &UserMgr{
 			users:    util.NewRWMap[string, *User](),
 			sessions: util.NewRWMap[isession.ISession, string](),
-			ops:      util.NewRWMap[int64, func()](),
+			ops:      util.NewRWMap[int64, func(ctx context.Context)](),
 		}
 	})
 
@@ -96,9 +100,21 @@ func GetUserMgr() *UserMgr {
 
 func InitUserMgr() {
 	if _, err := nats.GetNatsConn().Subscribe(constant.UserLoginMsg, func(msg *_nats.Msg) {
+		carrier := propagation.MapCarrier{}
+		for k, v := range msg.Header {
+			carrier[k] = v[0]
+		}
+		ctx := otel.GetTextMapPropagator().Extract(context.Background(), carrier)
+		ctx, span := otel.Tracer("nats-consume").Start(ctx, "nats-consume", trace.WithAttributes(
+			attribute.String("subject", msg.Subject),
+		))
+		defer span.End()
+
+		klog.CtxInfof(ctx, "[GATEWAY-NATS-CONSUME] recv %s", msg.Subject)
 		ncMsg := &gate_way.NatsLoginRequest{}
 		err := proto.Unmarshal(msg.Data, ncMsg)
 		if err != nil {
+			klog.CtxErrorf(ctx, "[GATEWAY-NATS-CONSUME] unmarshal %s failed, err: %v", msg.Subject, err)
 			return
 		}
 
@@ -108,7 +124,7 @@ func InitUserMgr() {
 		}
 
 		if op, ok := GetUserMgr().getOp(ncMsg.Idx); ok {
-			op()
+			op(ctx)
 		}
 	}); err != nil {
 		panic(err)
@@ -164,25 +180,25 @@ func InitUserMgr() {
 			return err
 		}
 
-		GetUserMgr().addOp(idx, func() {
+		GetUserMgr().addOp(idx, func(ctx context.Context) {
 			if sub, err := nats.GetNatsConn().Subscribe(fmt.Sprintf(constant.UserMsg, loginRequest.Id), func(msg *_nats.Msg) {
 				any := &anypb.Any{}
 				err := proto.Unmarshal(msg.Data, any)
 				if err != nil {
-					klog.Errorf("[GATEWAY-USER-MSG-UNMARSHAL] unmarshal %s failed, err: %v", string(msg.Data), err)
+					klog.CtxErrorf(ctx, "[GATEWAY-USER-MSG-UNMARSHAL] unmarshal %s failed, err: %v", string(msg.Data), err)
 					return
 				}
-				klog.Infof("[GATEWAY-USER-MSG-RECV] recv %s", any.String())
+				klog.CtxInfof(ctx, "[GATEWAY-USER-MSG-RECV] recv %s", any.String())
 				session.Send(any)
 			}); err != nil {
-				klog.Errorf("[GATEWAY-SUBSCRIBE-FAIL] subscribe %s failed, err: %v", fmt.Sprintf(constant.UserMsg, loginRequest.Id), err)
+				klog.CtxErrorf(ctx, "[GATEWAY-SUBSCRIBE-FAIL] subscribe %s failed, err: %v", fmt.Sprintf(constant.UserMsg, loginRequest.Id), err)
 				return
 			} else {
 				GetUserMgr().addUser(loginRequest.Id, session, sub)
 				GetUserMgr().removeOp(idx)
 			}
 
-			klog.Infof("[GATEWAY-LOGIN-SEND] send %s", loginResp.String())
+			klog.CtxInfof(ctx, "[GATEWAY-LOGIN-SEND] send %s", loginResp.String())
 			session.Send(any1)
 		})
 

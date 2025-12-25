@@ -12,19 +12,16 @@ import (
 	"gate_way_module/nats"
 	"net"
 
+	_nats "github.com/nats-io/nats.go"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/serviceinfo"
 	kitexserver "github.com/cloudwego/kitex/server"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"google.golang.org/protobuf/proto"
-)
-
-const (
-	MsgTraceDest          = "Nats-Trace-Dest"           // 追踪目标主题
-	MsgTraceHop           = "Nats-Trace-Hop"            // 跳数标识
-	MsgTraceOriginAccount = "Nats-Trace-Origin-Account" // 原始账户
-	MsgTraceOnly          = "Nats-Trace-Only"           // 仅追踪不投递
 )
 
 type GatewayService struct {
@@ -68,20 +65,23 @@ func (x *GatewayService) UserMsg(ctx context.Context, req *gate_way.UserMsgReq) 
 	if err != nil {
 		return nil, err
 	}
-
 	resp = &gate_way.UserMsgResp{
 		Id:   req.Id,
 		Code: common.ErrorCode_OK,
 	}
-	if respMsg, err := nats.GetNatsConn().RequestWithContext(ctx, fmt.Sprintf(constant.UserMsg, req.Id), ncMsgb); err == nil {
-		resp.Code = common.ErrorCode_OK
-		klog.CtxErrorf(ctx, "[GATEWAY-RPC-PUBLISH] publish %s success", fmt.Sprintf(constant.UserMsg, req.Id))
-	} else {
-		if err = nats.GetNatsConn().PublishMsg(respMsg); err != nil {
-			klog.CtxErrorf(ctx, "[GATEWAY-RPC-PUBLISH] publish %s failed %s", fmt.Sprintf(constant.UserMsg, req.Id), err.Error())
-			resp.Code = common.ErrorCode_FAILED
-			return nil, err
-		}
+	m := _nats.NewMsg(fmt.Sprintf(constant.UserMsg, req.Id))
+	m.Data = ncMsgb
+
+	carrier := propagation.MapCarrier{}
+	otel.GetTextMapPropagator().Inject(ctx, carrier)
+	for k, v := range carrier {
+		m.Header.Set(k, v)
+	}
+
+	if err = nats.GetNatsConn().PublishMsg(m); err != nil {
+		klog.CtxErrorf(ctx, "[GATEWAY-RPC-PUBLISH] publish %s failed %s", fmt.Sprintf(constant.UserMsg, req.Id), err.Error())
+		resp.Code = common.ErrorCode_FAILED
+		return resp, err
 	}
 	klog.CtxInfof(ctx, "[GATEWAY-RPC-PUBLISH] publish %s success", fmt.Sprintf(constant.UserMsg, req.Id))
 	return resp, nil

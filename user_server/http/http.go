@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"runtime/debug"
 	"time"
-	"user_server/tracer"
+	common_config "user_server/config"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 type UserInfo struct {
@@ -25,34 +26,34 @@ func AuthForClient(offset int64) gin.HandlerFunc {
 		}
 		userInfoRaw := c.GetHeader("user-channel")
 		if userInfoRaw == "" {
-			klog.Errorf("[USER-SVR-AUTH-MISSING-HEADER] user-channel header is missing %s", c.Request.URL.Path)
+			klog.CtxErrorf(c.Request.Context(), "[AUTH-MISSING-HEADER] user-channel header is missing %s", c.Request.URL.Path)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		userInfo := UserInfo{}
 		if err := json.Unmarshal([]byte(userInfoRaw), &userInfo); err != nil {
-			klog.Errorf("[USER-SVR-AUTH-INVALID-JSON] Invalid JSON in user-channel header %s", err.Error())
+			klog.CtxErrorf(c.Request.Context(), "[AUTH-INVALID-JSON] Invalid JSON in user-channel header %s", err.Error())
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.UserId == "" {
-			klog.Errorf("[USER-SVR-AUTH-INVALID-USERID] Invalid userId in user-channel header %s", userInfoRaw)
+			klog.CtxErrorf(c.Request.Context(), "[AUTH-INVALID-USERID] Invalid userId in user-channel header %s", userInfoRaw)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if userInfo.Exp == 0 {
-			klog.Errorf("[USER-SVR-AUTH-INVALID-EXP] Invalid exp in user-channel header %s", userInfoRaw)
+			klog.CtxErrorf(c.Request.Context(), "[AUTH-INVALID-EXP] Invalid exp in user-channel header %s", userInfoRaw)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		now := time.Now().Unix()
 		if now-offset >= userInfo.Exp {
-			klog.Errorf("[USER-SVR-AUTH-TOKEN-EXPIRED] Token expired %s", userInfoRaw)
-			c.AbortWithStatus(http.StatusForbidden)
+			klog.CtxErrorf(c.Request.Context(), "[AUTH-TOKEN-EXPIRED] Token expired %s", userInfoRaw)
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
@@ -65,9 +66,9 @@ func AuthForClient(offset int64) gin.HandlerFunc {
 // 面向客户端的路由
 func GetClientRouter() *gin.Engine {
 	router := gin.New()
+	router.Use(otelgin.Middleware(common_config.Get("match_rpc.service_name").(string)))
 	router.Use(Logger())
 	router.Use(klogRecovery())
-	// router.Use(otelgin.Middleware(common.GetServiceName()))
 	router.Use(AuthForClient(10))
 	router.Any("/healthz", healthz)
 	router.Any("/ready", healthz)
@@ -90,8 +91,6 @@ func Logger() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		start := time.Now()
 		path := context.Request.URL.Path
-		ctx, span := tracer.GetCtxSpan()
-		defer span.End()
 		context.Next()
 
 		rt := time.Since(start).Milliseconds()
@@ -99,9 +98,9 @@ func Logger() gin.HandlerFunc {
 			return
 		}
 		if rt > 150 {
-			klog.CtxErrorf(ctx, "[USER-SVR-HTTP-SLOW-API] path = %s  , rt = %d , userId = %s , body = %v , slow api", path, rt, context.GetString("userId"))
+			klog.CtxErrorf(context.Request.Context(), "[HTTP-SLOW-API] path = %s  , rt = %d , userId = %s , slow api", path, rt, context.GetString("userId"))
 		} else {
-			klog.CtxInfof(ctx, "[USER-SVR-HTTP-ACCESS] path = %s  , rt = %d , userId = %s , body = %v", path, rt, context.GetString("userId"))
+			klog.CtxInfof(context.Request.Context(), "[HTTP-ACCESS] path = %s  , rt = %d , userId = %s", path, rt, context.GetString("userId"))
 		}
 	}
-}
+}

@@ -29,3 +29,6 @@ etcd:
 
 gateway:
   service_name: "gateway"
+
+tracer:
+  address: "otel-collector.open-telemetry-collector:4317"

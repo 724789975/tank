@@ -8,6 +8,7 @@ import (
 	"server_manager/logic/service"
 	common_redis "server_manager/redis"
 	"server_manager/rpc"
+	"server_manager/tracer"
 	"syscall"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -20,6 +21,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	common_config.LoadConfig()
+	tracer.InitTracer(common_config.Get("server_mgr_rpc.service_name").(string), common_config.Get("tracer.address").(string))
 	common_redis.GetRedis()
 	service.GetServerMgrService().ListenAndServe(ctx)
 	rpc.InitRpc()

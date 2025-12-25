@@ -33,6 +33,8 @@ var (
 
 	userGameInfoKey = "match_server:user_game:%s"
 	createGameKey   = "match_server:create_game:%s"
+	matchGroupKey   = "match_server:match_group:%d"
+	matchUserKey    = "match_server:match_user:%s"
 )
 
 func GetMatchManager() *MatchManager {
@@ -72,9 +74,9 @@ func GetMatchManager() *MatchManager {
 					GamePort: int32(resp_create_server.GamePort),
 				}
 				for _, v := range r {
-					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf("match_group:%d", v)).Result()
+					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
 					match_info_ntf.R = append(match_info_ntf.R, members...)
-					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_group:%d", v))
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
 
 					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
 					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
@@ -82,9 +84,9 @@ func GetMatchManager() *MatchManager {
 					common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
 				}
 				for _, v := range b {
-					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf("match_group:%d", v)).Result()
+					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
 					match_info_ntf.B = append(match_info_ntf.B, members...)
-					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_group:%d", v))
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
 
 					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
 					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
@@ -110,7 +112,7 @@ func GetMatchManager() *MatchManager {
 						Id:  v,
 						Msg: any2,
 					})
-					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_user:%s", v))
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchUserKey, v))
 				}
 				for _, v := range match_info_ntf.B {
 					rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
@@ -121,7 +123,7 @@ func GetMatchManager() *MatchManager {
 						Id:  v,
 						Msg: any2,
 					})
-					common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_user:%s", v))
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchUserKey, v))
 				}
 			}()
 		})
@@ -188,7 +190,7 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 			})
 			return resp, nil
 		} else {
-			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
+			klog.CtxInfof(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
 		}
 	}
 
@@ -198,20 +200,20 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 		return resp, nil
 	}
 
-	if e := common_redis.GetRedis().Get(ctx, fmt.Sprintf("match_user:%s", userId)).Err(); e != redis.Nil {
+	if e := common_redis.GetRedis().Get(ctx, fmt.Sprintf(matchUserKey, userId)).Err(); e != redis.Nil {
 		resp.Code = common.ErrorCode_FAILED
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s already match, err: %v", userId, e)
 		return resp, e
 	}
 
 	id := idClient.Generate().Int64()
-	common_redis.GetRedis().Set(ctx, fmt.Sprintf("match_user:%s", userId), id, 0)
-	common_redis.GetRedis().SAdd(ctx, fmt.Sprintf("match_group:%d", id), userId)
+	common_redis.GetRedis().Set(ctx, fmt.Sprintf(matchUserKey, userId), id, 0)
+	common_redis.GetRedis().SAdd(ctx, fmt.Sprintf(matchGroupKey, id), userId)
 
 	if !match.GetMatchProcess().AddMatch(id, 1, 1) {
 		resp.Code = common.ErrorCode_FAILED
-		common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_user:%s", userId))
-		common_redis.GetRedis().Del(ctx, fmt.Sprintf("match_group:%d", id))
+		common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchUserKey, userId))
+		common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, id))
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s add match failed", userId)
 		return resp, nil
 	}
@@ -279,7 +281,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 			})
 			return resp, nil
 		} else {
-			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
+			klog.CtxInfof(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
 		}
 	}
 

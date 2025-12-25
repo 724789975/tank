@@ -9,6 +9,7 @@ import (
 	"user_server/logic/service"
 	common_redis "user_server/redis"
 	"user_server/rpc"
+	"user_server/tracer"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
@@ -20,6 +21,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	common_config.LoadConfig()
+	tracer.InitTracer(common_config.Get("user_rpc.service_name").(string), common_config.Get("tracer.address").(string))
 	common_redis.GetRedis()
 	service.GetUserService().ListenAndServe(ctx)
 	rpc.InitRpc()

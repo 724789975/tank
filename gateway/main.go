@@ -9,6 +9,7 @@ import (
 	rpcservice "gate_way_module/rpc_service"
 	"gate_way_module/session"
 	"gate_way_module/session/isession"
+	"gate_way_module/tracer"
 	usermgr "gate_way_module/user_mgr"
 	"gate_way_module/ws"
 	"os"
@@ -24,6 +25,7 @@ func main() {
 	klog.SetLevel(klog.LevelDebug)
 	_, cancel := context.WithCancel(context.Background())
 	common_config.LoadConfig()
+	tracer.InitTracer(common_config.Get("gateway_rpc.service_name").(string), common_config.Get("tracer.address").(string))
 	common_redis.GetRedis()
 	nats.GetNatsConn()
 	etcd.GetEtcdClient()

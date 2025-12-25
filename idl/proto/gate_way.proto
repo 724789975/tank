@@ -29,5 +29,5 @@ message UserMsgReq {
 
 message UserMsgResp {
 	string id = 1;
-	int32 code = 2;
+	common.ErrorCode code = 2;
 }

@@ -30,8 +30,9 @@ namespace GateWay {
             "ES5jb21tb24uRXJyb3JDb2RlIisKEE5hdHNMb2dpblJlcXVlc3QSCgoCaWQY",
             "ASABKAkSCwoDaWR4GAIgASgDIhQKBFRlc3QSDAoEdGVzdBgBIAEoCSI7CgpV",
             "c2VyTXNnUmVxEgoKAmlkGAEgASgJEiEKA21zZxgCIAEoCzIULmdvb2dsZS5w",
-            "cm90b2J1Zi5BbnkiJwoLVXNlck1zZ1Jlc3ASCgoCaWQYASABKAkSDAoEY29k",
-            "ZRgCIAEoBUIKWghnYXRlX3dheWIGcHJvdG8z"));
+            "cm90b2J1Zi5BbnkiOgoLVXNlck1zZ1Jlc3ASCgoCaWQYASABKAkSHwoEY29k",
+            "ZRgCIAEoDjIRLmNvbW1vbi5FcnJvckNvZGVCCloIZ2F0ZV93YXliBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -1134,10 +1135,10 @@ namespace GateWay {
 
     /// <summary>Field number for the "code" field.</summary>
     public const int CodeFieldNumber = 2;
-    private int code_;
+    private global::Common.ErrorCode code_ = global::Common.ErrorCode.Ok;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int Code {
+    public global::Common.ErrorCode Code {
       get { return code_; }
       set {
         code_ = value;
@@ -1169,7 +1170,7 @@ namespace GateWay {
     public override int GetHashCode() {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (Code != 0) hash ^= Code.GetHashCode();
+      if (Code != global::Common.ErrorCode.Ok) hash ^= Code.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1192,9 +1193,9 @@ namespace GateWay {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (Code != 0) {
+      if (Code != global::Common.ErrorCode.Ok) {
         output.WriteRawTag(16);
-        output.WriteInt32(Code);
+        output.WriteEnum((int) Code);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1210,9 +1211,9 @@ namespace GateWay {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (Code != 0) {
+      if (Code != global::Common.ErrorCode.Ok) {
         output.WriteRawTag(16);
-        output.WriteInt32(Code);
+        output.WriteEnum((int) Code);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -1227,8 +1228,8 @@ namespace GateWay {
       if (Id.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
       }
-      if (Code != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Code);
+      if (Code != global::Common.ErrorCode.Ok) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Code);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1245,7 +1246,7 @@ namespace GateWay {
       if (other.Id.Length != 0) {
         Id = other.Id;
       }
-      if (other.Code != 0) {
+      if (other.Code != global::Common.ErrorCode.Ok) {
         Code = other.Code;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1268,7 +1269,7 @@ namespace GateWay {
             break;
           }
           case 16: {
-            Code = input.ReadInt32();
+            Code = (global::Common.ErrorCode) input.ReadEnum();
             break;
           }
         }
@@ -1291,7 +1292,7 @@ namespace GateWay {
             break;
           }
           case 16: {
-            Code = input.ReadInt32();
+            Code = (global::Common.ErrorCode) input.ReadEnum();
             break;
           }
         }

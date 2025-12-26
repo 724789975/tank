@@ -291,20 +291,17 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create server failed, err: %v", userId, err)
 		return resp, err
 	}
-	time.Sleep(time.Second * 1)
 	_, err = rpc.ServerMgrClient.CreateAiClient(ctx, &server_mgr.CreateAiClientReq{
 		GameAddr: resp_create_server.GameAddr,
 	})
 	if err != nil {
 		resp.Code = common.ErrorCode_FAILED
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create ai client failed, err: %v", userId, err)
-		return resp, err
+		return
 	}
 
 	game_info_ntf.GameAddr = common_config.Get("game.addr").(string)
 	game_info_ntf.GamePort = resp_create_server.GamePort
-
-	time.Sleep(time.Second * 1)
 
 	common_redis.GetRedis().HSet(ctx, fmt.Sprintf(userGameInfoKey, userId), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)), "game_addr", resp_create_server.GameAddr)
 

@@ -66,7 +66,7 @@ func AuthForClient(offset int64) gin.HandlerFunc {
 // 面向客户端的路由
 func GetClientRouter() *gin.Engine {
 	router := gin.New()
-	router.Use(otelgin.Middleware(common_config.Get("match_rpc.service_name").(string)))
+	router.Use(otelgin.Middleware(common_config.Get("server_mgr_rpc.service_name").(string)))
 	router.Use(Logger())
 	router.Use(klogRecovery())
 	router.Use(AuthForClient(10))

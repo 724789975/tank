@@ -1,0 +1,56 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: istio-route
+  namespace: istio-system
+  generation: 2
+spec:
+  hosts: ["*"]
+  gateways:
+  - my-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /ws/  # 根据实际WebSocket路径调整前缀
+    route:
+    - destination:
+        host: gate-server.tank.svc.cluster.local  # 替换为实际WebSocket服务的Service名称
+        port:
+          number: 12001  # 替换为WebSocket服务的端口号
+  - match:
+    - uri:
+        prefix: /api/1.0/public/user_server/
+    route:
+    - destination:
+        host: user-server.tank.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /observability/jaeger/
+    route:
+    - destination:
+        host: jaeger.observability.svc.cluster.local
+        port:
+          number: 16686
+  - match:
+    - uri:
+        prefix: /api/1.0/public/match_server/
+    route:
+    - destination:
+        host: match-server.tank.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/1.0/public/server_mgr/
+    route:
+    - destination:
+        host: server-mgr.tank.svc.cluster.local
+        port:
+          number: 8080
+  - route:
+    - destination:
+        host: kubernetes-dashboard-web.kubernetes-dashboard.svc.cluster.local  # Kubernetes Dashboard的Service名称
+        port:
+          number: 80  # Service的端口号

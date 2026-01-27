@@ -55,6 +55,7 @@ public class GameStart : MonoBehaviour
 
 		GameStart.Instance.ToString();
 		TimerU.Instance.ToString();
+		EtcdUtil.Instance.ToString();
 
 	}
 
@@ -68,6 +69,12 @@ public class GameStart : MonoBehaviour
 
 		Config.Instance.serverIP = Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1");
 		Debug.Log(Config.Instance.serverIP);
+
+		EtcdUtil.Instance.etcdAddr = Oddworm.Framework.CommandLine.GetString("-etcd_addr", "");
+		EtcdUtil.Instance.etcdUserName = Oddworm.Framework.CommandLine.GetString("-etcd_user_name", "");
+		EtcdUtil.Instance.etcdPassword = Oddworm.Framework.CommandLine.GetString("-etcd_password", "");
+
+		EtcdUtil.Instance.Keys();
 
 		GameStart.Instance.ToString();
 #if UNITY_SERVER && !AI_RUNNING

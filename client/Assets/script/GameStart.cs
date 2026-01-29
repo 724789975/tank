@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Dirichlet.Mediation;
+using System.Net.Sockets;
+using System.Net;
 
 public class GameStart : MonoBehaviour
 {
@@ -67,6 +69,8 @@ public class GameStart : MonoBehaviour
 		AccountInfo.Instance.Account.Openid = AccountInfo.Instance.Account.Openid == "" ? Oddworm.Framework.CommandLine.GetString("-openid", "mzw0536knQSO+bhbdL6dtw==") : AccountInfo.Instance.Account.Openid;
 		AccountInfo.Instance.Account.Unionid = AccountInfo.Instance.Account.Unionid == "" ? Oddworm.Framework.CommandLine.GetString("-unionid", "SnwhJ5s2EURKCKt0LBsDLw==") : AccountInfo.Instance.Account.Unionid;
 
+		Config.Instance.serviceName = Oddworm.Framework.CommandLine.GetString("-service_name", "123456");
+
 		Config.Instance.serverIP = Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1");
 		Debug.Log(Config.Instance.serverIP);
 
@@ -74,15 +78,44 @@ public class GameStart : MonoBehaviour
 		EtcdUtil.Instance.etcdUserName = Oddworm.Framework.CommandLine.GetString("-etcd_user_name", "");
 		EtcdUtil.Instance.etcdPassword = Oddworm.Framework.CommandLine.GetString("-etcd_password", "");
 
-		EtcdUtil.Instance.Keys();
+		var host = Dns.GetHostName();
+		var ipEntry = Dns.GetHostEntry(host);
+		foreach (var ipAddr in ipEntry.AddressList)
+		{
+			if (ipAddr.AddressFamily == AddressFamily.InterNetwork)
+			{
+				Config.Instance.localIp = ipAddr.ToString();
+				break;
+			}
+		}
+
+		Debug.Log($"local ip {Config.Instance.localIp}");
 
 		GameStart.Instance.ToString();
 #if UNITY_SERVER && !AI_RUNNING
+		//EtcdUtil.Instance.Keys();
+		GameStart.Instance.register();
 #else
 		NetClient.Instance.ToString();
 		WSMsgProcess.Instance.ToString();
 #endif
 
+	}
+
+	void register()
+	{
+		TimerU.Instance.AddTask(80, () =>
+		{
+			register();
+		});
+		EtcdUtil.Instance.Put($"/{Config.Instance.serviceName}/{Config.Instance.localIp}:{Config.Instance.port}", $"{{ \"network\":\"tcp\",\"address\":\"{Config.Instance.localIp}:{Config.Instance.port}\",\"weight\":10,\"tags\":null}}", 100);
+
+		//EtcdUtil.Instance.Get($"", (result) => {
+		//	foreach (var item in result)
+		//	{
+		//		Debug.Log(item.Key + " " + item.Value);
+		//	}
+		//});
 	}
 
 	// Start is called before the first frame update

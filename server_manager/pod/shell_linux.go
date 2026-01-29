@@ -158,6 +158,8 @@ func StartGameServer(ctx context.Context, id int64, params []string) (err error,
 	podName := fmt.Sprintf("%s-%d", common_config.Get("pod.game_server.name").(string), id)
 	image := common_config.Get("pod.game_server.image").(string)
 
+	params = append(params, fmt.Sprintf("-service_name %s", podName))
+
 	klog.CtxInfof(ctx, "[POD-START-009] starting game server, id: %d, podName: %s, image: %s, params: %v", id, podName, image, params)
 
 	err, job := create_job(ctx, podName, common_config.Get("pod.game_server.namespace").(string), image, params)

@@ -95,5 +95,8 @@ public class Config : MonoBehaviour
     public float speed = 3f;
     public int maxHp = 100;
     public float rebornProtectionTime = 5f;
+    public string serviceName;
+    public string localIp;
+
 	static readonly object Lock = new object();
 }

@@ -2,6 +2,7 @@ package manager
 
 import (
 	"context"
+	common_config "server_manager/config"
 	"server_manager/kitex_gen/common"
 	"server_manager/kitex_gen/server_mgr"
 	"server_manager/pod"
@@ -51,7 +52,7 @@ func (s *ServerManager) CreateServer(ctx context.Context, req *server_mgr.Create
 		klog.CtxInfof(ctx, "[SERVER-MGR-CREATE-004] resp: %d", resp.Code)
 	}()
 
-	if err1, clusterIP, tcpPort, _ := pod.StartGameServer(ctx, idClient.Generate().Int64(), []string{""}); err1 != nil {
+	if err1, clusterIP, tcpPort, _ := pod.StartGameServer(ctx, idClient.Generate().Int64(), []string{"-etcd_addr", common_config.Get("etcd.addrs").([]interface{})[0].(string), "-etcd_user_name", common_config.Get("etcd.username").(string), "-etcd_password", common_config.Get("etcd.password").(string)}); err1 != nil {
 		klog.CtxErrorf(ctx, "[SERVER-MGR-CREATE-007] CreateServer: failed to start game server, error: %v", err1)
 		resp.Code = common.ErrorCode_SERVER_MGR_CREATE_FAILED
 		resp.Msg = "failed to start game server"

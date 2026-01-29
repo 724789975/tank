@@ -1,5 +1,5 @@
-using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -111,6 +111,166 @@ public class EtcdUtil : MonoBehaviour
 		});
 	}
 
+	public void Get(string prefix, Action<Dictionary<string, string>> callback)
+	{
+		EtcdOperator((token) =>
+		{
+			string url = string.Format("http://{0}/v3/kv/range", etcdAddr);
+			Dictionary<string, string> header = new Dictionary<string, string>
+			{
+				{ "Authorization", token },
+			};
+
+			Dictionary<string, string> body = new Dictionary<string, string>();
+			if (string.IsNullOrEmpty(prefix))
+			{
+				body["key"] = System.Convert.ToBase64String(Encoding.UTF8.GetBytes("\0"));
+				body["range_end"] = System.Convert.ToBase64String(Encoding.UTF8.GetBytes("\0"));
+			}else
+			{
+				body["key"] = System.Convert.ToBase64String(Encoding.UTF8.GetBytes(prefix));
+				body["range_end"] = System.Convert.ToBase64String(Encoding.UTF8.GetBytes(prefix + "\xff"));
+			};
+
+			string pbody = JsonConvert.SerializeObject(body);
+			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+
+			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
+			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
+			{
+				if (!ok)
+				{
+					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+				}
+				else
+				{
+					string responseStr = System.Text.Encoding.UTF8.GetString(response);
+					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+					Dictionary<string, object> ret = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseStr);
+					Dictionary<string, string> keyValues = new Dictionary<string, string>();
+					if (ret.TryGetValue("kvs", out object kvs))
+					{
+						Debug.Log(kvs.GetType());
+						ArrayList arrayList = JsonConvert.DeserializeObject<ArrayList>(kvs.ToString());
+						foreach (var item in (Newtonsoft.Json.Linq.JArray)kvs)
+						{
+							string key = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(item["key"].ToString()));
+							string value = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(item["value"].ToString()));
+							keyValues.Add(key, value);
+						}
+					}
+					
+					callback(keyValues);
+				}
+			});
+		});
+	}
+
+	public void Put(string key, string value, int ttl)
+	{
+		Action<string, string> a = (token, lease) =>
+		{
+			string url = string.Format("http://{0}/v3/kv/put", etcdAddr);
+			Dictionary<string, string> header = new Dictionary<string, string>
+			{
+				{ "Authorization", token },
+			};
+
+			Dictionary<string, object> body = new Dictionary<string, object>
+			{
+				{ "key", System.Convert.ToBase64String(Encoding.UTF8.GetBytes(key)) },
+				{"value", System.Convert.ToBase64String(Encoding.UTF8.GetBytes(value))  },
+				{"lease", lease }
+			};
+
+			string pbody = JsonConvert.SerializeObject(body);
+			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+
+			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
+			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
+			{
+				if (!ok)
+				{
+					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+				}
+				else
+				{
+					string responseStr = System.Text.Encoding.UTF8.GetString(response);
+					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+				}
+			});
+		};
+		EtcdOperator((token) =>
+		{
+			string url = string.Format("http://{0}/v3/lease/grant", etcdAddr);
+
+			Dictionary<string, string> header = new Dictionary<string, string>
+			{
+				{ "Authorization", token },
+			};
+
+			Dictionary<string, int> body = new Dictionary<string, int>
+			{
+				{ "TTL", ttl },
+			};
+
+			string pbody = JsonConvert.SerializeObject(body);
+			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+
+			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
+			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
+			{
+				if (!ok)
+				{
+					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+				}
+				else
+				{
+					string responseStr = System.Text.Encoding.UTF8.GetString(response);
+					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+
+					Dictionary<string, object> ret = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseStr);
+					a(token, ret["ID"].ToString());
+				}
+			});
+		});
+	}
+
+	public void Put(string key, string value)
+	{
+		EtcdOperator((token) =>
+		{
+			string url = string.Format("http://{0}/v3/kv/put", etcdAddr);
+			Dictionary<string, string> header = new Dictionary<string, string>
+			{
+				{ "Authorization", token },
+			};
+
+			Dictionary<string, object> body = new Dictionary<string, object>
+			{
+				{ "key", System.Convert.ToBase64String(Encoding.UTF8.GetBytes(key)) },
+				{"value", System.Convert.ToBase64String(Encoding.UTF8.GetBytes(value))  },
+			};
+
+			string pbody = JsonConvert.SerializeObject(body);
+			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+
+			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
+			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
+			{
+				if (!ok)
+				{
+					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+				}
+				else
+				{
+					string responseStr = System.Text.Encoding.UTF8.GetString(response);
+					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+				}
+			});
+		});
+	}
+
 	public string etcdAddr;
 	public string etcdUserName;
 	public string etcdPassword;
@@ -150,3 +310,4 @@ public class EtcdUtil : MonoBehaviour
 
 	static readonly object Lock = new object();
 }
+

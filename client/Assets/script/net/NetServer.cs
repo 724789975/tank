@@ -51,7 +51,7 @@ public class NetServer : MonoBehaviour
 #if CLIENT_WS
 		}
 #endif
-			// 使用 for 循环遍历 msgs 列表并执行其中的委托
+		// 使用 for 循环遍历 msgs 列表并执行其中的委托
 		int count = _msg.Count;
 		for (int i = 0; i < count; i++)
 		{

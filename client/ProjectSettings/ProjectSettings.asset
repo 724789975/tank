@@ -858,11 +858,11 @@ PlayerSettings:
     VisionOS: UNITY_POST_PROCESSING_STACK_V2
     WebGL: UNITY_POST_PROCESSING_STACK_V2
     XboxOne: UNITY_POST_PROCESSING_STACK_V2
+    iPhone: CLIENT_WS
     tvOS: UNITY_POST_PROCESSING_STACK_V2
   additionalCompilerArguments:
     Server: []
-    iPhone:
-    - CLIENT_WS
+    iPhone: []
   platformArchitecture:
     iPhone: 1
   scriptingBackend:

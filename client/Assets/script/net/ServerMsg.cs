@@ -1,10 +1,6 @@
 using Google.Protobuf.WellKnownTypes;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Google.Protobuf;
-using fxnetlib.dllimport;
-using System;
 
 public class ServerMsg : MonoBehaviour
 {

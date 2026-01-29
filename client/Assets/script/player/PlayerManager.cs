@@ -1,6 +1,4 @@
-using fxnetlib.dllimport;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_SERVER && !AI_RUNNING
@@ -84,7 +82,7 @@ public class PlayerManager : Singleton<PlayerManager>
 #else
             if ((IntPtr)(players[id].session)!= IntPtr.Zero)
             {
-				DLLImport.Close((IntPtr)players[id].session);
+				fxnetlib.dllimport.DLLImport.Close((IntPtr)players[id].session);
             }
 #endif
 #endif

@@ -1,9 +1,6 @@
-using AOT;
-using fxnetlib.dllimport;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,11 +24,11 @@ public class NetServer : MonoBehaviour
 		wsServer.Start();
 		Debug.Log($"WebSocket server started at {wsServer.Address}, port {wsServer.Port}, path {wsServer.WebSocketServices.Paths.ElementAt(0)}");
 #else
-		DLLImport.StartIOModule();
-		DLLImport.SetLogCallback(OnLogCallback);
-		DLLImport.CreateSessionMake(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
-		DLLImport.TcpListen("0.0.0.0", Config.Instance.port);
-		DLLImport.UdpListen("0.0.0.0", Config.Instance.port);
+		fxnetlib.dllimport.DLLImport.StartIOModule();
+		fxnetlib.dllimport.DLLImport.SetLogCallback(OnLogCallback);
+		fxnetlib.dllimport.DLLImport.CreateSessionMake(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
+		fxnetlib.dllimport.DLLImport.TcpListen("0.0.0.0", Config.Instance.port);
+		fxnetlib.dllimport.DLLImport.UdpListen("0.0.0.0", Config.Instance.port);
 #endif
 		MsgProcess.Instance.RegisterHandler(typeof(ServerMsg));
 	}
@@ -44,9 +41,9 @@ public class NetServer : MonoBehaviour
 		lock (Lock)
 		{
 #else
-		DLLImport.ProcessIOModule();
+		fxnetlib.dllimport.DLLImport.ProcessIOModule();
 #endif
-		_msg.AddRange(msgs);
+			_msg.AddRange(msgs);
 		msgs.Clear();
 #if CLIENT_WS
 		}
@@ -69,10 +66,10 @@ public class NetServer : MonoBehaviour
 	void OnApplicationQuit()
 	{
 #if UNITY_EDITOR && !CLIENT_WS
-		DLLImport.StopAllSockets();
+		fxnetlib.dllimport.DLLImport.StopAllSockets();
 		for (int i = 0; i < 20; i++)
 		{
-			DLLImport.ProcessIOModule();
+			fxnetlib.dllimport.DLLImport.ProcessIOModule();
 		}
 		Debug.Log($"OnApplicationQuit");
 #endif
@@ -175,7 +172,7 @@ public class NetServer : MonoBehaviour
 	static void OnCloseCallback(IntPtr pConnector)
 	{
 		Debug.Log("connector destroy");
-		DLLImport.DestroyConnector(pConnector);
+		fxnetlib.dllimport.DLLImport.DestroyConnector(pConnector);
 		PlayerManager.Instance.AfterCloseCallback(pConnector);
 	}
 #endif
@@ -201,7 +198,7 @@ public class NetServer : MonoBehaviour
 			Debug.LogError("connector is null");
 			return;
 		}
-		DLLImport.Send((IntPtr)pSession, messageBytes, (uint)messageBytes.Length);
+		fxnetlib.dllimport.DLLImport.Send((IntPtr)pSession, messageBytes, (uint)messageBytes.Length);
 #endif
 	}
 
@@ -216,7 +213,7 @@ public class NetServer : MonoBehaviour
 			Debug.LogError("connector is null");
 			return;
 		}
-		DLLImport.Close((IntPtr)pSession);
+		fxnetlib.dllimport.DLLImport.Close((IntPtr)pSession);
 #endif
 	}
 

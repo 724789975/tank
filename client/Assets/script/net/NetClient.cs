@@ -1,12 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using fxnetlib.dllimport;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using TankGame;
-using AOT;
 using UnityWebSocket;
 
 public class NetClient : MonoBehaviour
@@ -16,8 +11,8 @@ public class NetClient : MonoBehaviour
     {
 #if CLIENT_WS
 #else
-		DLLImport.StartIOModule();
-		DLLImport.SetLogCallback(OnLogCallback);
+		fxnetlib.dllimport.DLLImport.StartIOModule();
+		fxnetlib.dllimport.DLLImport.SetLogCallback(OnLogCallback);
 #endif
 		MsgProcess.Instance.RegisterHandler(typeof(ClientMsg));
 	}
@@ -27,7 +22,7 @@ public class NetClient : MonoBehaviour
     {
 #if CLIENT_WS
 #else
-		DLLImport.ProcessIOModule();
+		fxnetlib.dllimport.DLLImport.ProcessIOModule();
 		int count = msgs.Count;
 		for (int i = 0; i < count; i++)
 		{
@@ -47,10 +42,10 @@ public class NetClient : MonoBehaviour
 	void OnApplicationQuit()
 	{
 #if UNITY_EDITOR && !CLIENT_WS
-		DLLImport.StopAllSockets();
+		fxnetlib.dllimport.DLLImport.StopAllSockets();
 		for (int i = 0; i < 20; i++)
 		{
-			DLLImport.ProcessIOModule();
+			fxnetlib.dllimport.DLLImport.ProcessIOModule();
 		}
 #endif
 	}
@@ -150,7 +145,7 @@ public class NetClient : MonoBehaviour
 	static void OnCloseCallback(IntPtr pConnector)
 	{
 		Debug.Log("connector destroy");
-		DLLImport.DestroyConnector(pConnector);
+		fxnetlib.dllimport.DLLImport.DestroyConnector(pConnector);
 
 		if (instance.needReconnect)
 		{
@@ -184,7 +179,7 @@ public class NetClient : MonoBehaviour
 		webSocket.OnError += OnError;
 		webSocket.OnClose += OnClose;
 #else
-		connector = DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
+		connector = fxnetlib.dllimport.DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 #endif
 		needReconnect = true;
 	}
@@ -204,7 +199,7 @@ public class NetClient : MonoBehaviour
 			Debug.LogError("connector is null");
 			return;
 		}
-		DLLImport.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+		fxnetlib.dllimport.DLLImport.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
 #endif
 	}
 
@@ -225,7 +220,7 @@ public class NetClient : MonoBehaviour
 			return;
 		}
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
-		DLLImport.Send(connector, messageBytes, (uint)messageBytes.Length);
+		fxnetlib.dllimport.DLLImport.Send(connector, messageBytes, (uint)messageBytes.Length);
 #endif
 	}
 
@@ -256,7 +251,7 @@ public class NetClient : MonoBehaviour
 #else
 		if(connector != IntPtr.Zero)
 		{
-			DLLImport.Close(connector);
+			fxnetlib.dllimport.DLLImport.Close(connector);
 		}
 #endif
 		needReconnect = false;

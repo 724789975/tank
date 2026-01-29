@@ -2,7 +2,6 @@ using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.Text;
 using UnityEngine;
 

@@ -111,8 +111,13 @@ public class GameStart : MonoBehaviour
 		});
 		EtcdUtil.Instance.Put($"/{Config.Instance.serviceName}/{Config.Instance.localIp}:{Config.Instance.rpcPort}", $"{{ \"network\":\"tcp\",\"address\":\"{Config.Instance.localIp}:{Config.Instance.port}\",\"weight\":10,\"tags\":null}}", 100);
 
-		EtcdUtil.Instance.Get($"", (result) =>
+		EtcdUtil.Instance.Get($"", (result, succeed) =>
 		{
+			if (!succeed)
+			{
+				Debug.LogError("get etcd keys failed");
+				return;
+			}
 			foreach (var item in result)
 			{
 				Debug.Log(item.Key + " " + item.Value);

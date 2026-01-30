@@ -24,8 +24,7 @@ public class EtcdUtil : MonoBehaviour
         
     }
 
-	public delegate void etcd_operator(string token);
-	public void EtcdOperator(etcd_operator op)
+	public void EtcdOperator(Action<string, bool> op)
 	{
 		if (isLogin)
 		{
@@ -60,11 +59,11 @@ public class EtcdUtil : MonoBehaviour
 				Debug.Log($"登录etcd成功，服务器响应：{responseStr}");
 				AuthResp authResp = JsonUtility.FromJson<AuthResp>(responseStr);
 				
-				foreach (etcd_operator op in ops)
+				foreach (Action<string, bool> op in ops)
 				{
 					try
 					{
-						op(authResp.token);
+						op(authResp.token, true);
 					}
 					catch(System.Exception e)
 					{
@@ -78,7 +77,7 @@ public class EtcdUtil : MonoBehaviour
 
 	public void Keys()
 	{
-		EtcdOperator((token) =>
+		EtcdOperator((token, succeed) =>
 		{
 			string url = string.Format("http://{0}/v3/kv/range", etcdAddr);
 			Dictionary<string, string> header = new Dictionary<string, string>
@@ -95,6 +94,11 @@ public class EtcdUtil : MonoBehaviour
 			string pbody = JsonConvert.SerializeObject(body);
 			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
 
+			if (!succeed)
+			{
+				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				return;
+			}
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
 			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
 			{
@@ -111,9 +115,9 @@ public class EtcdUtil : MonoBehaviour
 		});
 	}
 
-	public void Get(string prefix, Action<Dictionary<string, string>> callback)
+	public void Get(string prefix, Action<Dictionary<string, string>, bool> callback)
 	{
-		EtcdOperator((token) =>
+		EtcdOperator((token, succeed) =>
 		{
 			string url = string.Format("http://{0}/v3/kv/range", etcdAddr);
 			Dictionary<string, string> header = new Dictionary<string, string>
@@ -135,12 +139,20 @@ public class EtcdUtil : MonoBehaviour
 			string pbody = JsonConvert.SerializeObject(body);
 			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
 
+			if (!succeed)
+			{
+				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				callback(null, false);
+				return;
+			}
+
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
 			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
 			{
 				if (!ok)
 				{
-					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+					Debug.Log($"请求etcd失败，{url}，参数{pbody} 服务器响应异常：{response}");
+					callback(null, false);
 				}
 				else
 				{
@@ -160,7 +172,7 @@ public class EtcdUtil : MonoBehaviour
 						}
 					}
 					
-					callback(keyValues);
+					callback(keyValues, true);
 				}
 			});
 		});
@@ -200,7 +212,7 @@ public class EtcdUtil : MonoBehaviour
 				}
 			});
 		};
-		EtcdOperator((token) =>
+		EtcdOperator((token, succeed) =>
 		{
 			string url = string.Format("http://{0}/v3/lease/grant", etcdAddr);
 
@@ -216,6 +228,12 @@ public class EtcdUtil : MonoBehaviour
 
 			string pbody = JsonConvert.SerializeObject(body);
 			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+
+			if (!succeed)
+			{
+				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				return;
+			}
 
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
 			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
@@ -238,7 +256,7 @@ public class EtcdUtil : MonoBehaviour
 
 	public void Put(string key, string value)
 	{
-		EtcdOperator((token) =>
+		EtcdOperator((token, succeed) =>
 		{
 			string url = string.Format("http://{0}/v3/kv/put", etcdAddr);
 			Dictionary<string, string> header = new Dictionary<string, string>
@@ -254,6 +272,12 @@ public class EtcdUtil : MonoBehaviour
 
 			string pbody = JsonConvert.SerializeObject(body);
 			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+
+			if (!succeed)
+			{
+				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				return;
+			}
 
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
 			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
@@ -275,7 +299,7 @@ public class EtcdUtil : MonoBehaviour
 	public string etcdUserName;
 	public string etcdPassword;
 	bool isLogin = false;
-	List<etcd_operator> ops = new List<etcd_operator>();
+	List<Action<string, bool>> ops = new List<Action<string, bool>>();
 
 	static EtcdUtil instance;
 	// 公共访问接口

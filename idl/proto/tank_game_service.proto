@@ -1,0 +1,20 @@
+syntax = "proto3";
+import "proto/tank_common.proto";
+import "proto/common.proto";
+
+package tank_game_service;
+
+option go_package = "tank_game_service";
+
+message Ping {
+    float ts = 1;
+}
+
+message Pong {
+    float ts          = 1;
+    float currentTime = 2;
+}
+
+service TankGameService {
+    rpc ping(Ping) returns (Pong){};
+}

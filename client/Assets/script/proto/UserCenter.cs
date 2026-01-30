@@ -36,42 +36,34 @@ namespace UserCenter {
             "bmZvQg1aC3VzZXJfY2VudGVyYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Common.CommonReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginReq), global::UserCenter.LoginReq.Parser, new[]{ "Kid", "MacKey" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapInfo), global::UserCenter.TapInfo.Parser, new[]{ "Avatar", "Gender", "Name", "Openid", "Unionid" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapBaseInfo), global::UserCenter.TapBaseInfo.Parser, new[]{ "Data", "Now", "Success" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginRsp), global::UserCenter.LoginRsp.Parser, new[]{ "Code", "Msg", "ServerAddr", "ServerPort", "TapInfo" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginReq), global::UserCenter.LoginReq.Parser, new[]{ "Kid", "MacKey" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapInfo), global::UserCenter.TapInfo.Parser, new[]{ "Avatar", "Gender", "Name", "Openid", "Unionid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapBaseInfo), global::UserCenter.TapBaseInfo.Parser, new[]{ "Data", "Now", "Success" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginRsp), global::UserCenter.LoginRsp.Parser, new[]{ "Code", "Msg", "ServerAddr", "ServerPort", "TapInfo" }, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
-  public sealed partial class LoginReq : pb::IMessage<LoginReq>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
+  public sealed partial class LoginReq : pb::IMessage<LoginReq> {
     private static readonly pb::MessageParser<LoginReq> _parser = new pb::MessageParser<LoginReq>(() => new LoginReq());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<LoginReq> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
       get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     pbr::MessageDescriptor pb::IMessage.Descriptor {
       get { return Descriptor; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginReq() {
       OnConstruction();
     }
@@ -79,7 +71,6 @@ namespace UserCenter {
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginReq(LoginReq other) : this() {
       kid_ = other.kid_;
       macKey_ = other.macKey_;
@@ -87,7 +78,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginReq Clone() {
       return new LoginReq(this);
     }
@@ -96,7 +86,6 @@ namespace UserCenter {
     public const int KidFieldNumber = 1;
     private string kid_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Kid {
       get { return kid_; }
       set {
@@ -108,7 +97,6 @@ namespace UserCenter {
     public const int MacKeyFieldNumber = 2;
     private string macKey_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string MacKey {
       get { return macKey_; }
       set {
@@ -117,13 +105,11 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
       return Equals(other as LoginReq);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool Equals(LoginReq other) {
       if (ReferenceEquals(other, null)) {
         return false;
@@ -137,7 +123,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
       if (Kid.Length != 0) hash ^= Kid.GetHashCode();
@@ -149,17 +134,12 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override string ToString() {
       return pb::JsonFormatter.ToDiagnosticString(this);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
       if (Kid.Length != 0) {
         output.WriteRawTag(10);
         output.WriteString(Kid);
@@ -171,29 +151,9 @@ namespace UserCenter {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
-    #endif
     }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Kid.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Kid);
-      }
-      if (MacKey.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(MacKey);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
       if (Kid.Length != 0) {
@@ -209,7 +169,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(LoginReq other) {
       if (other == null) {
         return;
@@ -224,11 +183,7 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -245,59 +200,27 @@ namespace UserCenter {
           }
         }
       }
-    #endif
     }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            Kid = input.ReadString();
-            break;
-          }
-          case 18: {
-            MacKey = input.ReadString();
-            break;
-          }
-        }
-      }
-    }
-    #endif
 
   }
 
-  public sealed partial class TapInfo : pb::IMessage<TapInfo>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
+  public sealed partial class TapInfo : pb::IMessage<TapInfo> {
     private static readonly pb::MessageParser<TapInfo> _parser = new pb::MessageParser<TapInfo>(() => new TapInfo());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<TapInfo> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
       get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     pbr::MessageDescriptor pb::IMessage.Descriptor {
       get { return Descriptor; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TapInfo() {
       OnConstruction();
     }
@@ -305,7 +228,6 @@ namespace UserCenter {
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TapInfo(TapInfo other) : this() {
       avatar_ = other.avatar_;
       gender_ = other.gender_;
@@ -316,7 +238,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TapInfo Clone() {
       return new TapInfo(this);
     }
@@ -325,7 +246,6 @@ namespace UserCenter {
     public const int AvatarFieldNumber = 1;
     private string avatar_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Avatar {
       get { return avatar_; }
       set {
@@ -337,7 +257,6 @@ namespace UserCenter {
     public const int GenderFieldNumber = 2;
     private string gender_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Gender {
       get { return gender_; }
       set {
@@ -349,7 +268,6 @@ namespace UserCenter {
     public const int NameFieldNumber = 3;
     private string name_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Name {
       get { return name_; }
       set {
@@ -361,7 +279,6 @@ namespace UserCenter {
     public const int OpenidFieldNumber = 4;
     private string openid_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Openid {
       get { return openid_; }
       set {
@@ -373,7 +290,6 @@ namespace UserCenter {
     public const int UnionidFieldNumber = 5;
     private string unionid_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Unionid {
       get { return unionid_; }
       set {
@@ -382,13 +298,11 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
       return Equals(other as TapInfo);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool Equals(TapInfo other) {
       if (ReferenceEquals(other, null)) {
         return false;
@@ -405,7 +319,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
       if (Avatar.Length != 0) hash ^= Avatar.GetHashCode();
@@ -420,17 +333,12 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override string ToString() {
       return pb::JsonFormatter.ToDiagnosticString(this);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
       if (Avatar.Length != 0) {
         output.WriteRawTag(10);
         output.WriteString(Avatar);
@@ -454,41 +362,9 @@ namespace UserCenter {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
-    #endif
     }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Avatar.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Avatar);
-      }
-      if (Gender.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(Gender);
-      }
-      if (Name.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(Name);
-      }
-      if (Openid.Length != 0) {
-        output.WriteRawTag(34);
-        output.WriteString(Openid);
-      }
-      if (Unionid.Length != 0) {
-        output.WriteRawTag(42);
-        output.WriteString(Unionid);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
       if (Avatar.Length != 0) {
@@ -513,7 +389,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(TapInfo other) {
       if (other == null) {
         return;
@@ -537,11 +412,7 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -570,71 +441,27 @@ namespace UserCenter {
           }
         }
       }
-    #endif
     }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            Avatar = input.ReadString();
-            break;
-          }
-          case 18: {
-            Gender = input.ReadString();
-            break;
-          }
-          case 26: {
-            Name = input.ReadString();
-            break;
-          }
-          case 34: {
-            Openid = input.ReadString();
-            break;
-          }
-          case 42: {
-            Unionid = input.ReadString();
-            break;
-          }
-        }
-      }
-    }
-    #endif
 
   }
 
-  public sealed partial class TapBaseInfo : pb::IMessage<TapBaseInfo>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
+  public sealed partial class TapBaseInfo : pb::IMessage<TapBaseInfo> {
     private static readonly pb::MessageParser<TapBaseInfo> _parser = new pb::MessageParser<TapBaseInfo>(() => new TapBaseInfo());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<TapBaseInfo> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
       get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     pbr::MessageDescriptor pb::IMessage.Descriptor {
       get { return Descriptor; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TapBaseInfo() {
       OnConstruction();
     }
@@ -642,7 +469,6 @@ namespace UserCenter {
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TapBaseInfo(TapBaseInfo other) : this() {
       data_ = other.data_ != null ? other.data_.Clone() : null;
       now_ = other.now_;
@@ -651,7 +477,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TapBaseInfo Clone() {
       return new TapBaseInfo(this);
     }
@@ -660,7 +485,6 @@ namespace UserCenter {
     public const int DataFieldNumber = 1;
     private global::UserCenter.TapInfo data_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::UserCenter.TapInfo Data {
       get { return data_; }
       set {
@@ -672,7 +496,6 @@ namespace UserCenter {
     public const int NowFieldNumber = 2;
     private long now_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public long Now {
       get { return now_; }
       set {
@@ -684,7 +507,6 @@ namespace UserCenter {
     public const int SuccessFieldNumber = 3;
     private bool success_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool Success {
       get { return success_; }
       set {
@@ -693,13 +515,11 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
       return Equals(other as TapBaseInfo);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool Equals(TapBaseInfo other) {
       if (ReferenceEquals(other, null)) {
         return false;
@@ -714,7 +534,6 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
       if (data_ != null) hash ^= Data.GetHashCode();
@@ -727,17 +546,12 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override string ToString() {
       return pb::JsonFormatter.ToDiagnosticString(this);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
       if (data_ != null) {
         output.WriteRawTag(10);
         output.WriteMessage(Data);
@@ -753,33 +567,9 @@ namespace UserCenter {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
-    #endif
     }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (data_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Data);
-      }
-      if (Now != 0L) {
-        output.WriteRawTag(16);
-        output.WriteInt64(Now);
-      }
-      if (Success != false) {
-        output.WriteRawTag(24);
-        output.WriteBool(Success);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
       if (data_ != null) {
@@ -798,14 +588,13 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(TapBaseInfo other) {
       if (other == null) {
         return;
       }
       if (other.data_ != null) {
         if (data_ == null) {
-          Data = new global::UserCenter.TapInfo();
+          data_ = new global::UserCenter.TapInfo();
         }
         Data.MergeFrom(other.Data);
       }
@@ -819,11 +608,7 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -832,39 +617,9 @@ namespace UserCenter {
             break;
           case 10: {
             if (data_ == null) {
-              Data = new global::UserCenter.TapInfo();
+              data_ = new global::UserCenter.TapInfo();
             }
-            input.ReadMessage(Data);
-            break;
-          }
-          case 16: {
-            Now = input.ReadInt64();
-            break;
-          }
-          case 24: {
-            Success = input.ReadBool();
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            if (data_ == null) {
-              Data = new global::UserCenter.TapInfo();
-            }
-            input.ReadMessage(Data);
+            input.ReadMessage(data_);
             break;
           }
           case 16: {
@@ -878,35 +633,26 @@ namespace UserCenter {
         }
       }
     }
-    #endif
 
   }
 
-  public sealed partial class LoginRsp : pb::IMessage<LoginRsp>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
+  public sealed partial class LoginRsp : pb::IMessage<LoginRsp> {
     private static readonly pb::MessageParser<LoginRsp> _parser = new pb::MessageParser<LoginRsp>(() => new LoginRsp());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<LoginRsp> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
       get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     pbr::MessageDescriptor pb::IMessage.Descriptor {
       get { return Descriptor; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginRsp() {
       OnConstruction();
     }
@@ -914,7 +660,6 @@ namespace UserCenter {
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginRsp(LoginRsp other) : this() {
       code_ = other.code_;
       msg_ = other.msg_;
@@ -925,16 +670,14 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginRsp Clone() {
       return new LoginRsp(this);
     }
 
     /// <summary>Field number for the "code" field.</summary>
     public const int CodeFieldNumber = 1;
-    private global::Common.ErrorCode code_ = global::Common.ErrorCode.Ok;
+    private global::Common.ErrorCode code_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Common.ErrorCode Code {
       get { return code_; }
       set {
@@ -946,7 +689,6 @@ namespace UserCenter {
     public const int MsgFieldNumber = 2;
     private string msg_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Msg {
       get { return msg_; }
       set {
@@ -958,7 +700,6 @@ namespace UserCenter {
     public const int ServerAddrFieldNumber = 3;
     private string serverAddr_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string ServerAddr {
       get { return serverAddr_; }
       set {
@@ -970,7 +711,6 @@ namespace UserCenter {
     public const int ServerPortFieldNumber = 4;
     private int serverPort_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int ServerPort {
       get { return serverPort_; }
       set {
@@ -982,7 +722,6 @@ namespace UserCenter {
     public const int TapInfoFieldNumber = 5;
     private global::UserCenter.TapInfo tapInfo_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::UserCenter.TapInfo TapInfo {
       get { return tapInfo_; }
       set {
@@ -991,13 +730,11 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
       return Equals(other as LoginRsp);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool Equals(LoginRsp other) {
       if (ReferenceEquals(other, null)) {
         return false;
@@ -1014,10 +751,9 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Code != global::Common.ErrorCode.Ok) hash ^= Code.GetHashCode();
+      if (Code != 0) hash ^= Code.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
       if (ServerAddr.Length != 0) hash ^= ServerAddr.GetHashCode();
       if (ServerPort != 0) hash ^= ServerPort.GetHashCode();
@@ -1029,18 +765,13 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override string ToString() {
       return pb::JsonFormatter.ToDiagnosticString(this);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (Code != global::Common.ErrorCode.Ok) {
+      if (Code != 0) {
         output.WriteRawTag(8);
         output.WriteEnum((int) Code);
       }
@@ -1063,44 +794,12 @@ namespace UserCenter {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
-    #endif
     }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Code != global::Common.ErrorCode.Ok) {
-        output.WriteRawTag(8);
-        output.WriteEnum((int) Code);
-      }
-      if (Msg.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(Msg);
-      }
-      if (ServerAddr.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(ServerAddr);
-      }
-      if (ServerPort != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(ServerPort);
-      }
-      if (tapInfo_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(TapInfo);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Code != global::Common.ErrorCode.Ok) {
+      if (Code != 0) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Code);
       }
       if (Msg.Length != 0) {
@@ -1122,12 +821,11 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(LoginRsp other) {
       if (other == null) {
         return;
       }
-      if (other.Code != global::Common.ErrorCode.Ok) {
+      if (other.Code != 0) {
         Code = other.Code;
       }
       if (other.Msg.Length != 0) {
@@ -1141,7 +839,7 @@ namespace UserCenter {
       }
       if (other.tapInfo_ != null) {
         if (tapInfo_ == null) {
-          TapInfo = new global::UserCenter.TapInfo();
+          tapInfo_ = new global::UserCenter.TapInfo();
         }
         TapInfo.MergeFrom(other.TapInfo);
       }
@@ -1149,11 +847,7 @@ namespace UserCenter {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -1161,7 +855,7 @@ namespace UserCenter {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Code = (global::Common.ErrorCode) input.ReadEnum();
+            code_ = (global::Common.ErrorCode) input.ReadEnum();
             break;
           }
           case 18: {
@@ -1178,53 +872,14 @@ namespace UserCenter {
           }
           case 42: {
             if (tapInfo_ == null) {
-              TapInfo = new global::UserCenter.TapInfo();
+              tapInfo_ = new global::UserCenter.TapInfo();
             }
-            input.ReadMessage(TapInfo);
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 8: {
-            Code = (global::Common.ErrorCode) input.ReadEnum();
-            break;
-          }
-          case 18: {
-            Msg = input.ReadString();
-            break;
-          }
-          case 26: {
-            ServerAddr = input.ReadString();
-            break;
-          }
-          case 32: {
-            ServerPort = input.ReadInt32();
-            break;
-          }
-          case 42: {
-            if (tapInfo_ == null) {
-              TapInfo = new global::UserCenter.TapInfo();
-            }
-            input.ReadMessage(TapInfo);
+            input.ReadMessage(tapInfo_);
             break;
           }
         }
       }
     }
-    #endif
 
   }
 

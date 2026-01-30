@@ -4,9 +4,12 @@
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\user_center.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\gate_way.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\match_proto.proto
+.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\tank_game_service.proto
+.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\gateway_service.proto
+.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\user_center_service.proto
 
 copy .\proto_gen\*.cs ..\client\Assets\script\proto\
-copy .\proto_gen\*.cs ..\server\Assets\script\proto\
+@REM copy .\proto_gen\*.cs ..\server\Assets\script\proto\
 
 @REM .\bin\protoc.exe --go_out=.\proto_gen .\proto\common.proto
 @REM .\bin\protoc.exe --go_out=.\proto_gen .\proto\user_center.proto

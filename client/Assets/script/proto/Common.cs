@@ -45,7 +45,7 @@ namespace Common {
             "UhDtB0IIWgZjb21tb25iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null));
     }
     #endregion
 

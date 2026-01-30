@@ -92,6 +92,7 @@ public class Config : MonoBehaviour
 
     public string serverIP = "0.0.0.0";
     public ushort port = 10085;
+    public ushort rpcPort = 10086;
     public float speed = 3f;
     public int maxHp = 100;
     public float rebornProtectionTime = 5f;

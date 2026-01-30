@@ -150,7 +150,7 @@ public class EtcdUtil : MonoBehaviour
 					Dictionary<string, string> keyValues = new Dictionary<string, string>();
 					if (ret.TryGetValue("kvs", out object kvs))
 					{
-						Debug.Log(kvs.GetType());
+						//Debug.Log(kvs.GetType());
 						ArrayList arrayList = JsonConvert.DeserializeObject<ArrayList>(kvs.ToString());
 						foreach (var item in (Newtonsoft.Json.Linq.JArray)kvs)
 						{

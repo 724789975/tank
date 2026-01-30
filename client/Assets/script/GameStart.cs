@@ -58,7 +58,7 @@ public class GameStart : MonoBehaviour
 		GameStart.Instance.ToString();
 		TimerU.Instance.ToString();
 		EtcdUtil.Instance.ToString();
-
+		Config.Instance.ToString();
 	}
 
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -94,6 +94,7 @@ public class GameStart : MonoBehaviour
 		GameStart.Instance.ToString();
 #if UNITY_SERVER && !AI_RUNNING
 		//EtcdUtil.Instance.Keys();
+		RpcService.Instance.ToString();
 		GameStart.Instance.register();
 #else
 		NetClient.Instance.ToString();
@@ -108,14 +109,15 @@ public class GameStart : MonoBehaviour
 		{
 			register();
 		});
-		EtcdUtil.Instance.Put($"/{Config.Instance.serviceName}/{Config.Instance.localIp}:{Config.Instance.port}", $"{{ \"network\":\"tcp\",\"address\":\"{Config.Instance.localIp}:{Config.Instance.port}\",\"weight\":10,\"tags\":null}}", 100);
+		EtcdUtil.Instance.Put($"/{Config.Instance.serviceName}/{Config.Instance.localIp}:{Config.Instance.rpcPort}", $"{{ \"network\":\"tcp\",\"address\":\"{Config.Instance.localIp}:{Config.Instance.port}\",\"weight\":10,\"tags\":null}}", 100);
 
-		//EtcdUtil.Instance.Get($"", (result) => {
-		//	foreach (var item in result)
-		//	{
-		//		Debug.Log(item.Key + " " + item.Value);
-		//	}
-		//});
+		EtcdUtil.Instance.Get($"", (result) =>
+		{
+			foreach (var item in result)
+			{
+				Debug.Log(item.Key + " " + item.Value);
+			}
+		});
 	}
 
 	// Start is called before the first frame update

@@ -48,3 +48,17 @@ client/build*
 /client/tds_getsign.apk
 /gateway/gate-server.tar.gz
 /idl/go.mod
+/idl/proto_gen/Common.cs
+/idl/proto_gen/GateWay.cs
+/idl/proto_gen/GatewayService.cs
+/idl/proto_gen/GatewayServiceGrpc.cs
+/idl/proto_gen/MatchProto.cs
+/idl/proto_gen/TankCommon.cs
+/idl/proto_gen/TankGame.cs
+/idl/proto_gen/TankGameService.cs
+/idl/proto_gen/TankGameServiceGrpc.cs
+/idl/proto_gen/UserCenter.cs
+/idl/proto_gen/UserCenterService.cs
+/idl/proto_gen/UserCenterServiceGrpc.cs
+
+/out

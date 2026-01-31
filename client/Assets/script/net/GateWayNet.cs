@@ -127,7 +127,7 @@ public class GateWayNet : MonoBehaviour
 	static GateWayNet instance;
 
 	private WebSocket webSocket;
-	bool neetReconnect = false;
+	// bool neetReconnect = false;
 }
 
 

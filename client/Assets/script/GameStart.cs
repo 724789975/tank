@@ -96,6 +96,7 @@ public class GameStart : MonoBehaviour
 		//EtcdUtil.Instance.Keys();
 		RpcService.Instance.ToString();
 		GameStart.Instance.register();
+		UserCenterClient.Instance.ToString();
 #else
 		NetClient.Instance.ToString();
 		WSMsgProcess.Instance.ToString();

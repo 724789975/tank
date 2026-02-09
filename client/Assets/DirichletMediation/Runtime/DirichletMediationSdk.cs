@@ -35,6 +35,7 @@ namespace Dirichlet.Mediation
             EnsureUnityThreadPump();
         }
 
+        // Internal thread dispatcher. Public SDK callbacks are already marshalled to Unity thread when needed.
         internal static void DispatchToUnityThread(Action action)
         {
             if (action == null)
@@ -573,8 +574,15 @@ namespace Dirichlet.Mediation
         bool ShowSplashAd(DirichletPlatformAdHandle handle, DirichletAdShowOptions options);
 
         void DestroyAd(DirichletPlatformAdHandle handle);
+        bool IsAdValid(DirichletPlatformAdHandle handle);
         void RequestPermissionIfNeeded();
         string GetSdkVersion();
+
+        /// <summary>
+        /// Shows a reward video ad with automatic load-and-show logic.
+        /// Android only - iOS will call onFailure with not_supported error.
+        /// </summary>
+        void ShowRewardVideoAutoAd(DirichletAdRequest request, IDirichletRewardVideoAutoAdListener listener);
     }
 
     internal static class DirichletPlatformBridgeFactory
@@ -639,8 +647,13 @@ namespace Dirichlet.Mediation
                     ? options.DataJson
                     : options.CustomConfigJson;
 
-                var success = BridgeClass.CallStatic<bool>(
-                    "initialize",
+                // Do not block Unity thread on Android init. The Java bridge enforces a timeout and reports via callback.
+                var callback = new AndroidInitCallback(
+                    () => onSuccess?.Invoke(DirichletInitResult.Ok("android_bridge")),
+                    onFailure);
+
+                BridgeClass.CallStatic(
+                    "initializeAsync",
                     options.GetAppIdString(),
                     options.Channel ?? string.Empty,
                     options.SubChannel ?? string.Empty,
@@ -649,21 +662,42 @@ namespace Dirichlet.Mediation
                     options.MediaKey ?? string.Empty,
                     options.TapClientId ?? string.Empty,
                     dataPayload ?? string.Empty,
-                    options.ShakeEnabled);
-
-                if (success)
-                {
-                    DirichletSdk.DispatchToUnityThread(() => onSuccess?.Invoke(DirichletInitResult.Ok("android_bridge")));
-                }
-                else
-                {
-                    DirichletSdk.DispatchToUnityThread(() => onFailure?.Invoke(new DirichletError("android_init_failed", "Bridge returned false")));
-                }
+                    options.ShakeEnabled,
+                    callback);
             }
             catch (Exception ex)
             {
                 Debug.LogException(ex);
                 DirichletSdk.DispatchToUnityThread(() => onFailure?.Invoke(new DirichletError("android_exception", ex.Message)));
+            }
+        }
+
+        private sealed class AndroidInitCallback : AndroidJavaProxy
+        {
+            // Reuse the existing Java callback interface to avoid adding more bridge-only types.
+            private const string ListenerInterface = "com.dirichlet.unity.DirichletUnityBridge$LoadListener";
+
+            private readonly Action success;
+            private readonly Action<DirichletError> failure;
+
+            public AndroidInitCallback(Action success, Action<DirichletError> failure)
+                : base(ListenerInterface)
+            {
+                this.success = success;
+                this.failure = failure;
+            }
+
+            // Called from Java (case-sensitive method name).
+            public void onSuccess()
+            {
+                DirichletSdk.DispatchToUnityThread(() => success?.Invoke());
+            }
+
+            // Called from Java (case-sensitive method name).
+            public void onError(string code, string message)
+            {
+                var errorCode = string.IsNullOrEmpty(code) ? "android_init_failed" : code;
+                DirichletSdk.DispatchToUnityThread(() => failure?.Invoke(new DirichletError(errorCode, message ?? string.Empty)));
             }
         }
 
@@ -735,6 +769,24 @@ namespace Dirichlet.Mediation
         public void DestroyAd(DirichletPlatformAdHandle handle)
         {
             DestroyAdInternal(handle);
+        }
+
+        public bool IsAdValid(DirichletPlatformAdHandle handle)
+        {
+            if (handle == null || string.IsNullOrEmpty(handle.DebugId))
+            {
+                return false;
+            }
+
+            try
+            {
+                return BridgeClass.CallStatic<bool>("isAdValid", handle.DebugId);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[DirichletMediation][Android] IsAdValid failed: {ex.Message}");
+                return false;
+            }
         }
 
         private void LoadAdInternal(DirichletAdType adType, DirichletAdRequest request, Action<DirichletPlatformAdHandle> onSuccess, Action<DirichletError> onFailure)
@@ -957,6 +1009,69 @@ namespace Dirichlet.Mediation
                 DirichletSdk.DispatchToUnityThread(() => failure?.Invoke(new DirichletError(errorCode, message ?? string.Empty)));
             }
         }
+
+        public void ShowRewardVideoAutoAd(DirichletAdRequest request, IDirichletRewardVideoAutoAdListener listener)
+        {
+            if (request == null)
+            {
+                DirichletSdk.DispatchToUnityThread(() => listener?.OnError(new DirichletError("invalid_request", "Request cannot be null")));
+                return;
+            }
+
+            try
+            {
+                var payload = request.ToBridgePayload();
+                var callback = new AndroidRewardVideoAutoAdCallback(listener);
+
+                using (var extras = BuildJsonObject(payload))
+                {
+                    BridgeClass.CallStatic("showRewardVideoAutoAd", extras, callback);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[Dirichlet][Android] ShowRewardVideoAutoAd failed: {ex.Message}");
+                DirichletSdk.DispatchToUnityThread(() => listener?.OnError(new DirichletError("android_exception", ex.Message)));
+            }
+        }
+
+        private sealed class AndroidRewardVideoAutoAdCallback : AndroidJavaProxy
+        {
+            private readonly IDirichletRewardVideoAutoAdListener listener;
+
+            public AndroidRewardVideoAutoAdCallback(IDirichletRewardVideoAutoAdListener listener)
+                : base("com.dirichlet.unity.DirichletUnityBridge$RewardVideoAutoAdListener")
+            {
+                this.listener = listener;
+            }
+
+            public void onError(string code, string message)
+            {
+                var errorCode = string.IsNullOrEmpty(code) ? "android_error" : code;
+                DirichletSdk.DispatchToUnityThread(() => listener?.OnError(new DirichletError(errorCode, message ?? string.Empty)));
+            }
+
+            public void onAdShow()
+            {
+                DirichletSdk.DispatchToUnityThread(() => listener?.OnAdShow());
+            }
+
+            public void onAdClose()
+            {
+                DirichletSdk.DispatchToUnityThread(() => listener?.OnAdClose());
+            }
+
+            public void onRewardVerify(bool rewardVerify, int rewardAmount, string rewardName, int code, string msg)
+            {
+                var args = new DirichletRewardVerificationEventArgs(rewardVerify, rewardAmount, rewardName ?? string.Empty, code, msg ?? string.Empty);
+                DirichletSdk.DispatchToUnityThread(() => listener?.OnRewardVerify(args));
+            }
+
+            public void onAdClick()
+            {
+                DirichletSdk.DispatchToUnityThread(() => listener?.OnAdClick());
+            }
+        }
     }
 #elif UNITY_IOS && !UNITY_EDITOR
     internal sealed class IOSDirichletBridge : IDirichletPlatformBridge
@@ -989,6 +1104,9 @@ namespace Dirichlet.Mediation
 
         [System.Runtime.InteropServices.DllImport("__Internal")]
         private static extern void DirichletMediationUnityBridge_DestroyAd(string handleId);
+
+        [System.Runtime.InteropServices.DllImport("__Internal")]
+        private static extern bool DirichletMediationUnityBridge_IsAdValid(string handleId);
 
         private readonly Dictionary<string, IOSLoadCallback> loadCallbacks = new Dictionary<string, IOSLoadCallback>();
         private readonly object loadCallbacksLock = new object();
@@ -1122,6 +1240,24 @@ namespace Dirichlet.Mediation
         public void DestroyAd(DirichletPlatformAdHandle handle)
         {
             DestroyAdInternal(handle);
+        }
+
+        public bool IsAdValid(DirichletPlatformAdHandle handle)
+        {
+            if (handle == null || string.IsNullOrEmpty(handle.DebugId))
+            {
+                return false;
+            }
+
+            try
+            {
+                return DirichletMediationUnityBridge_IsAdValid(handle.DebugId);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[DirichletMediation][iOS] IsAdValid failed: {ex.Message}");
+                return false;
+            }
         }
 
         private void LoadAdInternal(DirichletAdType adType, DirichletAdRequest request, Action<DirichletPlatformAdHandle> onSuccess, Action<DirichletError> onFailure)
@@ -1541,6 +1677,12 @@ namespace Dirichlet.Mediation
                 DirichletSdk.DispatchToUnityThread(() => failure?.Invoke(new DirichletError(code, message)));
             }
         }
+
+        public void ShowRewardVideoAutoAd(DirichletAdRequest request, IDirichletRewardVideoAutoAdListener listener)
+        {
+            // iOS hasn't added this API yet
+            DirichletSdk.DispatchToUnityThread(() => listener?.OnError(new DirichletError("not_supported", "showRewardVideoAutoAd is not supported on iOS yet")));
+        }
     }
 #else
     internal sealed class NoopDirichletBridge : IDirichletPlatformBridge
@@ -1631,6 +1773,23 @@ namespace Dirichlet.Mediation
         public void DestroyAd(DirichletPlatformAdHandle handle)
         {
             Debug.Log($"[Dirichlet] DestroyAd noop for {handle.DebugId}");
+        }
+
+        public bool IsAdValid(DirichletPlatformAdHandle handle)
+        {
+            Debug.Log($"[Dirichlet] IsAdValid noop for {handle?.DebugId}");
+            return true;
+        }
+
+        public void ShowRewardVideoAutoAd(DirichletAdRequest request, IDirichletRewardVideoAutoAdListener listener)
+        {
+            Debug.Log("[Dirichlet] ShowRewardVideoAutoAd noop");
+            DirichletSdk.DispatchToUnityThread(() =>
+            {
+                listener?.OnAdShow();
+                listener?.OnRewardVerify(new DirichletRewardVerificationEventArgs(true, 10, "noop_reward", 0, "noop"));
+                listener?.OnAdClose();
+            });
         }
     }
 #endif

@@ -5,7 +5,6 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
-using UnityEditor.iOS.Xcode.Extensions;
 using UnityEngine;
 
 namespace Dirichlet.Mediation.Editor
@@ -69,10 +68,6 @@ namespace Dirichlet.Mediation.Editor
 
                 // 4. Run pod install
                 RunPodInstall(pathToBuiltProject);
-                
-                // 5. Embed dynamic frameworks (after pod install)
-                // GDT SDK 使用动态 framework，必须嵌入到主 App
-                EmbedDynamicFrameworks(pathToBuiltProject, targetInfo);
 
                 Debug.Log("[DirichletMediation] iOS post-process completed successfully.");
             }
@@ -547,60 +542,6 @@ namespace Dirichlet.Mediation.Editor
             }
 
             Debug.Log($"[DirichletMediation] Added {commonSkAdNetworkIds.Length} SKAdNetwork IDs to Info.plist");
-        }
-
-        /// <summary>
-        /// 嵌入动态 frameworks 到主 App (Unity-iPhone / Tuanjie-iPhone)
-        /// GDT SDK 使用动态 framework，必须嵌入到主 App 才能在运行时加载
-        /// </summary>
-        private static void EmbedDynamicFrameworks(string projectPath, TargetInfo targetInfo)
-        {
-            var enableGdt = EditorPrefs.GetBool("Dirichlet.iOS.EnableGDT", true);
-            if (!enableGdt)
-            {
-                Debug.Log("[DirichletMediation] GDT adapter disabled, skipping dynamic framework embedding");
-                return;
-            }
-
-            var xcodeProjectName = DetectXcodeProjectName(projectPath);
-            var projectFilePath = Path.Combine(projectPath, $"{xcodeProjectName}.xcodeproj/project.pbxproj");
-            var pbxProject = new PBXProject();
-            pbxProject.ReadFromFile(projectFilePath);
-
-            // 使用已解析的 app target GUID
-            var mainTargetGuid = targetInfo.AppTargetGuid;
-            if (string.IsNullOrEmpty(mainTargetGuid))
-            {
-                mainTargetGuid = pbxProject.TargetGuidByName(targetInfo.AppTargetName);
-            }
-
-            var gdtFrameworksPath = Path.Combine(projectPath, "Pods/GDTMobSDK/GDTFramework");
-
-            var dynamicFrameworks = new[] { "GDTMobSDK.xcframework", "Tquic.xcframework" };
-
-            foreach (var fw in dynamicFrameworks)
-            {
-                var fwPath = Path.Combine(gdtFrameworksPath, fw);
-                if (!Directory.Exists(fwPath))
-                {
-                    Debug.LogWarning($"[DirichletMediation] Framework not found: {fwPath}");
-                    continue;
-                }
-
-                var relativePath = $"Pods/GDTMobSDK/GDTFramework/{fw}";
-                var fileGuid = pbxProject.FindFileGuidByProjectPath(relativePath);
-                if (string.IsNullOrEmpty(fileGuid))
-                {
-                    fileGuid = pbxProject.AddFile(relativePath, relativePath, PBXSourceTree.Source);
-                }
-                
-                // Unity 2019.3+ Extensions API - 一行搞定嵌入！
-                pbxProject.AddFileToEmbedFrameworks(mainTargetGuid, fileGuid);
-                Debug.Log($"[DirichletMediation] Embedded dynamic framework: {fw} -> {targetInfo.AppTargetName}");
-            }
-
-            pbxProject.WriteToFile(projectFilePath);
-            Debug.Log("[DirichletMediation] Dynamic frameworks embedding completed");
         }
 
         private static void RunPodInstall(string projectPath)

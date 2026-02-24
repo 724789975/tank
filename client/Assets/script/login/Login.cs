@@ -33,6 +33,27 @@ public class Login : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		TimerU.Instance.AddTask(0f, () =>
+		{
+			NameObj.SetActive(true);
+
+			TimerU.Instance.AddTask(3f, () =>
+			{
+				NameObj.SetActive(false);
+				NoticeObj.SetActive(true);
+				TimerU.Instance.AddTask(3f, () =>
+				{
+					NoticeObj.SetActive(false);
+					login();
+				});
+
+			});
+		});
+
+	}
+
+    void login()
+    {
 		GateWayNet.Instance.ToString();
 #if USE_TAP_LOGIN
 		// 核心配置 详细参数见 [TapTapSDK]
@@ -173,4 +194,7 @@ public class Login : MonoBehaviour
 
 	readonly object Lock = new object();
 	List<Action> loginCallback = new List<Action>();
+
+	public GameObject NameObj;
+	public GameObject NoticeObj;
 }

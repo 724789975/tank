@@ -47,7 +47,7 @@ public class GameStart : MonoBehaviour
 		else
 		{
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-			Debug.LogErrorFormat("Could not find commandline file '{0}'.", path);
+			Debug.LogWarningFormat("Could not find commandline file '{0}'.", path);
 #endif
 		}
 

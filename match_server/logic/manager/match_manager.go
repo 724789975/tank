@@ -31,10 +31,11 @@ var (
 	once_match_mgr sync.Once
 	idClient       *snowflake.Node
 
-	userGameInfoKey = "match_server:user_game:%s"
-	createGameKey   = "match_server:create_game:%s"
-	matchGroupKey   = "match_server:match_group:%d"
-	matchUserKey    = "match_server:match_user:%s"
+	userGameInfoKey       = "match_server:user_game:%s"
+	createGameKey         = "match_server:create_game:%s"
+	matchGroupKey         = "match_server:match_group:%d"
+	matchUserKey          = "match_server:match_user:%s"
+	activeMatchGroupsKey  = "match_server:active_match_groups"
 )
 
 func GetMatchManager() *MatchManager {
@@ -53,6 +54,46 @@ func GetMatchManager() *MatchManager {
 		} else {
 			klog.Infof("[MATCH-MANAGER-NODE-OK] MatchManager: gen uuid creator success, node: %d", nodeIdx)
 			idClient = node
+		}
+
+		// 加载Redis中存储的活跃匹配组，实现崩溃恢复
+		ctx := context.Background()
+		matchGroups, err := common_redis.GetRedis().SMembers(ctx, activeMatchGroupsKey).Result()
+		if err != nil {
+			klog.Errorf("[MATCH-MANAGER-INIT] Failed to load active match groups: %v", err)
+		} else {
+			for _, idStr := range matchGroups {
+				id, err := strconv.ParseInt(idStr, 10, 64)
+				if err != nil {
+					klog.Errorf("[MATCH-MANAGER-INIT] Invalid match group ID: %s, err: %v", idStr, err)
+					continue
+				}
+				// 检查匹配组是否还有成员
+				members, err := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, id)).Result()
+				if err != nil {
+					klog.Errorf("[MATCH-MANAGER-INIT] Failed to get members for match group %d: %v", id, err)
+					continue
+				}
+				if len(members) > 0 {
+					// 重新加入匹配流程
+					if !match.GetMatchProcess().AddMatch(id, 1, 1) {
+						klog.Errorf("[MATCH-MANAGER-INIT] Failed to add match group %d back to process", id)
+						// 清理失败的匹配组
+						common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, id))
+						common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, id)
+						// 清理用户匹配状态
+						for _, member := range members {
+							common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchUserKey, member))
+						}
+					} else {
+						klog.Infof("[MATCH-MANAGER-INIT] Added match group %d back to process with %d members", id, len(members))
+					}
+				} else {
+					// 无成员，清理匹配组
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, id))
+					common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, id)
+				}
+			}
 		}
 
 		match.GetMatchProcess().SetAfterMatched(func(r, b []int64) {
@@ -74,25 +115,27 @@ func GetMatchManager() *MatchManager {
 					GamePort: int32(resp_create_server.GamePort),
 				}
 				for _, v := range r {
-					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
-					match_info_ntf.R = append(match_info_ntf.R, members...)
-					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
+				members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
+				match_info_ntf.R = append(match_info_ntf.R, members...)
+				common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
+				common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, v)
 
-					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-					common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
-				}
-				for _, v := range b {
-					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
-					match_info_ntf.B = append(match_info_ntf.B, members...)
-					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
+				common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
+			}
+			for _, v := range b {
+				members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
+				match_info_ntf.B = append(match_info_ntf.B, members...)
+				common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
+				common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, v)
 
-					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-					common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
-				}
+				common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
+			}
 
 				any1 := &anypb.Any{}
 				if err := any1.MarshalFrom(match_info_ntf); err != nil {
@@ -207,16 +250,18 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 	}
 
 	id := idClient.Generate().Int64()
-	common_redis.GetRedis().Set(ctx, fmt.Sprintf(matchUserKey, userId), id, 0)
-	common_redis.GetRedis().SAdd(ctx, fmt.Sprintf(matchGroupKey, id), userId)
 
+	// 先尝试添加到匹配处理，成功后再创建Redis键
 	if !match.GetMatchProcess().AddMatch(id, 1, 1) {
 		resp.Code = common.ErrorCode_FAILED
-		common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchUserKey, userId))
-		common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, id))
 		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s add match failed", userId)
 		return resp, nil
 	}
+
+	// 只有AddMatch成功后才创建Redis键
+	common_redis.GetRedis().Set(ctx, fmt.Sprintf(matchUserKey, userId), id, 0)
+	common_redis.GetRedis().SAdd(ctx, fmt.Sprintf(matchGroupKey, id), userId)
+	common_redis.GetRedis().SAdd(ctx, activeMatchGroupsKey, id)
 
 	return resp, nil
 }

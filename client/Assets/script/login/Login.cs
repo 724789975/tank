@@ -35,19 +35,17 @@ public class Login : MonoBehaviour
     {
 		TimerU.Instance.AddTask(0f, () =>
 		{
-			NameObj.SetActive(true);
-
 			TimerU.Instance.AddTask(3f, () =>
 			{
-				NameObj.SetActive(false);
-				NoticeObj.SetActive(true);
 				TimerU.Instance.AddTask(3f, () =>
 				{
 					NoticeObj.SetActive(false);
 					login();
 				});
-
+				NameObj.SetActive(false);
+				NoticeObj.SetActive(true);
 			});
+			NameObj.SetActive(true);
 		});
 
 	}

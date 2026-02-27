@@ -31,11 +31,11 @@ var (
 	once_match_mgr sync.Once
 	idClient       *snowflake.Node
 
-	userGameInfoKey       = "match_server:user_game:%s"
-	createGameKey         = "match_server:create_game:%s"
-	matchGroupKey         = "match_server:match_group:%d"
-	matchUserKey          = "match_server:match_user:%s"
-	activeMatchGroupsKey  = "match_server:active_match_groups"
+	userGameInfoKey      = "match_server:user_game:%s"
+	createGameKey        = "match_server:create_game:%s"
+	matchGroupKey        = "match_server:match_group:%d"
+	matchUserKey         = "match_server:match_user:%s"
+	activeMatchGroupsKey = "match_server:active_match_groups"
 )
 
 func GetMatchManager() *MatchManager {
@@ -76,7 +76,7 @@ func GetMatchManager() *MatchManager {
 				}
 				if len(members) > 0 {
 					// 重新加入匹配流程
-					if !match.GetMatchProcess().AddMatch(id, 1, 1) {
+					if !match.GetMatchProcess().AddMatch(id, 1, len(members)) {
 						klog.Errorf("[MATCH-MANAGER-INIT] Failed to add match group %d back to process", id)
 						// 清理失败的匹配组
 						common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, id))
@@ -115,27 +115,27 @@ func GetMatchManager() *MatchManager {
 					GamePort: int32(resp_create_server.GamePort),
 				}
 				for _, v := range r {
-				members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
-				match_info_ntf.R = append(match_info_ntf.R, members...)
-				common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
-				common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, v)
+					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
+					match_info_ntf.R = append(match_info_ntf.R, members...)
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
+					common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, v)
 
-				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-				common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
-			}
-			for _, v := range b {
-				members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
-				match_info_ntf.B = append(match_info_ntf.B, members...)
-				common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
-				common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, v)
+					common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
+				}
+				for _, v := range b {
+					members, _ := common_redis.GetRedis().SMembers(ctx, fmt.Sprintf(matchGroupKey, v)).Result()
+					match_info_ntf.B = append(match_info_ntf.B, members...)
+					common_redis.GetRedis().Del(ctx, fmt.Sprintf(matchGroupKey, v))
+					common_redis.GetRedis().SRem(ctx, activeMatchGroupsKey, v)
 
-				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
-				common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_port", strconv.Itoa(int(game_info_ntf.GamePort)))
+					common_redis.GetRedis().HSetEX(ctx, fmt.Sprintf(userGameInfoKey, v), "game_addr", game_info_ntf.GameAddr)
 
-				common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
-			}
+					common_redis.GetRedis().Expire(ctx, fmt.Sprintf(userGameInfoKey, v), time.Second*60*50)
+				}
 
 				any1 := &anypb.Any{}
 				if err := any1.MarshalFrom(match_info_ntf); err != nil {
@@ -212,7 +212,7 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 			GameAddr: common_config.Get("game.addr").(string),
 			GamePort: 0,
 		}
-		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], "10085"), time.Second*1); err == nil {
+		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], game_info["game_port"]), time.Second*1); err == nil {
 			conn.Close()
 			if port, ok := game_info["game_port"]; ok {
 				if p, err := strconv.Atoi(port); err == nil {
@@ -305,7 +305,7 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 			return resp, err
 		}
 	} else {
-		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], "10085"), time.Duration(1)*time.Second); err == nil {
+		if conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", game_info["game_addr"], game_info["game_port"]), time.Duration(1)*time.Second); err == nil {
 			conn.Close()
 			if port, ok := game_info["game_port"]; ok {
 				if p, err := strconv.Atoi(port); err == nil {

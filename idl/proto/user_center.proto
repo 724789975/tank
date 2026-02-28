@@ -6,8 +6,9 @@ import "proto/common.proto";
 
 
 message LoginReq {
-	string kid    = 1;
-	string macKey = 2;
+	string platform = 1;
+	string kid      = 2;
+	string macKey   = 3;
 }
 
 message TapInfo {

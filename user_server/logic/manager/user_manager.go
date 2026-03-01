@@ -2,6 +2,7 @@ package manager
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	common_config "user_server/config"
 	"user_server/kitex_gen/common"
@@ -21,9 +22,11 @@ type UserManager struct {
 }
 
 var (
-	user_mgr          UserManager
-	once_user_bag_mgr sync.Once
-	IdClient          *snowflake.Node
+	user_mgr            UserManager
+	once_user_bag_mgr   sync.Once
+	IdClient            *snowflake.Node
+	redis_taptap_str    = "taptap_platform"
+	redis_user_info_key = "user_info"
 )
 
 func GetUserManager() *UserManager {
@@ -62,25 +65,40 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 
 	userId = ctx.Value("userId").(string)
 
-	tapResp, err := tap.GetHandle(ctx, req.Kid, req.MacKey, common_config.Get("tap.base_info_uri").(string))
-	if err != nil {
-		klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-ERROR] tap GetHandle err: %v", err)
-		resp.Code = common.ErrorCode_USER_LOGIN_TAP_ERROR
-		return nil, err
+	realId := common_redis.GetRedis().Get(ctx, fmt.Sprintf("%s:%s", redis_taptap_str, userId)).Val()
+	if realId == "" {
+		tapResp, err := tap.GetHandle(ctx, req.Kid, req.MacKey, common_config.Get("tap.base_info_uri").(string))
+		if err != nil {
+			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-ERROR] tap GetHandle err: %v", err)
+			resp.Code = common.ErrorCode_USER_LOGIN_TAP_ERROR
+			return nil, err
+		}
+		tapBaseInfo := user_center.TapBaseInfo{}
+		err = protojson.Unmarshal([]byte(tapResp), &tapBaseInfo)
+		if err != nil {
+			klog.CtxErrorf(ctx, "[USER-LOGIN-UNMARSHAL] tap UnmarshalTo err: %v", err)
+			resp.Code = common.ErrorCode_USER_LOGIN_UNMARSHAL
+			return nil, err
+		}
+		if !tapBaseInfo.Success {
+			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle err: %v", err)
+			resp.Code = common.ErrorCode_USER_LOGIN_TAP_FAIL
+			return nil, err
+		}
+		realId = userId
+		common_redis.GetRedis().Set(ctx, fmt.Sprintf("%s:%s", redis_taptap_str, userId), realId, 0)
+		common_redis.GetRedis().HSet(ctx, fmt.Sprintf("%s:%s", redis_user_info_key, realId), "avatar", tapBaseInfo.Data.Avatar, "gender", tapBaseInfo.Data.Gender, "name", tapBaseInfo.Data.Name, "openid", tapBaseInfo.Data.Openid, "unionid", tapBaseInfo.Data.Unionid)
 	}
-	tapBaseInfo := user_center.TapBaseInfo{}
-	err = protojson.Unmarshal([]byte(tapResp), &tapBaseInfo)
-	if err != nil {
-		klog.CtxErrorf(ctx, "[USER-LOGIN-UNMARSHAL] tap UnmarshalTo err: %v", err)
-		resp.Code = common.ErrorCode_USER_LOGIN_UNMARSHAL
-		return nil, err
+
+	userInfo := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf("%s:%s", redis_user_info_key, realId)).Val()
+
+	resp.TapInfo = &user_center.TapInfo{
+		Avatar:  userInfo["avatar"],
+		Gender:  userInfo["gender"],
+		Name:    userInfo["name"],
+		Openid:  userInfo["openid"],
+		Unionid: userInfo["unionid"],
 	}
-	if !tapBaseInfo.Success {
-		klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle err: %v", err)
-		resp.Code = common.ErrorCode_USER_LOGIN_TAP_FAIL
-		return nil, err
-	}
-	resp.TapInfo = tapBaseInfo.Data
 
 	test := &gate_way.Test{
 		Test: "test",

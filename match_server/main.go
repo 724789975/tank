@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	common_config "match_server/config"
+	"match_server/logic/manager"
 	"match_server/logic/match"
 	"match_server/logic/service"
 	common_redis "match_server/redis"
@@ -28,6 +29,7 @@ func main() {
 	service.GetMatchService().ListenAndServe(ctx)
 	rpc.InitRpc()
 	match.GetMatchProcess()
+	manager.GetMatchManager()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)

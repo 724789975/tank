@@ -3,6 +3,8 @@ package com.dirichlet.unity;
 import android.app.Activity;
 import android.app.Application;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -84,6 +86,14 @@ public final class DirichletUnityBridge {
     private static final Map<String, AdEntry> AD_CACHE = new ConcurrentHashMap<>();
     private static final DirichletAdCustomController UNITY_CUSTOM_CONTROLLER = new UnityCustomController();
 
+    /**
+     * Singleton DirichletAdNative instance for auto-ad caching.
+     * Must be created once and reused to preserve the internal ad cache (rewardVideoAdMap).
+     * Used specifically by showRewardVideoAutoAd to maintain cache across calls.
+     */
+    private static volatile DirichletAdNative sAutoAdNative = null;
+    private static final Object sAutoAdNativeLock = new Object();
+
     private static final Map<String, String> REQUEST_BUILDER_METHODS = buildRequestMethodMap();
 
     private DirichletUnityBridge() {
@@ -118,7 +128,94 @@ public final class DirichletUnityBridge {
                                      String tapClientId,
                                      String dataJson,
                                      boolean shakeEnabled) {
+        // Never block the Android main thread (Unity often runs game loop on it).
+        // The synchronous boolean return is best-effort only.
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            Log.w(TAG, "initialize called on main thread; falling back to async init to avoid ANR");
+            initializeAsync(appId, channel, subChannel, enableLog, mediaName, mediaKey, tapClientId, dataJson, shakeEnabled, null);
+            return true;
+        }
+
         return performInitialization(appId, channel, subChannel, enableLog, mediaName, mediaKey, tapClientId, dataJson, shakeEnabled);
+    }
+
+    /**
+     * Asynchronous initialization. This is the preferred entry point for Unity C# to avoid blocking the game loop.
+     * It reports completion via the provided listener. A timeout is enforced so Unity always receives a result.
+     */
+    public static void initializeAsync(String appId,
+                                       String channel,
+                                       String subChannel,
+                                       boolean enableLog,
+                                       String mediaName,
+                                       String mediaKey,
+                                       String tapClientId,
+                                       String dataJson,
+                                       boolean shakeEnabled,
+                                       LoadListener listener) {
+        final Activity activity = UnityPlayer.currentActivity;
+        if (activity == null) {
+            Log.e(TAG, "initializeAsync: Unity activity is null");
+            if (listener != null) {
+                listener.onError("activity_null", "Unity activity is null");
+            }
+            return;
+        }
+
+        final Application application = activity.getApplication();
+        final AtomicBoolean completed = new AtomicBoolean(false);
+        final Handler handler = new Handler(Looper.getMainLooper());
+
+        final Runnable timeoutTask = () -> {
+            if (listener == null) {
+                return;
+            }
+            if (completed.compareAndSet(false, true)) {
+                Log.w(TAG, "initializeAsync timed out waiting for callback");
+                listener.onError("timeout", "initialize timed out");
+            }
+        };
+        handler.postDelayed(timeoutTask, INIT_TIMEOUT_MS);
+
+        activity.runOnUiThread(() -> {
+            try {
+                long mediaId = safeParseLong(appId, 0L);
+                String dataPayload = mergeDataPayload(subChannel, dataJson);
+                DirichletAdConfig config = buildConfig(mediaId, channel, enableLog, mediaName, mediaKey, tapClientId, dataPayload, shakeEnabled);
+
+                DirichletSdk.InitListener sdkListener = new DirichletSdk.InitListener() {
+                    @Override
+                    public void onInitSuccess() {
+                        if (listener == null) {
+                            return;
+                        }
+                        if (completed.compareAndSet(false, true)) {
+                            handler.removeCallbacks(timeoutTask);
+                            listener.onSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onInitFail(int code, String msg) {
+                        if (listener == null) {
+                            return;
+                        }
+                        if (completed.compareAndSet(false, true)) {
+                            handler.removeCallbacks(timeoutTask);
+                            listener.onError(String.valueOf(code), msg);
+                        }
+                    }
+                };
+
+                DirichletSdk.init(application, config, sdkListener);
+            } catch (Throwable t) {
+                Log.e(TAG, "initializeAsync error", t);
+                if (listener != null && completed.compareAndSet(false, true)) {
+                    handler.removeCallbacks(timeoutTask);
+                    listener.onError("exception", t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName());
+                }
+            }
+        });
     }
 
     private static boolean performInitialization(String appId,
@@ -505,6 +602,185 @@ public final class DirichletUnityBridge {
     }
 
     /**
+     * Listener interface for auto reward video ad callbacks.
+     * This combines load and show callbacks into a single interface.
+     * Mirrors DirichletAdNative.RewardVideoAutoAdListener from the native SDK.
+     */
+    public interface RewardVideoAutoAdListener {
+        /**
+         * Called when ad fails to load or show.
+         * 
+         * @param code Error code
+         * @param message Error message
+         */
+        void onError(String code, String message);
+
+        /**
+         * Called when ad is shown to the user.
+         */
+        void onAdShow();
+
+        /**
+         * Called when ad is closed.
+         */
+        void onAdClose();
+
+        /**
+         * Called when reward verification is completed.
+         * 
+         * @param rewardVerify Whether the reward was verified
+         * @param rewardAmount Reward amount
+         * @param rewardName Reward name
+         * @param code Verification code
+         * @param msg Verification message
+         */
+        void onRewardVerify(boolean rewardVerify, int rewardAmount, String rewardName, int code, String msg);
+
+        /**
+         * Called when ad is clicked.
+         */
+        void onAdClick();
+    }
+
+    /**
+     * Shows a reward video ad with automatic load-and-show logic.
+     * This follows DirichletAdNative.showRewardVideoAutoAd() from the native SDK.
+     * 
+     * The method will:
+     * 1. Show cached ad immediately if available and valid
+     * 2. Load a new ad in the background for next time
+     * 3. If no cached ad, wait for load and then show
+     * 
+     * @param extras Request parameters as JSON (must include space_id)
+     * @param listener Callback for all ad events (load/show/close/reward/click/error)
+     */
+    public static void showRewardVideoAutoAd(JSONObject extras, RewardVideoAutoAdListener listener) {
+        Activity activity = UnityPlayer.currentActivity;
+        if (activity == null) {
+            if (listener != null) {
+                listener.onError("activity_null", "Unity activity is null");
+            }
+            return;
+        }
+
+        if (extras == null) {
+            if (listener != null) {
+                listener.onError("invalid_request", "Request extras cannot be null, must include space_id");
+            }
+            return;
+        }
+
+        long spaceId = extras.optLong("space_id", 0L);
+        if (spaceId <= 0) {
+            if (listener != null) {
+                listener.onError("invalid_space_id", "space_id must be provided and greater than zero in extras");
+            }
+            return;
+        }
+
+        activity.runOnUiThread(() -> {
+            try {
+                // Use singleton to preserve cache (rewardVideoAdMap) across calls
+                DirichletAdNative adNative = getOrCreateAutoAdNative(activity);
+                DirichletAdRequest.Builder builder = new DirichletAdRequest.Builder().withSpaceId(spaceId);
+
+                // Apply optional request parameters
+                String userId = extras.optString("user_id", null);
+                if (userId != null && !userId.isEmpty()) {
+                    builder.withUserId(userId);
+                }
+
+                String rewardName = extras.optString("reward_name", null);
+                if (rewardName != null && !rewardName.isEmpty()) {
+                    builder.withRewardName(rewardName);
+                }
+
+                int rewardAmount = extras.optInt("reward_amount", 0);
+                if (rewardAmount > 0) {
+                    builder.withRewardAmount(rewardAmount);
+                }
+
+                String query = extras.optString("query", null);
+                if (query != null && !query.isEmpty()) {
+                    builder.withQuery(query);
+                }
+
+                String extra1 = extras.optString("extra1", null);
+                if (extra1 != null && !extra1.isEmpty()) {
+                    builder.withExtra1(extra1);
+                }
+
+                DirichletAdRequest request = builder.build();
+
+                // Create the native listener that bridges to Unity callbacks
+                DirichletAdNative.RewardVideoAutoAdListener nativeListener = new DirichletAdNative.RewardVideoAutoAdListener() {
+                    @Override
+                    public void onError(int code, String message) {
+                        if (listener != null) {
+                            listener.onError(String.valueOf(code), message);
+                        }
+                    }
+
+                    @Override
+                    public void onAdShow() {
+                        if (listener != null) {
+                            listener.onAdShow();
+                        }
+                    }
+
+                    @Override
+                    public void onAdClose() {
+                        if (listener != null) {
+                            listener.onAdClose();
+                        }
+                    }
+
+                    @Override
+                    public void onRewardVerify(boolean rewardVerify, int rewardAmount, String rewardName, int code, String msg) {
+                        if (listener != null) {
+                            listener.onRewardVerify(rewardVerify, rewardAmount, rewardName, code, msg);
+                        }
+                    }
+
+                    @Override
+                    public void onAdClick() {
+                        if (listener != null) {
+                            listener.onAdClick();
+                        }
+                    }
+                };
+
+                adNative.showRewardVideoAutoAd(request, activity, nativeListener);
+            } catch (Throwable t) {
+                Log.e(TAG, "showRewardVideoAutoAd exception", t);
+                if (listener != null) {
+                    listener.onError("exception", t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName());
+                }
+            }
+        });
+    }
+
+    /**
+     * Gets or creates a singleton DirichletAdNative instance for auto-ad caching.
+     * The cache (rewardVideoAdMap) is stored as an instance variable in DirichletAdNativeImpl,
+     * so we must reuse the same instance to preserve cached ads across showRewardVideoAutoAd calls.
+     * 
+     * @param activity The current activity context
+     * @return The singleton DirichletAdNative instance
+     */
+    private static DirichletAdNative getOrCreateAutoAdNative(Activity activity) {
+        if (sAutoAdNative == null) {
+            synchronized (sAutoAdNativeLock) {
+                if (sAutoAdNative == null) {
+                    sAutoAdNative = DirichletAdManager.get().createAdNative(activity);
+                    Log.d(TAG, "Created singleton DirichletAdNative for auto-ad caching");
+                }
+            }
+        }
+        return sAutoAdNative;
+    }
+
+    /**
      * Internal method to load an ad of the specified type.
      * Creates an AdEntry, stores it in cache, and initiates the load process.
      */
@@ -831,6 +1107,39 @@ public final class DirichletUnityBridge {
         ViewParent parent = container.getParent();
         if (parent instanceof ViewGroup) {
             ((ViewGroup) parent).removeView(container);
+        }
+    }
+
+    /**
+     * Checks if an ad is still valid and can be shown.
+     * This should be called before show() to ensure the ad hasn't expired.
+     * 
+     * @param handle The handle ID returned from the load method
+     * @return true if the ad is valid and can be shown, false otherwise
+     */
+    public static boolean isAdValid(String handle) {
+        AdEntry entry = AD_CACHE.get(handle);
+        if (entry == null) {
+            Log.w(TAG, "isAdValid: handle not found " + handle);
+            return false;
+        }
+
+        try {
+            switch (entry.type) {
+                case TYPE_REWARD:
+                    return entry.rewardAd != null && entry.rewardAd.isValid();
+                case TYPE_INTERSTITIAL:
+                    return entry.interstitialAd != null && entry.interstitialAd.isValid();
+                case TYPE_BANNER:
+                    return entry.bannerAd != null;
+                case TYPE_SPLASH:
+                    return entry.splashAd != null;
+                default:
+                    return false;
+            }
+        } catch (Throwable t) {
+            Log.w(TAG, "isAdValid exception", t);
+            return false;
         }
     }
 

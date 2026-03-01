@@ -47,7 +47,7 @@ public class GameStart : MonoBehaviour
 		else
 		{
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-			Debug.LogErrorFormat("Could not find commandline file '{0}'.", path);
+			Debug.LogWarningFormat("Could not find commandline file '{0}'.", path);
 #endif
 		}
 
@@ -112,18 +112,18 @@ public class GameStart : MonoBehaviour
 		});
 		EtcdUtil.Instance.Put($"/{Config.Instance.serviceName}/{Config.Instance.localIp}:{Config.Instance.rpcPort}", $"{{ \"network\":\"tcp\",\"address\":\"{Config.Instance.localIp}:{Config.Instance.port}\",\"weight\":10,\"tags\":null}}", 100);
 
-		EtcdUtil.Instance.Get($"", (result, succeed) =>
-		{
-			if (!succeed)
-			{
-				Debug.LogError("get etcd keys failed");
-				return;
-			}
-			foreach (var item in result)
-			{
-				Debug.Log(item.Key + " " + item.Value);
-			}
-		});
+		//EtcdUtil.Instance.Get("", (result, succeed) =>
+		//{
+		//	if (!succeed)
+		//	{
+		//		Debug.LogError("get etcd keys failed");
+		//		return;
+		//	}
+		//	foreach (var item in result)
+		//	{
+		//		Debug.Log(item.Key + " " + item.Value);
+		//	}
+		//});
 	}
 
 	// Start is called before the first frame update

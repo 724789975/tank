@@ -652,5 +652,31 @@ void DirichletMediationUnityBridge_DestroyAd(const char* handleId) {
     [[DirichletMediationInstanceManager shared] removeAdForHandle:delegateKey];
 }
 
+bool DirichletMediationUnityBridge_IsAdValid(const char* handleId) {
+    NSString* nsHandleId = CreateNSString(handleId);
+    id ad = [[DirichletMediationInstanceManager shared] adForHandle:nsHandleId];
+    
+    if (!ad) {
+        NSLog(@"[DirichletMediationUnityBridge] IsAdValid: Ad not found for handle %@", nsHandleId);
+        return false;
+    }
+    
+    if ([ad isKindOfClass:[DRMRewardVideoAd class]]) {
+        DRMRewardVideoAd* rewardAd = (DRMRewardVideoAd*)ad;
+        return [rewardAd isReady];
+    } else if ([ad isKindOfClass:[DRMInterstitialAd class]]) {
+        DRMInterstitialAd* interstitialAd = (DRMInterstitialAd*)ad;
+        return [interstitialAd isReady];
+    } else if ([ad isKindOfClass:[DRMBannerAd class]]) {
+        // Banner ads don't have isReady, assume valid if loaded
+        return true;
+    } else if ([ad isKindOfClass:[DRMSplashAd class]]) {
+        DRMSplashAd* splashAd = (DRMSplashAd*)ad;
+        return [splashAd isReady];
+    }
+    
+    return false;
+}
+
 } // extern "C"
 

@@ -18,9 +18,9 @@ public class UserCenterClient : MonoBehaviour
 
 	void discovery()
 	{
-		Dictionary<string, DiscoveryInfo> services = new Dictionary<string, DiscoveryInfo>();
-		EtcdUtil.Instance.Get($"/user-center", (result, succeed) =>
+		EtcdUtil.Instance.Get("/user-center", (result, succeed) =>
 		{
+			Dictionary<string, DiscoveryInfo> services = new Dictionary<string, DiscoveryInfo>();
 			if (!succeed)
 			{
 				Debug.LogError("get etcd keys failed");
@@ -31,42 +31,43 @@ public class UserCenterClient : MonoBehaviour
 				Debug.Log(item.Key + " " + item.Value);
 				services[item.Key] = JsonUtility.FromJson<DiscoveryInfo>(item.Value);
 			}
-		});
-		if (services.Count == 0)
-		{
-			Debug.LogError("no user-center service found");
-			TimerU.Instance.AddTask(80, () =>
+
+			if (services.Count == 0)
 			{
-				discovery();
-			});
-			return;
-		}
-		// 根据权重随机选择一个服务
-		int totalWeight = 0;
-		foreach (var item in services.Values)
-		{
-			totalWeight += item.weight;
-		}
-		int randomWeight = UnityEngine.Random.Range(0, totalWeight);
-		int currentWeight = 0;
-		DiscoveryInfo info = null;
-		foreach (var item in services.Values)
-		{
-			currentWeight += item.weight;
-			if (randomWeight < currentWeight)
-			{
-				info = item;
-				break;
+				Debug.LogError("no user-center service found, check etcd server or try again later");
+				TimerU.Instance.AddTask(80, () =>
+				{
+					discovery();
+				});
+				return;
 			}
-		}
-		if (info == null)
-		{
-			Debug.LogError("no user-center service found");
-			return;
-		}
-		Debug.Log($"discovery user-center service {info.address}");
-		Grpc.Core.Channel channel = new Grpc.Core.Channel(info.address, Grpc.Core.ChannelCredentials.Insecure);
-		client = new UserCenterService.UserCenterService.UserCenterServiceClient(channel);
+			// 根据权重随机选择一个服务
+			int totalWeight = 0;
+			foreach (var item in services.Values)
+			{
+				totalWeight += item.weight;
+			}
+			int randomWeight = UnityEngine.Random.Range(0, totalWeight);
+			int currentWeight = 0;
+			DiscoveryInfo info = null;
+			foreach (var item in services.Values)
+			{
+				currentWeight += item.weight;
+				if (randomWeight < currentWeight)
+				{
+					info = item;
+					break;
+				}
+			}
+			if (info == null)
+			{
+				Debug.LogError($"no user-center service found, random weight error, [{randomWeight}, {totalWeight}]");
+				return;
+			}
+			Debug.Log($"discovery user-center service {info.address}");
+			Grpc.Core.Channel channel = new Grpc.Core.Channel(info.address, Grpc.Core.ChannelCredentials.Insecure);
+			client = new UserCenterService.UserCenterService.UserCenterServiceClient(channel);
+		});
 	}
 
 	public UserCenterService.UserCenterService.UserCenterServiceClient Client

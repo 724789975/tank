@@ -336,6 +336,8 @@ namespace Dirichlet.Mediation
     public sealed class DirichletAdNative
     {
         private readonly IDirichletPlatformBridge bridge;
+        private static readonly object RewardAutoSessionLock = new object();
+        private static readonly Dictionary<string, AutoRewardVideoSession> RewardAutoSessions = new Dictionary<string, AutoRewardVideoSession>(StringComparer.Ordinal);
 
         public static DirichletAdNative Create() => DirichletAdManager.CreateAdNative();
 
@@ -422,6 +424,60 @@ namespace Dirichlet.Mediation
             NotifyNotSupported("native_feed", onFailure);
         }
 
+        /// <summary>
+        /// Shows a reward video ad with automatic load-and-show logic.
+        /// This method combines loading and showing into a single operation.
+        ///
+        /// - Android: 使用 native 侧的 AutoAd（可能包含缓存策略，保持原有行为）
+        /// - iOS: 使用 Unity C# 侧的“load 成功后立刻 show”的简化方案（不做缓存）
+        /// </summary>
+        /// <param name="request">Ad request parameters</param>
+        /// <param name="listener">Listener for all ad events (show/close/reward/click/error)</param>
+        public void ShowRewardVideoAutoAd(DirichletAdRequest request, IDirichletRewardVideoAutoAdListener listener)
+        {
+            if (!ValidateRequest(request, error => listener?.OnError(error)))
+            {
+                return;
+            }
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            bridge.ShowRewardVideoAutoAd(request, listener);
+#else
+            // iOS/Editor/other platforms: use simplified load+show implementation (no cache).
+            ShowRewardVideoLoadAndShowInternal(request, listener);
+#endif
+        }
+
+        private void ShowRewardVideoLoadAndShowInternal(DirichletAdRequest request, IDirichletRewardVideoAutoAdListener listener)
+        {
+            LoadRewardVideoAd(
+                request,
+                ad =>
+                {
+                    if (ad == null)
+                    {
+                        listener?.OnError(new DirichletError("invalid_ad", "Load callback returned null ad"));
+                        return;
+                    }
+
+                    var sessionId = Guid.NewGuid().ToString("N");
+                    var session = new AutoRewardVideoSession(sessionId, ad, listener);
+                    RegisterRewardAutoSession(session);
+                    ad.SetInteractionListener(session);
+
+                    // Load succeeded; show immediately.
+                    var shown = ad.Show();
+                    if (!shown)
+                    {
+                        session.FailAndDispose(new DirichletError("show_failed", "ShowRewardVideoAd returned false"));
+                    }
+                },
+                error =>
+                {
+                    listener?.OnError(error ?? new DirichletError("load_failed", "LoadRewardVideoAd failed"));
+                });
+        }
+
     private static bool ValidateRequest(DirichletAdRequest request, Action<DirichletError> onFailure)
     {
         if (request == null)
@@ -443,6 +499,120 @@ namespace Dirichlet.Mediation
         {
             onFailure?.Invoke(new DirichletError("not_supported", $"Dirichlet Unity bridge does not yet support {feature} ads."));
         }
+
+        private static void RegisterRewardAutoSession(AutoRewardVideoSession session)
+        {
+            if (session == null)
+            {
+                return;
+            }
+
+            lock (RewardAutoSessionLock)
+            {
+                RewardAutoSessions[session.SessionId] = session;
+            }
+        }
+
+        private static void UnregisterRewardAutoSession(string sessionId)
+        {
+            if (string.IsNullOrEmpty(sessionId))
+            {
+                return;
+            }
+
+            lock (RewardAutoSessionLock)
+            {
+                RewardAutoSessions.Remove(sessionId);
+            }
+        }
+
+        private sealed class AutoRewardVideoSession : IDirichletRewardAdInteractionListener
+        {
+            public string SessionId { get; }
+
+            private readonly DirichletRewardVideoAd ad;
+            private readonly IDirichletRewardVideoAutoAdListener listener;
+            private bool disposed;
+
+            public AutoRewardVideoSession(string sessionId, DirichletRewardVideoAd ad, IDirichletRewardVideoAutoAdListener listener)
+            {
+                SessionId = string.IsNullOrEmpty(sessionId) ? Guid.NewGuid().ToString("N") : sessionId;
+                this.ad = ad ?? throw new ArgumentNullException(nameof(ad));
+                this.listener = listener;
+            }
+
+            public void OnAdShow()
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                listener?.OnAdShow();
+            }
+
+            public void OnAdClick()
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                listener?.OnAdClick();
+            }
+
+            public void OnAdClose()
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                listener?.OnAdClose();
+                Dispose();
+            }
+
+            public void OnRewardVerify(DirichletRewardVerificationEventArgs args)
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                listener?.OnRewardVerify(args);
+            }
+
+            public void FailAndDispose(DirichletError error)
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                listener?.OnError(error ?? new DirichletError("unknown_error", "Unknown error"));
+                Dispose();
+            }
+
+            private void Dispose()
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                disposed = true;
+                UnregisterRewardAutoSession(SessionId);
+
+                try
+                {
+                    ad?.Destroy();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[Dirichlet] Auto reward ad Destroy failed: {ex.Message}");
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -457,6 +627,13 @@ namespace Dirichlet.Mediation
 
         public string SlotId => spaceId > 0 ? spaceId.ToString(CultureInfo.InvariantCulture) : string.Empty;
         public bool IsLoaded { get; protected set; }
+
+        /// <summary>
+        /// Returns whether the ad is still valid and can be shown.
+        /// This checks the native ad object's validity, which may expire after some time.
+        /// Always call this before Show() to ensure the ad hasn't expired.
+        /// </summary>
+        public bool IsValid => bridge?.IsAdValid(PlatformHandle) ?? false;
 
         /// <summary>
         /// Raised when the native layer confirms the ad was shown to the user.
@@ -885,6 +1062,39 @@ namespace Dirichlet.Mediation
         void OnAdShow();
         void OnAdClick();
         void OnAdClose();
+    }
+
+    /// <summary>
+    /// Listener interface for auto reward video ad callbacks.
+    /// Used with ShowRewardVideoAutoAd which combines load and show into one operation.
+    /// Android only - iOS will receive OnError with not_supported error.
+    /// </summary>
+    public interface IDirichletRewardVideoAutoAdListener
+    {
+        /// <summary>
+        /// Called when ad fails to load or show.
+        /// </summary>
+        void OnError(DirichletError error);
+
+        /// <summary>
+        /// Called when ad is shown to the user.
+        /// </summary>
+        void OnAdShow();
+
+        /// <summary>
+        /// Called when ad is closed.
+        /// </summary>
+        void OnAdClose();
+
+        /// <summary>
+        /// Called when reward verification is completed.
+        /// </summary>
+        void OnRewardVerify(DirichletRewardVerificationEventArgs args);
+
+        /// <summary>
+        /// Called when ad is clicked.
+        /// </summary>
+        void OnAdClick();
     }
 
     internal static class DirichletAdEventRouter

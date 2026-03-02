@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AccountInfo : MonoBehaviour
 {
@@ -72,6 +74,16 @@ public class AccountInfo : MonoBehaviour
     public void SetAccount(UserCenter.TapInfo account)
     {
         this.account = account;
+		if(!showName)
+		{
+			showName = Instantiate(userName);
+			showName.transform.parent = _instance.transform;
+		}
+		TextMeshProUGUI t = showName.GetComponentInChildren<TextMeshProUGUI>();
+		if(t)
+		{
+			t.SetText(account.Name);
+		}
     }
 
 	// 单例实例
@@ -79,4 +91,8 @@ public class AccountInfo : MonoBehaviour
 	// 线程锁，确保线程安全
 	static readonly object Lock = new object();
 	UserCenter.TapInfo account = new UserCenter.TapInfo();
+
+	public GameObject userName;
+
+	GameObject showName;
 }

@@ -27,7 +27,18 @@ message TapBaseInfo {
 message LoginRsp {
 	common.ErrorCode code       = 1;
 	string           msg        = 2;
-	string           serverAddr = 3;
-	int32            serverPort = 4;
-	TapInfo          tapInfo    = 5;
+	TapInfo          tapInfo    = 3;
+}
+
+message UserInfoReq {
+	string openid = 1;
+}
+
+message UserInfoRsp {
+	common.ErrorCode code = 1;
+	string           msg  = 2;
+	message Data {
+		TapInfo tapInfo = 1;
+	}
+	Data data = 3;
 }

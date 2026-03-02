@@ -23,6 +23,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"user_info": kitex.NewMethodInfo(
+		userInfoHandler,
+		newUserInfoArgs,
+		newUserInfoResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -200,6 +207,117 @@ func (p *LoginResult) GetResult() interface{} {
 	return p.Success
 }
 
+func userInfoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user_center.UserInfoReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user_center_service.UserCenterService).UserInfo(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *UserInfoArgs:
+		success, err := handler.(user_center_service.UserCenterService).UserInfo(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*UserInfoResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newUserInfoArgs() interface{} {
+	return &UserInfoArgs{}
+}
+
+func newUserInfoResult() interface{} {
+	return &UserInfoResult{}
+}
+
+type UserInfoArgs struct {
+	Req *user_center.UserInfoReq
+}
+
+func (p *UserInfoArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *UserInfoArgs) Unmarshal(in []byte) error {
+	msg := new(user_center.UserInfoReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var UserInfoArgs_Req_DEFAULT *user_center.UserInfoReq
+
+func (p *UserInfoArgs) GetReq() *user_center.UserInfoReq {
+	if !p.IsSetReq() {
+		return UserInfoArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *UserInfoArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UserInfoArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type UserInfoResult struct {
+	Success *user_center.UserInfoRsp
+}
+
+var UserInfoResult_Success_DEFAULT *user_center.UserInfoRsp
+
+func (p *UserInfoResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *UserInfoResult) Unmarshal(in []byte) error {
+	msg := new(user_center.UserInfoRsp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *UserInfoResult) GetSuccess() *user_center.UserInfoRsp {
+	if !p.IsSetSuccess() {
+		return UserInfoResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *UserInfoResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user_center.UserInfoRsp)
+}
+
+func (p *UserInfoResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserInfoResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -215,6 +333,16 @@ func (p *kClient) Login(ctx context.Context, Req *user_center.LoginReq) (r *user
 	_args.Req = Req
 	var _result LoginResult
 	if err = p.c.Call(ctx, "login", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) UserInfo(ctx context.Context, Req *user_center.UserInfoReq) (r *user_center.UserInfoRsp, err error) {
+	var _args UserInfoArgs
+	_args.Req = Req
+	var _result UserInfoResult
+	if err = p.c.Call(ctx, "user_info", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

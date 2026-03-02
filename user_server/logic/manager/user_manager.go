@@ -52,10 +52,8 @@ func GetUserManager() *UserManager {
 
 func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (resp *user_center.LoginRsp, err error) {
 	resp = &user_center.LoginRsp{
-		Code:       common.ErrorCode_OK,
-		Msg:        "success",
-		ServerAddr: common_config.Get("game.addr").(string),
-		ServerPort: int32(common_config.Get("game.port").(int)),
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
 	}
 
 	userId := ""
@@ -81,9 +79,9 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 			return nil, err
 		}
 		if !tapBaseInfo.Success {
-			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle err: %v", err)
+			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle failed")
 			resp.Code = common.ErrorCode_USER_LOGIN_TAP_FAIL
-			return nil, err
+			return resp, nil
 		}
 		realId = userId
 		common_redis.GetRedis().Set(ctx, fmt.Sprintf("%s:%s", redis_taptap_str, userId), realId, 0)
@@ -114,6 +112,34 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 		Id:  userId,
 		Msg: any,
 	})
+
+	return resp, nil
+}
+
+func (x *UserManager) UserInfo(ctx context.Context, req *user_center.UserInfoReq) (resp *user_center.UserInfoRsp, err error) {
+	resp = &user_center.UserInfoRsp{
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
+	}
+
+	userInfo := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf("%s:%s", redis_user_info_key, req.Openid)).Val()
+
+	//检查redis是否有该用户信息
+	if _, ok := userInfo["openid"]; !ok {
+		resp.Code = common.ErrorCode_USER_INFO_NOT_FOUND
+		resp.Msg = "user info not found"
+		return resp, nil
+	}
+
+	resp.Data = &user_center.UserInfoRsp_Data{
+		TapInfo: &user_center.TapInfo{
+			Avatar:  userInfo["avatar"],
+			Gender:  userInfo["gender"],
+			Name:    userInfo["name"],
+			Openid:  userInfo["openid"],
+			Unionid: userInfo["unionid"],
+		},
+	}
 
 	return resp, nil
 }

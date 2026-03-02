@@ -110,3 +110,7 @@ func (s *UserService) Close() {
 func (x *UserService) Login(ctx context.Context, req *user_center.LoginReq) (resp *user_center.LoginRsp, err error) {
 	return manager.GetUserManager().Login(ctx, req)
 }
+
+func (x *UserService) UserInfo(ctx context.Context, req *user_center.UserInfoReq) (resp *user_center.UserInfoRsp, err error) {
+	return manager.GetUserManager().UserInfo(ctx, req)
+}

@@ -36,11 +36,18 @@ public class ServerMsg : MonoBehaviour
 		TankGame.LoginReq loginReq = anyMessage.Unpack<TankGame.LoginReq>();
 		Debug.Log($"OnLoginReq {loginReq.Name} {loginReq.Id}");
 
+		UserCenter.UserInfoRsp resp = UserCenterClient.Instance.Client.user_info(new UserCenter.UserInfoReq { Openid = loginReq.Id });
+		if (resp.Code != 0)
+		{
+			Debug.LogError($"get resp error {loginReq.Id}");
+			return;
+		}
+
 		bool bRemovePlayer = false;
 
 		// 回复 LoginReq 消息
 		TankGame.LoginRsp loginRspMessage = new TankGame.LoginRsp();
-		ServerPlayer playerData = PlayerManager.Instance.GetPlayer(loginReq.Id);
+		ServerPlayer playerData = PlayerManager.Instance.GetPlayer(resp.Data.TapInfo.Openid);
 		if (playerData != null)
 		{
 			//踢出老用户
@@ -48,7 +55,7 @@ public class ServerMsg : MonoBehaviour
 			Debug.Log("kick old player");
 			bRemovePlayer = true;
 		}
-		if (PlayerManager.Instance.AddPlayer(loginReq.Id, new ServerPlayer() { Id = loginReq.Id, Name = loginReq.Name,
+		if (PlayerManager.Instance.AddPlayer(resp.Data.TapInfo.Openid, new ServerPlayer() { Id = resp.Data.TapInfo.Openid, Name = resp.Data.TapInfo.Name,
 			session = pConnector,
 		}))
 		{
@@ -57,12 +64,12 @@ public class ServerMsg : MonoBehaviour
 			loginRspMessage.Msg = "Login successful";
 			NetServer.Instance.SendMessage(pConnector, loginRspMessage);
 
-			TankInstance tankInstance = TankManager.Instance.AddTank(loginReq.Id, loginReq.Name, out bool isAdd);
-			tankInstance.name = "tank:" + loginReq.Id;
+			TankInstance tankInstance = TankManager.Instance.AddTank(resp.Data.TapInfo.Openid, resp.Data.TapInfo.Name, out bool isAdd);
+			tankInstance.name = "tank:" + resp.Data.TapInfo.Openid;
 
 			TankGame.PlayerApperanceNtf playerApperanceNtf = new TankGame.PlayerApperanceNtf();
-			playerApperanceNtf.Id = loginReq.Id;
-			playerApperanceNtf.Name = loginReq.Name;
+			playerApperanceNtf.Id = resp.Data.TapInfo.Openid;
+			playerApperanceNtf.Name = resp.Data.TapInfo.Name;
 			if (isAdd)
 			{
 				tankInstance.HP = Config.Instance.maxHp;
@@ -88,7 +95,7 @@ public class ServerMsg : MonoBehaviour
 
 			PlayerManager.Instance.ForEach((playerData) =>
 				{
-					if (playerData.Id != loginReq.Id)
+					if (playerData.Id != resp.Data.TapInfo.Openid)
 					{
 						if (!bRemovePlayer)
 						{

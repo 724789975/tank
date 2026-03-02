@@ -30,17 +30,22 @@ namespace UserCenter {
             "chgCIAEoCRIMCgRuYW1lGAMgASgJEg4KBm9wZW5pZBgEIAEoCRIPCgd1bmlv",
             "bmlkGAUgASgJIk8KC1RhcEJhc2VJbmZvEiIKBGRhdGEYASABKAsyFC51c2Vy",
             "X2NlbnRlci5UYXBJbmZvEgsKA25vdxgCIAEoAxIPCgdzdWNjZXNzGAMgASgI",
-            "IocBCghMb2dpblJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29k",
-            "ZRILCgNtc2cYAiABKAkSEgoKc2VydmVyQWRkchgDIAEoCRISCgpzZXJ2ZXJQ",
-            "b3J0GAQgASgFEiUKB3RhcEluZm8YBSABKAsyFC51c2VyX2NlbnRlci5UYXBJ",
-            "bmZvQg1aC3VzZXJfY2VudGVyYgZwcm90bzM="));
+            "Il8KCExvZ2luUnNwEh8KBGNvZGUYASABKA4yES5jb21tb24uRXJyb3JDb2Rl",
+            "EgsKA21zZxgCIAEoCRIlCgd0YXBJbmZvGAMgASgLMhQudXNlcl9jZW50ZXIu",
+            "VGFwSW5mbyIdCgtVc2VySW5mb1JlcRIOCgZvcGVuaWQYASABKAkilwEKC1Vz",
+            "ZXJJbmZvUnNwEh8KBGNvZGUYASABKA4yES5jb21tb24uRXJyb3JDb2RlEgsK",
+            "A21zZxgCIAEoCRIrCgRkYXRhGAMgASgLMh0udXNlcl9jZW50ZXIuVXNlcklu",
+            "Zm9Sc3AuRGF0YRotCgREYXRhEiUKB3RhcEluZm8YASABKAsyFC51c2VyX2Nl",
+            "bnRlci5UYXBJbmZvQg1aC3VzZXJfY2VudGVyYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginReq), global::UserCenter.LoginReq.Parser, new[]{ "Kid", "MacKey" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapInfo), global::UserCenter.TapInfo.Parser, new[]{ "Avatar", "Gender", "Name", "Openid", "Unionid" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.TapBaseInfo), global::UserCenter.TapBaseInfo.Parser, new[]{ "Data", "Now", "Success" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginRsp), global::UserCenter.LoginRsp.Parser, new[]{ "Code", "Msg", "ServerAddr", "ServerPort", "TapInfo" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.LoginRsp), global::UserCenter.LoginRsp.Parser, new[]{ "Code", "Msg", "TapInfo" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.UserInfoReq), global::UserCenter.UserInfoReq.Parser, new[]{ "Openid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.UserInfoRsp), global::UserCenter.UserInfoRsp.Parser, new[]{ "Code", "Msg", "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.UserInfoRsp.Types.Data), global::UserCenter.UserInfoRsp.Types.Data.Parser, new[]{ "TapInfo" }, null, null, null)})
           }));
     }
     #endregion
@@ -663,8 +668,6 @@ namespace UserCenter {
     public LoginRsp(LoginRsp other) : this() {
       code_ = other.code_;
       msg_ = other.msg_;
-      serverAddr_ = other.serverAddr_;
-      serverPort_ = other.serverPort_;
       tapInfo_ = other.tapInfo_ != null ? other.tapInfo_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -696,30 +699,8 @@ namespace UserCenter {
       }
     }
 
-    /// <summary>Field number for the "serverAddr" field.</summary>
-    public const int ServerAddrFieldNumber = 3;
-    private string serverAddr_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string ServerAddr {
-      get { return serverAddr_; }
-      set {
-        serverAddr_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "serverPort" field.</summary>
-    public const int ServerPortFieldNumber = 4;
-    private int serverPort_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int ServerPort {
-      get { return serverPort_; }
-      set {
-        serverPort_ = value;
-      }
-    }
-
     /// <summary>Field number for the "tapInfo" field.</summary>
-    public const int TapInfoFieldNumber = 5;
+    public const int TapInfoFieldNumber = 3;
     private global::UserCenter.TapInfo tapInfo_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::UserCenter.TapInfo TapInfo {
@@ -744,8 +725,6 @@ namespace UserCenter {
       }
       if (Code != other.Code) return false;
       if (Msg != other.Msg) return false;
-      if (ServerAddr != other.ServerAddr) return false;
-      if (ServerPort != other.ServerPort) return false;
       if (!object.Equals(TapInfo, other.TapInfo)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -755,8 +734,6 @@ namespace UserCenter {
       int hash = 1;
       if (Code != 0) hash ^= Code.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
-      if (ServerAddr.Length != 0) hash ^= ServerAddr.GetHashCode();
-      if (ServerPort != 0) hash ^= ServerPort.GetHashCode();
       if (tapInfo_ != null) hash ^= TapInfo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -779,16 +756,8 @@ namespace UserCenter {
         output.WriteRawTag(18);
         output.WriteString(Msg);
       }
-      if (ServerAddr.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(ServerAddr);
-      }
-      if (ServerPort != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(ServerPort);
-      }
       if (tapInfo_ != null) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(26);
         output.WriteMessage(TapInfo);
       }
       if (_unknownFields != null) {
@@ -804,12 +773,6 @@ namespace UserCenter {
       }
       if (Msg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Msg);
-      }
-      if (ServerAddr.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServerAddr);
-      }
-      if (ServerPort != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ServerPort);
       }
       if (tapInfo_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(TapInfo);
@@ -830,12 +793,6 @@ namespace UserCenter {
       }
       if (other.Msg.Length != 0) {
         Msg = other.Msg;
-      }
-      if (other.ServerAddr.Length != 0) {
-        ServerAddr = other.ServerAddr;
-      }
-      if (other.ServerPort != 0) {
-        ServerPort = other.ServerPort;
       }
       if (other.tapInfo_ != null) {
         if (tapInfo_ == null) {
@@ -863,14 +820,6 @@ namespace UserCenter {
             break;
           }
           case 26: {
-            ServerAddr = input.ReadString();
-            break;
-          }
-          case 32: {
-            ServerPort = input.ReadInt32();
-            break;
-          }
-          case 42: {
             if (tapInfo_ == null) {
               tapInfo_ = new global::UserCenter.TapInfo();
             }
@@ -880,6 +829,468 @@ namespace UserCenter {
         }
       }
     }
+
+  }
+
+  public sealed partial class UserInfoReq : pb::IMessage<UserInfoReq> {
+    private static readonly pb::MessageParser<UserInfoReq> _parser = new pb::MessageParser<UserInfoReq>(() => new UserInfoReq());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<UserInfoReq> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserInfoReq() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserInfoReq(UserInfoReq other) : this() {
+      openid_ = other.openid_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserInfoReq Clone() {
+      return new UserInfoReq(this);
+    }
+
+    /// <summary>Field number for the "openid" field.</summary>
+    public const int OpenidFieldNumber = 1;
+    private string openid_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Openid {
+      get { return openid_; }
+      set {
+        openid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as UserInfoReq);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(UserInfoReq other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Openid != other.Openid) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Openid.Length != 0) hash ^= Openid.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Openid.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Openid);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Openid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Openid);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(UserInfoReq other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Openid.Length != 0) {
+        Openid = other.Openid;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Openid = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class UserInfoRsp : pb::IMessage<UserInfoRsp> {
+    private static readonly pb::MessageParser<UserInfoRsp> _parser = new pb::MessageParser<UserInfoRsp>(() => new UserInfoRsp());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<UserInfoRsp> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserInfoRsp() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserInfoRsp(UserInfoRsp other) : this() {
+      code_ = other.code_;
+      msg_ = other.msg_;
+      data_ = other.data_ != null ? other.data_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserInfoRsp Clone() {
+      return new UserInfoRsp(this);
+    }
+
+    /// <summary>Field number for the "code" field.</summary>
+    public const int CodeFieldNumber = 1;
+    private global::Common.ErrorCode code_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Common.ErrorCode Code {
+      get { return code_; }
+      set {
+        code_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "msg" field.</summary>
+    public const int MsgFieldNumber = 2;
+    private string msg_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Msg {
+      get { return msg_; }
+      set {
+        msg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 3;
+    private global::UserCenter.UserInfoRsp.Types.Data data_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::UserCenter.UserInfoRsp.Types.Data Data {
+      get { return data_; }
+      set {
+        data_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as UserInfoRsp);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(UserInfoRsp other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Code != other.Code) return false;
+      if (Msg != other.Msg) return false;
+      if (!object.Equals(Data, other.Data)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Code != 0) hash ^= Code.GetHashCode();
+      if (Msg.Length != 0) hash ^= Msg.GetHashCode();
+      if (data_ != null) hash ^= Data.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Code != 0) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Code);
+      }
+      if (Msg.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Msg);
+      }
+      if (data_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Code != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Code);
+      }
+      if (Msg.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Msg);
+      }
+      if (data_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Data);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(UserInfoRsp other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Code != 0) {
+        Code = other.Code;
+      }
+      if (other.Msg.Length != 0) {
+        Msg = other.Msg;
+      }
+      if (other.data_ != null) {
+        if (data_ == null) {
+          data_ = new global::UserCenter.UserInfoRsp.Types.Data();
+        }
+        Data.MergeFrom(other.Data);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            code_ = (global::Common.ErrorCode) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            Msg = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (data_ == null) {
+              data_ = new global::UserCenter.UserInfoRsp.Types.Data();
+            }
+            input.ReadMessage(data_);
+            break;
+          }
+        }
+      }
+    }
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the UserInfoRsp message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static partial class Types {
+      public sealed partial class Data : pb::IMessage<Data> {
+        private static readonly pb::MessageParser<Data> _parser = new pb::MessageParser<Data>(() => new Data());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pb::MessageParser<Data> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::UserCenter.UserInfoRsp.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public Data() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public Data(Data other) : this() {
+          tapInfo_ = other.tapInfo_ != null ? other.tapInfo_.Clone() : null;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public Data Clone() {
+          return new Data(this);
+        }
+
+        /// <summary>Field number for the "tapInfo" field.</summary>
+        public const int TapInfoFieldNumber = 1;
+        private global::UserCenter.TapInfo tapInfo_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public global::UserCenter.TapInfo TapInfo {
+          get { return tapInfo_; }
+          set {
+            tapInfo_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override bool Equals(object other) {
+          return Equals(other as Data);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public bool Equals(Data other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (!object.Equals(TapInfo, other.TapInfo)) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (tapInfo_ != null) hash ^= TapInfo.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void WriteTo(pb::CodedOutputStream output) {
+          if (tapInfo_ != null) {
+            output.WriteRawTag(10);
+            output.WriteMessage(TapInfo);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public int CalculateSize() {
+          int size = 0;
+          if (tapInfo_ != null) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(TapInfo);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(Data other) {
+          if (other == null) {
+            return;
+          }
+          if (other.tapInfo_ != null) {
+            if (tapInfo_ == null) {
+              tapInfo_ = new global::UserCenter.TapInfo();
+            }
+            TapInfo.MergeFrom(other.TapInfo);
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(pb::CodedInputStream input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                if (tapInfo_ == null) {
+                  tapInfo_ = new global::UserCenter.TapInfo();
+                }
+                input.ReadMessage(tapInfo_);
+                break;
+              }
+            }
+          }
+        }
+
+      }
+
+    }
+    #endregion
 
   }
 

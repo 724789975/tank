@@ -8,4 +8,7 @@ option go_package = "user_center_service";
 service UserCenterService {
     //登录
     rpc login(user_center.LoginReq) returns (user_center.LoginRsp){};
+
+    //获取用户信息
+    rpc user_info(user_center.UserInfoReq) returns (user_center.UserInfoRsp){};
 }

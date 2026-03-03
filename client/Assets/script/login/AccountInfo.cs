@@ -74,9 +74,10 @@ public class AccountInfo : MonoBehaviour
     public void SetAccount(UserCenter.TapInfo account)
     {
         this.account = account;
+		GameObject g = Resources.Load<GameObject>("prafab/name");
 		if(!showName)
 		{
-			showName = Instantiate(userName);
+			showName = Instantiate(g);
 			showName.transform.parent = _instance.transform;
 		}
 		TextMeshProUGUI t = showName.GetComponentInChildren<TextMeshProUGUI>();
@@ -91,8 +92,6 @@ public class AccountInfo : MonoBehaviour
 	// 线程锁，确保线程安全
 	static readonly object Lock = new object();
 	UserCenter.TapInfo account = new UserCenter.TapInfo();
-
-	public GameObject userName;
 
 	GameObject showName;
 }

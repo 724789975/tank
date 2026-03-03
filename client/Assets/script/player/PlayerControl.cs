@@ -31,11 +31,12 @@ public class PlayerControl : MonoBehaviour
     public void ShowNotice(string content)
     {
 #if !AI_RUNNING
-        if (notice == null)
+        GameObject g = Resources.Load<GameObject>("prafab/notice");
+        if (g == null)
         {
             return;
         }
-        GameObject go = Instantiate(notice.gameObject, notice.transform.parent);
+        GameObject go = Instantiate(g, g.transform.parent);
         Notice n = go.GetComponent<Notice>();
         n.text.text = content;
 #endif
@@ -51,6 +52,4 @@ public class PlayerControl : MonoBehaviour
 
 
 	static PlayerControl instance;
-
-    public Notice notice;
 }

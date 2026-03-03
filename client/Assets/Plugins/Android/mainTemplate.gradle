@@ -15,9 +15,9 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation(name: 'DirichletAD_Mediation_4.1.2.5', ext: 'aar')
-    implementation(name: 'DirichletAD_CSJ_Adapter_4.1.2.5', ext: 'aar')
-    implementation(name: 'DirichletAD_GDT_Adapter_4.1.2.5', ext: 'aar')
+    implementation(name: 'DirichletAD_Mediation_4.2.0.8', ext: 'aar')
+    implementation(name: 'DirichletAD_CSJ_Adapter_4.2.0.8', ext: 'aar')
+    implementation(name: 'DirichletAD_GDT_Adapter_4.2.0.8', ext: 'aar')
     implementation(name: 'open_ad_sdk_7.0.1.0', ext: 'aar')
     implementation(name: 'GDTSDK.unionNormal.4.650.1520', ext: 'aar')
 
@@ -30,6 +30,12 @@ dependencies {
 
 	// TapTap Android Resolver Dependencies End
 // Android Resolver Dependencies Start
+    implementation 'com.android.support:appcompat-v7:28.0.0' // Assets/DirichletMediation/Editor/DirichletMediationDependencies.xml:39
+    implementation 'com.android.support:recyclerview-v7:28.0.0' // Assets/DirichletMediation/Editor/DirichletMediationDependencies.xml:21
+    implementation 'com.android.support:support-annotations:28.0.0' // Assets/DirichletMediation/Editor/DirichletMediationDependencies.xml:33
+    implementation 'com.android.support:support-v4:28.0.0' // Assets/DirichletMediation/Editor/DirichletMediationDependencies.xml:27
+    implementation 'com.github.bumptech.glide:glide:4.9.0' // Assets/DirichletMediation/Editor/DirichletMediationDependencies.xml:46
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1' // Assets/DirichletMediation/Editor/DirichletMediationDependencies.xml:52
     implementation 'com.taptap.sdk:tap-core-unity:4.8.2' // Packages/com.taptap.sdk.core/Mobile/Editor/NativeDependencies.xml:7
     implementation 'com.taptap.sdk:tap-login-unity:4.8.2' // Packages/com.taptap.sdk.login/Mobile/Editor/NativeDependencies.xml:7
 // Android Resolver Dependencies End

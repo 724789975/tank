@@ -174,8 +174,6 @@ public class TankInstance : MonoBehaviour
 
     public GameObject bulletPos;
 
-    public GameObject bulletPrefab;
-
     public TextMeshPro nameText;
     public float speed;
 

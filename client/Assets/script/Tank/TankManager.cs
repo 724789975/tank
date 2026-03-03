@@ -27,7 +27,8 @@ public class TankManager : MonoBehaviour
 			isAdd = false;
 			return GetTank(id);
 		}
-		GameObject tankInstance = Instantiate(tankPrefab);
+		GameObject g = Resources.Load<GameObject>("prafab/tank");
+		GameObject tankInstance = Instantiate(g);
 		tankInstance.GetComponent<TankInstance>().ID = id;
 		tankInstance.GetComponent<TankInstance>().Name = name;
 		tankInstance.transform.position = new Vector3(0, 0, 0);
@@ -68,7 +69,6 @@ public class TankManager : MonoBehaviour
 
 	static TankManager instance;
 
-	public GameObject tankPrefab;
 	public Dictionary<string, TankInstance> instanceMap = new Dictionary<string, TankInstance>();
 
 }

@@ -135,7 +135,11 @@ public class ClientMsg : MonoBehaviour
 #else
 		TankGame.BulletDestoryNtf bulletDestoryNtf = anyMessage.Unpack<TankGame.BulletDestoryNtf>();
         BulletManager.Instance.RemoveBullet(bulletDestoryNtf.Id);
-        Instantiate(instance.boomPrefab, new Vector3(bulletDestoryNtf.Pos.X, bulletDestoryNtf.Pos.Y, bulletDestoryNtf.Pos.Z - 5), Quaternion.identity);
+        GameObject g = Resources.Load<GameObject>("prafab/Explosion_1_Bam2");
+        if(g)
+        {
+			Instantiate(g, new Vector3(bulletDestoryNtf.Pos.X, bulletDestoryNtf.Pos.Y, bulletDestoryNtf.Pos.Z - 5), Quaternion.identity);
+        }
 #endif
     }
 
@@ -240,7 +244,6 @@ public class ClientMsg : MonoBehaviour
 #endif
     }
 
-	public GameObject boomPrefab;
     public GameObject readyNotice;
 }
 

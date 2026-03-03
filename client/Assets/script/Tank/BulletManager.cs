@@ -18,7 +18,8 @@ public class BulletManager : MonoBehaviour
 	public Bullet AddBullet(Vector3 position, Quaternion rotation, string ownerId, float speed)
 	{
 		UInt32 id = nextId++;
-		GameObject bulletInstance = Instantiate(bulletPrefab);
+		GameObject g = Resources.Load<GameObject>("prafab/bullet");
+		GameObject bulletInstance = Instantiate(g);
 		bulletInstance.transform.position = position;
 		bulletInstance.transform.rotation = rotation;
 		Bullet bullet = bulletInstance.GetComponent<Bullet>();
@@ -87,6 +88,5 @@ public class BulletManager : MonoBehaviour
 
 	UInt32 nextId = 1;
 	Dictionary<UInt32, Bullet> bullets = new Dictionary<UInt32, Bullet>();
-	public GameObject bulletPrefab;
 }
 

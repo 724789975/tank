@@ -99,7 +99,7 @@ func (s *UserService) ginRoute(ctx *gin.Context) {
 	}
 	str := driver.NewHttpStream(ctx.Writer, ctx.Request)
 	handler := info.Handler()
-	if err := handler(ctx, s, &streaming.Args{Stream: str}, nil); err != nil {
+	if err := handler(context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(string)), s, &streaming.Args{Stream: str}, nil); err != nil {
 		klog.CtxErrorf(ctx, "[USER-SVR-METHOD-HANDLER-ERROR] %s", err.Error())
 	}
 }

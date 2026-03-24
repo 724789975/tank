@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: istio-route
+  namespace: istio-system
+  generation: 2
+spec:
+  hosts:
+  - "*"  # 需与Gateway的hosts匹配
+  gateways:
+  - my-gateway
+  http:
+  - route:
+    - destination:
+        host: kubernetes-dashboard-web.kubernetes-dashboard.svc.cluster.local  # Kubernetes Dashboard的Service名称
+        port:
+          number: 80  # Service的端口号

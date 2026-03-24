@@ -19,6 +19,7 @@ require (
 
 require (
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/cloudwego/prutal v0.1.3
 	github.com/golang/protobuf v1.5.4
 	github.com/kitex-contrib/registry-etcd v0.3.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.62.0

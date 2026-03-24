@@ -24,26 +24,31 @@ namespace Common {
     static CommonReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiqpBgoJRXJyb3JDb2RlEgYK",
+            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiqjCAoJRXJyb3JDb2RlEgYK",
             "Ak9LEAASCgoGRkFJTEVEEAESFwoTQVVUSF9NSVNTSU5HX0hFQURFUhBkEhUK",
             "EUFVVEhfSU5WQUxJRF9KU09OEGUSFwoTQVVUSF9JTlZBTElEX1VTRVJJRBBm",
             "EhQKEEFVVEhfSU5WQUxJRF9FWFAQZxIWChJBVVRIX1RPS0VOX0VYUElSRUQQ",
             "aBIVChBVU0VSX0xPR0lOX0VSUk9SEMgBEhkKFFVTRVJfTE9HSU5fVEFQX0VS",
             "Uk9SEMkBEhkKFFVTRVJfTE9HSU5fVU5NQVJTSEFMEMoBEhgKE1VTRVJfTE9H",
             "SU5fVEFQX0ZBSUwQywESFwoSVVNFUl9TRVNTSU9OX0VYSVNUEMwBEhgKE1VT",
-            "RVJfSU5GT19OT1RfRk9VTkQQzQESHAoXTUVTU0FHRV9VTk1BUlNIQUxfRVJS",
-            "T1IQrAISGgoVTUVTU0FHRV9NQVJTSEFMX0VSUk9SEK0CEh0KGFVOU1VQUE9S",
-            "VEVEX01FU1NBR0VfVFlQRRCuAhIYChNSRURJU19OT1RfQ09OTkVDVEVEEJAD",
-            "EhwKF1dFQlNPQ0tFVF9VUEdSQURFX0VSUk9SEJEDEhoKFVdFQlNPQ0tFVF9T",
-            "RVJWRVJfRkFJTBCSAxIbChZSUENfR0FURVdBWV9JTklUX0VSUk9SEPQDEhkK",
-            "FFJQQ19NRVRIT0RfTk9UX0ZPVU5EEPUDEh0KGFJQQ19NRVRIT0RfSEFORExF",
-            "Ul9FUlJPUhD2AxIWChFDT05GSUdfTE9BRF9FUlJPUhDYBBISCg1IVFRQX1NM",
-            "T1dfQVBJELwFEhMKDlBBTklDX1JFQ09WRVJZEIQHEhoKFVNFUlZFUl9NR1Jf",
-            "SU5JVF9FUlJPUhDoBxIdChhTRVJWRVJfTUdSX0NSRUFURV9GQUlMRUQQ6QcS",
-            "GQoUU0VSVkVSX01HUl9QT0RfRVJST1IQ6gcSHQoYU0VSVkVSX01HUl9TRVJW",
-            "SUNFX0VSUk9SEOsHEhwKF1NFUlZFUl9NR1JfQ09ORklHX0VSUk9SEOwHEh8K",
-            "GlNFUlZFUl9NR1JfQUlfQ0xJRU5UX0VSUk9SEO0HQghaBmNvbW1vbmIGcHJv",
-            "dG8z"));
+            "RVJfSU5GT19OT1RfRk9VTkQQzQESFQoQVEVTVF9MT0dJTl9FUlJPUhDOARIi",
+            "Ch1URVNUX0xPR0lOX1VTRVJfQ1JFQVRFX0ZBSUxFRBDPARIcChdNRVNTQUdF",
+            "X1VOTUFSU0hBTF9FUlJPUhCsAhIaChVNRVNTQUdFX01BUlNIQUxfRVJST1IQ",
+            "rQISHQoYVU5TVVBQT1JURURfTUVTU0FHRV9UWVBFEK4CEhgKE1JFRElTX05P",
+            "VF9DT05ORUNURUQQkAMSHAoXV0VCU09DS0VUX1VQR1JBREVfRVJST1IQkQMS",
+            "GgoVV0VCU09DS0VUX1NFUlZFUl9GQUlMEJIDEhsKFlJQQ19HQVRFV0FZX0lO",
+            "SVRfRVJST1IQ9AMSGQoUUlBDX01FVEhPRF9OT1RfRk9VTkQQ9QMSHQoYUlBD",
+            "X01FVEhPRF9IQU5ETEVSX0VSUk9SEPYDEhYKEUNPTkZJR19MT0FEX0VSUk9S",
+            "ENgEEhIKDUhUVFBfU0xPV19BUEkQvAUSEwoOUEFOSUNfUkVDT1ZFUlkQhAcS",
+            "GgoVU0VSVkVSX01HUl9JTklUX0VSUk9SEOgHEh0KGFNFUlZFUl9NR1JfQ1JF",
+            "QVRFX0ZBSUxFRBDpBxIZChRTRVJWRVJfTUdSX1BPRF9FUlJPUhDqBxIdChhT",
+            "RVJWRVJfTUdSX1NFUlZJQ0VfRVJST1IQ6wcSHAoXU0VSVkVSX01HUl9DT05G",
+            "SUdfRVJST1IQ7AcSHwoaU0VSVkVSX01HUl9BSV9DTElFTlRfRVJST1IQ7QcS",
+            "HAoXTUFUQ0hfQ1JFQVRFX0dBTUVfRVJST1IQzAgSHgoZTUFUQ0hfR0VUX0dB",
+            "TUVfSU5GT19FUlJPUhDNCBIcChdNQVRDSF9BRERfUFJPQ0VTU19FUlJPUhDO",
+            "CBIeChlNQVRDSF9BTFJFQURZX0lOX1BST0dSRVNTEM8IEh4KGU1BVENIX1NF",
+            "UlZFUl9DUkVBVEVfRVJST1IQ0AgSIQocTUFUQ0hfQUlfQ0xJRU5UX0NSRUFU",
+            "RV9FUlJPUhDRCEIIWgZjb21tb25iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null));
@@ -105,6 +110,14 @@ namespace Common {
     /// 用户信息不存在
     /// </summary>
     [pbr::OriginalName("USER_INFO_NOT_FOUND")] UserInfoNotFound = 205,
+    /// <summary>
+    /// 测试登录错误
+    /// </summary>
+    [pbr::OriginalName("TEST_LOGIN_ERROR")] TestLoginError = 206,
+    /// <summary>
+    /// 测试登录用户创建失败
+    /// </summary>
+    [pbr::OriginalName("TEST_LOGIN_USER_CREATE_FAILED")] TestLoginUserCreateFailed = 207,
     /// <summary>
     /// 消息处理错误
     /// </summary>
@@ -177,6 +190,30 @@ namespace Common {
     /// AI客户端创建错误
     /// </summary>
     [pbr::OriginalName("SERVER_MGR_AI_CLIENT_ERROR")] ServerMgrAiClientError = 1005,
+    /// <summary>
+    /// 匹配服务相关错误
+    /// </summary>
+    [pbr::OriginalName("MATCH_CREATE_GAME_ERROR")] MatchCreateGameError = 1100,
+    /// <summary>
+    /// 获取游戏信息失败
+    /// </summary>
+    [pbr::OriginalName("MATCH_GET_GAME_INFO_ERROR")] MatchGetGameInfoError = 1101,
+    /// <summary>
+    /// 添加匹配进程失败
+    /// </summary>
+    [pbr::OriginalName("MATCH_ADD_PROCESS_ERROR")] MatchAddProcessError = 1102,
+    /// <summary>
+    /// 已经在匹配中
+    /// </summary>
+    [pbr::OriginalName("MATCH_ALREADY_IN_PROGRESS")] MatchAlreadyInProgress = 1103,
+    /// <summary>
+    /// 创建服务器失败
+    /// </summary>
+    [pbr::OriginalName("MATCH_SERVER_CREATE_ERROR")] MatchServerCreateError = 1104,
+    /// <summary>
+    /// 创建AI客户端失败
+    /// </summary>
+    [pbr::OriginalName("MATCH_AI_CLIENT_CREATE_ERROR")] MatchAiClientCreateError = 1105,
   }
 
   #endregion

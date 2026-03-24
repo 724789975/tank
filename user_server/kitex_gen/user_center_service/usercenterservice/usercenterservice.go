@@ -30,6 +30,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"test_login": kitex.NewMethodInfo(
+		testLoginHandler,
+		newTestLoginArgs,
+		newTestLoginResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -318,6 +325,117 @@ func (p *UserInfoResult) GetResult() interface{} {
 	return p.Success
 }
 
+func testLoginHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user_center.TestLoginReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user_center_service.UserCenterService).TestLogin(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *TestLoginArgs:
+		success, err := handler.(user_center_service.UserCenterService).TestLogin(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*TestLoginResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newTestLoginArgs() interface{} {
+	return &TestLoginArgs{}
+}
+
+func newTestLoginResult() interface{} {
+	return &TestLoginResult{}
+}
+
+type TestLoginArgs struct {
+	Req *user_center.TestLoginReq
+}
+
+func (p *TestLoginArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *TestLoginArgs) Unmarshal(in []byte) error {
+	msg := new(user_center.TestLoginReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var TestLoginArgs_Req_DEFAULT *user_center.TestLoginReq
+
+func (p *TestLoginArgs) GetReq() *user_center.TestLoginReq {
+	if !p.IsSetReq() {
+		return TestLoginArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *TestLoginArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *TestLoginArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type TestLoginResult struct {
+	Success *user_center.TestLoginRsp
+}
+
+var TestLoginResult_Success_DEFAULT *user_center.TestLoginRsp
+
+func (p *TestLoginResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *TestLoginResult) Unmarshal(in []byte) error {
+	msg := new(user_center.TestLoginRsp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *TestLoginResult) GetSuccess() *user_center.TestLoginRsp {
+	if !p.IsSetSuccess() {
+		return TestLoginResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *TestLoginResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user_center.TestLoginRsp)
+}
+
+func (p *TestLoginResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *TestLoginResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -343,6 +461,16 @@ func (p *kClient) UserInfo(ctx context.Context, Req *user_center.UserInfoReq) (r
 	_args.Req = Req
 	var _result UserInfoResult
 	if err = p.c.Call(ctx, "user_info", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) TestLogin(ctx context.Context, Req *user_center.TestLoginReq) (r *user_center.TestLoginRsp, err error) {
+	var _args TestLoginArgs
+	_args.Req = Req
+	var _result TestLoginResult
+	if err = p.c.Call(ctx, "test_login", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

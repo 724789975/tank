@@ -27,6 +27,7 @@ var (
 	IdClient            *snowflake.Node
 	redis_taptap_str    = "taptap_platform"
 	redis_user_info_key = "user_info"
+	redis_test_platform = "test_platform"
 )
 
 func GetUserManager() *UserManager {
@@ -132,6 +133,117 @@ func (x *UserManager) UserInfo(ctx context.Context, req *user_center.UserInfoReq
 	}
 
 	resp.Data = &user_center.UserInfoRsp_Data{
+		TapInfo: &user_center.TapInfo{
+			Avatar:  userInfo["avatar"],
+			Gender:  userInfo["gender"],
+			Name:    userInfo["name"],
+			Openid:  userInfo["openid"],
+			Unionid: userInfo["unionid"],
+		},
+	}
+
+	return resp, nil
+}
+
+func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginReq) (resp *user_center.TestLoginRsp, err error) {
+	resp = &user_center.TestLoginRsp{
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
+	}
+
+	userId := ctx.Value("userId").(string)
+
+	// 使用Lua脚本确保原子操作，防止并发重复创建
+	luaScript := `
+	local test_platform_key = KEYS[1]
+	local openid_arg = ARGV[1]
+	local avatar = ARGV[2]
+	local gender = ARGV[3]
+	local name = ARGV[4]
+	local unionid = ARGV[5]
+
+	-- 先尝试从 testPlatformKey 获取 openid
+	local saved_openid = redis.call('GET', test_platform_key)
+	local openid = saved_openid
+	if openid == false or openid == nil then
+		-- 如果没有保存的 openid，则使用传入的 openid
+		openid = openid_arg
+	end
+
+	-- 构建用户信息 key
+	local user_info_key = 'user_info:' .. openid
+
+	-- 检查用户是否存在
+	local exists = redis.call('HEXISTS', user_info_key, 'openid')
+	if exists == 1 then
+		-- 用户存在，更新 testPlatformKey 为当前 openid
+		redis.call('SET', test_platform_key, openid)
+		-- 返回用户信息
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {1, user_info}
+	else
+		-- 用户不存在，创建新用户
+		redis.call('SET', test_platform_key, openid)
+		redis.call('HSET', user_info_key, 
+			'avatar', avatar, 
+			'gender', gender, 
+			'name', name, 
+			'openid', openid, 
+			'unionid', unionid)
+		-- 返回创建的用户信息
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {0, user_info}
+	end
+	`
+
+	testPlatformKey := fmt.Sprintf("%s:%s", redis_test_platform, userId)
+
+	keys := []string{testPlatformKey}
+	args := []interface{}{
+		req.TapInfo.Openid,
+		req.TapInfo.Avatar,
+		req.TapInfo.Gender,
+		req.TapInfo.Name,
+		req.TapInfo.Unionid,
+	}
+
+	result, err := common_redis.GetRedis().Eval(ctx, luaScript, keys, args).Result()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[TEST-LOGIN-LUA-ERROR] eval lua script err: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "lua script execution failed"
+		return resp, err
+	}
+
+	// 解析Lua脚本返回结果
+	resultArray, ok := result.([]interface{})
+	if !ok {
+		klog.CtxErrorf(ctx, "[TEST-LOGIN-LUA-ERROR] invalid lua result format")
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "invalid lua result format"
+		return resp, nil
+	}
+
+	userExists := resultArray[0].(int64)
+	// 解析用户信息
+	userInfoArray := resultArray[1].([]interface{})
+	userInfo := make(map[string]string)
+	for i := 0; i < len(userInfoArray); i += 2 {
+		key := userInfoArray[i].(string)
+		value := userInfoArray[i+1].(string)
+		userInfo[key] = value
+	}
+
+	if userExists == 1 {
+		// 用户存在
+		resp.Msg = "user exists"
+	} else {
+		// 用户不存在，已创建新用户
+		resp.Msg = "user created"
+	}
+
+	// 设置用户信息到响应中
+	resp.Data = &user_center.TestLoginRsp_Data{
 		TapInfo: &user_center.TapInfo{
 			Avatar:  userInfo["avatar"],
 			Gender:  userInfo["gender"],

@@ -16,6 +16,8 @@ namespace UserCenterService {
     static readonly grpc::Marshaller<global::UserCenter.LoginRsp> __Marshaller_user_center_LoginRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.LoginRsp.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.UserInfoReq> __Marshaller_user_center_UserInfoReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.UserInfoReq.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.UserInfoRsp> __Marshaller_user_center_UserInfoRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.UserInfoRsp.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::UserCenter.TestLoginReq> __Marshaller_user_center_TestLoginReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.TestLoginReq.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::UserCenter.TestLoginRsp> __Marshaller_user_center_TestLoginRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.TestLoginRsp.Parser.ParseFrom);
 
     static readonly grpc::Method<global::UserCenter.LoginReq, global::UserCenter.LoginRsp> __Method_login = new grpc::Method<global::UserCenter.LoginReq, global::UserCenter.LoginRsp>(
         grpc::MethodType.Unary,
@@ -30,6 +32,13 @@ namespace UserCenterService {
         "user_info",
         __Marshaller_user_center_UserInfoReq,
         __Marshaller_user_center_UserInfoRsp);
+
+    static readonly grpc::Method<global::UserCenter.TestLoginReq, global::UserCenter.TestLoginRsp> __Method_test_login = new grpc::Method<global::UserCenter.TestLoginReq, global::UserCenter.TestLoginRsp>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "test_login",
+        __Marshaller_user_center_TestLoginReq,
+        __Marshaller_user_center_TestLoginRsp);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -58,6 +67,17 @@ namespace UserCenterService {
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::UserCenter.UserInfoRsp> user_info(global::UserCenter.UserInfoReq request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///测试登录
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::UserCenter.TestLoginRsp> test_login(global::UserCenter.TestLoginReq request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -175,6 +195,50 @@ namespace UserCenterService {
       {
         return CallInvoker.AsyncUnaryCall(__Method_user_info, null, options, request);
       }
+      /// <summary>
+      ///测试登录
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::UserCenter.TestLoginRsp test_login(global::UserCenter.TestLoginReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return test_login(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///测试登录
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::UserCenter.TestLoginRsp test_login(global::UserCenter.TestLoginReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_test_login, null, options, request);
+      }
+      /// <summary>
+      ///测试登录
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::UserCenter.TestLoginRsp> test_loginAsync(global::UserCenter.TestLoginReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return test_loginAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///测试登录
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::UserCenter.TestLoginRsp> test_loginAsync(global::UserCenter.TestLoginReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_test_login, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override UserCenterServiceClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -188,7 +252,8 @@ namespace UserCenterService {
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_login, serviceImpl.login)
-          .AddMethod(__Method_user_info, serviceImpl.user_info).Build();
+          .AddMethod(__Method_user_info, serviceImpl.user_info)
+          .AddMethod(__Method_test_login, serviceImpl.test_login).Build();
     }
 
   }

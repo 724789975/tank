@@ -42,3 +42,16 @@ message UserInfoRsp {
 	}
 	Data data = 3;
 }
+
+message TestLoginReq {
+	TapInfo tapInfo = 1;
+}
+
+message TestLoginRsp {
+	common.ErrorCode code = 1;
+	string           msg  = 2;
+	message Data {
+		TapInfo tapInfo = 1;
+	}
+	Data data = 3;
+}

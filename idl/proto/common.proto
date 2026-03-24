@@ -21,6 +21,8 @@ enum ErrorCode {
     USER_LOGIN_TAP_FAIL    = 203;  // TAP登录失败
     USER_SESSION_EXIST     = 204;  // 用户会话已存在
     USER_INFO_NOT_FOUND    = 205;  // 用户信息不存在
+    TEST_LOGIN_ERROR       = 206;  // 测试登录错误
+    TEST_LOGIN_USER_CREATE_FAILED = 207;  // 测试登录用户创建失败
     
     // 消息处理错误
     MESSAGE_UNMARSHAL_ERROR   = 300;  // 消息解析错误
@@ -53,4 +55,12 @@ enum ErrorCode {
     SERVER_MGR_SERVICE_ERROR   = 1003; // 服务创建错误
     SERVER_MGR_CONFIG_ERROR    = 1004; // 配置错误
     SERVER_MGR_AI_CLIENT_ERROR = 1005; // AI客户端创建错误
+    
+    // 匹配服务相关错误
+    MATCH_CREATE_GAME_ERROR    = 1100; // 创建游戏失败
+    MATCH_GET_GAME_INFO_ERROR  = 1101; // 获取游戏信息失败
+    MATCH_ADD_PROCESS_ERROR    = 1102; // 添加匹配进程失败
+    MATCH_ALREADY_IN_PROGRESS  = 1103; // 已经在匹配中
+    MATCH_SERVER_CREATE_ERROR  = 1104; // 创建服务器失败
+    MATCH_AI_CLIENT_CREATE_ERROR = 1105; // 创建AI客户端失败
 }

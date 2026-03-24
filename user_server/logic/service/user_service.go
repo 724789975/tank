@@ -114,3 +114,7 @@ func (x *UserService) Login(ctx context.Context, req *user_center.LoginReq) (res
 func (x *UserService) UserInfo(ctx context.Context, req *user_center.UserInfoReq) (resp *user_center.UserInfoRsp, err error) {
 	return manager.GetUserManager().UserInfo(ctx, req)
 }
+
+func (x *UserService) TestLogin(ctx context.Context, req *user_center.TestLoginReq) (resp *user_center.TestLoginRsp, err error) {
+	return manager.GetUserManager().TestLogin(ctx, req)
+}

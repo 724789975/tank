@@ -11,4 +11,7 @@ service UserCenterService {
 
     //获取用户信息
     rpc user_info(user_center.UserInfoReq) returns (user_center.UserInfoRsp){};
+
+    //测试登录
+    rpc test_login(user_center.TestLoginReq) returns (user_center.TestLoginRsp){};
 }

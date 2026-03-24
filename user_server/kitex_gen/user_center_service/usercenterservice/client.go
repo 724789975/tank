@@ -13,6 +13,7 @@ import (
 type Client interface {
 	Login(ctx context.Context, Req *user_center.LoginReq, callOptions ...callopt.Option) (r *user_center.LoginRsp, err error)
 	UserInfo(ctx context.Context, Req *user_center.UserInfoReq, callOptions ...callopt.Option) (r *user_center.UserInfoRsp, err error)
+	TestLogin(ctx context.Context, Req *user_center.TestLoginReq, callOptions ...callopt.Option) (r *user_center.TestLoginRsp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kUserCenterServiceClient) Login(ctx context.Context, Req *user_center.L
 func (p *kUserCenterServiceClient) UserInfo(ctx context.Context, Req *user_center.UserInfoReq, callOptions ...callopt.Option) (r *user_center.UserInfoRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UserInfo(ctx, Req)
+}
+
+func (p *kUserCenterServiceClient) TestLogin(ctx context.Context, Req *user_center.TestLoginReq, callOptions ...callopt.Option) (r *user_center.TestLoginRsp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.TestLogin(ctx, Req)
 }

@@ -25,11 +25,13 @@ namespace UserCenterService {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Ch9wcm90by91c2VyX2NlbnRlcl9zZXJ2aWNlLnByb3RvEhN1c2VyX2NlbnRl",
-            "cl9zZXJ2aWNlGhdwcm90by91c2VyX2NlbnRlci5wcm90bzKPAQoRVXNlckNl",
+            "cl9zZXJ2aWNlGhdwcm90by91c2VyX2NlbnRlci5wcm90bzLVAQoRVXNlckNl",
             "bnRlclNlcnZpY2USNwoFbG9naW4SFS51c2VyX2NlbnRlci5Mb2dpblJlcRoV",
             "LnVzZXJfY2VudGVyLkxvZ2luUnNwIgASQQoJdXNlcl9pbmZvEhgudXNlcl9j",
             "ZW50ZXIuVXNlckluZm9SZXEaGC51c2VyX2NlbnRlci5Vc2VySW5mb1JzcCIA",
-            "QhVaE3VzZXJfY2VudGVyX3NlcnZpY2ViBnByb3RvMw=="));
+            "EkQKCnRlc3RfbG9naW4SGS51c2VyX2NlbnRlci5UZXN0TG9naW5SZXEaGS51",
+            "c2VyX2NlbnRlci5UZXN0TG9naW5Sc3AiAEIVWhN1c2VyX2NlbnRlcl9zZXJ2",
+            "aWNlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::UserCenter.UserCenterReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null));

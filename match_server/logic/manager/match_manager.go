@@ -187,12 +187,12 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 	userId = ctx.Value("userId").(string)
 
 	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Second*1).Result(); err != nil {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		resp.Code = common.ErrorCode_MATCH_CREATE_GAME_ERROR
+		klog.CtxErrorf(ctx, "[MATCH-CREATE-GAME-ERROR] uuid: %s create game failed, err: %v", userId, err)
 		return resp, err
 	} else if !r {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		resp.Code = common.ErrorCode_MATCH_CREATE_GAME_ERROR
+		klog.CtxErrorf(ctx, "[MATCH-CREATE-GAME-ERROR] uuid: %s create game failed, err: %v", userId, err)
 		return resp, err
 	}
 
@@ -203,8 +203,8 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(userGameInfoKey, userId)).Result()
 	if err != nil {
 		if err != redis.Nil {
-			resp.Code = common.ErrorCode_FAILED
-			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s get game info failed, err: %v", userId, err)
+			resp.Code = common.ErrorCode_MATCH_GET_GAME_INFO_ERROR
+			klog.CtxErrorf(ctx, "[MATCH-GET-GAME-INFO-ERROR] uuid: %s get game info failed, err: %v", userId, err)
 			return resp, err
 		}
 	} else {
@@ -233,7 +233,7 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 			})
 			return resp, nil
 		} else {
-			klog.CtxInfof(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
+			klog.CtxInfof(ctx, "[MATCH-CONNECT-GAME-ERROR] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
 		}
 	}
 
@@ -244,8 +244,8 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 	}
 
 	if e := common_redis.GetRedis().Get(ctx, fmt.Sprintf(matchUserKey, userId)).Err(); e != redis.Nil {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s already match, err: %v", userId, e)
+		resp.Code = common.ErrorCode_MATCH_ALREADY_IN_PROGRESS
+		klog.CtxErrorf(ctx, "[MATCH-ALREADY-IN-PROGRESS] uuid: %s already match, err: %v", userId, e)
 		return resp, e
 	}
 
@@ -253,8 +253,8 @@ func (x *MatchManager) Match(ctx context.Context, req *match_proto.MatchReq) (re
 
 	// 先尝试添加到匹配处理，成功后再创建Redis键
 	if !match.GetMatchProcess().AddMatch(id, 1, 1) {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s add match failed", userId)
+		resp.Code = common.ErrorCode_MATCH_ADD_PROCESS_ERROR
+		klog.CtxErrorf(ctx, "[MATCH-ADD-PROCESS-ERROR] uuid: %s add match failed", userId)
 		return resp, nil
 	}
 
@@ -279,12 +279,12 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 	userId = ctx.Value("userId").(string)
 
 	if r, err := common_redis.GetRedis().SetNX(ctx, fmt.Sprintf(createGameKey, userId), userId, time.Duration(5)*time.Second).Result(); err != nil {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		resp.Code = common.ErrorCode_MATCH_CREATE_GAME_ERROR
+		klog.CtxErrorf(ctx, "[MATCH-CREATE-GAME-ERROR] uuid: %s create game failed, err: %v", userId, err)
 		return resp, err
 	} else if !r {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create game failed, err: %v", userId, err)
+		resp.Code = common.ErrorCode_MATCH_CREATE_GAME_ERROR
+		klog.CtxErrorf(ctx, "[MATCH-CREATE-GAME-ERROR] uuid: %s create game failed, err: %v", userId, err)
 		return resp, err
 	}
 
@@ -300,8 +300,8 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 	game_info, err := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf(userGameInfoKey, userId)).Result()
 	if err != nil {
 		if err != redis.Nil {
-			resp.Code = common.ErrorCode_FAILED
-			klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s get game info failed, err: %v", userId, err)
+			resp.Code = common.ErrorCode_MATCH_GET_GAME_INFO_ERROR
+			klog.CtxErrorf(ctx, "[MATCH-GET-GAME-INFO-ERROR] uuid: %s get game info failed, err: %v", userId, err)
 			return resp, err
 		}
 	} else {
@@ -326,22 +326,22 @@ func (x *MatchManager) Pve(ctx context.Context, req *match_proto.PveReq) (resp *
 			})
 			return resp, nil
 		} else {
-			klog.CtxInfof(ctx, "[MATCH-EXIST] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
+			klog.CtxInfof(ctx, "[MATCH-CONNECT-GAME-ERROR] uuid: %s addr %v connect game info failed, err: %v", userId, game_info, err)
 		}
 	}
 
 	resp_create_server, err := rpc.ServerMgrClient.CreateServer(ctx, &server_mgr.CreateServerReq{})
 	if err != nil {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create server failed, err: %v", userId, err)
+		resp.Code = common.ErrorCode_MATCH_SERVER_CREATE_ERROR
+		klog.CtxErrorf(ctx, "[MATCH-SERVER-CREATE-ERROR] uuid: %s create server failed, err: %v", userId, err)
 		return resp, err
 	}
 	_, err = rpc.ServerMgrClient.CreateAiClient(ctx, &server_mgr.CreateAiClientReq{
 		GameAddr: resp_create_server.GameAddr,
 	})
 	if err != nil {
-		resp.Code = common.ErrorCode_FAILED
-		klog.CtxErrorf(ctx, "[MATCH-EXIST] uuid: %s create ai client failed, err: %v", userId, err)
+		resp.Code = common.ErrorCode_MATCH_AI_CLIENT_CREATE_ERROR
+		klog.CtxErrorf(ctx, "[MATCH-AI-CLIENT-CREATE-ERROR] uuid: %s create ai client failed, err: %v", userId, err)
 		return
 	}
 

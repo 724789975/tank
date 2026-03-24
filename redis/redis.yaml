@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-conf
+  namespace: tank
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    port 6379
+    pidfile .pid
+    appendonly yes
+    cluster-config-file nodes-6379.conf
+    pidfile /home/redis/log/redis-6379.pid
+    cluster-config-file /home/redis/conf/redis.conf
+    dir /home/redis/data/
+    logfile "/home/redis/log/redis-6379.log"
+    cluster-node-timeout 5000
+    protected-mode no
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: tank
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6389
+      targetPort: 6379
+      protocol: TCP
+  selector:
+    app: redis
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: tank
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:6.2.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - "exec redis-server /home/redis/conf/redis.conf"
+          ports:
+            - containerPort: 6379
+              name: redis
+              protocol: TCP
+          volumeMounts:
+            - name: redis-config
+              mountPath: /home/redis/conf/
+            - name: redis-data
+              mountPath: /home/redis/
+      volumes:
+        - name: redis-config
+          configMap:
+            name: redis-conf
+        - name: redis-data
+          hostPath:
+            path: /root/tank/redis/

@@ -118,3 +118,7 @@ func (x *UserService) UserInfo(ctx context.Context, req *user_center.UserInfoReq
 func (x *UserService) TestLogin(ctx context.Context, req *user_center.TestLoginReq) (resp *user_center.TestLoginRsp, err error) {
 	return manager.GetUserManager().TestLogin(ctx, req)
 }
+
+func (x *UserService) GoogleLogin(ctx context.Context, req *user_center.GooglePlayLoginReq) (resp *user_center.GooglePlayLoginRsp, err error) {
+	return manager.GetUserManager().GoogleLogin(ctx, req)
+}

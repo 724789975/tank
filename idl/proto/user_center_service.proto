@@ -14,4 +14,7 @@ service UserCenterService {
 
     //测试登录
     rpc test_login(user_center.TestLoginReq) returns (user_center.TestLoginRsp){};
+
+    //Google Play登录
+    rpc google_login(user_center.GooglePlayLoginReq) returns (user_center.GooglePlayLoginRsp){};
 }

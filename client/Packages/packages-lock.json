@@ -36,20 +36,18 @@
       "hash": "369f2a56f68e7a133d3d1acfdc26d4693cd74497"
     },
     "com.taptap.sdk.core": {
-      "version": "4.8.2",
-      "depth": 0,
+      "version": "4.9.5",
+      "depth": 1,
       "source": "registry",
-      "dependencies": {
-        "com.google.external-dependency-manager": "1.2.179"
-      },
+      "dependencies": {},
       "url": "https://registry.npmjs.org"
     },
     "com.taptap.sdk.login": {
-      "version": "4.8.2",
+      "version": "4.9.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.taptap.sdk.core": "4.8.2"
+        "com.taptap.sdk.core": "4.9.5"
       },
       "url": "https://registry.npmjs.org"
     },

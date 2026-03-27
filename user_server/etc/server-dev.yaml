@@ -32,3 +32,6 @@ gateway:
 
 tracer:
   address: "otel-collector.open-telemetry-collector:4317"
+
+google:
+  client_id: "1039573902903-1234567890abcdef1234567890abcdef.apps.googleusercontent.com"

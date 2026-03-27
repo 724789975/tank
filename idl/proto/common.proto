@@ -23,6 +23,8 @@ enum ErrorCode {
     USER_INFO_NOT_FOUND    = 205;  // 用户信息不存在
     TEST_LOGIN_ERROR       = 206;  // 测试登录错误
     TEST_LOGIN_USER_CREATE_FAILED = 207;  // 测试登录用户创建失败
+    USER_LOGIN_GOOGLE_ERROR = 208;  // Google Play登录错误
+    USER_LOGIN_GOOGLE_VERIFY_FAILED = 209;  // Google Play验证失败
     
     // 消息处理错误
     MESSAGE_UNMARSHAL_ERROR   = 300;  // 消息解析错误

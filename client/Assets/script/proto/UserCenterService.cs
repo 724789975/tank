@@ -25,13 +25,15 @@ namespace UserCenterService {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Ch9wcm90by91c2VyX2NlbnRlcl9zZXJ2aWNlLnByb3RvEhN1c2VyX2NlbnRl",
-            "cl9zZXJ2aWNlGhdwcm90by91c2VyX2NlbnRlci5wcm90bzLVAQoRVXNlckNl",
+            "cl9zZXJ2aWNlGhdwcm90by91c2VyX2NlbnRlci5wcm90bzKpAgoRVXNlckNl",
             "bnRlclNlcnZpY2USNwoFbG9naW4SFS51c2VyX2NlbnRlci5Mb2dpblJlcRoV",
             "LnVzZXJfY2VudGVyLkxvZ2luUnNwIgASQQoJdXNlcl9pbmZvEhgudXNlcl9j",
             "ZW50ZXIuVXNlckluZm9SZXEaGC51c2VyX2NlbnRlci5Vc2VySW5mb1JzcCIA",
             "EkQKCnRlc3RfbG9naW4SGS51c2VyX2NlbnRlci5UZXN0TG9naW5SZXEaGS51",
-            "c2VyX2NlbnRlci5UZXN0TG9naW5Sc3AiAEIVWhN1c2VyX2NlbnRlcl9zZXJ2",
-            "aWNlYgZwcm90bzM="));
+            "c2VyX2NlbnRlci5UZXN0TG9naW5Sc3AiABJSCgxnb29nbGVfbG9naW4SHy51",
+            "c2VyX2NlbnRlci5Hb29nbGVQbGF5TG9naW5SZXEaHy51c2VyX2NlbnRlci5H",
+            "b29nbGVQbGF5TG9naW5Sc3AiAEIVWhN1c2VyX2NlbnRlcl9zZXJ2aWNlYgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::UserCenter.UserCenterReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null));

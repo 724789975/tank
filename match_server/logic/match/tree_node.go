@@ -1,8 +1,6 @@
 package match
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // TreeNode 表示树中的一个节点
 type TreeNode struct {
@@ -71,23 +69,34 @@ func (n *TreeNode) IsRootNode() bool {
 
 // DumpNodes 打印节点信息
 func (n *TreeNode) DumpNodes() {
-	if n.IsLeafNode() {
-		str := fmt.Sprintf("%v\t", n.Data)
-		nodeF := n.FatherNode
-		for nodeF != nil {
-			if nodeF.FatherNode != nil {
-				str = fmt.Sprintf("%v%v\t", str, nodeF.Data)
+	n.dumpNodesRecursive(0, []bool{})
+}
+
+// dumpNodesRecursive 递归打印节点信息
+func (n *TreeNode) dumpNodesRecursive(level int, isLast []bool) {
+	// 打印当前节点
+	for i := 0; i < level; i++ {
+		if i == level-1 {
+			if isLast[i] {
+				print("`-- ")
 			} else {
-				str = fmt.Sprintf("%v\n----------------------------\n", str)
+				print("|-- ")
 			}
-			nodeF = nodeF.FatherNode
+		} else {
+			if isLast[i] {
+				print("    ")
+			} else {
+				print("|   ")
+			}
 		}
-		// 这里假设DEBUG和match_log会在后续实现
-		// 暂时使用fmt.Println
-		fmt.Println(str)
-	} else {
-		for _, node := range n.Nodes {
-			node.DumpNodes()
-		}
+	}
+	fmt.Printf("%v\n", n.Data)
+
+	// 递归打印子节点
+	for i, node := range n.Nodes {
+		newIsLast := make([]bool, level+1)
+		copy(newIsLast, isLast)
+		newIsLast[level] = (i == len(n.Nodes)-1)
+		node.dumpNodesRecursive(level+1, newIsLast)
 	}
 }

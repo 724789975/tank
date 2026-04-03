@@ -7,7 +7,10 @@ import (
 	"item_manager/kitex_gen/common"
 	"item_manager/kitex_gen/item"
 	common_redis "item_manager/redis"
+	"os"
+	"sync"
 
+	"github.com/bwmarrin/snowflake"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/redis/go-redis/v9"
 )
@@ -16,19 +19,81 @@ const (
 	ITEM_KEY_PREFIX = "item:user:{%s}:"
 )
 
-type ItemManager struct {
-	rdb redis.UniversalClient
+type ItemConfig struct {
+	ItemId   int `json:"item_id"`
+	IsUnique int `json:"is_unique"`
 }
 
-var itemManager *ItemManager
+type ItemManager struct {
+	rdb         redis.UniversalClient
+	itemConfigs map[int]*ItemConfig
+}
+
+var (
+	itemManager *ItemManager
+	once        sync.Once
+	IdClient    *snowflake.Node
+)
 
 func GetItemManager() *ItemManager {
-	if itemManager == nil {
+	once.Do(func() {
+		// 初始化snowflake ID生成器
+		key := "item_svr:snowflake:node"
+		n, err := common_redis.GetRedis().Incr(context.Background(), key).Result()
+		if err != nil {
+			klog.Fatal("[ITEM-MANAGER-INIT] ItemManager: gen uuid creator err: %v", err)
+		}
+
+		nodeIdx := n % (1 << snowflake.NodeBits)
+		if node, err := snowflake.NewNode(nodeIdx); err != nil {
+			klog.Fatal("[ITEM-MANAGER-NODE] ItemManager: gen uuid creator err: %v", err)
+		} else {
+			klog.Infof("[ITEM-MANAGER-NODE-OK] ItemManager: gen uuid creator success, node: %d", nodeIdx)
+			IdClient = node
+		}
+
 		itemManager = &ItemManager{
-			rdb: common_redis.GetRedis(),
+			rdb:         common_redis.GetRedis(),
+			itemConfigs: make(map[int]*ItemConfig),
+		}
+
+		// 读取道具配置文件
+		if err := itemManager.loadItemConfigs(); err != nil {
+			klog.Errorf("[ITEM-MANAGER-LOAD-CONFIG-ERROR] Failed to load item config: %v", err)
+		}
+	})
+	return itemManager
+}
+
+func (m *ItemManager) loadItemConfigs() error {
+	// 从项目根目录读取配置文件
+	configPath := "etc/item.json"
+
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		// 如果当前目录找不到，尝试从上级目录查找
+		configPath = "../etc/item.json"
+		data, err = os.ReadFile(configPath)
+		if err != nil {
+			configPath = "../../etc/item.json"
+			data, err = os.ReadFile(configPath)
+			if err != nil {
+				return fmt.Errorf("failed to read config file: %w", err)
+			}
 		}
 	}
-	return itemManager
+
+	var configs []*ItemConfig
+	if err := json.Unmarshal(data, &configs); err != nil {
+		return fmt.Errorf("failed to unmarshal config: %w", err)
+	}
+
+	for _, config := range configs {
+		m.itemConfigs[config.ItemId] = config
+	}
+
+	klog.Infof("[ITEM-MANAGER-LOAD-CONFIG-SUCCESS] Loaded %d item configs", len(m.itemConfigs))
+	return nil
 }
 
 func (m *ItemManager) getUserKey(userId string) string {
@@ -39,7 +104,7 @@ func (m *ItemManager) AddItem(ctx context.Context, req *item.AddItemReq) (resp *
 	userId := ctx.Value("userId").(string)
 	userKey := m.getUserKey(userId)
 
-	klog.CtxInfof(ctx, "[ITEM-ADD-START] userId: %s, itemCount: %d, idempotentId: %s", userId, len(req.ItemInfoList), req.IdempotentId)
+	klog.CtxInfof(ctx, "[ITEM-ADD-START] userId: %s, itemCount: %d, idempotentId: %s", userId, len(req.ItemAddList), req.IdempotentId)
 
 	luaScript := `
 		local user_key = KEYS[1]
@@ -71,19 +136,48 @@ func (m *ItemManager) AddItem(ctx context.Context, req *item.AddItemReq) (resp *
 			end
 		end
 		
+		-- 确保results是数组格式，即使是空表
 		local result_json = cjson.encode({success = true, results = results})
 		redis.call('set', idempotent_key, result_json, 'EX', 604800)
 		return result_json
 	`
 
-	items := make([]map[string]interface{}, 0, len(req.ItemInfoList))
-	for _, itemInfo := range req.ItemInfoList {
+	items := make([]map[string]interface{}, 0, len(req.ItemAddList))
+	for _, itemAdd := range req.ItemAddList {
+		// 获取道具配置
+		itemId := int(itemAdd.ItemId)
+		config, exists := m.itemConfigs[itemId]
+
+		if !exists {
+			klog.CtxErrorf(ctx, "[ITEM-ADD-CONFIG-NOT-FOUND] userId: %s, itemId: %d, config not found", userId, itemId)
+			return &item.AddItemRsp{
+				Code: common.ErrorCode_ITEM_ADD_FAILED,
+				Msg:  fmt.Sprintf("Item config not found for itemId: %d", itemId),
+			}, nil
+		}
+
+		// 根据IsUnique属性生成uniqueid
+		var uniqueId string
+		if config.IsUnique == 1 {
+			// 唯一道具，必须生成新的uniqueid
+			uniqueId = IdClient.Generate().String()
+			klog.CtxInfof(ctx, "[ITEM-ADD-GENERATE-UNIQUEID] userId: %s, itemId: %d, generated uniqueId: %s", userId, itemId, uniqueId)
+		} else {
+			// 非唯一道具，使用itemId作为uniqueId
+			uniqueId = fmt.Sprintf("%d", itemAdd.ItemId)
+			klog.CtxInfof(ctx, "[ITEM-ADD-NON-UNIQUE] userId: %s, itemId: %d, IsUnique: %d", userId, itemId, config.IsUnique)
+		}
+
+		// 从配置中获取道具类型和属性
+		itemType := int32(itemId) // 使用itemId作为类型
+		properties := fmt.Sprintf(`{"item_id": %d, "is_unique": %d}`, itemId, config.IsUnique)
+
 		itemMap := map[string]interface{}{
-			"item_id":        itemInfo.ItemId,
-			"item_unique_id": itemInfo.ItemUniqueId,
-			"item_type":      itemInfo.ItemType,
-			"properties":     itemInfo.Properties,
-			"count":          itemInfo.Count,
+			"item_id":        itemAdd.ItemId,
+			"item_unique_id": uniqueId,
+			"item_type":      itemType,
+			"properties":     properties,
+			"count":          itemAdd.Count,
 		}
 		items = append(items, itemMap)
 	}
@@ -136,10 +230,24 @@ func (m *ItemManager) AddItem(ctx context.Context, req *item.AddItemReq) (resp *
 		}, nil
 	}
 
-	results := response["results"].([]interface{})
+	resultsValue := response["results"]
+	results, ok := resultsValue.([]interface{})
+	if !ok {
+		klog.CtxErrorf(ctx, "[ITEM-ADD-RESULTS-TYPE-ERROR] userId: %s, results is not array: %T", userId, resultsValue)
+		return &item.AddItemRsp{
+			Code: common.ErrorCode_ITEM_JSON_ERROR,
+			Msg:  "Invalid results format",
+		}, nil
+	}
+
 	resultItemInfos := make([]*item.ItemInfo, 0, len(results))
 	for _, r := range results {
-		resultMap := r.(map[string]interface{})
+		resultMap, ok := r.(map[string]interface{})
+		if !ok {
+			klog.CtxErrorf(ctx, "[ITEM-ADD-ITEM-TYPE-ERROR] userId: %s, item is not map: %T", userId, r)
+			continue
+		}
+
 		itemInfo := &item.ItemInfo{
 			ItemId:       int32(resultMap["item_id"].(float64)),
 			ItemUniqueId: resultMap["item_unique_id"].(string),
@@ -245,10 +353,24 @@ func (m *ItemManager) DeleteItem(ctx context.Context, req *item.DeleteItemReq) (
 		}, nil
 	}
 
-	results := response["results"].([]interface{})
+	resultsValue := response["results"]
+	results, ok := resultsValue.([]interface{})
+	if !ok {
+		klog.CtxErrorf(ctx, "[ITEM-DELETE-RESULTS-TYPE-ERROR] userId: %s, results is not array: %T", userId, resultsValue)
+		return &item.DeleteItemRsp{
+			Code: common.ErrorCode_ITEM_JSON_ERROR,
+			Msg:  "Invalid results format",
+		}, nil
+	}
+
 	successList := make([]bool, len(results))
 	for i, r := range results {
-		successList[i] = r.(bool)
+		boolValue, ok := r.(bool)
+		if !ok {
+			klog.CtxErrorf(ctx, "[ITEM-DELETE-ITEM-TYPE-ERROR] userId: %s, result is not bool: %T", userId, r)
+			continue
+		}
+		successList[i] = boolValue
 	}
 
 	successCount := 0
@@ -320,10 +442,24 @@ func (m *ItemManager) GetAllItems(ctx context.Context, req *item.GetAllItemsReq)
 		}, nil
 	}
 
-	results := response["results"].([]interface{})
+	resultsValue := response["results"]
+	results, ok := resultsValue.([]interface{})
+	if !ok {
+		klog.CtxErrorf(ctx, "[ITEM-GET-ALL-RESULTS-TYPE-ERROR] userId: %s, results is not array: %T", userId, resultsValue)
+		return &item.GetAllItemsRsp{
+			Code: common.ErrorCode_ITEM_JSON_ERROR,
+			Msg:  "Invalid results format",
+		}, nil
+	}
+
 	resultItemInfos := make([]*item.ItemInfo, 0, len(results))
 	for _, r := range results {
-		resultMap := r.(map[string]interface{})
+		resultMap, ok := r.(map[string]interface{})
+		if !ok {
+			klog.CtxErrorf(ctx, "[ITEM-ADD-ITEM-TYPE-ERROR] userId: %s, item is not map: %T", userId, r)
+			continue
+		}
+
 		itemInfo := &item.ItemInfo{
 			ItemId:       int32(resultMap["item_id"].(float64)),
 			ItemUniqueId: resultMap["item_unique_id"].(string),

@@ -1,0 +1,12 @@
+[
+  {"item_id": 1, "is_unique": 1},
+  {"item_id": 2, "is_unique": 0},
+  {"item_id": 3, "is_unique": 1},
+  {"item_id": 4, "is_unique": 0},
+  {"item_id": 5, "is_unique": 1},
+  {"item_id": 6, "is_unique": 0},
+  {"item_id": 7, "is_unique": 1},
+  {"item_id": 8, "is_unique": 0},
+  {"item_id": 9, "is_unique": 1},
+  {"item_id": 10, "is_unique": 0}
+]

@@ -19,10 +19,18 @@ message ItemInfo {
     int32 count = 5;
 }
 
+//道具添加信息
+message ItemAddInfo {
+    //道具id
+    int32 item_id = 1;
+    //道具数量
+    int32 count = 2;
+}
+
 //添加道具请求
 message AddItemReq {
-    //道具信息列表
-    repeated ItemInfo item_info_list = 1;
+    //道具添加信息列表
+    repeated ItemAddInfo item_add_list = 1;
     //操作原因
     string operation_reason = 2;
     //幂等id

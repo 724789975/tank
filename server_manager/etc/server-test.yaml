@@ -1,26 +1,32 @@
+# HTTP服务配置
+server_mgr_http:
+  addr: ":8080"
+
+# RPC服务配置
+server_mgr_rpc:
+  addr: "0.0.0.0:11001"
+  service_name: "server-mgr"
+
+# Redis配置
 redis:
   addrs:
     - "redis.tank.svc.cluster.local:6389"
   password: "123#@!QAzx"
 
-server_mgr_http:
-  addr: ":8080"
-
-server_mgr_rpc:
-  addr: "0.0.0.0:11001"
-  service_name: "server-mgr"
-
+# etcd配置
 etcd:
   addrs:
     - "etcd.tank.svc.cluster.local:2379"
-  password: "123#@!QAzx"
   username: "root"
+  password: "123#@!QAzx"
 
-gateway:
-  service_name: "gate-server"
-
+# Tracer配置
 tracer:
   address: "otel-collector.open-telemetry-collector:4317"
+
+# 特定服务配置
+gateway:
+  service_name: "gate-server"
 
 exe_path:
   windows: ".\\etc\\windows.bat"

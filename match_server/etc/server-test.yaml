@@ -1,33 +1,39 @@
+# HTTP服务配置
+match_http:
+  addr: ":8080"
+
+# RPC服务配置
+match_rpc:
+  addr: "0.0.0.0:11001"
+  service_name: "match-server"
+
+# Redis配置
 redis:
   addrs:
     - "redis.tank.svc.cluster.local:6389"
   password: "123#@!QAzx"
 
-match_http:
-  addr: ":8080"
-
-match_rpc:
-  addr: "0.0.0.0:11001"
-  service_name: "match-server"
-
-game:
-  addr: "115.190.230.47"
-  port: 10085
-
+# etcd配置
 etcd:
   addrs:
     - "etcd.tank.svc.cluster.local:2379"
-  password: "123#@!QAzx"
   username: "root"
+  password: "123#@!QAzx"
+
+# Tracer配置
+tracer:
+  address: "otel-collector.open-telemetry-collector:4317"
+
+# 特定服务配置
+game:
+  addr: "115.190.230.47"
+  port: 10085
 
 gateway:
   service_name: "gate-server"
 
 server_mgr:
   service_name: "server-mgr"
-
-tracer:
-  address: "otel-collector.open-telemetry-collector:4317"
 
 exe_path:
   windows: ".\\etc\\windows.bat"

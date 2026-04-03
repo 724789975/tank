@@ -1,15 +1,30 @@
+# HTTP服务配置
+user_http:
+  addr: ":8080"
+
+# RPC服务配置
+user_rpc:
+  addr: "0.0.0.0:11001"
+  service_name: "user-center"
+
+# Redis配置
 redis:
   addrs:
     - "redis.tank.svc.cluster.local:6389"
   password: "123#@!QAzx"
 
-user_http:
-  addr: ":8080"
+# etcd配置
+etcd:
+  addrs:
+    - "etcd.tank.svc.cluster.local:2379"
+  username: "root"
+  password: "123#@!QAzx"
 
-user_rpc:
-  addr: "0.0.0.0:11001"
-  service_name: "user-center"
+# Tracer配置
+tracer:
+  address: "otel-collector.open-telemetry-collector:4317"
 
+# 特定服务配置
 game:
   addr: "114.132.124.13"
   port: 10085
@@ -19,17 +34,8 @@ tap:
   client_id: "oy5mqqrghbgdlrfmf4"
   base_info_uri: "/account/profile/v1"
 
-etcd:
-  addrs:
-    - "etcd.tank.svc.cluster.local:2379"
-  password: "123#@!QAzx"
-  username: "root"
-
 gateway:
   service_name: "gate-server"
-
-tracer:
-  address: "otel-collector.open-telemetry-collector:4317"
 
 google:
   client_id: "1039573902903-1234567890abcdef1234567890abcdef.apps.googleusercontent.com"

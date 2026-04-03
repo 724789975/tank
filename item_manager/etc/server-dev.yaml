@@ -1,20 +1,25 @@
+# HTTP服务配置
 item_http:
   addr: ":8084"
 
+# RPC服务配置
 item_rpc:
   addr: ":8884"
   service_name: "item_manager"
 
+# Redis配置
 redis:
   addrs:
     - "127.0.0.1:6379"
   password: ""
 
+# etcd配置
 etcd:
   addrs:
     - "127.0.0.1:2379"
   username: ""
   password: ""
 
+# Tracer配置
 tracer:
   address: "127.0.0.1:4317"

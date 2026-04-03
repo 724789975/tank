@@ -24,7 +24,7 @@ namespace Common {
     static CommonReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbirnCAoJRXJyb3JDb2RlEgYK",
+            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiqeCgoJRXJyb3JDb2RlEgYK",
             "Ak9LEAASCgoGRkFJTEVEEAESFwoTQVVUSF9NSVNTSU5HX0hFQURFUhBkEhUK",
             "EUFVVEhfSU5WQUxJRF9KU09OEGUSFwoTQVVUSF9JTlZBTElEX1VTRVJJRBBm",
             "EhQKEEFVVEhfSU5WQUxJRF9FWFAQZxIWChJBVVRIX1RPS0VOX0VYUElSRUQQ",
@@ -49,8 +49,12 @@ namespace Common {
             "UlJPUhDMCBIeChlNQVRDSF9HRVRfR0FNRV9JTkZPX0VSUk9SEM0IEhwKF01B",
             "VENIX0FERF9QUk9DRVNTX0VSUk9SEM4IEh4KGU1BVENIX0FMUkVBRFlfSU5f",
             "UFJPR1JFU1MQzwgSHgoZTUFUQ0hfU0VSVkVSX0NSRUFURV9FUlJPUhDQCBIh",
-            "ChxNQVRDSF9BSV9DTElFTlRfQ1JFQVRFX0VSUk9SENEIQghaBmNvbW1vbmIG",
-            "cHJvdG8z"));
+            "ChxNQVRDSF9BSV9DTElFTlRfQ1JFQVRFX0VSUk9SENEIEhQKD0lURU1fQURE",
+            "X0ZBSUxFRBCwCRIXChJJVEVNX0RFTEVURV9GQUlMRUQQsQkSEwoOSVRFTV9O",
+            "T1RfRk9VTkQQsgkSHgoZSVRFTV9JREVNUE9URU5UX0RVUExJQ0FURRCzCRIU",
+            "Cg9JVEVNX0pTT05fRVJST1IQtAkSGgoVSVRFTV9MVUFfU0NSSVBUX0VSUk9S",
+            "ELUJEh8KGklURU1fUkVESVNfT1BFUkFUSU9OX0VSUk9SELYJQghaBmNvbW1v",
+            "bmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null));
@@ -224,6 +228,34 @@ namespace Common {
     /// 创建AI客户端失败
     /// </summary>
     [pbr::OriginalName("MATCH_AI_CLIENT_CREATE_ERROR")] MatchAiClientCreateError = 1105,
+    /// <summary>
+    /// 道具管理相关错误
+    /// </summary>
+    [pbr::OriginalName("ITEM_ADD_FAILED")] ItemAddFailed = 1200,
+    /// <summary>
+    /// 删除道具失败
+    /// </summary>
+    [pbr::OriginalName("ITEM_DELETE_FAILED")] ItemDeleteFailed = 1201,
+    /// <summary>
+    /// 道具不存在
+    /// </summary>
+    [pbr::OriginalName("ITEM_NOT_FOUND")] ItemNotFound = 1202,
+    /// <summary>
+    /// 幂等请求重复
+    /// </summary>
+    [pbr::OriginalName("ITEM_IDEMPOTENT_DUPLICATE")] ItemIdempotentDuplicate = 1203,
+    /// <summary>
+    /// JSON解析错误
+    /// </summary>
+    [pbr::OriginalName("ITEM_JSON_ERROR")] ItemJsonError = 1204,
+    /// <summary>
+    /// Lua脚本执行错误
+    /// </summary>
+    [pbr::OriginalName("ITEM_LUA_SCRIPT_ERROR")] ItemLuaScriptError = 1205,
+    /// <summary>
+    /// Redis操作错误
+    /// </summary>
+    [pbr::OriginalName("ITEM_REDIS_OPERATION_ERROR")] ItemRedisOperationError = 1206,
   }
 
   #endregion

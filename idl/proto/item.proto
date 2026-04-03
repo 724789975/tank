@@ -1,0 +1,106 @@
+syntax = "proto3";
+option go_package = "item";
+package item;
+
+import "proto/common.proto";
+
+
+//道具信息
+message ItemInfo {
+    //道具id
+    int32 item_id = 1;
+    //道具唯一id
+    string item_unique_id = 2;
+    //道具类型
+    int32 item_type = 3;
+    //道具属性（json字符串）
+    string properties = 4;
+    //道具数量
+    int32 count = 5;
+}
+
+//添加道具请求
+message AddItemReq {
+    //道具信息列表
+    repeated ItemInfo item_info_list = 1;
+    //操作原因
+    string operation_reason = 2;
+    //幂等id
+    string idempotent_id = 3;
+}
+
+//添加道具响应
+message AddItemRsp {
+    //错误码
+    common.ErrorCode code = 1;
+    //错误信息
+    string msg = 2;
+    message Data {
+        //道具信息列表
+        repeated ItemInfo item_info_list = 1;
+    }
+    //数据
+    Data data = 3;
+}
+
+//删除道具请求
+message DeleteItemReq {
+    //道具唯一id列表
+    repeated string item_unique_id_list = 1;
+    //操作原因
+    string operation_reason = 2;
+    //幂等id
+    string idempotent_id = 3;
+}
+
+//删除道具响应
+message DeleteItemRsp {
+    //错误码
+    common.ErrorCode code = 1;
+    //错误信息
+    string msg = 2;
+    message Data {
+        //删除成功状态列表
+        repeated bool success_list = 1;
+    }
+    //数据
+    Data data = 3;
+}
+
+//获取所有道具请求
+message GetAllItemsReq {
+}
+
+//获取所有道具响应
+message GetAllItemsRsp {
+    //错误码
+    common.ErrorCode code = 1;
+    //错误信息
+    string msg = 2;
+    message Data {
+        //道具信息列表
+        repeated ItemInfo item_info_list = 1;
+    }
+    //数据
+    Data data = 3;
+}
+
+//获取单个道具请求
+message GetItemReq {
+    //道具唯一id
+    string item_unique_id = 1;
+}
+
+//获取单个道具响应
+message GetItemRsp {
+    //错误码
+    common.ErrorCode code = 1;
+    //错误信息
+    string msg = 2;
+    message Data {
+        //道具信息
+        ItemInfo item_info = 1;
+    }
+    //数据
+    Data data = 3;
+}

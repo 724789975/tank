@@ -65,4 +65,13 @@ enum ErrorCode {
     MATCH_ALREADY_IN_PROGRESS  = 1103; // 已经在匹配中
     MATCH_SERVER_CREATE_ERROR  = 1104; // 创建服务器失败
     MATCH_AI_CLIENT_CREATE_ERROR = 1105; // 创建AI客户端失败
+    
+    // 道具管理相关错误
+    ITEM_ADD_FAILED           = 1200; // 添加道具失败
+    ITEM_DELETE_FAILED        = 1201; // 删除道具失败
+    ITEM_NOT_FOUND            = 1202; // 道具不存在
+    ITEM_IDEMPOTENT_DUPLICATE = 1203; // 幂等请求重复
+    ITEM_JSON_ERROR           = 1204; // JSON解析错误
+    ITEM_LUA_SCRIPT_ERROR     = 1205; // Lua脚本执行错误
+    ITEM_REDIS_OPERATION_ERROR = 1206; // Redis操作错误
 }

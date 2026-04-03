@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "proto/item.proto";
+package item_service;
+
+option go_package = "item_service";
+
+service ItemService {
+    //增加道具
+    rpc add_item(item.AddItemReq) returns (item.AddItemRsp){};
+
+    //删除道具
+    rpc delete_item(item.DeleteItemReq) returns (item.DeleteItemRsp){};
+
+    //获取所有道具
+    rpc get_all_items(item.GetAllItemsReq) returns (item.GetAllItemsRsp){};
+
+    //获取单个道具
+    rpc get_item(item.GetItemReq) returns (item.GetItemRsp){};
+}

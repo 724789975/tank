@@ -4,9 +4,11 @@
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\user_center.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\gate_way.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen .\proto\match_proto.proto
+.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\item.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\tank_game_service.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\gateway_service.proto
 .\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\user_center_service.proto
+.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\item_service.proto
 
 copy .\proto_gen\*.cs ..\client\Assets\script\proto\
 @REM copy .\proto_gen\*.cs ..\server\Assets\script\proto\
@@ -41,3 +43,8 @@ del go.mod
 .\bin\kitex -module server_manager -type protobuf -no-fast-api proto/match_service.proto
 rmdir /s /q ..\server_manager\kitex_gen
 move .\kitex_gen ..\server_manager\
+
+del go.mod
+.\bin\kitex -module item_manager -type protobuf -no-fast-api proto/item_service.proto
+rmdir /s /q ..\item_manager\kitex_gen
+move .\kitex_gen ..\item_manager\

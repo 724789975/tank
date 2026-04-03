@@ -1,0 +1,20 @@
+item_http:
+  addr: ":8084"
+
+item_rpc:
+  addr: ":8884"
+  service_name: "item_manager"
+
+redis:
+  addrs:
+    - "127.0.0.1:6379"
+  password: ""
+
+etcd:
+  addrs:
+    - "127.0.0.1:2379"
+  username: ""
+  password: ""
+
+tracer:
+  address: "127.0.0.1:4317"

@@ -1,10 +1,10 @@
 # HTTP服务配置
 item_http:
-  addr: ":8084"
+  addr: ":8080"
 
 # RPC服务配置
 item_rpc:
-  addr: ":8884"
+  addr: "0.0.0.0:11001"
   service_name: "item_manager"
 
 # Redis配置

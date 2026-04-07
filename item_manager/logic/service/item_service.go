@@ -121,3 +121,7 @@ func (x *ItemService) GetAllItems(ctx context.Context, req *item.GetAllItemsReq)
 func (x *ItemService) GetItem(ctx context.Context, req *item.GetItemReq) (resp *item.GetItemRsp, err error) {
 	return manager.GetItemManager().GetItem(ctx, req)
 }
+
+func (x *ItemService) DeleteItemById(ctx context.Context, req *item.DeleteItemByIdReq) (resp *item.DeleteItemByIdRsp, err error) {
+	return manager.GetItemManager().DeleteItemById(ctx, req)
+}

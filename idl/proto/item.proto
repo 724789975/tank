@@ -27,6 +27,14 @@ message ItemAddInfo {
     int32 count = 2;
 }
 
+//道具删除信息
+message ItemDeleteInfo {
+    //道具唯一id
+    string item_unique_id = 1;
+    //删除数量
+    int32 count = 2;
+}
+
 //添加道具请求
 message AddItemReq {
     //道具添加信息列表
@@ -53,8 +61,8 @@ message AddItemRsp {
 
 //删除道具请求
 message DeleteItemReq {
-    //道具唯一id列表
-    repeated string item_unique_id_list = 1;
+    //道具删除信息列表
+    repeated ItemDeleteInfo item_delete_list = 1;
     //操作原因
     string operation_reason = 2;
     //幂等id
@@ -67,12 +75,6 @@ message DeleteItemRsp {
     common.ErrorCode code = 1;
     //错误信息
     string msg = 2;
-    message Data {
-        //删除成功状态列表
-        repeated bool success_list = 1;
-    }
-    //数据
-    Data data = 3;
 }
 
 //获取所有道具请求
@@ -111,4 +113,30 @@ message GetItemRsp {
     }
     //数据
     Data data = 3;
+}
+
+//通过道具id删除道具信息
+message ItemDeleteByIdInfo {
+    //道具id
+    int32 item_id = 1;
+    //删除数量
+    int32 count = 2;
+}
+
+//通过道具id删除道具请求
+message DeleteItemByIdReq {
+    //道具删除信息列表
+    repeated ItemDeleteByIdInfo item_delete_list = 1;
+    //操作原因
+    string operation_reason = 2;
+    //幂等id
+    string idempotent_id = 3;
+}
+
+//通过道具id删除道具响应
+message DeleteItemByIdRsp {
+    //错误码
+    common.ErrorCode code = 1;
+    //错误信息
+    string msg = 2;
 }

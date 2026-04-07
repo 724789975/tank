@@ -8,6 +8,7 @@ import (
 	"item_manager/kitex_gen/item"
 	common_redis "item_manager/redis"
 	"os"
+	"strconv"
 	"sync"
 
 	"github.com/bwmarrin/snowflake"
@@ -123,14 +124,28 @@ func (m *ItemManager) AddItem(ctx context.Context, req *item.AddItemReq) (resp *
 			local item_unique_id = item.item_unique_id
 			local item_key = user_key .. item_unique_id
 			
-			local existing_item = redis.call('get', item_key)
-			if existing_item then
-				local existing_data = cjson.decode(existing_item)
-				existing_data.count = existing_data.count + item.count
-				redis.call('set', item_key, cjson.encode(existing_data))
-				table.insert(results, existing_data)
+			local exists = redis.call('exists', item_key)
+			if exists == 1 then
+				-- 道具已存在，增加数量
+				local current_count = tonumber(redis.call('hget', item_key, 'count'))
+				local new_count = current_count + item.count
+				redis.call('hset', item_key, 'count', new_count)
+				-- 构建返回数据
+				local result = {
+					item_id = tonumber(redis.call('hget', item_key, 'item_id')),
+					item_unique_id = redis.call('hget', item_key, 'item_unique_id'),
+					item_type = tonumber(redis.call('hget', item_key, 'item_type')),
+					properties = redis.call('hget', item_key, 'properties'),
+					count = new_count
+				}
+				table.insert(results, result)
 			else
-				redis.call('set', item_key, cjson.encode(item))
+				-- 道具不存在，创建新道具
+				redis.call('hset', item_key, 'item_id', item.item_id)
+				redis.call('hset', item_key, 'item_unique_id', item.item_unique_id)
+				redis.call('hset', item_key, 'item_type', item.item_type)
+				redis.call('hset', item_key, 'properties', item.properties)
+				redis.call('hset', item_key, 'count', item.count)
 				redis.call('sadd', user_items_set_key, item_unique_id)
 				table.insert(results, item)
 			end
@@ -248,12 +263,38 @@ func (m *ItemManager) AddItem(ctx context.Context, req *item.AddItemReq) (resp *
 			continue
 		}
 
+		var itemId, itemType, count float64
+
+		// 处理item_id字段
+		switch v := resultMap["item_id"].(type) {
+		case string:
+			itemId, _ = strconv.ParseFloat(v, 64)
+		case float64:
+			itemId = v
+		}
+
+		// 处理item_type字段
+		switch v := resultMap["item_type"].(type) {
+		case string:
+			itemType, _ = strconv.ParseFloat(v, 64)
+		case float64:
+			itemType = v
+		}
+
+		// 处理count字段
+		switch v := resultMap["count"].(type) {
+		case string:
+			count, _ = strconv.ParseFloat(v, 64)
+		case float64:
+			count = v
+		}
+
 		itemInfo := &item.ItemInfo{
-			ItemId:       int32(resultMap["item_id"].(float64)),
+			ItemId:       int32(itemId),
 			ItemUniqueId: resultMap["item_unique_id"].(string),
-			ItemType:     int32(resultMap["item_type"].(float64)),
+			ItemType:     int32(itemType),
 			Properties:   resultMap["properties"].(string),
-			Count:        int32(resultMap["count"].(float64)),
+			Count:        int32(count),
 		}
 		resultItemInfos = append(resultItemInfos, itemInfo)
 	}
@@ -273,39 +314,79 @@ func (m *ItemManager) DeleteItem(ctx context.Context, req *item.DeleteItemReq) (
 	userId := ctx.Value("userId").(string)
 	userKey := m.getUserKey(userId)
 
-	klog.CtxInfof(ctx, "[ITEM-DELETE-START] userId: %s, itemIds: %v, idempotentId: %s", userId, req.ItemUniqueIdList, req.IdempotentId)
+	klog.CtxInfof(ctx, "[ITEM-DELETE-START] userId: %s, deleteCount: %d, idempotentId: %s", userId, len(req.ItemDeleteList), req.IdempotentId)
 
 	luaScript := `
 		local user_key = KEYS[1]
 		local idempotent_key = KEYS[2]
-		local item_ids = cjson.decode(ARGV[1])
+		local delete_data = cjson.decode(ARGV[1])
 		
 		local cached_result = redis.call('get', idempotent_key)
 		if cached_result then
 			return cached_result
 		end
 		
-		local results = {}
 		local user_items_set_key = user_key .. 'items'
 		
-		for i, item_id in ipairs(item_ids) do
-			local item_key = user_key .. item_id
+		-- 第一阶段：检查所有道具数量是否足够
+		for i, delete_item in ipairs(delete_data) do
+			local item_unique_id = delete_item.item_unique_id
+			local delete_count = tonumber(delete_item.count)
+			local item_key = user_key .. item_unique_id
+			
 			local exists = redis.call('exists', item_key)
 			if exists == 1 then
-				redis.call('del', item_key)
-				redis.call('srem', user_items_set_key, item_id)
-				table.insert(results, true)
+				local current_count = tonumber(redis.call('hget', item_key, 'count'))
+				
+				if delete_count > current_count then
+					-- 删除数量大于现有数量，删除失败
+					local result_json = cjson.encode({success = false, error = 'delete count exceeds available count'})
+					redis.call('set', idempotent_key, result_json, 'EX', 604800)
+					return result_json
+				end
 			else
-				table.insert(results, false)
+				-- 道具不存在，删除失败
+				local result_json = cjson.encode({success = false, error = 'item not found'})
+				redis.call('set', idempotent_key, result_json, 'EX', 604800)
+				return result_json
 			end
 		end
 		
-		local result_json = cjson.encode({success = true, results = results})
+		-- 第二阶段：执行删除操作
+		for i, delete_item in ipairs(delete_data) do
+			local item_unique_id = delete_item.item_unique_id
+			local delete_count = tonumber(delete_item.count)
+			local item_key = user_key .. item_unique_id
+			
+			local current_count = tonumber(redis.call('hget', item_key, 'count'))
+			
+			if delete_count == current_count then
+				-- 删除数量等于现有数量，删除整个道具
+				redis.call('del', item_key)
+				redis.call('srem', user_items_set_key, item_unique_id)
+			else
+				-- 删除数量小于现有数量，减少数量
+				local new_count = current_count - delete_count
+				redis.call('hset', item_key, 'count', new_count)
+			end
+		end
+		
+		local result_json = cjson.encode({success = true})
 		redis.call('set', idempotent_key, result_json, 'EX', 604800)
 		return result_json
 	`
 
-	itemIdsJSON, err := json.Marshal(req.ItemUniqueIdList)
+	deleteData := make([]map[string]interface{}, 0, len(req.ItemDeleteList))
+	for _, deleteItem := range req.ItemDeleteList {
+		deleteData = append(deleteData, map[string]interface{}{
+			"item_unique_id": deleteItem.ItemUniqueId,
+			"count":          int(deleteItem.Count),
+		})
+	}
+
+	klog.CtxInfof(ctx, "[ITEM-DELETE-DATA] userId: %s, deleteData: %v", userId, deleteData)
+
+	deleteDataJSON, err := json.Marshal(deleteData)
 	if err != nil {
 		klog.CtxErrorf(ctx, "[ITEM-DELETE-JSON-ERROR] userId: %s, error: %v", userId, err)
 		return &item.DeleteItemRsp{
@@ -316,7 +397,7 @@ func (m *ItemManager) DeleteItem(ctx context.Context, req *item.DeleteItemReq) (
 
 	idempotentKey := fmt.Sprintf("idempotent:{%s}:%s", userId, req.IdempotentId)
 	keys := []string{userKey, idempotentKey}
-	args := []interface{}{string(itemIdsJSON)}
+	args := []interface{}{string(deleteDataJSON)}
 
 	val, err := m.rdb.Eval(ctx, luaScript, keys, args...).Result()
 	if err != nil {
@@ -353,41 +434,11 @@ func (m *ItemManager) DeleteItem(ctx context.Context, req *item.DeleteItemReq) (
 		}, nil
 	}
 
-	resultsValue := response["results"]
-	results, ok := resultsValue.([]interface{})
-	if !ok {
-		klog.CtxErrorf(ctx, "[ITEM-DELETE-RESULTS-TYPE-ERROR] userId: %s, results is not array: %T", userId, resultsValue)
-		return &item.DeleteItemRsp{
-			Code: common.ErrorCode_ITEM_JSON_ERROR,
-			Msg:  "Invalid results format",
-		}, nil
-	}
-
-	successList := make([]bool, len(results))
-	for i, r := range results {
-		boolValue, ok := r.(bool)
-		if !ok {
-			klog.CtxErrorf(ctx, "[ITEM-DELETE-ITEM-TYPE-ERROR] userId: %s, result is not bool: %T", userId, r)
-			continue
-		}
-		successList[i] = boolValue
-	}
-
-	successCount := 0
-	for _, success := range successList {
-		if success {
-			successCount++
-		}
-	}
-
-	klog.CtxInfof(ctx, "[ITEM-DELETE-SUCCESS] userId: %s, totalCount: %d, successCount: %d", userId, len(successList), successCount)
+	klog.CtxInfof(ctx, "[ITEM-DELETE-SUCCESS] userId: %s, deleteCount: %d", userId, len(req.ItemDeleteList))
 
 	return &item.DeleteItemRsp{
 		Code: common.ErrorCode_OK,
 		Msg:  "success",
-		Data: &item.DeleteItemRsp_Data{
-			SuccessList: successList,
-		},
 	}, nil
 }
 
@@ -405,9 +456,14 @@ func (m *ItemManager) GetAllItems(ctx context.Context, req *item.GetAllItemsReq)
 		local item_ids = redis.call('smembers', user_items_set_key)
 		for i, item_id in ipairs(item_ids) do
 			local item_key = user_key .. item_id
-			local item_data = redis.call('get', item_key)
-			if item_data then
-				table.insert(results, cjson.decode(item_data))
+			local exists = redis.call('exists', item_key)
+			if exists == 1 then
+				local item_data = redis.call('hgetall', item_key)
+				local item = {}
+				for j = 1, #item_data, 2 do
+					item[item_data[j]] = item_data[j+1]
+				end
+				table.insert(results, item)
 			end
 		end
 		
@@ -460,12 +516,38 @@ func (m *ItemManager) GetAllItems(ctx context.Context, req *item.GetAllItemsReq)
 			continue
 		}
 
+		var itemId, itemType, count float64
+
+		// 处理item_id字段
+		switch v := resultMap["item_id"].(type) {
+		case string:
+			itemId, _ = strconv.ParseFloat(v, 64)
+		case float64:
+			itemId = v
+		}
+
+		// 处理item_type字段
+		switch v := resultMap["item_type"].(type) {
+		case string:
+			itemType, _ = strconv.ParseFloat(v, 64)
+		case float64:
+			itemType = v
+		}
+
+		// 处理count字段
+		switch v := resultMap["count"].(type) {
+		case string:
+			count, _ = strconv.ParseFloat(v, 64)
+		case float64:
+			count = v
+		}
+
 		itemInfo := &item.ItemInfo{
-			ItemId:       int32(resultMap["item_id"].(float64)),
+			ItemId:       int32(itemId),
 			ItemUniqueId: resultMap["item_unique_id"].(string),
-			ItemType:     int32(resultMap["item_type"].(float64)),
+			ItemType:     int32(itemType),
 			Properties:   resultMap["properties"].(string),
-			Count:        int32(resultMap["count"].(float64)),
+			Count:        int32(count),
 		}
 		resultItemInfos = append(resultItemInfos, itemInfo)
 	}
@@ -490,13 +572,20 @@ func (m *ItemManager) GetItem(ctx context.Context, req *item.GetItemReq) (resp *
 
 	luaScript := `
 		local item_key = KEYS[1]
-		local item_data = redis.call('get', item_key)
+		local exists = redis.call('exists', item_key)
 		
-		if not item_data then
+		if exists == 0 then
 			return cjson.encode({success = false, error = 'item not found'})
 		end
 		
-		return cjson.encode({success = true, result = cjson.decode(item_data)})
+		local item_data = redis.call('hgetall', item_key)
+		local result = {}
+		
+		for i = 1, #item_data, 2 do
+			result[item_data[i]] = item_data[i+1]
+		end
+		
+		return cjson.encode({success = true, result = result})
 	`
 
 	keys := []string{itemKey}
@@ -536,12 +625,38 @@ func (m *ItemManager) GetItem(ctx context.Context, req *item.GetItemReq) (resp *
 	}
 
 	resultMap := response["result"].(map[string]interface{})
+	var itemId, itemType, count float64
+
+	// 处理item_id字段
+	switch v := resultMap["item_id"].(type) {
+	case string:
+		itemId, _ = strconv.ParseFloat(v, 64)
+	case float64:
+		itemId = v
+	}
+
+	// 处理item_type字段
+	switch v := resultMap["item_type"].(type) {
+	case string:
+		itemType, _ = strconv.ParseFloat(v, 64)
+	case float64:
+		itemType = v
+	}
+
+	// 处理count字段
+	switch v := resultMap["count"].(type) {
+	case string:
+		count, _ = strconv.ParseFloat(v, 64)
+	case float64:
+		count = v
+	}
+
 	itemInfo := &item.ItemInfo{
-		ItemId:       int32(resultMap["item_id"].(float64)),
+		ItemId:       int32(itemId),
 		ItemUniqueId: resultMap["item_unique_id"].(string),
-		ItemType:     int32(resultMap["item_type"].(float64)),
+		ItemType:     int32(itemType),
 		Properties:   resultMap["properties"].(string),
-		Count:        int32(resultMap["count"].(float64)),
+		Count:        int32(count),
 	}
 
 	klog.CtxInfof(ctx, "[ITEM-GET-SINGLE-SUCCESS] userId: %s, itemUniqueId: %s, itemId: %d", userId, req.ItemUniqueId, itemInfo.ItemId)
@@ -552,5 +667,161 @@ func (m *ItemManager) GetItem(ctx context.Context, req *item.GetItemReq) (resp *
 		Data: &item.GetItemRsp_Data{
 			ItemInfo: itemInfo,
 		},
+	}, nil
+}
+
+// DeleteItemById 通过道具id删除道具
+func (m *ItemManager) DeleteItemById(ctx context.Context, req *item.DeleteItemByIdReq) (resp *item.DeleteItemByIdRsp, err error) {
+	userId := ctx.Value("userId").(string)
+	userKey := m.getUserKey(userId)
+
+	klog.CtxInfof(ctx, "[ITEM-DELETE-BY-ID-START] userId: %s, deleteCount: %d, idempotentId: %s", userId, len(req.ItemDeleteList), req.IdempotentId)
+
+	deleteData := make([]map[string]interface{}, 0, len(req.ItemDeleteList))
+	for _, deleteItem := range req.ItemDeleteList {
+		// 获取道具配置
+		itemId := int(deleteItem.ItemId)
+		config, exists := m.itemConfigs[itemId]
+
+		if !exists {
+			klog.CtxErrorf(ctx, "[ITEM-DELETE-BY-ID-CONFIG-NOT-FOUND] userId: %s, itemId: %d, config not found", userId, itemId)
+			return &item.DeleteItemByIdRsp{
+				Code: common.ErrorCode_ITEM_DELETE_FAILED,
+				Msg:  fmt.Sprintf("Item config not found for itemId: %d", itemId),
+			}, nil
+		}
+
+		// 如果是唯一道具，不能通过id删除
+		if config.IsUnique == 1 {
+			klog.CtxErrorf(ctx, "[ITEM-DELETE-BY-ID-UNIQUE-ITEM] userId: %s, itemId: %d, unique item cannot be deleted by id", userId, itemId)
+			return &item.DeleteItemByIdRsp{
+				Code: common.ErrorCode_ITEM_DELETE_FAILED,
+				Msg:  "Unique item cannot be deleted by id",
+			}, nil
+		}
+
+		// 非唯一道具，使用itemId作为uniqueId
+		itemUniqueId := fmt.Sprintf("%d", deleteItem.ItemId)
+		deleteData = append(deleteData, map[string]interface{}{
+			"item_unique_id": itemUniqueId,
+			"count":          int(deleteItem.Count),
+		})
+	}
+
+	klog.CtxInfof(ctx, "[ITEM-DELETE-BY-ID-DATA] userId: %s, deleteData: %v", userId, deleteData)
+
+	deleteDataJSON, err := json.Marshal(deleteData)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[ITEM-DELETE-BY-ID-JSON-ERROR] userId: %s, error: %v", userId, err)
+		return &item.DeleteItemByIdRsp{
+			Code: common.ErrorCode_ITEM_JSON_ERROR,
+			Msg:  fmt.Sprintf("JSON marshaling failed: %v", err),
+		}, nil
+	}
+
+	luaScript := `
+		local user_key = KEYS[1]
+		local idempotent_key = KEYS[2]
+		local delete_data = cjson.decode(ARGV[1])
+		
+		local cached_result = redis.call('get', idempotent_key)
+		if cached_result then
+			return cached_result
+		end
+		
+		local user_items_set_key = user_key .. 'items'
+		
+		-- 第一阶段：检查所有道具数量是否足够
+		for i, delete_item in ipairs(delete_data) do
+			local item_unique_id = delete_item.item_unique_id
+			local delete_count = tonumber(delete_item.count)
+			local item_key = user_key .. item_unique_id
+			
+			local exists = redis.call('exists', item_key)
+			if exists == 1 then
+				local current_count = tonumber(redis.call('hget', item_key, 'count'))
+				
+				if delete_count > current_count then
+					-- 删除数量大于现有数量，删除失败
+					local result_json = cjson.encode({success = false, error = 'delete count exceeds available count'})
+					redis.call('set', idempotent_key, result_json, 'EX', 604800)
+					return result_json
+				end
+			else
+				-- 道具不存在，删除失败
+				local result_json = cjson.encode({success = false, error = 'item not found'})
+				redis.call('set', idempotent_key, result_json, 'EX', 604800)
+				return result_json
+			end
+		end
+		
+		-- 第二阶段：执行删除操作
+		for i, delete_item in ipairs(delete_data) do
+			local item_unique_id = delete_item.item_unique_id
+			local delete_count = tonumber(delete_item.count)
+			local item_key = user_key .. item_unique_id
+			
+			local current_count = tonumber(redis.call('hget', item_key, 'count'))
+			
+			if delete_count == current_count then
+				-- 删除数量等于现有数量，删除整个道具
+				redis.call('del', item_key)
+				redis.call('srem', user_items_set_key, item_unique_id)
+			else
+				-- 删除数量小于现有数量，减少数量
+				local new_count = current_count - delete_count
+				redis.call('hset', item_key, 'count', new_count)
+			end
+		end
+		
+		local result_json = cjson.encode({success = true})
+		redis.call('set', idempotent_key, result_json, 'EX', 604800)
+		return result_json
+	`
+
+	idempotentKey := fmt.Sprintf("idempotent:{%s}:%s", userId, req.IdempotentId)
+	keys := []string{userKey, idempotentKey}
+	args := []interface{}{string(deleteDataJSON)}
+
+	val, err := m.rdb.Eval(ctx, luaScript, keys, args...).Result()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[ITEM-DELETE-BY-ID-REDIS-ERROR] userId: %s, error: %v", userId, err)
+		return &item.DeleteItemByIdRsp{
+			Code: common.ErrorCode_ITEM_REDIS_OPERATION_ERROR,
+			Msg:  fmt.Sprintf("Redis operation failed: %v", err),
+		}, nil
+	}
+
+	var response map[string]interface{}
+	if err := json.Unmarshal([]byte(val.(string)), &response); err != nil {
+		klog.CtxErrorf(ctx, "[ITEM-DELETE-BY-ID-UNMARSHAL-ERROR] userId: %s, error: %v", userId, err)
+		return &item.DeleteItemByIdRsp{
+			Code: common.ErrorCode_ITEM_JSON_ERROR,
+			Msg:  fmt.Sprintf("JSON unmarshaling failed: %v", err),
+		}, nil
+	}
+
+	if !response["success"].(bool) {
+		errorMsg := response["error"].(string)
+		klog.CtxWarnf(ctx, "[ITEM-DELETE-BY-ID-FAIL] userId: %s, error: %s", userId, errorMsg)
+
+		if errorMsg == "duplicate idempotent request" {
+			return &item.DeleteItemByIdRsp{
+				Code: common.ErrorCode_ITEM_IDEMPOTENT_DUPLICATE,
+				Msg:  "Duplicate idempotent request",
+			}, nil
+		}
+
+		return &item.DeleteItemByIdRsp{
+			Code: common.ErrorCode_ITEM_DELETE_FAILED,
+			Msg:  errorMsg,
+		}, nil
+	}
+
+	klog.CtxInfof(ctx, "[ITEM-DELETE-BY-ID-SUCCESS] userId: %s, deleteCount: %d", userId, len(req.ItemDeleteList))
+
+	return &item.DeleteItemByIdRsp{
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
 	}, nil
 }

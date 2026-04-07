@@ -28,39 +28,48 @@ namespace Item {
             "aQoISXRlbUluZm8SDwoHaXRlbV9pZBgBIAEoBRIWCg5pdGVtX3VuaXF1ZV9p",
             "ZBgCIAEoCRIRCglpdGVtX3R5cGUYAyABKAUSEgoKcHJvcGVydGllcxgEIAEo",
             "CRINCgVjb3VudBgFIAEoBSItCgtJdGVtQWRkSW5mbxIPCgdpdGVtX2lkGAEg",
-            "ASgFEg0KBWNvdW50GAIgASgFImcKCkFkZEl0ZW1SZXESKAoNaXRlbV9hZGRf",
-            "bGlzdBgBIAMoCzIRLml0ZW0uSXRlbUFkZEluZm8SGAoQb3BlcmF0aW9uX3Jl",
-            "YXNvbhgCIAEoCRIVCg1pZGVtcG90ZW50X2lkGAMgASgJIo8BCgpBZGRJdGVt",
-            "UnNwEh8KBGNvZGUYASABKA4yES5jb21tb24uRXJyb3JDb2RlEgsKA21zZxgC",
-            "IAEoCRIjCgRkYXRhGAMgASgLMhUuaXRlbS5BZGRJdGVtUnNwLkRhdGEaLgoE",
-            "RGF0YRImCg5pdGVtX2luZm9fbGlzdBgBIAMoCzIOLml0ZW0uSXRlbUluZm8i",
-            "XQoNRGVsZXRlSXRlbVJlcRIbChNpdGVtX3VuaXF1ZV9pZF9saXN0GAEgAygJ",
-            "EhgKEG9wZXJhdGlvbl9yZWFzb24YAiABKAkSFQoNaWRlbXBvdGVudF9pZBgD",
-            "IAEoCSKDAQoNRGVsZXRlSXRlbVJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9u",
-            "LkVycm9yQ29kZRILCgNtc2cYAiABKAkSJgoEZGF0YRgDIAEoCzIYLml0ZW0u",
-            "RGVsZXRlSXRlbVJzcC5EYXRhGhwKBERhdGESFAoMc3VjY2Vzc19saXN0GAEg",
-            "AygIIhAKDkdldEFsbEl0ZW1zUmVxIpcBCg5HZXRBbGxJdGVtc1JzcBIfCgRj",
-            "b2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29kZRILCgNtc2cYAiABKAkSJwoE",
-            "ZGF0YRgDIAEoCzIZLml0ZW0uR2V0QWxsSXRlbXNSc3AuRGF0YRouCgREYXRh",
-            "EiYKDml0ZW1faW5mb19saXN0GAEgAygLMg4uaXRlbS5JdGVtSW5mbyIkCgpH",
-            "ZXRJdGVtUmVxEhYKDml0ZW1fdW5pcXVlX2lkGAEgASgJIooBCgpHZXRJdGVt",
-            "UnNwEh8KBGNvZGUYASABKA4yES5jb21tb24uRXJyb3JDb2RlEgsKA21zZxgC",
-            "IAEoCRIjCgRkYXRhGAMgASgLMhUuaXRlbS5HZXRJdGVtUnNwLkRhdGEaKQoE",
-            "RGF0YRIhCglpdGVtX2luZm8YASABKAsyDi5pdGVtLkl0ZW1JbmZvQgZaBGl0",
-            "ZW1iBnByb3RvMw=="));
+            "ASgFEg0KBWNvdW50GAIgASgFIjcKDkl0ZW1EZWxldGVJbmZvEhYKDml0ZW1f",
+            "dW5pcXVlX2lkGAEgASgJEg0KBWNvdW50GAIgASgFImcKCkFkZEl0ZW1SZXES",
+            "KAoNaXRlbV9hZGRfbGlzdBgBIAMoCzIRLml0ZW0uSXRlbUFkZEluZm8SGAoQ",
+            "b3BlcmF0aW9uX3JlYXNvbhgCIAEoCRIVCg1pZGVtcG90ZW50X2lkGAMgASgJ",
+            "Io8BCgpBZGRJdGVtUnNwEh8KBGNvZGUYASABKA4yES5jb21tb24uRXJyb3JD",
+            "b2RlEgsKA21zZxgCIAEoCRIjCgRkYXRhGAMgASgLMhUuaXRlbS5BZGRJdGVt",
+            "UnNwLkRhdGEaLgoERGF0YRImCg5pdGVtX2luZm9fbGlzdBgBIAMoCzIOLml0",
+            "ZW0uSXRlbUluZm8icAoNRGVsZXRlSXRlbVJlcRIuChBpdGVtX2RlbGV0ZV9s",
+            "aXN0GAEgAygLMhQuaXRlbS5JdGVtRGVsZXRlSW5mbxIYChBvcGVyYXRpb25f",
+            "cmVhc29uGAIgASgJEhUKDWlkZW1wb3RlbnRfaWQYAyABKAkiPQoNRGVsZXRl",
+            "SXRlbVJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29kZRILCgNt",
+            "c2cYAiABKAkiEAoOR2V0QWxsSXRlbXNSZXEilwEKDkdldEFsbEl0ZW1zUnNw",
+            "Eh8KBGNvZGUYASABKA4yES5jb21tb24uRXJyb3JDb2RlEgsKA21zZxgCIAEo",
+            "CRInCgRkYXRhGAMgASgLMhkuaXRlbS5HZXRBbGxJdGVtc1JzcC5EYXRhGi4K",
+            "BERhdGESJgoOaXRlbV9pbmZvX2xpc3QYASADKAsyDi5pdGVtLkl0ZW1JbmZv",
+            "IiQKCkdldEl0ZW1SZXESFgoOaXRlbV91bmlxdWVfaWQYASABKAkiigEKCkdl",
+            "dEl0ZW1Sc3ASHwoEY29kZRgBIAEoDjIRLmNvbW1vbi5FcnJvckNvZGUSCwoD",
+            "bXNnGAIgASgJEiMKBGRhdGEYAyABKAsyFS5pdGVtLkdldEl0ZW1Sc3AuRGF0",
+            "YRopCgREYXRhEiEKCWl0ZW1faW5mbxgBIAEoCzIOLml0ZW0uSXRlbUluZm8i",
+            "NAoSSXRlbURlbGV0ZUJ5SWRJbmZvEg8KB2l0ZW1faWQYASABKAUSDQoFY291",
+            "bnQYAiABKAUieAoRRGVsZXRlSXRlbUJ5SWRSZXESMgoQaXRlbV9kZWxldGVf",
+            "bGlzdBgBIAMoCzIYLml0ZW0uSXRlbURlbGV0ZUJ5SWRJbmZvEhgKEG9wZXJh",
+            "dGlvbl9yZWFzb24YAiABKAkSFQoNaWRlbXBvdGVudF9pZBgDIAEoCSJBChFE",
+            "ZWxldGVJdGVtQnlJZFJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9y",
+            "Q29kZRILCgNtc2cYAiABKAlCBloEaXRlbWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Item.ItemInfo), global::Item.ItemInfo.Parser, new[]{ "ItemId", "ItemUniqueId", "ItemType", "Properties", "Count" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Item.ItemAddInfo), global::Item.ItemAddInfo.Parser, new[]{ "ItemId", "Count" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Item.ItemDeleteInfo), global::Item.ItemDeleteInfo.Parser, new[]{ "ItemUniqueId", "Count" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Item.AddItemReq), global::Item.AddItemReq.Parser, new[]{ "ItemAddList", "OperationReason", "IdempotentId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Item.AddItemRsp), global::Item.AddItemRsp.Parser, new[]{ "Code", "Msg", "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Item.AddItemRsp.Types.Data), global::Item.AddItemRsp.Types.Data.Parser, new[]{ "ItemInfoList" }, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Item.DeleteItemReq), global::Item.DeleteItemReq.Parser, new[]{ "ItemUniqueIdList", "OperationReason", "IdempotentId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Item.DeleteItemRsp), global::Item.DeleteItemRsp.Parser, new[]{ "Code", "Msg", "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Item.DeleteItemRsp.Types.Data), global::Item.DeleteItemRsp.Types.Data.Parser, new[]{ "SuccessList" }, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Item.DeleteItemReq), global::Item.DeleteItemReq.Parser, new[]{ "ItemDeleteList", "OperationReason", "IdempotentId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Item.DeleteItemRsp), global::Item.DeleteItemRsp.Parser, new[]{ "Code", "Msg" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetAllItemsReq), global::Item.GetAllItemsReq.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetAllItemsRsp), global::Item.GetAllItemsRsp.Parser, new[]{ "Code", "Msg", "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetAllItemsRsp.Types.Data), global::Item.GetAllItemsRsp.Types.Data.Parser, new[]{ "ItemInfoList" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetItemReq), global::Item.GetItemReq.Parser, new[]{ "ItemUniqueId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetItemRsp), global::Item.GetItemRsp.Parser, new[]{ "Code", "Msg", "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetItemRsp.Types.Data), global::Item.GetItemRsp.Types.Data.Parser, new[]{ "ItemInfo" }, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetItemRsp), global::Item.GetItemRsp.Parser, new[]{ "Code", "Msg", "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Item.GetItemRsp.Types.Data), global::Item.GetItemRsp.Types.Data.Parser, new[]{ "ItemInfo" }, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Item.ItemDeleteByIdInfo), global::Item.ItemDeleteByIdInfo.Parser, new[]{ "ItemId", "Count" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Item.DeleteItemByIdReq), global::Item.DeleteItemByIdReq.Parser, new[]{ "ItemDeleteList", "OperationReason", "IdempotentId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Item.DeleteItemByIdRsp), global::Item.DeleteItemByIdRsp.Parser, new[]{ "Code", "Msg" }, null, null, null)
           }));
     }
     #endregion
@@ -493,6 +502,172 @@ namespace Item {
   }
 
   /// <summary>
+  ///道具删除信息
+  /// </summary>
+  public sealed partial class ItemDeleteInfo : pb::IMessage<ItemDeleteInfo> {
+    private static readonly pb::MessageParser<ItemDeleteInfo> _parser = new pb::MessageParser<ItemDeleteInfo>(() => new ItemDeleteInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ItemDeleteInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemDeleteInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemDeleteInfo(ItemDeleteInfo other) : this() {
+      itemUniqueId_ = other.itemUniqueId_;
+      count_ = other.count_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemDeleteInfo Clone() {
+      return new ItemDeleteInfo(this);
+    }
+
+    /// <summary>Field number for the "item_unique_id" field.</summary>
+    public const int ItemUniqueIdFieldNumber = 1;
+    private string itemUniqueId_ = "";
+    /// <summary>
+    ///道具唯一id
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ItemUniqueId {
+      get { return itemUniqueId_; }
+      set {
+        itemUniqueId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 2;
+    private int count_;
+    /// <summary>
+    ///删除数量
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ItemDeleteInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ItemDeleteInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ItemUniqueId != other.ItemUniqueId) return false;
+      if (Count != other.Count) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ItemUniqueId.Length != 0) hash ^= ItemUniqueId.GetHashCode();
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (ItemUniqueId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ItemUniqueId);
+      }
+      if (Count != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (ItemUniqueId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ItemUniqueId);
+      }
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Count);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ItemDeleteInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ItemUniqueId.Length != 0) {
+        ItemUniqueId = other.ItemUniqueId;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            ItemUniqueId = input.ReadString();
+            break;
+          }
+          case 16: {
+            Count = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
   ///添加道具请求
   /// </summary>
   public sealed partial class AddItemReq : pb::IMessage<AddItemReq> {
@@ -503,7 +678,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -692,7 +867,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1026,7 +1201,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1043,7 +1218,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public DeleteItemReq(DeleteItemReq other) : this() {
-      itemUniqueIdList_ = other.itemUniqueIdList_.Clone();
+      itemDeleteList_ = other.itemDeleteList_.Clone();
       operationReason_ = other.operationReason_;
       idempotentId_ = other.idempotentId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1054,17 +1229,17 @@ namespace Item {
       return new DeleteItemReq(this);
     }
 
-    /// <summary>Field number for the "item_unique_id_list" field.</summary>
-    public const int ItemUniqueIdListFieldNumber = 1;
-    private static readonly pb::FieldCodec<string> _repeated_itemUniqueIdList_codec
-        = pb::FieldCodec.ForString(10);
-    private readonly pbc::RepeatedField<string> itemUniqueIdList_ = new pbc::RepeatedField<string>();
+    /// <summary>Field number for the "item_delete_list" field.</summary>
+    public const int ItemDeleteListFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Item.ItemDeleteInfo> _repeated_itemDeleteList_codec
+        = pb::FieldCodec.ForMessage(10, global::Item.ItemDeleteInfo.Parser);
+    private readonly pbc::RepeatedField<global::Item.ItemDeleteInfo> itemDeleteList_ = new pbc::RepeatedField<global::Item.ItemDeleteInfo>();
     /// <summary>
-    ///道具唯一id列表
+    ///道具删除信息列表
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<string> ItemUniqueIdList {
-      get { return itemUniqueIdList_; }
+    public pbc::RepeatedField<global::Item.ItemDeleteInfo> ItemDeleteList {
+      get { return itemDeleteList_; }
     }
 
     /// <summary>Field number for the "operation_reason" field.</summary>
@@ -1108,7 +1283,7 @@ namespace Item {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if(!itemUniqueIdList_.Equals(other.itemUniqueIdList_)) return false;
+      if(!itemDeleteList_.Equals(other.itemDeleteList_)) return false;
       if (OperationReason != other.OperationReason) return false;
       if (IdempotentId != other.IdempotentId) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -1117,7 +1292,7 @@ namespace Item {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      hash ^= itemUniqueIdList_.GetHashCode();
+      hash ^= itemDeleteList_.GetHashCode();
       if (OperationReason.Length != 0) hash ^= OperationReason.GetHashCode();
       if (IdempotentId.Length != 0) hash ^= IdempotentId.GetHashCode();
       if (_unknownFields != null) {
@@ -1133,7 +1308,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      itemUniqueIdList_.WriteTo(output, _repeated_itemUniqueIdList_codec);
+      itemDeleteList_.WriteTo(output, _repeated_itemDeleteList_codec);
       if (OperationReason.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(OperationReason);
@@ -1150,7 +1325,7 @@ namespace Item {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      size += itemUniqueIdList_.CalculateSize(_repeated_itemUniqueIdList_codec);
+      size += itemDeleteList_.CalculateSize(_repeated_itemDeleteList_codec);
       if (OperationReason.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationReason);
       }
@@ -1168,7 +1343,7 @@ namespace Item {
       if (other == null) {
         return;
       }
-      itemUniqueIdList_.Add(other.itemUniqueIdList_);
+      itemDeleteList_.Add(other.itemDeleteList_);
       if (other.OperationReason.Length != 0) {
         OperationReason = other.OperationReason;
       }
@@ -1187,7 +1362,7 @@ namespace Item {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            itemUniqueIdList_.AddEntriesFrom(input, _repeated_itemUniqueIdList_codec);
+            itemDeleteList_.AddEntriesFrom(input, _repeated_itemDeleteList_codec);
             break;
           }
           case 18: {
@@ -1215,7 +1390,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1234,7 +1409,6 @@ namespace Item {
     public DeleteItemRsp(DeleteItemRsp other) : this() {
       code_ = other.code_;
       msg_ = other.msg_;
-      data_ = other.data_ != null ? other.data_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1271,20 +1445,6 @@ namespace Item {
       }
     }
 
-    /// <summary>Field number for the "data" field.</summary>
-    public const int DataFieldNumber = 3;
-    private global::Item.DeleteItemRsp.Types.Data data_;
-    /// <summary>
-    ///数据
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Item.DeleteItemRsp.Types.Data Data {
-      get { return data_; }
-      set {
-        data_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as DeleteItemRsp);
@@ -1300,7 +1460,6 @@ namespace Item {
       }
       if (Code != other.Code) return false;
       if (Msg != other.Msg) return false;
-      if (!object.Equals(Data, other.Data)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1309,7 +1468,6 @@ namespace Item {
       int hash = 1;
       if (Code != 0) hash ^= Code.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
-      if (data_ != null) hash ^= Data.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1331,10 +1489,6 @@ namespace Item {
         output.WriteRawTag(18);
         output.WriteString(Msg);
       }
-      if (data_ != null) {
-        output.WriteRawTag(26);
-        output.WriteMessage(Data);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1348,9 +1502,6 @@ namespace Item {
       }
       if (Msg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Msg);
-      }
-      if (data_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Data);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1368,12 +1519,6 @@ namespace Item {
       }
       if (other.Msg.Length != 0) {
         Msg = other.Msg;
-      }
-      if (other.data_ != null) {
-        if (data_ == null) {
-          data_ = new global::Item.DeleteItemRsp.Types.Data();
-        }
-        Data.MergeFrom(other.Data);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1394,148 +1539,9 @@ namespace Item {
             Msg = input.ReadString();
             break;
           }
-          case 26: {
-            if (data_ == null) {
-              data_ = new global::Item.DeleteItemRsp.Types.Data();
-            }
-            input.ReadMessage(data_);
-            break;
-          }
         }
       }
     }
-
-    #region Nested types
-    /// <summary>Container for nested types declared in the DeleteItemRsp message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static partial class Types {
-      public sealed partial class Data : pb::IMessage<Data> {
-        private static readonly pb::MessageParser<Data> _parser = new pb::MessageParser<Data>(() => new Data());
-        private pb::UnknownFieldSet _unknownFields;
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public static pb::MessageParser<Data> Parser { get { return _parser; } }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public static pbr::MessageDescriptor Descriptor {
-          get { return global::Item.DeleteItemRsp.Descriptor.NestedTypes[0]; }
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        pbr::MessageDescriptor pb::IMessage.Descriptor {
-          get { return Descriptor; }
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public Data() {
-          OnConstruction();
-        }
-
-        partial void OnConstruction();
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public Data(Data other) : this() {
-          successList_ = other.successList_.Clone();
-          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public Data Clone() {
-          return new Data(this);
-        }
-
-        /// <summary>Field number for the "success_list" field.</summary>
-        public const int SuccessListFieldNumber = 1;
-        private static readonly pb::FieldCodec<bool> _repeated_successList_codec
-            = pb::FieldCodec.ForBool(10);
-        private readonly pbc::RepeatedField<bool> successList_ = new pbc::RepeatedField<bool>();
-        /// <summary>
-        ///删除成功状态列表
-        /// </summary>
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public pbc::RepeatedField<bool> SuccessList {
-          get { return successList_; }
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public override bool Equals(object other) {
-          return Equals(other as Data);
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public bool Equals(Data other) {
-          if (ReferenceEquals(other, null)) {
-            return false;
-          }
-          if (ReferenceEquals(other, this)) {
-            return true;
-          }
-          if(!successList_.Equals(other.successList_)) return false;
-          return Equals(_unknownFields, other._unknownFields);
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public override int GetHashCode() {
-          int hash = 1;
-          hash ^= successList_.GetHashCode();
-          if (_unknownFields != null) {
-            hash ^= _unknownFields.GetHashCode();
-          }
-          return hash;
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public override string ToString() {
-          return pb::JsonFormatter.ToDiagnosticString(this);
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public void WriteTo(pb::CodedOutputStream output) {
-          successList_.WriteTo(output, _repeated_successList_codec);
-          if (_unknownFields != null) {
-            _unknownFields.WriteTo(output);
-          }
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public int CalculateSize() {
-          int size = 0;
-          size += successList_.CalculateSize(_repeated_successList_codec);
-          if (_unknownFields != null) {
-            size += _unknownFields.CalculateSize();
-          }
-          return size;
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public void MergeFrom(Data other) {
-          if (other == null) {
-            return;
-          }
-          successList_.Add(other.successList_);
-          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-        }
-
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public void MergeFrom(pb::CodedInputStream input) {
-          uint tag;
-          while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
-              default:
-                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-                break;
-              case 10:
-              case 8: {
-                successList_.AddEntriesFrom(input, _repeated_successList_codec);
-                break;
-              }
-            }
-          }
-        }
-
-      }
-
-    }
-    #endregion
 
   }
 
@@ -1550,7 +1556,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1654,7 +1660,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1988,7 +1994,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2123,7 +2129,7 @@ namespace Item {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Item.ItemReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2457,6 +2463,527 @@ namespace Item {
 
     }
     #endregion
+
+  }
+
+  /// <summary>
+  ///通过道具id删除道具信息
+  /// </summary>
+  public sealed partial class ItemDeleteByIdInfo : pb::IMessage<ItemDeleteByIdInfo> {
+    private static readonly pb::MessageParser<ItemDeleteByIdInfo> _parser = new pb::MessageParser<ItemDeleteByIdInfo>(() => new ItemDeleteByIdInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ItemDeleteByIdInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[11]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemDeleteByIdInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemDeleteByIdInfo(ItemDeleteByIdInfo other) : this() {
+      itemId_ = other.itemId_;
+      count_ = other.count_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemDeleteByIdInfo Clone() {
+      return new ItemDeleteByIdInfo(this);
+    }
+
+    /// <summary>Field number for the "item_id" field.</summary>
+    public const int ItemIdFieldNumber = 1;
+    private int itemId_;
+    /// <summary>
+    ///道具id
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ItemId {
+      get { return itemId_; }
+      set {
+        itemId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 2;
+    private int count_;
+    /// <summary>
+    ///删除数量
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ItemDeleteByIdInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ItemDeleteByIdInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ItemId != other.ItemId) return false;
+      if (Count != other.Count) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ItemId != 0) hash ^= ItemId.GetHashCode();
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (ItemId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(ItemId);
+      }
+      if (Count != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (ItemId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ItemId);
+      }
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Count);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ItemDeleteByIdInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ItemId != 0) {
+        ItemId = other.ItemId;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            ItemId = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Count = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  ///通过道具id删除道具请求
+  /// </summary>
+  public sealed partial class DeleteItemByIdReq : pb::IMessage<DeleteItemByIdReq> {
+    private static readonly pb::MessageParser<DeleteItemByIdReq> _parser = new pb::MessageParser<DeleteItemByIdReq>(() => new DeleteItemByIdReq());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DeleteItemByIdReq> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[12]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DeleteItemByIdReq() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DeleteItemByIdReq(DeleteItemByIdReq other) : this() {
+      itemDeleteList_ = other.itemDeleteList_.Clone();
+      operationReason_ = other.operationReason_;
+      idempotentId_ = other.idempotentId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DeleteItemByIdReq Clone() {
+      return new DeleteItemByIdReq(this);
+    }
+
+    /// <summary>Field number for the "item_delete_list" field.</summary>
+    public const int ItemDeleteListFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Item.ItemDeleteByIdInfo> _repeated_itemDeleteList_codec
+        = pb::FieldCodec.ForMessage(10, global::Item.ItemDeleteByIdInfo.Parser);
+    private readonly pbc::RepeatedField<global::Item.ItemDeleteByIdInfo> itemDeleteList_ = new pbc::RepeatedField<global::Item.ItemDeleteByIdInfo>();
+    /// <summary>
+    ///道具删除信息列表
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Item.ItemDeleteByIdInfo> ItemDeleteList {
+      get { return itemDeleteList_; }
+    }
+
+    /// <summary>Field number for the "operation_reason" field.</summary>
+    public const int OperationReasonFieldNumber = 2;
+    private string operationReason_ = "";
+    /// <summary>
+    ///操作原因
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string OperationReason {
+      get { return operationReason_; }
+      set {
+        operationReason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "idempotent_id" field.</summary>
+    public const int IdempotentIdFieldNumber = 3;
+    private string idempotentId_ = "";
+    /// <summary>
+    ///幂等id
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string IdempotentId {
+      get { return idempotentId_; }
+      set {
+        idempotentId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DeleteItemByIdReq);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DeleteItemByIdReq other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!itemDeleteList_.Equals(other.itemDeleteList_)) return false;
+      if (OperationReason != other.OperationReason) return false;
+      if (IdempotentId != other.IdempotentId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= itemDeleteList_.GetHashCode();
+      if (OperationReason.Length != 0) hash ^= OperationReason.GetHashCode();
+      if (IdempotentId.Length != 0) hash ^= IdempotentId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      itemDeleteList_.WriteTo(output, _repeated_itemDeleteList_codec);
+      if (OperationReason.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationReason);
+      }
+      if (IdempotentId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(IdempotentId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += itemDeleteList_.CalculateSize(_repeated_itemDeleteList_codec);
+      if (OperationReason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationReason);
+      }
+      if (IdempotentId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(IdempotentId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DeleteItemByIdReq other) {
+      if (other == null) {
+        return;
+      }
+      itemDeleteList_.Add(other.itemDeleteList_);
+      if (other.OperationReason.Length != 0) {
+        OperationReason = other.OperationReason;
+      }
+      if (other.IdempotentId.Length != 0) {
+        IdempotentId = other.IdempotentId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            itemDeleteList_.AddEntriesFrom(input, _repeated_itemDeleteList_codec);
+            break;
+          }
+          case 18: {
+            OperationReason = input.ReadString();
+            break;
+          }
+          case 26: {
+            IdempotentId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  ///通过道具id删除道具响应
+  /// </summary>
+  public sealed partial class DeleteItemByIdRsp : pb::IMessage<DeleteItemByIdRsp> {
+    private static readonly pb::MessageParser<DeleteItemByIdRsp> _parser = new pb::MessageParser<DeleteItemByIdRsp>(() => new DeleteItemByIdRsp());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DeleteItemByIdRsp> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Item.ItemReflection.Descriptor.MessageTypes[13]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DeleteItemByIdRsp() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DeleteItemByIdRsp(DeleteItemByIdRsp other) : this() {
+      code_ = other.code_;
+      msg_ = other.msg_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DeleteItemByIdRsp Clone() {
+      return new DeleteItemByIdRsp(this);
+    }
+
+    /// <summary>Field number for the "code" field.</summary>
+    public const int CodeFieldNumber = 1;
+    private global::Common.ErrorCode code_ = 0;
+    /// <summary>
+    ///错误码
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Common.ErrorCode Code {
+      get { return code_; }
+      set {
+        code_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "msg" field.</summary>
+    public const int MsgFieldNumber = 2;
+    private string msg_ = "";
+    /// <summary>
+    ///错误信息
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Msg {
+      get { return msg_; }
+      set {
+        msg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DeleteItemByIdRsp);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DeleteItemByIdRsp other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Code != other.Code) return false;
+      if (Msg != other.Msg) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Code != 0) hash ^= Code.GetHashCode();
+      if (Msg.Length != 0) hash ^= Msg.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Code != 0) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Code);
+      }
+      if (Msg.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Msg);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Code != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Code);
+      }
+      if (Msg.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Msg);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DeleteItemByIdRsp other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Code != 0) {
+        Code = other.Code;
+      }
+      if (other.Msg.Length != 0) {
+        Msg = other.Msg;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            code_ = (global::Common.ErrorCode) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            Msg = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
 
   }
 

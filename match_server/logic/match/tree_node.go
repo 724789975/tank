@@ -77,7 +77,7 @@ func (n *TreeNode) dumpNodesRecursive(level int, isLast []bool) {
 	// 打印当前节点
 	for i := 0; i < level; i++ {
 		if i == level-1 {
-			if isLast[i] {
+			if n.IsLeafNode() {
 				print("`-- ")
 			} else {
 				print("|-- ")

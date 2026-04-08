@@ -62,11 +62,8 @@ func (mp *MatchProcess) update() {
 			groups = append(groups, mg)
 		}
 
-		// 按照 人数降序， weight 降序，CreateTime 升序排列
+		// 按照 weight 降序，CreateTime 升序排列
 		sort.Slice(groups, func(i, j int) bool {
-			if groups[i].Count != groups[j].Count {
-				return groups[i].Count > groups[j].Count
-			}
 			if groups[i].Weights != groups[j].Weights {
 				return groups[i].Weights > groups[j].Weights
 			}

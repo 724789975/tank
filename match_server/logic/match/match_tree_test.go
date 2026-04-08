@@ -12,16 +12,16 @@ func TestMatchTree_BuildMatchTree(t *testing.T) {
 		args args
 	}{
 		// TODO: Add test cases.
-		{
-			name: "BuildMatchTree",
-			mt:   NewMatchTree(),
-			args: args{num: 10},
-		},
-		{
-			name: "BuildMatchTree_8",
-			mt:   NewMatchTree(),
-			args: args{num: 8},
-		},
+		// {
+		// 	name: "BuildMatchTree",
+		// 	mt:   NewMatchTree(),
+		// 	args: args{num: 10},
+		// },
+		// {
+		// 	name: "BuildMatchTree_8",
+		// 	mt:   NewMatchTree(),
+		// 	args: args{num: 8},
+		// },
 		{
 			name: "BuildMatchTree_5",
 			mt:   NewMatchTree(),

@@ -33,19 +33,19 @@ func (mt *MatchTree) BuildMatchTree(num int) {
 	}
 
 	// 递归生成所有分区组合
-	var partition func(n, maxNum int, vec []int)
-	partition = func(n, maxNum int, vec []int) {
+	var partition func(n, maxCount int, vec []int)
+	partition = func(n, maxCount int, vec []int) {
 		if n == 0 {
 			sortedVec := deepCopy(vec)
 			sort.Ints(sortedVec)
 			partitions = append(partitions, sortedVec)
 			return
 		}
-		if maxNum == 0 {
+		if maxCount == 0 {
 			partitions = append(partitions, deepCopy(vec))
 			return
 		}
-		for i := maxNum; i >= 1; i-- {
+		for i := maxCount; i >= 1; i-- {
 			vec1 := deepCopy(vec)
 			vec1 = append(vec1, i)
 			partition(n-i, min(i, n-i), vec1)

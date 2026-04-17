@@ -48,3 +48,8 @@ del go.mod
 .\bin\kitex -module item_manager -type protobuf -no-fast-api proto/item_service.proto
 rmdir /s /q ..\item_manager\kitex_gen
 move .\kitex_gen ..\item_manager\
+
+del go.mod
+.\bin\kitex -module auction_module -type protobuf -no-fast-api proto/auction_service.proto
+rmdir /s /q ..\auction\kitex_gen
+move .\kitex_gen ..\auction\

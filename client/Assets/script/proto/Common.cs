@@ -24,7 +24,7 @@ namespace Common {
     static CommonReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiqeCgoJRXJyb3JDb2RlEgYK",
+            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbirwCwoJRXJyb3JDb2RlEgYK",
             "Ak9LEAASCgoGRkFJTEVEEAESFwoTQVVUSF9NSVNTSU5HX0hFQURFUhBkEhUK",
             "EUFVVEhfSU5WQUxJRF9KU09OEGUSFwoTQVVUSF9JTlZBTElEX1VTRVJJRBBm",
             "EhQKEEFVVEhfSU5WQUxJRF9FWFAQZxIWChJBVVRIX1RPS0VOX0VYUElSRUQQ",
@@ -53,8 +53,12 @@ namespace Common {
             "X0ZBSUxFRBCwCRIXChJJVEVNX0RFTEVURV9GQUlMRUQQsQkSEwoOSVRFTV9O",
             "T1RfRk9VTkQQsgkSHgoZSVRFTV9JREVNUE9URU5UX0RVUExJQ0FURRCzCRIU",
             "Cg9JVEVNX0pTT05fRVJST1IQtAkSGgoVSVRFTV9MVUFfU0NSSVBUX0VSUk9S",
-            "ELUJEh8KGklURU1fUkVESVNfT1BFUkFUSU9OX0VSUk9SELYJQghaBmNvbW1v",
-            "bmIGcHJvdG8z"));
+            "ELUJEh8KGklURU1fUkVESVNfT1BFUkFUSU9OX0VSUk9SELYJEhgKE0FVQ1RJ",
+            "T05fUEFSQU1fRVJST1IQlAoSGAoTQVVDVElPTl9SRURJU19FUlJPUhCVChIc",
+            "ChdBVUNUSU9OX09SREVSX05PVF9GT1VORBCWChIbChZBVUNUSU9OX1VTRVJf",
+            "Tk9UX0ZPVU5EEJcKEiEKHEFVQ1RJT05fSURFTVBPVEVOVF9EVVBMSUNBVEUQ",
+            "mAoSJQogQVVDVElPTl9PUkRFUl9JRF9HRU5FUkFURV9GQUlMRUQQmQoSFwoS",
+            "QVVDVElPTl9QUk9DRVNTSU5HEJoKQghaBmNvbW1vbmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null));
@@ -256,6 +260,34 @@ namespace Common {
     /// Redis操作错误
     /// </summary>
     [pbr::OriginalName("ITEM_REDIS_OPERATION_ERROR")] ItemRedisOperationError = 1206,
+    /// <summary>
+    /// 拍卖服务相关错误
+    /// </summary>
+    [pbr::OriginalName("AUCTION_PARAM_ERROR")] AuctionParamError = 1300,
+    /// <summary>
+    /// Redis操作错误
+    /// </summary>
+    [pbr::OriginalName("AUCTION_REDIS_ERROR")] AuctionRedisError = 1301,
+    /// <summary>
+    /// 订单不存在
+    /// </summary>
+    [pbr::OriginalName("AUCTION_ORDER_NOT_FOUND")] AuctionOrderNotFound = 1302,
+    /// <summary>
+    /// 用户不存在
+    /// </summary>
+    [pbr::OriginalName("AUCTION_USER_NOT_FOUND")] AuctionUserNotFound = 1303,
+    /// <summary>
+    /// 幂等请求重复
+    /// </summary>
+    [pbr::OriginalName("AUCTION_IDEMPOTENT_DUPLICATE")] AuctionIdempotentDuplicate = 1304,
+    /// <summary>
+    /// 订单ID生成失败
+    /// </summary>
+    [pbr::OriginalName("AUCTION_ORDER_ID_GENERATE_FAILED")] AuctionOrderIdGenerateFailed = 1305,
+    /// <summary>
+    /// 正在处理中
+    /// </summary>
+    [pbr::OriginalName("AUCTION_PROCESSING")] AuctionProcessing = 1306,
   }
 
   #endregion

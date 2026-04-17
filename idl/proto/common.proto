@@ -74,4 +74,13 @@ enum ErrorCode {
     ITEM_JSON_ERROR           = 1204; // JSON解析错误
     ITEM_LUA_SCRIPT_ERROR     = 1205; // Lua脚本执行错误
     ITEM_REDIS_OPERATION_ERROR = 1206; // Redis操作错误
+    
+    // 拍卖服务相关错误
+    AUCTION_PARAM_ERROR               = 1300; // 参数错误
+    AUCTION_REDIS_ERROR               = 1301; // Redis操作错误
+    AUCTION_ORDER_NOT_FOUND           = 1302; // 订单不存在
+    AUCTION_USER_NOT_FOUND            = 1303; // 用户不存在
+    AUCTION_IDEMPOTENT_DUPLICATE      = 1304; // 幂等请求重复
+    AUCTION_ORDER_ID_GENERATE_FAILED  = 1305; // 订单ID生成失败
+    AUCTION_PROCESSING                = 1306; // 正在处理中
 }

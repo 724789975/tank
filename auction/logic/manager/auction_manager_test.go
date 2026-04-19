@@ -35,6 +35,8 @@ func TestMain(m *testing.M) {
 
 	setupTest()
 
+	getMatchManager()
+
 	// 运行测试
 	code := m.Run()
 

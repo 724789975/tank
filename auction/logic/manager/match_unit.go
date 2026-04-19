@@ -39,13 +39,13 @@ func newMatchUnit(itemId string) *matchUnit {
 	avgPriceStr, err := redis.GetRedis().Get(ctx, hourlyPriceKey).Result()
 	if err != nil {
 		// 如果没有找到数据，记录日志
-		klog.Infof("[AUCTION-MATCH-UNIT] No hourly price found in Redis for itemId=%s, hour=%s, initializing to 1",
+		klog.Infof("[AUCTION-MATCH-UNIT] No hourly price found in Redis for itemId=%s, hour=%s, initializing to 100",
 			itemId, now.Format("2006-01-02 15:00"))
 	} else {
 		// 解析平均价格
 		_, err := fmt.Sscanf(avgPriceStr, "%d", &hourlyAvgPrice)
 		if err != nil {
-			klog.Errorf("[AUCTION-MATCH-UNIT] Parse hourly price error: %v, initializing to 1", err)
+			klog.Errorf("[AUCTION-MATCH-UNIT] Parse hourly price error: %v, initializing to 100", err)
 			hourlyAvgPrice = 100
 		}
 	}

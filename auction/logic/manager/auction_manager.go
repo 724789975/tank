@@ -147,6 +147,7 @@ func (m *AuctionManager) Sell(ctx context.Context, req *auction.SellReq) (resp *
 	if !lockAcquired {
 		resp.Code = common.ErrorCode_AUCTION_PARAM_ERROR
 		resp.Msg = "user is busy"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-SELL] User %s is busy, cannot sell", userId)
 		return
 	}
 	// 释放锁
@@ -158,6 +159,7 @@ func (m *AuctionManager) Sell(ctx context.Context, req *auction.SellReq) (resp *
 	idempotentId := req.GetIdempotentId()
 	if idempotentId == "" {
 		resp.Msg = "idempotent_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-SELL] User %s idempotent_id is empty, cannot sell", userId)
 		return
 	}
 
@@ -170,6 +172,7 @@ func (m *AuctionManager) Sell(ctx context.Context, req *auction.SellReq) (resp *
 	if err != nil {
 		resp.Code = common.ErrorCode_AUCTION_REDIS_ERROR
 		resp.Msg = "check idempotent error"
+		klog.CtxErrorf(ctx, "[AUCTION-MGR-SELL] Check idempotent error: %s", err.Error())
 		return
 	}
 
@@ -192,7 +195,7 @@ func (m *AuctionManager) Sell(ctx context.Context, req *auction.SellReq) (resp *
 			resp.Data = sellData
 		}
 
-		klog.CtxInfof(ctx, "[AUCTION-MGR-SELL] Idempotent request detected, returning cached result: idempotentId=%s", idempotentId)
+		klog.CtxWarnf(ctx, "[AUCTION-MGR-SELL] Idempotent request detected, returning cached result: idempotentId=%s", idempotentId)
 		return
 	}
 
@@ -237,19 +240,23 @@ func (m *AuctionManager) Sell(ctx context.Context, req *auction.SellReq) (resp *
 	// 参数检查
 	if req.GetItemId() == "" {
 		resp.Msg = "item_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-SELL] User %s item_id is empty, cannot sell", userId)
 		return
 	}
 	if req.GetQuantity() <= 0 {
 		resp.Msg = "quantity must be greater than 0"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-SELL] User %s quantity must be greater than 0, cannot sell", userId)
 		return
 	}
 	if req.GetPrice() <= 0 {
 		resp.Msg = "price must be greater than 0"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-SELL] User %s price must be greater than 0, cannot sell", userId)
 		return
 	}
 	if userId == "" {
 		resp.Code = common.ErrorCode_AUCTION_USER_NOT_FOUND
 		resp.Msg = "user_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-SELL] User %s user_id is empty, cannot sell", userId)
 		return
 	}
 
@@ -409,6 +416,7 @@ func (m *AuctionManager) Buy(ctx context.Context, req *auction.BuyReq) (resp *au
 	if !lockAcquired {
 		resp.Code = common.ErrorCode_AUCTION_PARAM_ERROR
 		resp.Msg = "user is busy"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-BUY] User %s is busy, cannot buy", userId)
 		return
 	}
 	// 释放锁
@@ -420,6 +428,7 @@ func (m *AuctionManager) Buy(ctx context.Context, req *auction.BuyReq) (resp *au
 	idempotentId := req.GetIdempotentId()
 	if idempotentId == "" {
 		resp.Msg = "idempotent_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-BUY] User %s idempotent_id is empty, cannot buy", userId)
 		return
 	}
 
@@ -432,6 +441,7 @@ func (m *AuctionManager) Buy(ctx context.Context, req *auction.BuyReq) (resp *au
 	if err != nil {
 		resp.Code = common.ErrorCode_AUCTION_REDIS_ERROR
 		resp.Msg = "check idempotent error"
+		klog.CtxErrorf(ctx, "[AUCTION-MGR-BUY] Check idempotent error: %s", err.Error())
 		return
 	}
 
@@ -495,19 +505,23 @@ func (m *AuctionManager) Buy(ctx context.Context, req *auction.BuyReq) (resp *au
 	// 参数检查
 	if req.GetItemId() == "" {
 		resp.Msg = "item_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-BUY] User %s item_id is empty, cannot buy", userId)
 		return
 	}
 	if req.GetQuantity() <= 0 {
 		resp.Msg = "quantity must be greater than 0"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-BUY] User %s quantity must be greater than 0, cannot buy", userId)
 		return
 	}
 	if req.GetPrice() <= 0 {
 		resp.Msg = "price must be greater than 0"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-BUY] User %s price must be greater than 0, cannot buy", userId)
 		return
 	}
 	if userId == "" {
 		resp.Code = common.ErrorCode_AUCTION_USER_NOT_FOUND
 		resp.Msg = "user_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-BUY] User %s user_id is empty, cannot buy", userId)
 		return
 	}
 
@@ -662,6 +676,7 @@ func (m *AuctionManager) CancelSell(ctx context.Context, req *auction.CancelSell
 	if !lockAcquired {
 		resp.Code = common.ErrorCode_AUCTION_PARAM_ERROR
 		resp.Msg = "user is busy"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-SELL] User %s is busy, cannot cancel sell", userId)
 		return
 	}
 	// 释放锁
@@ -673,6 +688,7 @@ func (m *AuctionManager) CancelSell(ctx context.Context, req *auction.CancelSell
 	idempotentId := req.GetIdempotentId()
 	if idempotentId == "" {
 		resp.Msg = "idempotent_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-SELL] User %s idempotent_id is empty, cannot cancel sell", userId)
 		return
 	}
 
@@ -685,6 +701,7 @@ func (m *AuctionManager) CancelSell(ctx context.Context, req *auction.CancelSell
 	if err != nil {
 		resp.Code = common.ErrorCode_AUCTION_REDIS_ERROR
 		resp.Msg = "check idempotent error"
+		klog.CtxErrorf(ctx, "[AUCTION-MGR-CANCEL-SELL] Check idempotent error: %s", err.Error())
 		return
 	}
 
@@ -734,11 +751,13 @@ func (m *AuctionManager) CancelSell(ctx context.Context, req *auction.CancelSell
 	// 参数检查
 	if req.GetOrderId() == "" {
 		resp.Msg = "order_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-SELL] User %s order_id is empty, cannot cancel sell", userId)
 		return
 	}
 	if userId == "" {
 		resp.Code = common.ErrorCode_AUCTION_USER_NOT_FOUND
 		resp.Msg = "user_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-SELL] User %s user_id is empty, cannot cancel sell", userId)
 		return
 	}
 
@@ -906,6 +925,7 @@ func (m *AuctionManager) CancelBuy(ctx context.Context, req *auction.CancelBuyRe
 	if !lockAcquired {
 		resp.Code = common.ErrorCode_AUCTION_PARAM_ERROR
 		resp.Msg = "user is busy"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-BUY] User %s is busy, cannot cancel buy", userId)
 		return
 	}
 	// 释放锁
@@ -917,6 +937,7 @@ func (m *AuctionManager) CancelBuy(ctx context.Context, req *auction.CancelBuyRe
 	idempotentId := req.GetIdempotentId()
 	if idempotentId == "" {
 		resp.Msg = "idempotent_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-BUY] User %s idempotent_id is empty, cannot cancel buy", userId)
 		return
 	}
 
@@ -929,6 +950,7 @@ func (m *AuctionManager) CancelBuy(ctx context.Context, req *auction.CancelBuyRe
 	if err != nil {
 		resp.Code = common.ErrorCode_AUCTION_REDIS_ERROR
 		resp.Msg = "check idempotent error"
+		klog.CtxErrorf(ctx, "[AUCTION-MGR-CANCEL-BUY] Check idempotent error: %s", err.Error())
 		return
 	}
 
@@ -978,11 +1000,13 @@ func (m *AuctionManager) CancelBuy(ctx context.Context, req *auction.CancelBuyRe
 	// 参数检查
 	if req.GetOrderId() == "" {
 		resp.Msg = "order_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-BUY] User %s order_id is empty, cannot cancel buy", userId)
 		return
 	}
 	if userId == "" {
 		resp.Code = common.ErrorCode_AUCTION_USER_NOT_FOUND
 		resp.Msg = "user_id is empty"
+		klog.CtxInfof(ctx, "[AUCTION-MGR-CANCEL-BUY] User %s user_id is empty, cannot cancel buy", userId)
 		return
 	}
 

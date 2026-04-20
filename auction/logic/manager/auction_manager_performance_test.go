@@ -185,12 +185,13 @@ func TestAuctionManager_Performance_GetTransactionHistory(t *testing.T) {
 	// 创建一些交易记录
 	for i := 0; i < 10; i++ {
 		itemID := "test_item_perf_history_" + string(rune(i+'0'))
+		price := getMatchManager().GetMatchUnit(itemID).hourlyAvgPrice
 
 		// 创建出售订单
 		sellReq := &auction.SellReq{
 			ItemId:       itemID,
-			Quantity:     5,
-			Price:        100,
+			Quantity:     50,
+			Price:        price,
 			ItemInfo:     "Test Item",
 			IdempotentId: "test_sell_for_history_perf_" + string(rune(i+'0')) + "_" + time.Now().String(),
 		}
@@ -199,20 +200,23 @@ func TestAuctionManager_Performance_GetTransactionHistory(t *testing.T) {
 			t.Skip("Failed to create sell orders for history performance test:", err)
 		}
 
-		// 创建购买订单
-		buyReq := &auction.BuyReq{
-			ItemId:       itemID,
-			Quantity:     5,
-			Price:        100,
-			IdempotentId: "test_buy_for_history_perf_" + string(rune(i+'0')) + "_" + time.Now().String(),
-		}
-		_, err = manager.Buy(historyTestCtx, buyReq)
-		if err != nil {
-			t.Skip("Failed to create buy orders for history performance test:", err)
-		}
+		//购买10次每次5个
+		for j := 0; j < 10; j++ {
+			// 创建购买订单
+			buyReq := &auction.BuyReq{
+				ItemId:       itemID,
+				Quantity:     5,
+				Price:        price,
+				IdempotentId: "test_buy_for_history_perf_" + string(rune(i+'0')) + "_" + string(rune(j+'0')) + "_" + time.Now().String(),
+			}
+			_, err = manager.Buy(historyTestCtx, buyReq)
+			if err != nil {
+				t.Skip("Failed to create buy orders for history performance test:", err)
+			}
 
-		// 等待交易完成
-		time.Sleep(1 * time.Second)
+			// 等待交易完成
+			time.Sleep(100 * time.Millisecond)
+		}
 	}
 
 	// 先通过GetTransactionsByTime获取交易记录
@@ -231,11 +235,8 @@ func TestAuctionManager_Performance_GetTransactionHistory(t *testing.T) {
 	var orderIds []string
 	if getByTimeResp.Data != nil && len(getByTimeResp.Data.Records) > 0 {
 		for _, record := range getByTimeResp.Data.Records {
-			if record.BuyOrderId != "" {
-				orderIds = append(orderIds, record.BuyOrderId)
-			}
-			if record.SellOrderId != "" {
-				orderIds = append(orderIds, record.SellOrderId)
+			if record.TradeDirection == "sell" {
+				orderIds = append(orderIds, record.TransactionId)
 			}
 		}
 	}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "proto/auction.proto";
+package auction_service;
+
+option go_package = "auction_service";
+
+service AuctionService {
+    rpc ping(auction.PingReq) returns (auction.PingRsp);
+    rpc sell(auction.SellReq) returns (auction.SellRsp);
+    rpc buy(auction.BuyReq) returns (auction.BuyRsp);
+    rpc cancel_sell(auction.CancelSellReq) returns (auction.CancelSellRsp);
+    rpc cancel_buy(auction.CancelBuyReq) returns (auction.CancelBuyRsp);
+    rpc get_my_sells(auction.GetMySellsReq) returns (auction.GetMySellsRsp);
+    rpc get_my_buys(auction.GetMyBuysReq) returns (auction.GetMyBuysRsp);
+    rpc get_item_auction_info(auction.GetItemAuctionInfoReq) returns (auction.GetItemAuctionInfoRsp);
+    rpc get_transaction_history(auction.GetTransactionHistoryReq) returns (auction.GetTransactionHistoryRsp);
+    rpc get_transactions_by_time(auction.GetTransactionsByTimeReq) returns (auction.GetTransactionsByTimeRsp);
+}
+

@@ -61,8 +61,6 @@ func (m *AuctionManager) checkIdempotency(ctx context.Context, idempotentKey str
 		return nil, luaErr
 	}
 
-	klog.CtxInfof(ctx, "%s Lua script result type: %T, value: %v", prefix, result, result)
-
 	// 解析Lua脚本返回结果
 	resultMap := make(map[string]interface{})
 	if resultSlice, ok := result.([]interface{}); ok && len(resultSlice) > 0 {
@@ -1384,17 +1382,22 @@ func (m *AuctionManager) GetTransactionsByTime(ctx context.Context, req *auction
 	resp = &auction.GetTransactionsByTimeRsp{
 		Code: common.ErrorCode_AUCTION_PARAM_ERROR,
 		Msg:  "default error",
-		Data: &auction.TransactionHistoryData{
-			Records: make([]*auction.TransactionRecord, 0),
+		Data: &auction.TransactionsByTimeData{
+			Total:    0,
+			Page:     req.GetPage(),
+			PageSize: req.GetPageSize(),
+			Records:  make([]*auction.TimeTransactionRecord, 0),
 		},
 	}
 
 	// 检查请求参数
 	if req.GetPage() < 1 {
 		req.Page = 1
+		resp.Data.Page = 1
 	}
 	if req.GetPageSize() < 1 || req.GetPageSize() > 100 {
 		req.PageSize = 10
+		resp.Data.PageSize = 10
 	}
 
 	// 获取用户ID
@@ -1472,11 +1475,13 @@ func (m *AuctionManager) GetTransactionsByTime(ctx context.Context, req *auction
 	// 处理Lua脚本返回的结果
 	if resultList, ok := result.([]interface{}); ok && len(resultList) == 2 {
 		// 获取总记录数
-		// 由于删除了Total字段，这里不再设置
+		if totalInterface, ok := resultList[0].(int64); ok {
+			resp.Data.Total = int32(totalInterface)
+		}
 
 		// 获取交易记录
 		if transactionsInterface, ok := resultList[1].([]interface{}); ok {
-			records := make([]*auction.TransactionRecord, 0, len(transactionsInterface))
+			records := make([]*auction.TimeTransactionRecord, 0, len(transactionsInterface))
 			for _, transactionInterface := range transactionsInterface {
 				if orderStatusMap, ok := transactionInterface.([]interface{}); ok {
 					// 将[]interface{}转换为map[string]string
@@ -1489,11 +1494,14 @@ func (m *AuctionManager) GetTransactionsByTime(ctx context.Context, req *auction
 						}
 					}
 
-					// 构造TransactionRecord
-					record := &auction.TransactionRecord{
-						BuyOrderId:  dataMap["order_id"],
-						SellOrderId: dataMap["order_id"],
-						ItemId:      dataMap["item_id"],
+					// 构造TimeTransactionRecord
+					record := &auction.TimeTransactionRecord{
+						TransactionId:  dataMap["order_id"],
+						ItemId:         dataMap["item_id"],
+						ItemInfo:       dataMap["item_info"],
+						TradeDirection: dataMap["trade_direction"],
+						Status:         dataMap["status"],
+						UserId:         dataMap["user_id"],
 					}
 
 					// 解析数值字段
@@ -1508,6 +1516,12 @@ func (m *AuctionManager) GetTransactionsByTime(ctx context.Context, req *auction
 					}
 					if createTime, err := strconv.ParseInt(dataMap["create_time"], 10, 64); err == nil {
 						record.TransactionTime = createTime
+					}
+					if finalPrice, err := strconv.ParseInt(dataMap["final_price"], 10, 64); err == nil {
+						record.FinalPrice = finalPrice
+					}
+					if finalQuantity, err := strconv.ParseInt(dataMap["final_quantity"], 10, 32); err == nil {
+						record.FinalQuantity = int32(finalQuantity)
 					}
 
 					// 添加到记录列表

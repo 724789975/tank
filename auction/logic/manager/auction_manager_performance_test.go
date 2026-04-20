@@ -178,46 +178,58 @@ func TestAuctionManager_Performance_GetTransactionHistory(t *testing.T) {
 
 	manager := GetAuctionManager()
 
-	// 为创建交易记录使用单独的 userID
-	historyUserID := "test_user_performance_history"
-	historyTestCtx := context.WithValue(ctx, "userId", historyUserID)
+	// 并发数
+	concurrency := 10
+	// 每个用户查询次数
+	queriesPerUser := 10
 
+	var wg sync.WaitGroup
 	// 创建一些交易记录
-	for i := 0; i < 10; i++ {
-		itemID := "test_item_perf_history_" + string(rune(i+'0'))
-		price := getMatchManager().GetMatchUnit(itemID).hourlyAvgPrice
+	for i := 0; i < concurrency; i++ {
+		wg.Add(1)
+		go func(userIdx int) {
+			defer wg.Done()
+			// 为创建交易记录使用单独的 userID
+			historyUserID := "test_user_performance_history" + string(rune(i+'0'))
+			historyTestCtx := context.WithValue(ctx, "userId", historyUserID)
 
-		// 创建出售订单
-		sellReq := &auction.SellReq{
-			ItemId:       itemID,
-			Quantity:     50,
-			Price:        price,
-			ItemInfo:     "Test Item",
-			IdempotentId: "test_sell_for_history_perf_" + string(rune(i+'0')) + "_" + time.Now().String(),
-		}
-		_, err = manager.Sell(historyTestCtx, sellReq)
-		if err != nil {
-			t.Skip("Failed to create sell orders for history performance test:", err)
-		}
+			itemID := "test_item_perf_history_" + string(rune(i+'0'))
+			price := getMatchManager().GetMatchUnit(itemID).hourlyAvgPrice
 
-		//购买10次每次5个
-		for j := 0; j < 10; j++ {
-			// 创建购买订单
-			buyReq := &auction.BuyReq{
+			// 创建出售订单
+			sellReq := &auction.SellReq{
 				ItemId:       itemID,
-				Quantity:     5,
+				Quantity:     40,
 				Price:        price,
-				IdempotentId: "test_buy_for_history_perf_" + string(rune(i+'0')) + "_" + string(rune(j+'0')) + "_" + time.Now().String(),
+				ItemInfo:     "Test Item",
+				IdempotentId: "test_sell_for_history_perf_" + string(rune(i+'0')) + "_" + time.Now().String(),
 			}
-			_, err = manager.Buy(historyTestCtx, buyReq)
+			_, err = manager.Sell(historyTestCtx, sellReq)
 			if err != nil {
-				t.Skip("Failed to create buy orders for history performance test:", err)
+				t.Skip("Failed to create sell orders for history performance test:", err)
 			}
 
-			// 等待交易完成
-			time.Sleep(100 * time.Millisecond)
-		}
+			//购买10次每次5个
+			for j := 0; j < 8; j++ {
+				// 创建购买订单
+				buyReq := &auction.BuyReq{
+					ItemId:       itemID,
+					Quantity:     5,
+					Price:        price,
+					IdempotentId: "test_buy_for_history_perf_" + string(rune(i+'0')) + "_" + string(rune(j+'0')) + "_" + time.Now().String(),
+				}
+				_, err = manager.Buy(historyTestCtx, buyReq)
+				if err != nil {
+					t.Skip("Failed to create buy orders for history performance test:", err)
+				}
+
+				// 等待交易完成
+				time.Sleep(1000 * time.Millisecond)
+			}
+		}(i)
 	}
+
+	wg.Wait()
 
 	// 先通过GetTransactionsByTime获取交易记录
 	getByTimeReq := &auction.GetTransactionsByTimeReq{
@@ -226,43 +238,49 @@ func TestAuctionManager_Performance_GetTransactionHistory(t *testing.T) {
 		Page:      1,
 		PageSize:  100,
 	}
-	getByTimeResp, err := manager.GetTransactionsByTime(historyTestCtx, getByTimeReq)
-	if err != nil || getByTimeResp.Code != common.ErrorCode_OK {
-		t.Skip("Failed to get transactions by time:", err)
+
+	timeresps := make([]*auction.GetTransactionsByTimeRsp, 0, concurrency)
+	for i := 0; i < concurrency; i++ {
+		historyUserID := "test_user_performance_history" + string(rune(i+'0'))
+		historyTestCtx := context.WithValue(ctx, "userId", historyUserID)
+		getByTimeResp, err := manager.GetTransactionsByTime(historyTestCtx, getByTimeReq)
+		if err != nil || getByTimeResp.Code != common.ErrorCode_OK {
+			t.Skip("Failed to get transactions by time:", err)
+		}
+		timeresps = append(timeresps, getByTimeResp)
 	}
 
 	// 从GetTransactionsByTime响应中提取订单ID列表
-	var orderIds []string
-	if getByTimeResp.Data != nil && len(getByTimeResp.Data.Records) > 0 {
-		for _, record := range getByTimeResp.Data.Records {
+	var orderIds = make([][]string, 0)
+	for _, resp := range timeresps {
+		orders := []string{}
+		for _, record := range resp.Data.Records {
 			if record.TradeDirection == "sell" {
-				orderIds = append(orderIds, record.TransactionId)
+				orders = append(orders, record.TransactionId)
 			}
 		}
+		orderIds = append(orderIds, orders)
 	}
 	if len(orderIds) == 0 {
 		t.Skip("No transaction records found")
 	}
-
-	// 并发数
-	concurrency := 100
-	// 每个用户查询次数
-	queriesPerUser := 10
-
-	var wg sync.WaitGroup
+	var wg2 sync.WaitGroup
 	errorChan := make(chan error, concurrency*queriesPerUser)
 	startTime := time.Now()
 
 	// 并发获取交易历史
-	for i := 0; i < concurrency; i++ {
-		wg.Add(1)
-		go func(userIdx int) {
-			defer wg.Done()
+	for i := 0; i < len(orderIds); i++ {
+		orders := orderIds[i]
+		wg2.Add(1)
+		go func(userIdx int, orders []string) {
+			historyUserID := "test_user_performance_history" + string(rune(i+'0'))
+			historyTestCtx := context.WithValue(ctx, "userId", historyUserID)
+			defer wg2.Done()
 			// 使用与创建交易记录相同的userID，确保能够查询到交易记录
 			testCtx := historyTestCtx
-			for j := 0; j < queriesPerUser; j++ {
+			for j := 0; j < len(orders); j++ {
 				// 使用从GetTransactionsByTime获取的订单ID获取交易历史
-				orderId := orderIds[j%len(orderIds)]
+				orderId := orders[j]
 				getReq := &auction.GetTransactionHistoryReq{
 					OrderId: orderId,
 				}
@@ -272,10 +290,10 @@ func TestAuctionManager_Performance_GetTransactionHistory(t *testing.T) {
 					errorChan <- err
 				}
 			}
-		}(i)
+		}(i, orders)
 	}
 
-	wg.Wait()
+	wg2.Wait()
 	close(errorChan)
 
 	duration := time.Since(startTime)

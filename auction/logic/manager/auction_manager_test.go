@@ -37,6 +37,9 @@ func TestMain(m *testing.M) {
 
 	getMatchManager()
 
+	// 清理测试环境
+	teardownTest()
+
 	// 运行测试
 	code := m.Run()
 

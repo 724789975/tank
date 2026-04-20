@@ -334,8 +334,10 @@ func (m *AuctionManager) Sell(ctx context.Context, req *auction.SellReq) (resp *
 			'order_id', ARGV[7],
 			'trade_direction', 'sell',
 			'status', '卖',
+			'quantity', ARGV[2],
+			'price', ARGV[3],
 			'final_price', 0,
-			'final_quantity', ARGV[2],
+			'final_quantity', 0,
 			'item_id', ARGV[1],
 			'tax', 0,
 			'create_time', ARGV[5],
@@ -595,8 +597,10 @@ func (m *AuctionManager) Buy(ctx context.Context, req *auction.BuyReq) (resp *au
 			'order_id', ARGV[6],
 			'trade_direction', 'buy',
 			'status', '买',
+			'price', ARGV[3],
+			'quantity', ARGV[2],
 			'final_price', 0,
-			'final_quantity', ARGV[2],
+			'final_quantity', 0,
 			'item_id', ARGV[1],
 			'tax', 0,
 			'create_time', ARGV[4],
@@ -828,8 +832,6 @@ func (m *AuctionManager) CancelSell(ctx context.Context, req *auction.CancelSell
 			'order_id', orderId,
 			'trade_direction', 'sell',
 			'status', '取消',
-			'final_price', 0,
-			'final_quantity', 0,
 			'item_id', itemId,
 			'tax', 0,
 			'create_time', createTime,
@@ -1077,8 +1079,6 @@ func (m *AuctionManager) CancelBuy(ctx context.Context, req *auction.CancelBuyRe
 			'order_id', orderId,
 			'trade_direction', 'buy',
 			'status', '取消',
-			'final_price', 0,
-			'final_quantity', 0,
 			'item_id', itemId,
 			'tax', 0,
 			'create_time', createTime,
@@ -1505,10 +1505,10 @@ func (m *AuctionManager) GetTransactionsByTime(ctx context.Context, req *auction
 					}
 
 					// 解析数值字段
-					if quantity, err := strconv.ParseInt(dataMap["final_quantity"], 10, 32); err == nil {
+					if quantity, err := strconv.ParseInt(dataMap["quantity"], 10, 32); err == nil {
 						record.Quantity = int32(quantity)
 					}
-					if price, err := strconv.ParseInt(dataMap["final_price"], 10, 64); err == nil {
+					if price, err := strconv.ParseInt(dataMap["price"], 10, 64); err == nil {
 						record.Price = price
 					}
 					if tax, err := strconv.ParseInt(dataMap["tax"], 10, 64); err == nil {

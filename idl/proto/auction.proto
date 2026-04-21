@@ -5,6 +5,7 @@ package auction;
 import "google/protobuf/any.proto";
 import "proto/common.proto";
 
+// 基础消息类型
 message PingReq {
     string message = 1;
 }
@@ -12,6 +13,55 @@ message PingReq {
 message PingRsp {
     common.ErrorCode code = 1;
     string msg = 2;
+}
+
+// 订单信息
+message OrderInfo {
+    string item_id = 1;          // 道具ID
+    int32 quantity = 2;          // 道具数量
+    int64 price = 3;             // 价格
+}
+
+// 交易记录数据
+message TransactionRecord {
+  string transaction_id = 1;     // 交易ID
+  string buy_order_id = 2;       // 买单ID
+  string sell_order_id = 3;      // 卖单ID
+  string item_id = 4;            // 道具ID
+  string item_info = 5;          // 道具信息
+  int32 quantity = 6;            // 交易数量
+  int64 price = 7;               // 交易价格
+  int64 tax = 8;                 // 税费金额
+  int64 transaction_time = 9;    // 交易时间
+}
+
+// 按时间查询交易记录数据
+message TimeTransactionRecord {
+  string transaction_id = 1;      // 交易ID
+  string item_id = 2;            // 道具ID
+  string item_info = 3;          // 道具信息
+  int32 quantity = 4;            // 交易数量
+  int64 price = 5;               // 交易价格
+  int64 tax = 6;                 // 税费金额
+  int64 transaction_time = 7;    // 交易时间
+  string trade_direction = 8;    // 交易方向（buy/sell）
+  string status = 9;             // 交易状态
+  int64 final_price = 10;         // 最终价格
+  int32 final_quantity = 11;      // 最终数量
+  string user_id = 12;            // 用户ID
+}
+
+// 交易历史数据
+message TransactionHistoryData {
+  repeated TransactionRecord records = 1;    // 交易记录列表
+}
+
+// 按时间获取交易记录数据
+message TransactionsByTimeData {
+  int32 total = 1;              // 总记录数
+  int32 page = 2;               // 当前页码
+  int32 page_size = 3;          // 每页数量
+  repeated TimeTransactionRecord records = 4;    // 交易记录列表
 }
 
 // 出售协议 - 用户出售物品
@@ -118,13 +168,6 @@ message GetMyBuysRsp {
     repeated BuyData data = 3;   // 求购订单列表
 }
 
-// 订单信息
-message OrderInfo {
-    string item_id = 1;          // 道具ID
-    int32 quantity = 2;          // 道具数量
-    int64 price = 3;             // 价格
-}
-
 // 获取道具出售求购详情协议
 message GetItemAuctionInfoReq {
     repeated string item_ids = 1; // 道具ID列表
@@ -142,48 +185,6 @@ message GetItemAuctionInfoRsp {
     common.ErrorCode code = 1;   // 错误码
     string msg = 2;              // 错误信息
     repeated ItemAuctionInfo data = 3; // 道具拍卖信息列表
-}
-
-// 交易记录数据
-message TransactionRecord {
-  string transaction_id = 1;     // 交易ID
-  string buy_order_id = 2;       // 买单ID
-  string sell_order_id = 3;      // 卖单ID
-  string item_id = 4;            // 道具ID
-  string item_info = 5;          // 道具信息
-  int32 quantity = 6;            // 交易数量
-  int64 price = 7;               // 交易价格
-  int64 tax = 8;                 // 税费金额
-  int64 transaction_time = 9;    // 交易时间
-}
-
-// 按时间查询交易记录数据
-message TimeTransactionRecord {
-  string transaction_id = 1;      // 交易ID
-  string item_id = 2;            // 道具ID
-  string item_info = 3;          // 道具信息
-  int32 quantity = 4;            // 交易数量
-  int64 price = 5;               // 交易价格
-  int64 tax = 6;                 // 税费金额
-  int64 transaction_time = 7;    // 交易时间
-  string trade_direction = 8;    // 交易方向（buy/sell）
-  string status = 9;             // 交易状态
-  int64 final_price = 10;         // 最终价格
-  int32 final_quantity = 11;      // 最终数量
-  string user_id = 12;            // 用户ID
-}
-
-// 交易历史数据
-message TransactionHistoryData {
-  repeated TransactionRecord records = 1;    // 交易记录列表
-}
-
-// 按时间获取交易记录数据
-message TransactionsByTimeData {
-  int32 total = 1;              // 总记录数
-  int32 page = 2;               // 当前页码
-  int32 page_size = 3;          // 每页数量
-  repeated TimeTransactionRecord records = 4;    // 交易记录列表
 }
 
 // 获取交易历史请求

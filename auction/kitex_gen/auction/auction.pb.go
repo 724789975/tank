@@ -23,6 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 基础消息类型
 type PingReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -125,992 +126,6 @@ func (x *PingRsp) GetMsg() string {
 	return ""
 }
 
-// 出售协议 - 用户出售物品
-type SellReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	ItemId       string `protobuf:"bytes,1,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`                   // 物品ID
-	Price        int64  `protobuf:"varint,2,opt,name=price,proto3" json:"price,omitempty"`                                  // 出售价格
-	Quantity     int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                            // 出售数量
-	ItemInfo     string `protobuf:"bytes,4,opt,name=item_info,json=itemInfo,proto3" json:"item_info,omitempty"`             // 道具信息（JSON字符串）
-	IdempotentId string `protobuf:"bytes,5,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复请求
-}
-
-func (x *SellReq) Reset() {
-	*x = SellReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SellReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SellReq) ProtoMessage() {}
-
-func (x *SellReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SellReq.ProtoReflect.Descriptor instead.
-func (*SellReq) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *SellReq) GetItemId() string {
-	if x != nil {
-		return x.ItemId
-	}
-	return ""
-}
-
-func (x *SellReq) GetPrice() int64 {
-	if x != nil {
-		return x.Price
-	}
-	return 0
-}
-
-func (x *SellReq) GetQuantity() int32 {
-	if x != nil {
-		return x.Quantity
-	}
-	return 0
-}
-
-func (x *SellReq) GetItemInfo() string {
-	if x != nil {
-		return x.ItemInfo
-	}
-	return ""
-}
-
-func (x *SellReq) GetIdempotentId() string {
-	if x != nil {
-		return x.IdempotentId
-	}
-	return ""
-}
-
-// 出售响应数据结构 - 包含完整订单信息
-type SellData struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	OrderId    string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`           // 订单ID
-	ItemId     string `protobuf:"bytes,2,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`              // 道具ID
-	Quantity   int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                       // 道具数量
-	Price      int64  `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`                             // 出售价格
-	ItemInfo   string `protobuf:"bytes,5,opt,name=item_info,json=itemInfo,proto3" json:"item_info,omitempty"`        // 道具信息（JSON字符串）
-	CreateTime int64  `protobuf:"varint,6,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"` // 创建时间
-}
-
-func (x *SellData) Reset() {
-	*x = SellData{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SellData) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SellData) ProtoMessage() {}
-
-func (x *SellData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SellData.ProtoReflect.Descriptor instead.
-func (*SellData) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *SellData) GetOrderId() string {
-	if x != nil {
-		return x.OrderId
-	}
-	return ""
-}
-
-func (x *SellData) GetItemId() string {
-	if x != nil {
-		return x.ItemId
-	}
-	return ""
-}
-
-func (x *SellData) GetQuantity() int32 {
-	if x != nil {
-		return x.Quantity
-	}
-	return 0
-}
-
-func (x *SellData) GetPrice() int64 {
-	if x != nil {
-		return x.Price
-	}
-	return 0
-}
-
-func (x *SellData) GetItemInfo() string {
-	if x != nil {
-		return x.ItemInfo
-	}
-	return ""
-}
-
-func (x *SellData) GetCreateTime() int64 {
-	if x != nil {
-		return x.CreateTime
-	}
-	return 0
-}
-
-type SellRsp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
-	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
-	Data *SellData        `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
-}
-
-func (x *SellRsp) Reset() {
-	*x = SellRsp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SellRsp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SellRsp) ProtoMessage() {}
-
-func (x *SellRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SellRsp.ProtoReflect.Descriptor instead.
-func (*SellRsp) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *SellRsp) GetCode() common.ErrorCode {
-	if x != nil {
-		return x.Code
-	}
-	return common.ErrorCode(0)
-}
-
-func (x *SellRsp) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
-
-func (x *SellRsp) GetData() *SellData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-// 求购协议 - 用户发布求购需求
-type BuyReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	ItemId       string `protobuf:"bytes,1,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`                   // 物品ID
-	Price        int64  `protobuf:"varint,2,opt,name=price,proto3" json:"price,omitempty"`                                  // 求购价格
-	Quantity     int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                            // 求购数量
-	IdempotentId string `protobuf:"bytes,4,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复请求
-}
-
-func (x *BuyReq) Reset() {
-	*x = BuyReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *BuyReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*BuyReq) ProtoMessage() {}
-
-func (x *BuyReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use BuyReq.ProtoReflect.Descriptor instead.
-func (*BuyReq) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *BuyReq) GetItemId() string {
-	if x != nil {
-		return x.ItemId
-	}
-	return ""
-}
-
-func (x *BuyReq) GetPrice() int64 {
-	if x != nil {
-		return x.Price
-	}
-	return 0
-}
-
-func (x *BuyReq) GetQuantity() int32 {
-	if x != nil {
-		return x.Quantity
-	}
-	return 0
-}
-
-func (x *BuyReq) GetIdempotentId() string {
-	if x != nil {
-		return x.IdempotentId
-	}
-	return ""
-}
-
-// 求购响应数据结构 - 包含完整订单信息
-type BuyData struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	OrderId    string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`           // 订单ID
-	ItemId     string `protobuf:"bytes,2,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`              // 道具ID
-	Quantity   int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                       // 道具数量
-	Price      int64  `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`                             // 求购价格
-	CreateTime int64  `protobuf:"varint,5,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"` // 创建时间
-}
-
-func (x *BuyData) Reset() {
-	*x = BuyData{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *BuyData) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*BuyData) ProtoMessage() {}
-
-func (x *BuyData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use BuyData.ProtoReflect.Descriptor instead.
-func (*BuyData) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *BuyData) GetOrderId() string {
-	if x != nil {
-		return x.OrderId
-	}
-	return ""
-}
-
-func (x *BuyData) GetItemId() string {
-	if x != nil {
-		return x.ItemId
-	}
-	return ""
-}
-
-func (x *BuyData) GetQuantity() int32 {
-	if x != nil {
-		return x.Quantity
-	}
-	return 0
-}
-
-func (x *BuyData) GetPrice() int64 {
-	if x != nil {
-		return x.Price
-	}
-	return 0
-}
-
-func (x *BuyData) GetCreateTime() int64 {
-	if x != nil {
-		return x.CreateTime
-	}
-	return 0
-}
-
-type BuyRsp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
-	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
-	Data *BuyData         `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
-}
-
-func (x *BuyRsp) Reset() {
-	*x = BuyRsp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *BuyRsp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*BuyRsp) ProtoMessage() {}
-
-func (x *BuyRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use BuyRsp.ProtoReflect.Descriptor instead.
-func (*BuyRsp) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *BuyRsp) GetCode() common.ErrorCode {
-	if x != nil {
-		return x.Code
-	}
-	return common.ErrorCode(0)
-}
-
-func (x *BuyRsp) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
-
-func (x *BuyRsp) GetData() *BuyData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-// 取消出售协议 - 取消已发布的出售
-type CancelSellReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	OrderId      string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`                // 订单ID
-	IdempotentId string `protobuf:"bytes,2,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复取消
-}
-
-func (x *CancelSellReq) Reset() {
-	*x = CancelSellReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelSellReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelSellReq) ProtoMessage() {}
-
-func (x *CancelSellReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelSellReq.ProtoReflect.Descriptor instead.
-func (*CancelSellReq) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *CancelSellReq) GetOrderId() string {
-	if x != nil {
-		return x.OrderId
-	}
-	return ""
-}
-
-func (x *CancelSellReq) GetIdempotentId() string {
-	if x != nil {
-		return x.IdempotentId
-	}
-	return ""
-}
-
-// 取消出售响应数据结构
-type CancelSellData struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // 取消是否成功
-}
-
-func (x *CancelSellData) Reset() {
-	*x = CancelSellData{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelSellData) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelSellData) ProtoMessage() {}
-
-func (x *CancelSellData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelSellData.ProtoReflect.Descriptor instead.
-func (*CancelSellData) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *CancelSellData) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-type CancelSellRsp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
-	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
-	Data *CancelSellData  `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
-}
-
-func (x *CancelSellRsp) Reset() {
-	*x = CancelSellRsp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[10]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelSellRsp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelSellRsp) ProtoMessage() {}
-
-func (x *CancelSellRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[10]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelSellRsp.ProtoReflect.Descriptor instead.
-func (*CancelSellRsp) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *CancelSellRsp) GetCode() common.ErrorCode {
-	if x != nil {
-		return x.Code
-	}
-	return common.ErrorCode(0)
-}
-
-func (x *CancelSellRsp) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
-
-func (x *CancelSellRsp) GetData() *CancelSellData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-// 取消求购协议 - 取消已发布的求购
-type CancelBuyReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	OrderId      string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`                // 订单ID
-	IdempotentId string `protobuf:"bytes,2,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复取消
-}
-
-func (x *CancelBuyReq) Reset() {
-	*x = CancelBuyReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[11]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelBuyReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelBuyReq) ProtoMessage() {}
-
-func (x *CancelBuyReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[11]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelBuyReq.ProtoReflect.Descriptor instead.
-func (*CancelBuyReq) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *CancelBuyReq) GetOrderId() string {
-	if x != nil {
-		return x.OrderId
-	}
-	return ""
-}
-
-func (x *CancelBuyReq) GetIdempotentId() string {
-	if x != nil {
-		return x.IdempotentId
-	}
-	return ""
-}
-
-// 取消求购响应数据结构
-type CancelBuyData struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // 取消是否成功
-}
-
-func (x *CancelBuyData) Reset() {
-	*x = CancelBuyData{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[12]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelBuyData) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelBuyData) ProtoMessage() {}
-
-func (x *CancelBuyData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[12]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelBuyData.ProtoReflect.Descriptor instead.
-func (*CancelBuyData) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *CancelBuyData) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-type CancelBuyRsp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
-	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
-	Data *CancelBuyData   `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
-}
-
-func (x *CancelBuyRsp) Reset() {
-	*x = CancelBuyRsp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[13]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelBuyRsp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelBuyRsp) ProtoMessage() {}
-
-func (x *CancelBuyRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[13]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelBuyRsp.ProtoReflect.Descriptor instead.
-func (*CancelBuyRsp) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{13}
-}
-
-func (x *CancelBuyRsp) GetCode() common.ErrorCode {
-	if x != nil {
-		return x.Code
-	}
-	return common.ErrorCode(0)
-}
-
-func (x *CancelBuyRsp) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
-
-func (x *CancelBuyRsp) GetData() *CancelBuyData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-// 查看自己所有出售道具协议
-type GetMySellsReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *GetMySellsReq) Reset() {
-	*x = GetMySellsReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[14]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetMySellsReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMySellsReq) ProtoMessage() {}
-
-func (x *GetMySellsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[14]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMySellsReq.ProtoReflect.Descriptor instead.
-func (*GetMySellsReq) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{14}
-}
-
-// 查看出售道具响应数据
-type GetMySellsRsp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
-	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
-	Data []*SellData      `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`                        // 出售订单列表
-}
-
-func (x *GetMySellsRsp) Reset() {
-	*x = GetMySellsRsp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[15]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetMySellsRsp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMySellsRsp) ProtoMessage() {}
-
-func (x *GetMySellsRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[15]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMySellsRsp.ProtoReflect.Descriptor instead.
-func (*GetMySellsRsp) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{15}
-}
-
-func (x *GetMySellsRsp) GetCode() common.ErrorCode {
-	if x != nil {
-		return x.Code
-	}
-	return common.ErrorCode(0)
-}
-
-func (x *GetMySellsRsp) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
-
-func (x *GetMySellsRsp) GetData() []*SellData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-// 查看自己所有求购道具协议
-type GetMyBuysReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *GetMyBuysReq) Reset() {
-	*x = GetMyBuysReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[16]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetMyBuysReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMyBuysReq) ProtoMessage() {}
-
-func (x *GetMyBuysReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[16]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMyBuysReq.ProtoReflect.Descriptor instead.
-func (*GetMyBuysReq) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{16}
-}
-
-// 查看求购道具响应数据
-type GetMyBuysRsp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
-	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
-	Data []*BuyData       `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`                        // 求购订单列表
-}
-
-func (x *GetMyBuysRsp) Reset() {
-	*x = GetMyBuysRsp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[17]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetMyBuysRsp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMyBuysRsp) ProtoMessage() {}
-
-func (x *GetMyBuysRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[17]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMyBuysRsp.ProtoReflect.Descriptor instead.
-func (*GetMyBuysRsp) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{17}
-}
-
-func (x *GetMyBuysRsp) GetCode() common.ErrorCode {
-	if x != nil {
-		return x.Code
-	}
-	return common.ErrorCode(0)
-}
-
-func (x *GetMyBuysRsp) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
-
-func (x *GetMyBuysRsp) GetData() []*BuyData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
 // 订单信息
 type OrderInfo struct {
 	state         protoimpl.MessageState
@@ -1125,7 +140,7 @@ type OrderInfo struct {
 func (x *OrderInfo) Reset() {
 	*x = OrderInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[18]
+		mi := &file_proto_auction_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1138,7 +153,7 @@ func (x *OrderInfo) String() string {
 func (*OrderInfo) ProtoMessage() {}
 
 func (x *OrderInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[18]
+	mi := &file_proto_auction_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1151,7 +166,7 @@ func (x *OrderInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OrderInfo.ProtoReflect.Descriptor instead.
 func (*OrderInfo) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{18}
+	return file_proto_auction_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *OrderInfo) GetItemId() string {
@@ -1175,182 +190,6 @@ func (x *OrderInfo) GetPrice() int64 {
 	return 0
 }
 
-// 获取道具出售求购详情协议
-type GetItemAuctionInfoReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	ItemIds []string `protobuf:"bytes,1,rep,name=item_ids,json=itemIds,proto3" json:"item_ids,omitempty"` // 道具ID列表
-}
-
-func (x *GetItemAuctionInfoReq) Reset() {
-	*x = GetItemAuctionInfoReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[19]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetItemAuctionInfoReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetItemAuctionInfoReq) ProtoMessage() {}
-
-func (x *GetItemAuctionInfoReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[19]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetItemAuctionInfoReq.ProtoReflect.Descriptor instead.
-func (*GetItemAuctionInfoReq) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{19}
-}
-
-func (x *GetItemAuctionInfoReq) GetItemIds() []string {
-	if x != nil {
-		return x.ItemIds
-	}
-	return nil
-}
-
-// 道具拍卖信息
-type ItemAuctionInfo struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	ItemId string       `protobuf:"bytes,1,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"` // 道具ID
-	Sells  []*OrderInfo `protobuf:"bytes,2,rep,name=sells,proto3" json:"sells,omitempty"`                 // 出售列表（最多5条）
-	Buys   []*OrderInfo `protobuf:"bytes,3,rep,name=buys,proto3" json:"buys,omitempty"`                   // 求购列表（最多5条）
-}
-
-func (x *ItemAuctionInfo) Reset() {
-	*x = ItemAuctionInfo{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[20]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ItemAuctionInfo) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ItemAuctionInfo) ProtoMessage() {}
-
-func (x *ItemAuctionInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[20]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ItemAuctionInfo.ProtoReflect.Descriptor instead.
-func (*ItemAuctionInfo) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{20}
-}
-
-func (x *ItemAuctionInfo) GetItemId() string {
-	if x != nil {
-		return x.ItemId
-	}
-	return ""
-}
-
-func (x *ItemAuctionInfo) GetSells() []*OrderInfo {
-	if x != nil {
-		return x.Sells
-	}
-	return nil
-}
-
-func (x *ItemAuctionInfo) GetBuys() []*OrderInfo {
-	if x != nil {
-		return x.Buys
-	}
-	return nil
-}
-
-// 获取道具出售求购详情响应
-type GetItemAuctionInfoRsp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Code common.ErrorCode   `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
-	Msg  string             `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
-	Data []*ItemAuctionInfo `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`                        // 道具拍卖信息列表
-}
-
-func (x *GetItemAuctionInfoRsp) Reset() {
-	*x = GetItemAuctionInfoRsp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[21]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetItemAuctionInfoRsp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetItemAuctionInfoRsp) ProtoMessage() {}
-
-func (x *GetItemAuctionInfoRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[21]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetItemAuctionInfoRsp.ProtoReflect.Descriptor instead.
-func (*GetItemAuctionInfoRsp) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{21}
-}
-
-func (x *GetItemAuctionInfoRsp) GetCode() common.ErrorCode {
-	if x != nil {
-		return x.Code
-	}
-	return common.ErrorCode(0)
-}
-
-func (x *GetItemAuctionInfoRsp) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
-
-func (x *GetItemAuctionInfoRsp) GetData() []*ItemAuctionInfo {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
 // 交易记录数据
 type TransactionRecord struct {
 	state         protoimpl.MessageState
@@ -1371,7 +210,7 @@ type TransactionRecord struct {
 func (x *TransactionRecord) Reset() {
 	*x = TransactionRecord{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[22]
+		mi := &file_proto_auction_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1384,7 +223,7 @@ func (x *TransactionRecord) String() string {
 func (*TransactionRecord) ProtoMessage() {}
 
 func (x *TransactionRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[22]
+	mi := &file_proto_auction_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1397,7 +236,7 @@ func (x *TransactionRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransactionRecord.ProtoReflect.Descriptor instead.
 func (*TransactionRecord) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{22}
+	return file_proto_auction_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *TransactionRecord) GetTransactionId() string {
@@ -1486,7 +325,7 @@ type TimeTransactionRecord struct {
 func (x *TimeTransactionRecord) Reset() {
 	*x = TimeTransactionRecord{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[23]
+		mi := &file_proto_auction_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1499,7 +338,7 @@ func (x *TimeTransactionRecord) String() string {
 func (*TimeTransactionRecord) ProtoMessage() {}
 
 func (x *TimeTransactionRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[23]
+	mi := &file_proto_auction_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1512,7 +351,7 @@ func (x *TimeTransactionRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TimeTransactionRecord.ProtoReflect.Descriptor instead.
 func (*TimeTransactionRecord) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{23}
+	return file_proto_auction_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TimeTransactionRecord) GetTransactionId() string {
@@ -1611,7 +450,7 @@ type TransactionHistoryData struct {
 func (x *TransactionHistoryData) Reset() {
 	*x = TransactionHistoryData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[24]
+		mi := &file_proto_auction_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1624,7 +463,7 @@ func (x *TransactionHistoryData) String() string {
 func (*TransactionHistoryData) ProtoMessage() {}
 
 func (x *TransactionHistoryData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[24]
+	mi := &file_proto_auction_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1637,7 +476,7 @@ func (x *TransactionHistoryData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransactionHistoryData.ProtoReflect.Descriptor instead.
 func (*TransactionHistoryData) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{24}
+	return file_proto_auction_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *TransactionHistoryData) GetRecords() []*TransactionRecord {
@@ -1662,7 +501,7 @@ type TransactionsByTimeData struct {
 func (x *TransactionsByTimeData) Reset() {
 	*x = TransactionsByTimeData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_auction_proto_msgTypes[25]
+		mi := &file_proto_auction_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1675,7 +514,7 @@ func (x *TransactionsByTimeData) String() string {
 func (*TransactionsByTimeData) ProtoMessage() {}
 
 func (x *TransactionsByTimeData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_auction_proto_msgTypes[25]
+	mi := &file_proto_auction_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1688,7 +527,7 @@ func (x *TransactionsByTimeData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransactionsByTimeData.ProtoReflect.Descriptor instead.
 func (*TransactionsByTimeData) Descriptor() ([]byte, []int) {
-	return file_proto_auction_proto_rawDescGZIP(), []int{25}
+	return file_proto_auction_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *TransactionsByTimeData) GetTotal() int32 {
@@ -1715,6 +554,1168 @@ func (x *TransactionsByTimeData) GetPageSize() int32 {
 func (x *TransactionsByTimeData) GetRecords() []*TimeTransactionRecord {
 	if x != nil {
 		return x.Records
+	}
+	return nil
+}
+
+// 出售协议 - 用户出售物品
+type SellReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ItemId       string `protobuf:"bytes,1,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`                   // 物品ID
+	Price        int64  `protobuf:"varint,2,opt,name=price,proto3" json:"price,omitempty"`                                  // 出售价格
+	Quantity     int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                            // 出售数量
+	ItemInfo     string `protobuf:"bytes,4,opt,name=item_info,json=itemInfo,proto3" json:"item_info,omitempty"`             // 道具信息（JSON字符串）
+	IdempotentId string `protobuf:"bytes,5,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复请求
+}
+
+func (x *SellReq) Reset() {
+	*x = SellReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SellReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SellReq) ProtoMessage() {}
+
+func (x *SellReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SellReq.ProtoReflect.Descriptor instead.
+func (*SellReq) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *SellReq) GetItemId() string {
+	if x != nil {
+		return x.ItemId
+	}
+	return ""
+}
+
+func (x *SellReq) GetPrice() int64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *SellReq) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *SellReq) GetItemInfo() string {
+	if x != nil {
+		return x.ItemInfo
+	}
+	return ""
+}
+
+func (x *SellReq) GetIdempotentId() string {
+	if x != nil {
+		return x.IdempotentId
+	}
+	return ""
+}
+
+// 出售响应数据结构 - 包含完整订单信息
+type SellData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrderId    string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`           // 订单ID
+	ItemId     string `protobuf:"bytes,2,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`              // 道具ID
+	Quantity   int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                       // 道具数量
+	Price      int64  `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`                             // 出售价格
+	ItemInfo   string `protobuf:"bytes,5,opt,name=item_info,json=itemInfo,proto3" json:"item_info,omitempty"`        // 道具信息（JSON字符串）
+	CreateTime int64  `protobuf:"varint,6,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"` // 创建时间
+}
+
+func (x *SellData) Reset() {
+	*x = SellData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SellData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SellData) ProtoMessage() {}
+
+func (x *SellData) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SellData.ProtoReflect.Descriptor instead.
+func (*SellData) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *SellData) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+func (x *SellData) GetItemId() string {
+	if x != nil {
+		return x.ItemId
+	}
+	return ""
+}
+
+func (x *SellData) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *SellData) GetPrice() int64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *SellData) GetItemInfo() string {
+	if x != nil {
+		return x.ItemInfo
+	}
+	return ""
+}
+
+func (x *SellData) GetCreateTime() int64 {
+	if x != nil {
+		return x.CreateTime
+	}
+	return 0
+}
+
+type SellRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
+	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
+	Data *SellData        `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
+}
+
+func (x *SellRsp) Reset() {
+	*x = SellRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SellRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SellRsp) ProtoMessage() {}
+
+func (x *SellRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SellRsp.ProtoReflect.Descriptor instead.
+func (*SellRsp) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *SellRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *SellRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *SellRsp) GetData() *SellData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 求购协议 - 用户发布求购需求
+type BuyReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ItemId       string `protobuf:"bytes,1,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`                   // 物品ID
+	Price        int64  `protobuf:"varint,2,opt,name=price,proto3" json:"price,omitempty"`                                  // 求购价格
+	Quantity     int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                            // 求购数量
+	IdempotentId string `protobuf:"bytes,4,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复请求
+}
+
+func (x *BuyReq) Reset() {
+	*x = BuyReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BuyReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BuyReq) ProtoMessage() {}
+
+func (x *BuyReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BuyReq.ProtoReflect.Descriptor instead.
+func (*BuyReq) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *BuyReq) GetItemId() string {
+	if x != nil {
+		return x.ItemId
+	}
+	return ""
+}
+
+func (x *BuyReq) GetPrice() int64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *BuyReq) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *BuyReq) GetIdempotentId() string {
+	if x != nil {
+		return x.IdempotentId
+	}
+	return ""
+}
+
+// 求购响应数据结构 - 包含完整订单信息
+type BuyData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrderId    string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`           // 订单ID
+	ItemId     string `protobuf:"bytes,2,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`              // 道具ID
+	Quantity   int32  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                       // 道具数量
+	Price      int64  `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`                             // 求购价格
+	CreateTime int64  `protobuf:"varint,5,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"` // 创建时间
+}
+
+func (x *BuyData) Reset() {
+	*x = BuyData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BuyData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BuyData) ProtoMessage() {}
+
+func (x *BuyData) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BuyData.ProtoReflect.Descriptor instead.
+func (*BuyData) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *BuyData) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+func (x *BuyData) GetItemId() string {
+	if x != nil {
+		return x.ItemId
+	}
+	return ""
+}
+
+func (x *BuyData) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *BuyData) GetPrice() int64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *BuyData) GetCreateTime() int64 {
+	if x != nil {
+		return x.CreateTime
+	}
+	return 0
+}
+
+type BuyRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
+	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
+	Data *BuyData         `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
+}
+
+func (x *BuyRsp) Reset() {
+	*x = BuyRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BuyRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BuyRsp) ProtoMessage() {}
+
+func (x *BuyRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BuyRsp.ProtoReflect.Descriptor instead.
+func (*BuyRsp) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *BuyRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *BuyRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *BuyRsp) GetData() *BuyData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 取消出售协议 - 取消已发布的出售
+type CancelSellReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrderId      string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`                // 订单ID
+	IdempotentId string `protobuf:"bytes,2,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复取消
+}
+
+func (x *CancelSellReq) Reset() {
+	*x = CancelSellReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CancelSellReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelSellReq) ProtoMessage() {}
+
+func (x *CancelSellReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelSellReq.ProtoReflect.Descriptor instead.
+func (*CancelSellReq) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CancelSellReq) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+func (x *CancelSellReq) GetIdempotentId() string {
+	if x != nil {
+		return x.IdempotentId
+	}
+	return ""
+}
+
+// 取消出售响应数据结构
+type CancelSellData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // 取消是否成功
+}
+
+func (x *CancelSellData) Reset() {
+	*x = CancelSellData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CancelSellData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelSellData) ProtoMessage() {}
+
+func (x *CancelSellData) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelSellData.ProtoReflect.Descriptor instead.
+func (*CancelSellData) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CancelSellData) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type CancelSellRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
+	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
+	Data *CancelSellData  `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
+}
+
+func (x *CancelSellRsp) Reset() {
+	*x = CancelSellRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CancelSellRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelSellRsp) ProtoMessage() {}
+
+func (x *CancelSellRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelSellRsp.ProtoReflect.Descriptor instead.
+func (*CancelSellRsp) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CancelSellRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *CancelSellRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *CancelSellRsp) GetData() *CancelSellData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 取消求购协议 - 取消已发布的求购
+type CancelBuyReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrderId      string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`                // 订单ID
+	IdempotentId string `protobuf:"bytes,2,opt,name=idempotent_id,json=idempotentId,proto3" json:"idempotent_id,omitempty"` // 幂等ID，用于防止重复取消
+}
+
+func (x *CancelBuyReq) Reset() {
+	*x = CancelBuyReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CancelBuyReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelBuyReq) ProtoMessage() {}
+
+func (x *CancelBuyReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelBuyReq.ProtoReflect.Descriptor instead.
+func (*CancelBuyReq) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *CancelBuyReq) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+func (x *CancelBuyReq) GetIdempotentId() string {
+	if x != nil {
+		return x.IdempotentId
+	}
+	return ""
+}
+
+// 取消求购响应数据结构
+type CancelBuyData struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // 取消是否成功
+}
+
+func (x *CancelBuyData) Reset() {
+	*x = CancelBuyData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CancelBuyData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelBuyData) ProtoMessage() {}
+
+func (x *CancelBuyData) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelBuyData.ProtoReflect.Descriptor instead.
+func (*CancelBuyData) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *CancelBuyData) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type CancelBuyRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
+	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
+	Data *CancelBuyData   `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`                        // 复合信息
+}
+
+func (x *CancelBuyRsp) Reset() {
+	*x = CancelBuyRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CancelBuyRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelBuyRsp) ProtoMessage() {}
+
+func (x *CancelBuyRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelBuyRsp.ProtoReflect.Descriptor instead.
+func (*CancelBuyRsp) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *CancelBuyRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *CancelBuyRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *CancelBuyRsp) GetData() *CancelBuyData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 查看自己所有出售道具协议
+type GetMySellsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetMySellsReq) Reset() {
+	*x = GetMySellsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetMySellsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMySellsReq) ProtoMessage() {}
+
+func (x *GetMySellsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMySellsReq.ProtoReflect.Descriptor instead.
+func (*GetMySellsReq) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{19}
+}
+
+// 查看出售道具响应数据
+type GetMySellsRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
+	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
+	Data []*SellData      `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`                        // 出售订单列表
+}
+
+func (x *GetMySellsRsp) Reset() {
+	*x = GetMySellsRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetMySellsRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMySellsRsp) ProtoMessage() {}
+
+func (x *GetMySellsRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMySellsRsp.ProtoReflect.Descriptor instead.
+func (*GetMySellsRsp) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetMySellsRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *GetMySellsRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *GetMySellsRsp) GetData() []*SellData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 查看自己所有求购道具协议
+type GetMyBuysReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetMyBuysReq) Reset() {
+	*x = GetMyBuysReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetMyBuysReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMyBuysReq) ProtoMessage() {}
+
+func (x *GetMyBuysReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMyBuysReq.ProtoReflect.Descriptor instead.
+func (*GetMyBuysReq) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{21}
+}
+
+// 查看求购道具响应数据
+type GetMyBuysRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
+	Msg  string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
+	Data []*BuyData       `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`                        // 求购订单列表
+}
+
+func (x *GetMyBuysRsp) Reset() {
+	*x = GetMyBuysRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetMyBuysRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMyBuysRsp) ProtoMessage() {}
+
+func (x *GetMyBuysRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMyBuysRsp.ProtoReflect.Descriptor instead.
+func (*GetMyBuysRsp) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GetMyBuysRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *GetMyBuysRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *GetMyBuysRsp) GetData() []*BuyData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 获取道具出售求购详情协议
+type GetItemAuctionInfoReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ItemIds []string `protobuf:"bytes,1,rep,name=item_ids,json=itemIds,proto3" json:"item_ids,omitempty"` // 道具ID列表
+}
+
+func (x *GetItemAuctionInfoReq) Reset() {
+	*x = GetItemAuctionInfoReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetItemAuctionInfoReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetItemAuctionInfoReq) ProtoMessage() {}
+
+func (x *GetItemAuctionInfoReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetItemAuctionInfoReq.ProtoReflect.Descriptor instead.
+func (*GetItemAuctionInfoReq) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetItemAuctionInfoReq) GetItemIds() []string {
+	if x != nil {
+		return x.ItemIds
+	}
+	return nil
+}
+
+// 道具拍卖信息
+type ItemAuctionInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ItemId string       `protobuf:"bytes,1,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"` // 道具ID
+	Sells  []*OrderInfo `protobuf:"bytes,2,rep,name=sells,proto3" json:"sells,omitempty"`                 // 出售列表（最多5条）
+	Buys   []*OrderInfo `protobuf:"bytes,3,rep,name=buys,proto3" json:"buys,omitempty"`                   // 求购列表（最多5条）
+}
+
+func (x *ItemAuctionInfo) Reset() {
+	*x = ItemAuctionInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[24]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ItemAuctionInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ItemAuctionInfo) ProtoMessage() {}
+
+func (x *ItemAuctionInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[24]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ItemAuctionInfo.ProtoReflect.Descriptor instead.
+func (*ItemAuctionInfo) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *ItemAuctionInfo) GetItemId() string {
+	if x != nil {
+		return x.ItemId
+	}
+	return ""
+}
+
+func (x *ItemAuctionInfo) GetSells() []*OrderInfo {
+	if x != nil {
+		return x.Sells
+	}
+	return nil
+}
+
+func (x *ItemAuctionInfo) GetBuys() []*OrderInfo {
+	if x != nil {
+		return x.Buys
+	}
+	return nil
+}
+
+// 获取道具出售求购详情响应
+type GetItemAuctionInfoRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.ErrorCode   `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"` // 错误码
+	Msg  string             `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`                          // 错误信息
+	Data []*ItemAuctionInfo `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`                        // 道具拍卖信息列表
+}
+
+func (x *GetItemAuctionInfoRsp) Reset() {
+	*x = GetItemAuctionInfoRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_auction_proto_msgTypes[25]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetItemAuctionInfoRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetItemAuctionInfoRsp) ProtoMessage() {}
+
+func (x *GetItemAuctionInfoRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_auction_proto_msgTypes[25]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetItemAuctionInfoRsp.ProtoReflect.Descriptor instead.
+func (*GetItemAuctionInfoRsp) Descriptor() ([]byte, []int) {
+	return file_proto_auction_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *GetItemAuctionInfoRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *GetItemAuctionInfoRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *GetItemAuctionInfoRsp) GetData() []*ItemAuctionInfo {
+	if x != nil {
+		return x.Data
 	}
 	return nil
 }
@@ -1981,186 +1982,186 @@ var file_proto_auction_proto_rawDesc = []byte{
 	0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f,
 	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04,
 	0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x22, 0x96, 0x01, 0x0a, 0x07, 0x53, 0x65, 0x6c, 0x6c, 0x52,
-	0x65, 0x71, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x70,
-	0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63,
-	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x1b, 0x0a,
-	0x09, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x64,
-	0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0c, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x22,
-	0xae, 0x01, 0x0a, 0x08, 0x53, 0x65, 0x6c, 0x6c, 0x44, 0x61, 0x74, 0x61, 0x12, 0x19, 0x0a, 0x08,
-	0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f,
-	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64,
-	0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05,
-	0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69,
-	0x63, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12,
-	0x1f, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x06,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65,
-	0x22, 0x69, 0x0a, 0x07, 0x53, 0x65, 0x6c, 0x6c, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63,
-	0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
-	0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f,
-	0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x03, 0x6d, 0x73, 0x67, 0x12, 0x25, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x11, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x53, 0x65, 0x6c,
-	0x6c, 0x44, 0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x78, 0x0a, 0x06, 0x42,
-	0x75, 0x79, 0x52, 0x65, 0x71, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x14,
-	0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70,
-	0x72, 0x69, 0x63, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79,
-	0x12, 0x23, 0x0a, 0x0d, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x5f, 0x69,
-	0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74,
-	0x65, 0x6e, 0x74, 0x49, 0x64, 0x22, 0x90, 0x01, 0x0a, 0x07, 0x42, 0x75, 0x79, 0x44, 0x61, 0x74,
-	0x61, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07,
-	0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69,
-	0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74,
-	0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74,
-	0x79, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x63, 0x72,
-	0x65, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x67, 0x0a, 0x06, 0x42, 0x75, 0x79, 0x52,
-	0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e,
-	0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43,
-	0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x24, 0x0a, 0x04, 0x64,
-	0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x61, 0x75, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x2e, 0x42, 0x75, 0x79, 0x44, 0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74,
-	0x61, 0x22, 0x4f, 0x0a, 0x0d, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x65, 0x6c, 0x6c, 0x52,
-	0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x23, 0x0a,
-	0x0d, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74,
-	0x49, 0x64, 0x22, 0x2a, 0x0a, 0x0e, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x65, 0x6c, 0x6c,
-	0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x75,
-	0x0a, 0x0d, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x65, 0x6c, 0x6c, 0x52, 0x73, 0x70, 0x12,
-	0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e,
-	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65,
-	0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x2b, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x2e, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x65, 0x6c, 0x6c, 0x44, 0x61, 0x74, 0x61, 0x52,
-	0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x4e, 0x0a, 0x0c, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x42,
-	0x75, 0x79, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64,
-	0x12, 0x23, 0x0a, 0x0d, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x5f, 0x69,
-	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74,
-	0x65, 0x6e, 0x74, 0x49, 0x64, 0x22, 0x29, 0x0a, 0x0d, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x42,
-	0x75, 0x79, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
-	0x22, 0x73, 0x0a, 0x0c, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x42, 0x75, 0x79, 0x52, 0x73, 0x70,
-	0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11,
-	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64,
-	0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x2a, 0x0a, 0x04, 0x64, 0x61, 0x74,
-	0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x2e, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x42, 0x75, 0x79, 0x44, 0x61, 0x74, 0x61, 0x52,
-	0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x0f, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x4d, 0x79, 0x53, 0x65,
-	0x6c, 0x6c, 0x73, 0x52, 0x65, 0x71, 0x22, 0x6f, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x4d, 0x79, 0x53,
-	0x65, 0x6c, 0x6c, 0x73, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45,
-	0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10,
-	0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67,
-	0x12, 0x25, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11,
-	0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x53, 0x65, 0x6c, 0x6c, 0x44, 0x61, 0x74,
-	0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x0e, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x4d, 0x79,
-	0x42, 0x75, 0x79, 0x73, 0x52, 0x65, 0x71, 0x22, 0x6d, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x4d, 0x79,
-	0x42, 0x75, 0x79, 0x73, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45,
-	0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10,
-	0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67,
-	0x12, 0x24, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10,
-	0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x42, 0x75, 0x79, 0x44, 0x61, 0x74, 0x61,
-	0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x56, 0x0a, 0x09, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49,
+	0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x22, 0x56, 0x0a, 0x09, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49,
 	0x6e, 0x66, 0x6f, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08,
 	0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08,
 	0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63,
-	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x22, 0x32,
-	0x0a, 0x15, 0x47, 0x65, 0x74, 0x49, 0x74, 0x65, 0x6d, 0x41, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x5f,
-	0x69, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x49,
-	0x64, 0x73, 0x22, 0x7c, 0x0a, 0x0f, 0x49, 0x74, 0x65, 0x6d, 0x41, 0x75, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x28,
-	0x0a, 0x05, 0x73, 0x65, 0x6c, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e,
-	0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x6e, 0x66,
-	0x6f, 0x52, 0x05, 0x73, 0x65, 0x6c, 0x6c, 0x73, 0x12, 0x26, 0x0a, 0x04, 0x62, 0x75, 0x79, 0x73,
-	0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x62, 0x75, 0x79, 0x73,
-	0x22, 0x7e, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x49, 0x74, 0x65, 0x6d, 0x41, 0x75, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
-	0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d,
-	0x73, 0x67, 0x12, 0x2c, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x18, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x49, 0x74, 0x65, 0x6d, 0x41,
-	0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61,
-	0x22, 0xa5, 0x02, 0x0a, 0x11, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x25, 0x0a, 0x0e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d,
-	0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x20, 0x0a,
-	0x0c, 0x62, 0x75, 0x79, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0a, 0x62, 0x75, 0x79, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12,
-	0x22, 0x0a, 0x0d, 0x73, 0x65, 0x6c, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x6c, 0x6c, 0x4f, 0x72, 0x64, 0x65,
-	0x72, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x1b, 0x0a, 0x09,
-	0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61,
-	0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61,
-	0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x07,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x74,
-	0x61, 0x78, 0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x74, 0x61, 0x78, 0x12, 0x29, 0x0a,
-	0x10, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x69, 0x6d,
-	0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x85, 0x03, 0x0a, 0x15, 0x54, 0x69, 0x6d,
-	0x65, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x63, 0x6f,
-	0x72, 0x64, 0x12, 0x25, 0x0a, 0x0e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x74, 0x72, 0x61, 0x6e,
-	0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65,
-	0x6d, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d,
-	0x49, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12,
-	0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x70,
-	0x72, 0x69, 0x63, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63,
-	0x65, 0x12, 0x10, 0x0a, 0x03, 0x74, 0x61, 0x78, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03,
-	0x74, 0x61, 0x78, 0x12, 0x29, 0x0a, 0x10, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0f, 0x74,
-	0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x27,
-	0x0a, 0x0f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x44, 0x69,
-	0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75,
-	0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12,
-	0x1f, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x0a,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x12, 0x25, 0x0a, 0x0e, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69,
-	0x74, 0x79, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0d, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x51,
-	0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f,
-	0x69, 0x64, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64,
-	0x22, 0x4e, 0x0a, 0x16, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48,
-	0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x44, 0x61, 0x74, 0x61, 0x12, 0x34, 0x0a, 0x07, 0x72, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x61, 0x75,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73,
-	0x22, 0x99, 0x01, 0x0a, 0x16, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x42, 0x79, 0x54, 0x69, 0x6d, 0x65, 0x44, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x74,
-	0x6f, 0x74, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61,
-	0x6c, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x73, 0x69,
-	0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69,
-	0x7a, 0x65, 0x12, 0x38, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x04, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x54, 0x69,
-	0x6d, 0x65, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x63,
-	0x6f, 0x72, 0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x22, 0x35, 0x0a, 0x18,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x22, 0xa5,
+	0x02, 0x0a, 0x11, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x63, 0x6f, 0x72, 0x64, 0x12, 0x25, 0x0a, 0x0e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x74, 0x72,
+	0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x20, 0x0a, 0x0c, 0x62,
+	0x75, 0x79, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0a, 0x62, 0x75, 0x79, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x22, 0x0a,
+	0x0d, 0x73, 0x65, 0x6c, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x6c, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49,
+	0x64, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x74,
+	0x65, 0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69,
+	0x74, 0x65, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74,
+	0x69, 0x74, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74,
+	0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x07, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x74, 0x61, 0x78,
+	0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x74, 0x61, 0x78, 0x12, 0x29, 0x0a, 0x10, 0x74,
+	0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x85, 0x03, 0x0a, 0x15, 0x54, 0x69, 0x6d, 0x65, 0x54,
+	0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x12, 0x25, 0x0a, 0x0e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64,
+	0x12, 0x1b, 0x0a, 0x09, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1a, 0x0a,
+	0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69,
+	0x63, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12,
+	0x10, 0x0a, 0x03, 0x74, 0x61, 0x78, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x74, 0x61,
+	0x78, 0x12, 0x29, 0x0a, 0x10, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0f, 0x74, 0x72, 0x61,
+	0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x27, 0x0a, 0x0f,
+	0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x44, 0x69, 0x72, 0x65,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1f, 0x0a,
+	0x0b, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x0a, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x0a, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x25,
+	0x0a, 0x0e, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79,
+	0x18, 0x0b, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0d, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x51, 0x75, 0x61,
+	0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64,
+	0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x4e,
+	0x0a, 0x16, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x69, 0x73,
+	0x74, 0x6f, 0x72, 0x79, 0x44, 0x61, 0x74, 0x61, 0x12, 0x34, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f,
+	0x72, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x61, 0x75, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x22, 0x99,
+	0x01, 0x0a, 0x16, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42,
+	0x79, 0x54, 0x69, 0x6d, 0x65, 0x44, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74,
+	0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12,
+	0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x70,
+	0x61, 0x67, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x73, 0x69, 0x7a, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65,
+	0x12, 0x38, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x1e, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x54, 0x69, 0x6d, 0x65,
+	0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x63, 0x6f, 0x72,
+	0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x22, 0x96, 0x01, 0x0a, 0x07, 0x53,
+	0x65, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12,
+	0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05,
+	0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74,
+	0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74,
+	0x79, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x23,
+	0x0a, 0x0d, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e,
+	0x74, 0x49, 0x64, 0x22, 0xae, 0x01, 0x0a, 0x08, 0x53, 0x65, 0x6c, 0x6c, 0x44, 0x61, 0x74, 0x61,
+	0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x69,
+	0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74,
+	0x65, 0x6d, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79,
+	0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69,
+	0x6e, 0x66, 0x6f, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x49,
+	0x6e, 0x66, 0x6f, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x5f, 0x74, 0x69,
+	0x6d, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x54, 0x69, 0x6d, 0x65, 0x22, 0x69, 0x0a, 0x07, 0x53, 0x65, 0x6c, 0x6c, 0x52, 0x73, 0x70, 0x12,
+	0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e,
+	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65,
+	0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x25, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x2e, 0x53, 0x65, 0x6c, 0x6c, 0x44, 0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22,
+	0x78, 0x0a, 0x06, 0x42, 0x75, 0x79, 0x52, 0x65, 0x71, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65,
+	0x6d, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d,
+	0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e,
+	0x74, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e,
+	0x74, 0x69, 0x74, 0x79, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65,
+	0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x64, 0x65,
+	0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x22, 0x90, 0x01, 0x0a, 0x07, 0x42, 0x75,
+	0x79, 0x44, 0x61, 0x74, 0x61, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64,
+	0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61,
+	0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61,
+	0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x67, 0x0a, 0x06,
+	0x42, 0x75, 0x79, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72,
+	0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a,
+	0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12,
+	0x24, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e,
+	0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x42, 0x75, 0x79, 0x44, 0x61, 0x74, 0x61, 0x52,
+	0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x4f, 0x0a, 0x0d, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53,
+	0x65, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49,
+	0x64, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f,
+	0x74, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x22, 0x2a, 0x0a, 0x0e, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c,
+	0x53, 0x65, 0x6c, 0x6c, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65,
+	0x73, 0x73, 0x22, 0x75, 0x0a, 0x0d, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x65, 0x6c, 0x6c,
+	0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72,
+	0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73,
+	0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x2b, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x61, 0x75, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x53, 0x65, 0x6c, 0x6c, 0x44,
+	0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x4e, 0x0a, 0x0c, 0x43, 0x61, 0x6e,
+	0x63, 0x65, 0x6c, 0x42, 0x75, 0x79, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64,
+	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64,
+	0x65, 0x72, 0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x64, 0x65, 0x6d, 0x70, 0x6f, 0x74, 0x65,
+	0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x64, 0x65,
+	0x6d, 0x70, 0x6f, 0x74, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x22, 0x29, 0x0a, 0x0d, 0x43, 0x61, 0x6e,
+	0x63, 0x65, 0x6c, 0x42, 0x75, 0x79, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x22, 0x73, 0x0a, 0x0c, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x42, 0x75,
+	0x79, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f,
+	0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d,
+	0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x2a, 0x0a,
+	0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x61, 0x75,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x42, 0x75, 0x79, 0x44,
+	0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x0f, 0x0a, 0x0d, 0x47, 0x65, 0x74,
+	0x4d, 0x79, 0x53, 0x65, 0x6c, 0x6c, 0x73, 0x52, 0x65, 0x71, 0x22, 0x6f, 0x0a, 0x0d, 0x47, 0x65,
+	0x74, 0x4d, 0x79, 0x53, 0x65, 0x6c, 0x6c, 0x73, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63,
+	0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f,
+	0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6d, 0x73, 0x67, 0x12, 0x25, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x11, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x53, 0x65, 0x6c,
+	0x6c, 0x44, 0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x0e, 0x0a, 0x0c, 0x47,
+	0x65, 0x74, 0x4d, 0x79, 0x42, 0x75, 0x79, 0x73, 0x52, 0x65, 0x71, 0x22, 0x6d, 0x0a, 0x0c, 0x47,
+	0x65, 0x74, 0x4d, 0x79, 0x42, 0x75, 0x79, 0x73, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63,
+	0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f,
+	0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6d, 0x73, 0x67, 0x12, 0x24, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x10, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x42, 0x75, 0x79,
+	0x44, 0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x32, 0x0a, 0x15, 0x47, 0x65,
+	0x74, 0x49, 0x74, 0x65, 0x6d, 0x41, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f,
+	0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x73, 0x22, 0x7c,
+	0x0a, 0x0f, 0x49, 0x74, 0x65, 0x6d, 0x41, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x66,
+	0x6f, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x28, 0x0a, 0x05, 0x73, 0x65,
+	0x6c, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x61, 0x75, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x05, 0x73,
+	0x65, 0x6c, 0x6c, 0x73, 0x12, 0x26, 0x0a, 0x04, 0x62, 0x75, 0x79, 0x73, 0x18, 0x03, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x12, 0x2e, 0x61, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x4f, 0x72, 0x64,
+	0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x62, 0x75, 0x79, 0x73, 0x22, 0x7e, 0x0a, 0x15,
+	0x47, 0x65, 0x74, 0x49, 0x74, 0x65, 0x6d, 0x41, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e,
+	0x66, 0x6f, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x45, 0x72, 0x72,
+	0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03,
+	0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x2c,
+	0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x61,
+	0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x49, 0x74, 0x65, 0x6d, 0x41, 0x75, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x35, 0x0a, 0x18,
 	0x47, 0x65, 0x74, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x69,
 	0x73, 0x74, 0x6f, 0x72, 0x79, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65,
 	0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65,
@@ -2211,30 +2212,30 @@ var file_proto_auction_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_proto_auction_proto_goTypes = []interface{}{
 	(*PingReq)(nil),                  // 0: auction.PingReq
 	(*PingRsp)(nil),                  // 1: auction.PingRsp
-	(*SellReq)(nil),                  // 2: auction.SellReq
-	(*SellData)(nil),                 // 3: auction.SellData
-	(*SellRsp)(nil),                  // 4: auction.SellRsp
-	(*BuyReq)(nil),                   // 5: auction.BuyReq
-	(*BuyData)(nil),                  // 6: auction.BuyData
-	(*BuyRsp)(nil),                   // 7: auction.BuyRsp
-	(*CancelSellReq)(nil),            // 8: auction.CancelSellReq
-	(*CancelSellData)(nil),           // 9: auction.CancelSellData
-	(*CancelSellRsp)(nil),            // 10: auction.CancelSellRsp
-	(*CancelBuyReq)(nil),             // 11: auction.CancelBuyReq
-	(*CancelBuyData)(nil),            // 12: auction.CancelBuyData
-	(*CancelBuyRsp)(nil),             // 13: auction.CancelBuyRsp
-	(*GetMySellsReq)(nil),            // 14: auction.GetMySellsReq
-	(*GetMySellsRsp)(nil),            // 15: auction.GetMySellsRsp
-	(*GetMyBuysReq)(nil),             // 16: auction.GetMyBuysReq
-	(*GetMyBuysRsp)(nil),             // 17: auction.GetMyBuysRsp
-	(*OrderInfo)(nil),                // 18: auction.OrderInfo
-	(*GetItemAuctionInfoReq)(nil),    // 19: auction.GetItemAuctionInfoReq
-	(*ItemAuctionInfo)(nil),          // 20: auction.ItemAuctionInfo
-	(*GetItemAuctionInfoRsp)(nil),    // 21: auction.GetItemAuctionInfoRsp
-	(*TransactionRecord)(nil),        // 22: auction.TransactionRecord
-	(*TimeTransactionRecord)(nil),    // 23: auction.TimeTransactionRecord
-	(*TransactionHistoryData)(nil),   // 24: auction.TransactionHistoryData
-	(*TransactionsByTimeData)(nil),   // 25: auction.TransactionsByTimeData
+	(*OrderInfo)(nil),                // 2: auction.OrderInfo
+	(*TransactionRecord)(nil),        // 3: auction.TransactionRecord
+	(*TimeTransactionRecord)(nil),    // 4: auction.TimeTransactionRecord
+	(*TransactionHistoryData)(nil),   // 5: auction.TransactionHistoryData
+	(*TransactionsByTimeData)(nil),   // 6: auction.TransactionsByTimeData
+	(*SellReq)(nil),                  // 7: auction.SellReq
+	(*SellData)(nil),                 // 8: auction.SellData
+	(*SellRsp)(nil),                  // 9: auction.SellRsp
+	(*BuyReq)(nil),                   // 10: auction.BuyReq
+	(*BuyData)(nil),                  // 11: auction.BuyData
+	(*BuyRsp)(nil),                   // 12: auction.BuyRsp
+	(*CancelSellReq)(nil),            // 13: auction.CancelSellReq
+	(*CancelSellData)(nil),           // 14: auction.CancelSellData
+	(*CancelSellRsp)(nil),            // 15: auction.CancelSellRsp
+	(*CancelBuyReq)(nil),             // 16: auction.CancelBuyReq
+	(*CancelBuyData)(nil),            // 17: auction.CancelBuyData
+	(*CancelBuyRsp)(nil),             // 18: auction.CancelBuyRsp
+	(*GetMySellsReq)(nil),            // 19: auction.GetMySellsReq
+	(*GetMySellsRsp)(nil),            // 20: auction.GetMySellsRsp
+	(*GetMyBuysReq)(nil),             // 21: auction.GetMyBuysReq
+	(*GetMyBuysRsp)(nil),             // 22: auction.GetMyBuysRsp
+	(*GetItemAuctionInfoReq)(nil),    // 23: auction.GetItemAuctionInfoReq
+	(*ItemAuctionInfo)(nil),          // 24: auction.ItemAuctionInfo
+	(*GetItemAuctionInfoRsp)(nil),    // 25: auction.GetItemAuctionInfoRsp
 	(*GetTransactionHistoryReq)(nil), // 26: auction.GetTransactionHistoryReq
 	(*GetTransactionHistoryRsp)(nil), // 27: auction.GetTransactionHistoryRsp
 	(*GetTransactionsByTimeReq)(nil), // 28: auction.GetTransactionsByTimeReq
@@ -2243,28 +2244,28 @@ var file_proto_auction_proto_goTypes = []interface{}{
 }
 var file_proto_auction_proto_depIdxs = []int32{
 	30, // 0: auction.PingRsp.code:type_name -> common.ErrorCode
-	30, // 1: auction.SellRsp.code:type_name -> common.ErrorCode
-	3,  // 2: auction.SellRsp.data:type_name -> auction.SellData
-	30, // 3: auction.BuyRsp.code:type_name -> common.ErrorCode
-	6,  // 4: auction.BuyRsp.data:type_name -> auction.BuyData
-	30, // 5: auction.CancelSellRsp.code:type_name -> common.ErrorCode
-	9,  // 6: auction.CancelSellRsp.data:type_name -> auction.CancelSellData
-	30, // 7: auction.CancelBuyRsp.code:type_name -> common.ErrorCode
-	12, // 8: auction.CancelBuyRsp.data:type_name -> auction.CancelBuyData
-	30, // 9: auction.GetMySellsRsp.code:type_name -> common.ErrorCode
-	3,  // 10: auction.GetMySellsRsp.data:type_name -> auction.SellData
-	30, // 11: auction.GetMyBuysRsp.code:type_name -> common.ErrorCode
-	6,  // 12: auction.GetMyBuysRsp.data:type_name -> auction.BuyData
-	18, // 13: auction.ItemAuctionInfo.sells:type_name -> auction.OrderInfo
-	18, // 14: auction.ItemAuctionInfo.buys:type_name -> auction.OrderInfo
-	30, // 15: auction.GetItemAuctionInfoRsp.code:type_name -> common.ErrorCode
-	20, // 16: auction.GetItemAuctionInfoRsp.data:type_name -> auction.ItemAuctionInfo
-	22, // 17: auction.TransactionHistoryData.records:type_name -> auction.TransactionRecord
-	23, // 18: auction.TransactionsByTimeData.records:type_name -> auction.TimeTransactionRecord
+	3,  // 1: auction.TransactionHistoryData.records:type_name -> auction.TransactionRecord
+	4,  // 2: auction.TransactionsByTimeData.records:type_name -> auction.TimeTransactionRecord
+	30, // 3: auction.SellRsp.code:type_name -> common.ErrorCode
+	8,  // 4: auction.SellRsp.data:type_name -> auction.SellData
+	30, // 5: auction.BuyRsp.code:type_name -> common.ErrorCode
+	11, // 6: auction.BuyRsp.data:type_name -> auction.BuyData
+	30, // 7: auction.CancelSellRsp.code:type_name -> common.ErrorCode
+	14, // 8: auction.CancelSellRsp.data:type_name -> auction.CancelSellData
+	30, // 9: auction.CancelBuyRsp.code:type_name -> common.ErrorCode
+	17, // 10: auction.CancelBuyRsp.data:type_name -> auction.CancelBuyData
+	30, // 11: auction.GetMySellsRsp.code:type_name -> common.ErrorCode
+	8,  // 12: auction.GetMySellsRsp.data:type_name -> auction.SellData
+	30, // 13: auction.GetMyBuysRsp.code:type_name -> common.ErrorCode
+	11, // 14: auction.GetMyBuysRsp.data:type_name -> auction.BuyData
+	2,  // 15: auction.ItemAuctionInfo.sells:type_name -> auction.OrderInfo
+	2,  // 16: auction.ItemAuctionInfo.buys:type_name -> auction.OrderInfo
+	30, // 17: auction.GetItemAuctionInfoRsp.code:type_name -> common.ErrorCode
+	24, // 18: auction.GetItemAuctionInfoRsp.data:type_name -> auction.ItemAuctionInfo
 	30, // 19: auction.GetTransactionHistoryRsp.code:type_name -> common.ErrorCode
-	24, // 20: auction.GetTransactionHistoryRsp.data:type_name -> auction.TransactionHistoryData
+	5,  // 20: auction.GetTransactionHistoryRsp.data:type_name -> auction.TransactionHistoryData
 	30, // 21: auction.GetTransactionsByTimeRsp.code:type_name -> common.ErrorCode
-	25, // 22: auction.GetTransactionsByTimeRsp.data:type_name -> auction.TransactionsByTimeData
+	6,  // 22: auction.GetTransactionsByTimeRsp.data:type_name -> auction.TransactionsByTimeData
 	23, // [23:23] is the sub-list for method output_type
 	23, // [23:23] is the sub-list for method input_type
 	23, // [23:23] is the sub-list for extension type_name
@@ -2303,198 +2304,6 @@ func file_proto_auction_proto_init() {
 			}
 		}
 		file_proto_auction_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SellReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SellData); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SellRsp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BuyReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BuyData); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BuyRsp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelSellReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelSellData); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelSellRsp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelBuyReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelBuyData); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelBuyRsp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetMySellsReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetMySellsRsp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetMyBuysReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetMyBuysRsp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*OrderInfo); i {
 			case 0:
 				return &v.state
@@ -2506,43 +2315,7 @@ func file_proto_auction_proto_init() {
 				return nil
 			}
 		}
-		file_proto_auction_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetItemAuctionInfoReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ItemAuctionInfo); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetItemAuctionInfoRsp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_auction_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_auction_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TransactionRecord); i {
 			case 0:
 				return &v.state
@@ -2554,7 +2327,7 @@ func file_proto_auction_proto_init() {
 				return nil
 			}
 		}
-		file_proto_auction_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_auction_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TimeTransactionRecord); i {
 			case 0:
 				return &v.state
@@ -2566,7 +2339,7 @@ func file_proto_auction_proto_init() {
 				return nil
 			}
 		}
-		file_proto_auction_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_auction_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TransactionHistoryData); i {
 			case 0:
 				return &v.state
@@ -2578,8 +2351,236 @@ func file_proto_auction_proto_init() {
 				return nil
 			}
 		}
-		file_proto_auction_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_auction_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TransactionsByTimeData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SellReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SellData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SellRsp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BuyReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BuyData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BuyRsp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CancelSellReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CancelSellData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CancelSellRsp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CancelBuyReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CancelBuyData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CancelBuyRsp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetMySellsReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetMySellsRsp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetMyBuysReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetMyBuysRsp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetItemAuctionInfoReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ItemAuctionInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_auction_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetItemAuctionInfoRsp); i {
 			case 0:
 				return &v.state
 			case 1:

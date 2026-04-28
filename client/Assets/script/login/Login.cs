@@ -157,6 +157,8 @@ public class Login : MonoBehaviour
 		{
 			Debug.Log($"登录失败，出现异常：{exception}");
 		}
+#elif USE_GOOGLE_LOGIN
+		GoogleSignInManager.Instance.StartLogin();
 #else
 		//AccountInfo.Instance.SetAccount(new UserCenter.TapInfo() { Avatar = "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80", Gender = "", Name = "冷水泡面", Openid = "mzw0536knQSO+bhbdL6dtw==", Unionid = "SnwhJ5s2EURKCKt0LBsDLw==" });
 

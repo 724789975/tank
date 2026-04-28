@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 
@@ -32,6 +33,46 @@ func (x *HttpStream) RecvMsg(req interface{}) error {
 }
 
 func (x *HttpStream) SendMsg(response interface{}) error {
+	m, _ := response.(proto.Message)
+	b, err := protojson.MarshalOptions{EmitUnpopulated: true}.Marshal(m)
+	if err != nil {
+		return err
+	}
+	x.w.Header().Set("Access-Control-Allow-Origin", "*")
+	x.w.Header().Set("Access-Control-Allow-Headers", "*")
+	x.w.Header().Set("Access-Control-Allow-Methods", "*")
+	x.w.Header().Set("Access-Control-Expose-Headers", "*")
+	x.w.Header().Set("Access-Control-Allow-Credentials", "true")
+	if _, err := x.w.Write(b); err != nil {
+		return err
+	}
+	return nil
+}
+
+type GetStream struct {
+	r *http.Request
+	w http.ResponseWriter
+	streaming.Stream
+}
+
+func NewGetStream(w http.ResponseWriter, r *http.Request) streaming.Stream {
+	return &GetStream{r: r, w: w}
+}
+
+func (x *GetStream) RecvMsg(req interface{}) error {
+	query := x.r.URL.Query()
+	jsonBytes, err := json.Marshal(query)
+	if err != nil {
+		return err
+	}
+	m, _ := req.(proto.Message)
+	if err := protojson.Unmarshal(jsonBytes, m); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (x *GetStream) SendMsg(response interface{}) error {
 	m, _ := response.(proto.Message)
 	b, err := protojson.MarshalOptions{EmitUnpopulated: true}.Marshal(m)
 	if err != nil {

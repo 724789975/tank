@@ -65,3 +65,18 @@ message TestLoginRsp {
 	}
 	Data data = 3;
 }
+
+message GoogleOAuthCallbackReq {
+	string state   = 1;
+	string iss     = 2;
+	string code    = 3;
+	string scope   = 4;
+	string authuser = 5;
+	string prompt  = 6;
+}
+
+message GoogleOAuthCallbackRsp {
+	common.ErrorCode code    = 1;
+	string           msg     = 2;
+	TapInfo          tapInfo = 3;
+}

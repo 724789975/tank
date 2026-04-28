@@ -17,4 +17,7 @@ service UserCenterService {
 
     //Google Play登录
     rpc google_login(user_center.GooglePlayLoginReq) returns (user_center.GooglePlayLoginRsp){};
+
+    //Google OAuth callback
+    rpc google_oauth_callback(user_center.GoogleOAuthCallbackReq) returns (user_center.GoogleOAuthCallbackRsp){};
 }

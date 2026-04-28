@@ -44,8 +44,12 @@ func GetUserService() IService {
 
 func (s *UserService) ListenAndServe(ctx context.Context) {
 	clientRouter := user_http.GetClientRouter()
-	group := clientRouter.Group("api").Group("1.0").Group("public").Group("user_server")
-	group.POST(":method", s.ginRoute)
+	group := clientRouter.Group("api").Group("1.0")
+	group2 := group.Group("public").Group("user_server")
+	group2.Use(user_http.AuthForClient(10))
+	group2.POST(":method", s.ginRoute)
+	group3 := group.Group("get").Group("user_server")
+	group3.POST(":method", s.ginRoute2)
 
 	httpServer := &http.Server{
 		Addr:    common_config.Get("user_http.addr").(string),
@@ -100,6 +104,22 @@ func (s *UserService) ginRoute(ctx *gin.Context) {
 	str := driver.NewHttpStream(ctx.Writer, ctx.Request)
 	handler := info.Handler()
 	if err := handler(context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(string)), s, &streaming.Args{Stream: str}, nil); err != nil {
+		klog.CtxErrorf(ctx, "[USER-SVR-METHOD-HANDLER-ERROR] %s", err.Error())
+	}
+}
+
+func (s *UserService) ginRoute2(ctx *gin.Context) {
+	methodName := ctx.Param("method")
+
+	// c := context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(int64))
+	info, ok := s.ServiceInfo.Methods[methodName]
+	if !ok {
+		klog.CtxErrorf(ctx, "[USER-SVR-METHOD-NOT-FOUND] not found: %s", ctx.FullPath())
+		return
+	}
+	str := driver.NewGetStream(ctx.Writer, ctx.Request)
+	handler := info.Handler()
+	if err := handler(ctx.Request.Context(), s, &streaming.Args{Stream: str}, nil); err != nil {
 		klog.CtxErrorf(ctx, "[USER-SVR-METHOD-HANDLER-ERROR] %s", err.Error())
 	}
 }

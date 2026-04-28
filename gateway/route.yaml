@@ -27,6 +27,14 @@ spec:
           number: 8080
   - match:
     - uri:
+        prefix: /api/1.0/get/user_server/
+    route:
+    - destination:
+        host: user-server.tank.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - uri:
         prefix: /observability/jaeger/
     route:
     - destination:

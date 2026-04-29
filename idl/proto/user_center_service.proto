@@ -20,4 +20,7 @@ service UserCenterService {
 
     //Google OAuth callback
     rpc google_oauth_callback(user_center.GoogleOAuthCallbackReq) returns (user_center.GoogleOAuthCallbackRsp){};
+
+    //Google OAuth 授权码交换
+    rpc google_oauth_exchange(user_center.GoogleOAuthExchangeReq) returns (user_center.GoogleOAuthExchangeRsp){};
 }

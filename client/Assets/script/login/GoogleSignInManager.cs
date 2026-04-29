@@ -48,7 +48,7 @@ public class GoogleSignInManager : MonoBehaviour
     [Header("Google OAuth 配置")]
     [SerializeField] private string clientId = "1";
     [SerializeField] private string cS= "G";
-    [SerializeField] private string redirectUri = "http://localhost:8080/";
+    [SerializeField] private string redirectUri = "http://quchifan.wang:30080/api/1.0/get/user_server/google_oauth_callback";
     [SerializeField] private string scope = "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
     [SerializeField] private string tokenEndpoint = "https://oauth2.googleapis.com/token";
     [SerializeField] private string userInfoEndpoint = "https://www.googleapis.com/oauth2/v1/userinfo";
@@ -163,61 +163,105 @@ public class GoogleSignInManager : MonoBehaviour
     /// <param name="code">授权码</param>
     public IEnumerator ExchangeCodeForToken(string code)
     {
-        WWWForm form = null;
-        UnityWebRequest request = null;
-
         try
         {
             Debug.Log("交换授权码获取令牌...");
 
-        // 准备请求数据
-            form = new WWWForm();
-            form.AddField("code", code);
-            form.AddField("client_id", clientId);
-            form.AddField("client_secret", cS);
-            form.AddField("redirect_uri", redirectUri);
-            form.AddField("grant_type", "authorization_code");
-            form.AddField("code_verifier", codeVerifier);
+            // 准备请求数据
+            var exchangeReq = new UserCenter.GoogleOAuthExchangeReq
+            {
+                code = code,
+                codeVerifier = codeVerifier
+            };
 
-            // 发送请求
-            request = UnityWebRequest.Post(tokenEndpoint, form);
+            string jsonBody = exchangeReq.ToString();
+
+            AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
+
+            // 设置用户 channel
+            var userChannel = new Login.UserChannel
+            {
+                ver = "v1",
+                exp = (long)(DateTime.UtcNow.AddSeconds(30) - new DateTime(1970, 1, 1)).TotalSeconds,
+                userId = Guid.NewGuid().ToString()
+            };
+            string userChannelBody = JsonUtility.ToJson(userChannel);
+
+            var headers = new Dictionary<string, string>
+            {
+                { "user-channel", userChannelBody }
+            };
+
+            bool requestComplete = false;
+            bool requestSuccess = false;
+            byte[] responseBytes = null;
+
+            // 发送请求到我们自己的服务器
+            asyncWebRequest.Post("http://quchifan.wang:30080/api/1.0/public/user_server/google_oauth_exchange", jsonBody, headers, (ok, response) =>
+            {
+                requestComplete = true;
+                requestSuccess = ok;
+                responseBytes = response;
+            });
+
+            // 等待请求完成
+            while (!requestComplete)
+            {
+                yield return null;
+            }
+
+            if (requestSuccess && responseBytes != null)
+            {
+                // 解析响应
+                string responseStr = System.Text.Encoding.UTF8.GetString(responseBytes);
+                Debug.Log("令牌响应: " + responseStr);
+
+                // 解析 protobuf
+                UserCenter.GoogleOAuthExchangeRsp rsp = UserCenter.GoogleOAuthExchangeRsp.Parser.ParseJson(responseStr);
+                
+                if (rsp.Code == Common.ErrorCode.Ok)
+                {
+                    // 保存 token
+                    accessToken = rsp.data.token;
+                    tokenExpiry = DateTime.Now.AddHours(1);
+
+                    // 设置用户信息
+                    CurrentUser = new GoogleUserInfo
+                    {
+                        id = rsp.data.tapInfo.openid,
+                        name = rsp.data.tapInfo.name,
+                        picture = rsp.data.tapInfo.avatar
+                    };
+
+                    // 保存令牌
+                    SaveToken();
+
+                    // 设置登录状态
+                    IsLoggedIn = true;
+
+                    // 触发事件
+                    OnLoginStatusChanged?.Invoke(true);
+                    OnUserInfoReceived?.Invoke(CurrentUser);
+
+                    Debug.Log("登录成功！用户: " + CurrentUser.name);
+                }
+                else
+                {
+                    Debug.LogError("登录失败: " + rsp.Msg);
+                    OnErrorOccurred?.Invoke("登录失败: " + rsp.Msg);
+                }
+            }
+            else
+            {
+                Debug.LogError("获取令牌失败");
+                OnErrorOccurred?.Invoke("获取令牌失败");
+            }
         }
         catch (Exception e)
         {
             Debug.LogError("交换授权码失败: " + e.Message);
             OnErrorOccurred?.Invoke("交换授权码失败: " + e.Message);
             yield break;
-        }
-
-        // 发送请求
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            // 解析响应
-            string response = request.downloadHandler.text;
-            Debug.Log("令牌响应: " + response);
-
-            // 解析 JSON
-            TokenResponse tokenResponse = JsonUtility.FromJson<TokenResponse>(response);
-            accessToken = tokenResponse.access_token;
-            refreshToken = tokenResponse.refresh_token;
-            tokenExpiry = DateTime.Now.AddSeconds(tokenResponse.expires_in);
-
-            // 保存令牌
-            SaveToken();
-
-            // 获取用户信息
-            yield return GetUserInfo();
-        }
-        else
-        {
-            // 添加详细的错误信息
-            string errorText = request.error;
-            string responseText = request.downloadHandler.text;
-            Debug.LogError("获取令牌失败: " + errorText);
-            Debug.LogError("响应内容: " + responseText);
-            OnErrorOccurred?.Invoke("获取令牌失败: " + errorText + "\n响应: " + responseText);
         }
     }
 

@@ -1,8 +1,12 @@
 package manager
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"sync"
 	common_config "user_server/config"
 	"user_server/kitex_gen/common"
@@ -258,6 +262,222 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 	return resp, nil
 }
 
+func (x *UserManager) GoogleOauthCallback(ctx context.Context, req *user_center.GoogleOAuthCallbackReq) (resp *user_center.GoogleOAuthCallbackRsp, err error) {
+	resp = &user_center.GoogleOAuthCallbackRsp{
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
+	}
+
+	if req.Code == "" {
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-CALLBACK-ERROR] code is empty")
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
+		resp.Msg = "code is empty"
+		return resp, nil
+	}
+	resp.Data = &user_center.GoogleOAuthCallbackRsp_Data{Code: req.Code}
+
+	return resp, nil
+}
+
+func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.GoogleOAuthExchangeReq) (resp *user_center.GoogleOAuthExchangeRsp, err error) {
+	resp = &user_center.GoogleOAuthExchangeRsp{
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
+	}
+
+	userId := ""
+	defer func() {
+		klog.CtxInfof(ctx, "[GOOGLE-OAUTH-EXCHANGE-RESULT] uuid: %s, resp: %d", userId, resp.Code)
+	}()
+
+	if req.Code == "" {
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] code is empty")
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
+		resp.Msg = "code is empty"
+		return resp, nil
+	}
+
+	googleClientID := common_config.Get("google.client_id").(string)
+	if googleClientID == "" {
+		googleClientID = "YOUR_GOOGLE_CLIENT_ID"
+	}
+
+	googleClientSecret := common_config.Get("google.client_secret").(string)
+	if googleClientSecret == "" {
+		googleClientSecret = "YOUR_GOOGLE_CLIENT_SECRET"
+	}
+
+	redirectURI := common_config.Get("google.redirect_uri").(string)
+	if redirectURI == "" {
+		redirectURI = "http://quchifan.wang:30080/api/1.0/get/user_server/google_oauth_callback"
+	}
+
+	tokenURL := "https://oauth2.googleapis.com/token"
+
+	requestBody := map[string]string{
+		"code":          req.Code,
+		"client_id":     googleClientID,
+		"client_secret": googleClientSecret,
+		"redirect_uri":  redirectURI,
+		"grant_type":    "authorization_code",
+		"code_verifier": req.CodeVerifier,
+	}
+
+	jsonData, err := json.Marshal(requestBody)
+	if err != nil {
+		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] marshal request body err: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "marshal request body failed"
+		return resp, nil
+	}
+
+	httpResp, err := http.Post(tokenURL, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] post request err: %v", err)
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_VERIFY_FAILED
+		resp.Msg = "failed to exchange code"
+		return resp, nil
+	}
+	defer httpResp.Body.Close()
+
+	body, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] read response body err: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "read response body failed"
+		return resp, nil
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] http status: %d, body: %s", httpResp.StatusCode, string(body))
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_VERIFY_FAILED
+		resp.Msg = fmt.Sprintf("token exchange failed with status %d", httpResp.StatusCode)
+		return resp, nil
+	}
+
+	var tokenResp googleTokenResponse
+	err = json.Unmarshal(body, &tokenResp)
+	if err != nil {
+		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] unmarshal token response err: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "unmarshal token response failed"
+		return resp, nil
+	}
+
+	if tokenResp.IdToken == "" {
+		klog.Error("[GOOGLE-OAUTH-EXCHANGE-ERROR] id_token is empty")
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
+		resp.Msg = "id_token is empty"
+		return resp, nil
+	}
+
+	googleUserInfo, err := verifyGoogleToken(ctx, tokenResp.IdToken)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] verify google token err: %v", err)
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_VERIFY_FAILED
+		resp.Msg = "failed to verify google token"
+		return resp, nil
+	}
+
+	if googleUserInfo.Openid == "" {
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] invalid google user info")
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
+		resp.Msg = "invalid google user info"
+		return resp, nil
+	}
+
+	userId = googleUserInfo.Openid
+
+	luaScript := `
+	local google_platform_key = KEYS[1]
+	local openid = ARGV[1]
+	local avatar = ARGV[2]
+	local gender = ARGV[3]
+	local name = ARGV[4]
+	local unionid = ARGV[5]
+
+	local user_info_key = 'user_info:' .. openid
+
+	local exists = redis.call('HEXISTS', user_info_key, 'openid')
+	if exists == 1 then
+		redis.call('SET', google_platform_key, openid)
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {1, user_info}
+	else
+		redis.call('SET', google_platform_key, openid)
+		redis.call('HSET', user_info_key, 
+			'avatar', avatar, 
+			'gender', gender, 
+			'name', name, 
+			'openid', openid, 
+			'unionid', unionid)
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {0, user_info}
+	end
+	`
+
+	googlePlatformKey := fmt.Sprintf("%s:%s", redis_google_play, userId)
+
+	keys := []string{googlePlatformKey}
+	args := []interface{}{
+		googleUserInfo.Openid,
+		googleUserInfo.Avatar,
+		googleUserInfo.Gender,
+		googleUserInfo.Name,
+		googleUserInfo.Unionid,
+	}
+
+	result, err := common_redis.GetRedis().Eval(ctx, luaScript, keys, args).Result()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-LUA-ERROR] eval lua script err: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "lua script execution failed"
+		return resp, err
+	}
+
+	resultArray, ok := result.([]interface{})
+	if !ok {
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-LUA-ERROR] invalid lua result format")
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "invalid lua result format"
+		return resp, nil
+	}
+
+	userExists := resultArray[0].(int64)
+	userInfoArray := resultArray[1].([]interface{})
+	userInfo := make(map[string]string)
+	for i := 0; i < len(userInfoArray); i += 2 {
+		key := userInfoArray[i].(string)
+		value := userInfoArray[i+1].(string)
+		userInfo[key] = value
+	}
+
+	if userExists == 1 {
+		resp.Msg = "user exists"
+	} else {
+		resp.Msg = "user created"
+	}
+
+	avatar := userInfo["avatar"]
+	gender := userInfo["gender"]
+	name := userInfo["name"]
+	openid := userInfo["openid"]
+	unionid := userInfo["unionid"]
+
+	resp.Data = &user_center.GoogleOAuthExchangeRsp_Data{
+		Token: tokenResp.AccessToken,
+		TapInfo: &user_center.TapInfo{
+			Avatar:  avatar,
+			Gender:  gender,
+			Name:    name,
+			Openid:  openid,
+			Unionid: unionid,
+		},
+	}
+
+	return resp, nil
+}
+
 func (x *UserManager) GoogleLogin(ctx context.Context, req *user_center.GooglePlayLoginReq) (resp *user_center.GooglePlayLoginRsp, err error) {
 	resp = &user_center.GooglePlayLoginRsp{
 		Code: common.ErrorCode_OK,
@@ -410,6 +630,14 @@ func (x *UserManager) GoogleLogin(ctx context.Context, req *user_center.GooglePl
 	}
 
 	return resp, nil
+}
+
+type googleTokenResponse struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	IdToken      string `json:"id_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 // verifyGoogleToken 验证 Google token 并获取用户信息

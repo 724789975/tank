@@ -20,6 +20,10 @@ namespace UserCenterService {
     static readonly grpc::Marshaller<global::UserCenter.TestLoginRsp> __Marshaller_user_center_TestLoginRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.TestLoginRsp.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.GooglePlayLoginReq> __Marshaller_user_center_GooglePlayLoginReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GooglePlayLoginReq.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.GooglePlayLoginRsp> __Marshaller_user_center_GooglePlayLoginRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GooglePlayLoginRsp.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::UserCenter.GoogleOAuthCallbackReq> __Marshaller_user_center_GoogleOAuthCallbackReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GoogleOAuthCallbackReq.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::UserCenter.GoogleOAuthCallbackRsp> __Marshaller_user_center_GoogleOAuthCallbackRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GoogleOAuthCallbackRsp.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::UserCenter.GoogleOAuthExchangeReq> __Marshaller_user_center_GoogleOAuthExchangeReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GoogleOAuthExchangeReq.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::UserCenter.GoogleOAuthExchangeRsp> __Marshaller_user_center_GoogleOAuthExchangeRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GoogleOAuthExchangeRsp.Parser.ParseFrom);
 
     static readonly grpc::Method<global::UserCenter.LoginReq, global::UserCenter.LoginRsp> __Method_login = new grpc::Method<global::UserCenter.LoginReq, global::UserCenter.LoginRsp>(
         grpc::MethodType.Unary,
@@ -48,6 +52,20 @@ namespace UserCenterService {
         "google_login",
         __Marshaller_user_center_GooglePlayLoginReq,
         __Marshaller_user_center_GooglePlayLoginRsp);
+
+    static readonly grpc::Method<global::UserCenter.GoogleOAuthCallbackReq, global::UserCenter.GoogleOAuthCallbackRsp> __Method_google_oauth_callback = new grpc::Method<global::UserCenter.GoogleOAuthCallbackReq, global::UserCenter.GoogleOAuthCallbackRsp>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "google_oauth_callback",
+        __Marshaller_user_center_GoogleOAuthCallbackReq,
+        __Marshaller_user_center_GoogleOAuthCallbackRsp);
+
+    static readonly grpc::Method<global::UserCenter.GoogleOAuthExchangeReq, global::UserCenter.GoogleOAuthExchangeRsp> __Method_google_oauth_exchange = new grpc::Method<global::UserCenter.GoogleOAuthExchangeReq, global::UserCenter.GoogleOAuthExchangeRsp>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "google_oauth_exchange",
+        __Marshaller_user_center_GoogleOAuthExchangeReq,
+        __Marshaller_user_center_GoogleOAuthExchangeRsp);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -98,6 +116,28 @@ namespace UserCenterService {
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::UserCenter.GooglePlayLoginRsp> google_login(global::UserCenter.GooglePlayLoginReq request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///Google OAuth callback
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::UserCenter.GoogleOAuthCallbackRsp> google_oauth_callback(global::UserCenter.GoogleOAuthCallbackReq request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///Google OAuth 授权码交换
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::UserCenter.GoogleOAuthExchangeRsp> google_oauth_exchange(global::UserCenter.GoogleOAuthExchangeReq request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -303,6 +343,94 @@ namespace UserCenterService {
       {
         return CallInvoker.AsyncUnaryCall(__Method_google_login, null, options, request);
       }
+      /// <summary>
+      ///Google OAuth callback
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::UserCenter.GoogleOAuthCallbackRsp google_oauth_callback(global::UserCenter.GoogleOAuthCallbackReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return google_oauth_callback(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///Google OAuth callback
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::UserCenter.GoogleOAuthCallbackRsp google_oauth_callback(global::UserCenter.GoogleOAuthCallbackReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_google_oauth_callback, null, options, request);
+      }
+      /// <summary>
+      ///Google OAuth callback
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::UserCenter.GoogleOAuthCallbackRsp> google_oauth_callbackAsync(global::UserCenter.GoogleOAuthCallbackReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return google_oauth_callbackAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///Google OAuth callback
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::UserCenter.GoogleOAuthCallbackRsp> google_oauth_callbackAsync(global::UserCenter.GoogleOAuthCallbackReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_google_oauth_callback, null, options, request);
+      }
+      /// <summary>
+      ///Google OAuth 授权码交换
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::UserCenter.GoogleOAuthExchangeRsp google_oauth_exchange(global::UserCenter.GoogleOAuthExchangeReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return google_oauth_exchange(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///Google OAuth 授权码交换
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::UserCenter.GoogleOAuthExchangeRsp google_oauth_exchange(global::UserCenter.GoogleOAuthExchangeReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_google_oauth_exchange, null, options, request);
+      }
+      /// <summary>
+      ///Google OAuth 授权码交换
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::UserCenter.GoogleOAuthExchangeRsp> google_oauth_exchangeAsync(global::UserCenter.GoogleOAuthExchangeReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return google_oauth_exchangeAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///Google OAuth 授权码交换
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::UserCenter.GoogleOAuthExchangeRsp> google_oauth_exchangeAsync(global::UserCenter.GoogleOAuthExchangeReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_google_oauth_exchange, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override UserCenterServiceClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -318,7 +446,9 @@ namespace UserCenterService {
           .AddMethod(__Method_login, serviceImpl.login)
           .AddMethod(__Method_user_info, serviceImpl.user_info)
           .AddMethod(__Method_test_login, serviceImpl.test_login)
-          .AddMethod(__Method_google_login, serviceImpl.google_login).Build();
+          .AddMethod(__Method_google_login, serviceImpl.google_login)
+          .AddMethod(__Method_google_oauth_callback, serviceImpl.google_oauth_callback)
+          .AddMethod(__Method_google_oauth_exchange, serviceImpl.google_oauth_exchange).Build();
     }
 
   }

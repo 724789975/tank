@@ -44,6 +44,20 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"google_oauth_callback": kitex.NewMethodInfo(
+		googleOauthCallbackHandler,
+		newGoogleOauthCallbackArgs,
+		newGoogleOauthCallbackResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"google_oauth_exchange": kitex.NewMethodInfo(
+		googleOauthExchangeHandler,
+		newGoogleOauthExchangeArgs,
+		newGoogleOauthExchangeResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -554,6 +568,228 @@ func (p *GoogleLoginResult) GetResult() interface{} {
 	return p.Success
 }
 
+func googleOauthCallbackHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user_center.GoogleOAuthCallbackReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user_center_service.UserCenterService).GoogleOauthCallback(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GoogleOauthCallbackArgs:
+		success, err := handler.(user_center_service.UserCenterService).GoogleOauthCallback(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GoogleOauthCallbackResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGoogleOauthCallbackArgs() interface{} {
+	return &GoogleOauthCallbackArgs{}
+}
+
+func newGoogleOauthCallbackResult() interface{} {
+	return &GoogleOauthCallbackResult{}
+}
+
+type GoogleOauthCallbackArgs struct {
+	Req *user_center.GoogleOAuthCallbackReq
+}
+
+func (p *GoogleOauthCallbackArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GoogleOauthCallbackArgs) Unmarshal(in []byte) error {
+	msg := new(user_center.GoogleOAuthCallbackReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GoogleOauthCallbackArgs_Req_DEFAULT *user_center.GoogleOAuthCallbackReq
+
+func (p *GoogleOauthCallbackArgs) GetReq() *user_center.GoogleOAuthCallbackReq {
+	if !p.IsSetReq() {
+		return GoogleOauthCallbackArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GoogleOauthCallbackArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GoogleOauthCallbackArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GoogleOauthCallbackResult struct {
+	Success *user_center.GoogleOAuthCallbackRsp
+}
+
+var GoogleOauthCallbackResult_Success_DEFAULT *user_center.GoogleOAuthCallbackRsp
+
+func (p *GoogleOauthCallbackResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GoogleOauthCallbackResult) Unmarshal(in []byte) error {
+	msg := new(user_center.GoogleOAuthCallbackRsp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GoogleOauthCallbackResult) GetSuccess() *user_center.GoogleOAuthCallbackRsp {
+	if !p.IsSetSuccess() {
+		return GoogleOauthCallbackResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GoogleOauthCallbackResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user_center.GoogleOAuthCallbackRsp)
+}
+
+func (p *GoogleOauthCallbackResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GoogleOauthCallbackResult) GetResult() interface{} {
+	return p.Success
+}
+
+func googleOauthExchangeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user_center.GoogleOAuthExchangeReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user_center_service.UserCenterService).GoogleOauthExchange(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GoogleOauthExchangeArgs:
+		success, err := handler.(user_center_service.UserCenterService).GoogleOauthExchange(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GoogleOauthExchangeResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGoogleOauthExchangeArgs() interface{} {
+	return &GoogleOauthExchangeArgs{}
+}
+
+func newGoogleOauthExchangeResult() interface{} {
+	return &GoogleOauthExchangeResult{}
+}
+
+type GoogleOauthExchangeArgs struct {
+	Req *user_center.GoogleOAuthExchangeReq
+}
+
+func (p *GoogleOauthExchangeArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GoogleOauthExchangeArgs) Unmarshal(in []byte) error {
+	msg := new(user_center.GoogleOAuthExchangeReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GoogleOauthExchangeArgs_Req_DEFAULT *user_center.GoogleOAuthExchangeReq
+
+func (p *GoogleOauthExchangeArgs) GetReq() *user_center.GoogleOAuthExchangeReq {
+	if !p.IsSetReq() {
+		return GoogleOauthExchangeArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GoogleOauthExchangeArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GoogleOauthExchangeArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GoogleOauthExchangeResult struct {
+	Success *user_center.GoogleOAuthExchangeRsp
+}
+
+var GoogleOauthExchangeResult_Success_DEFAULT *user_center.GoogleOAuthExchangeRsp
+
+func (p *GoogleOauthExchangeResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GoogleOauthExchangeResult) Unmarshal(in []byte) error {
+	msg := new(user_center.GoogleOAuthExchangeRsp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GoogleOauthExchangeResult) GetSuccess() *user_center.GoogleOAuthExchangeRsp {
+	if !p.IsSetSuccess() {
+		return GoogleOauthExchangeResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GoogleOauthExchangeResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user_center.GoogleOAuthExchangeRsp)
+}
+
+func (p *GoogleOauthExchangeResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GoogleOauthExchangeResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -599,6 +835,26 @@ func (p *kClient) GoogleLogin(ctx context.Context, Req *user_center.GooglePlayLo
 	_args.Req = Req
 	var _result GoogleLoginResult
 	if err = p.c.Call(ctx, "google_login", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GoogleOauthCallback(ctx context.Context, Req *user_center.GoogleOAuthCallbackReq) (r *user_center.GoogleOAuthCallbackRsp, err error) {
+	var _args GoogleOauthCallbackArgs
+	_args.Req = Req
+	var _result GoogleOauthCallbackResult
+	if err = p.c.Call(ctx, "google_oauth_callback", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GoogleOauthExchange(ctx context.Context, Req *user_center.GoogleOAuthExchangeReq) (r *user_center.GoogleOAuthExchangeRsp, err error) {
+	var _args GoogleOauthExchangeArgs
+	_args.Req = Req
+	var _result GoogleOauthExchangeResult
+	if err = p.c.Call(ctx, "google_oauth_exchange", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

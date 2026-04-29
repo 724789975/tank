@@ -76,7 +76,25 @@ message GoogleOAuthCallbackReq {
 }
 
 message GoogleOAuthCallbackRsp {
-	common.ErrorCode code    = 1;
-	string           msg     = 2;
-	TapInfo          tapInfo = 3;
+	common.ErrorCode code = 1;
+	string           msg  = 2;
+	message Data{
+		string code = 1;
+	}
+	Data data = 3;
+}
+
+message GoogleOAuthExchangeReq {
+	string code = 1;
+	string codeVerifier = 2;
+}
+
+message GoogleOAuthExchangeRsp {
+	common.ErrorCode code = 1;
+	string           msg  = 2;
+	message Data{
+		string token = 1;
+		TapInfo tapInfo = 2;
+	}
+	Data data = 3;
 }

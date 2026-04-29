@@ -15,6 +15,8 @@ type Client interface {
 	UserInfo(ctx context.Context, Req *user_center.UserInfoReq, callOptions ...callopt.Option) (r *user_center.UserInfoRsp, err error)
 	TestLogin(ctx context.Context, Req *user_center.TestLoginReq, callOptions ...callopt.Option) (r *user_center.TestLoginRsp, err error)
 	GoogleLogin(ctx context.Context, Req *user_center.GooglePlayLoginReq, callOptions ...callopt.Option) (r *user_center.GooglePlayLoginRsp, err error)
+	GoogleOauthCallback(ctx context.Context, Req *user_center.GoogleOAuthCallbackReq, callOptions ...callopt.Option) (r *user_center.GoogleOAuthCallbackRsp, err error)
+	GoogleOauthExchange(ctx context.Context, Req *user_center.GoogleOAuthExchangeReq, callOptions ...callopt.Option) (r *user_center.GoogleOAuthExchangeRsp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +66,14 @@ func (p *kUserCenterServiceClient) TestLogin(ctx context.Context, Req *user_cent
 func (p *kUserCenterServiceClient) GoogleLogin(ctx context.Context, Req *user_center.GooglePlayLoginReq, callOptions ...callopt.Option) (r *user_center.GooglePlayLoginRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GoogleLogin(ctx, Req)
+}
+
+func (p *kUserCenterServiceClient) GoogleOauthCallback(ctx context.Context, Req *user_center.GoogleOAuthCallbackReq, callOptions ...callopt.Option) (r *user_center.GoogleOAuthCallbackRsp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GoogleOauthCallback(ctx, Req)
+}
+
+func (p *kUserCenterServiceClient) GoogleOauthExchange(ctx context.Context, Req *user_center.GoogleOAuthExchangeReq, callOptions ...callopt.Option) (r *user_center.GoogleOAuthExchangeRsp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GoogleOauthExchange(ctx, Req)
 }

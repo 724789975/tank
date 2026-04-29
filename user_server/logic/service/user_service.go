@@ -49,7 +49,7 @@ func (s *UserService) ListenAndServe(ctx context.Context) {
 	group2.Use(user_http.AuthForClient(10))
 	group2.POST(":method", s.ginRoute)
 	group3 := group.Group("get").Group("user_server")
-	group3.POST(":method", s.ginRoute2)
+	group3.GET(":method", s.ginRoute2)
 
 	httpServer := &http.Server{
 		Addr:    common_config.Get("user_http.addr").(string),
@@ -141,4 +141,12 @@ func (x *UserService) TestLogin(ctx context.Context, req *user_center.TestLoginR
 
 func (x *UserService) GoogleLogin(ctx context.Context, req *user_center.GooglePlayLoginReq) (resp *user_center.GooglePlayLoginRsp, err error) {
 	return manager.GetUserManager().GoogleLogin(ctx, req)
+}
+
+func (x *UserService) GoogleOauthCallback(ctx context.Context, req *user_center.GoogleOAuthCallbackReq) (resp *user_center.GoogleOAuthCallbackRsp, err error) {
+	return manager.GetUserManager().GoogleOauthCallback(ctx, req)
+}
+
+func (x *UserService) GoogleOauthExchange(ctx context.Context, req *user_center.GoogleOAuthExchangeReq) (resp *user_center.GoogleOAuthExchangeRsp, err error) {
+	return manager.GetUserManager().GoogleOauthExchange(ctx, req)
 }

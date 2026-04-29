@@ -38,4 +38,5 @@ gateway:
   service_name: "gate-server"
 
 google:
-  client_id: "1039573902903-1234567890abcdef1234567890abcdef.apps.googleusercontent.com"
+  client_id: "1061525001536-hblht7k9otpaeaoksrdrvnj7om2emnt5.apps.googleusercontent.com"
+  redirect_uri: "http://quchifan.wang:30080/api/1.0/get/user_server/google_oauth_callback"

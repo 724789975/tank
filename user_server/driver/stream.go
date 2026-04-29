@@ -61,7 +61,15 @@ func NewGetStream(w http.ResponseWriter, r *http.Request) streaming.Stream {
 
 func (x *GetStream) RecvMsg(req interface{}) error {
 	query := x.r.URL.Query()
-	jsonBytes, err := json.Marshal(query)
+
+	queryMap := make(map[string]string)
+	for key, values := range query {
+		if len(values) > 0 {
+			queryMap[key] = values[0]
+		}
+	}
+
+	jsonBytes, err := json.Marshal(queryMap)
 	if err != nil {
 		return err
 	}

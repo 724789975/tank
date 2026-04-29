@@ -45,7 +45,7 @@ spec:
         - name: nats
           image: nats:latest
           imagePullPolicy: IfNotPresent
-          command: ["nats-server", "-user", "root", "-pass", "123#@!QAzx"]
+          command: ["nats-server", "-DV", "-user", "root", "-pass", "123#@!QAzx"]
           ports:
             - containerPort: 4222
               name: client

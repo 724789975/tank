@@ -24,3 +24,4 @@ service UserCenterService {
     //Google OAuth 授权码交换
     rpc google_oauth_exchange(user_center.GoogleOAuthExchangeReq) returns (user_center.GoogleOAuthExchangeRsp){};
 }
+

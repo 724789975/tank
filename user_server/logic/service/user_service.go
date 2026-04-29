@@ -139,10 +139,6 @@ func (x *UserService) TestLogin(ctx context.Context, req *user_center.TestLoginR
 	return manager.GetUserManager().TestLogin(ctx, req)
 }
 
-func (x *UserService) GoogleLogin(ctx context.Context, req *user_center.GooglePlayLoginReq) (resp *user_center.GooglePlayLoginRsp, err error) {
-	return manager.GetUserManager().GoogleLogin(ctx, req)
-}
-
 func (x *UserService) GoogleOauthCallback(ctx context.Context, req *user_center.GoogleOAuthCallbackReq) (resp *user_center.GoogleOAuthCallbackRsp, err error) {
 	return manager.GetUserManager().GoogleOauthCallback(ctx, req)
 }

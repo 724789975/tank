@@ -14,7 +14,6 @@ type Client interface {
 	Login(ctx context.Context, Req *user_center.LoginReq, callOptions ...callopt.Option) (r *user_center.LoginRsp, err error)
 	UserInfo(ctx context.Context, Req *user_center.UserInfoReq, callOptions ...callopt.Option) (r *user_center.UserInfoRsp, err error)
 	TestLogin(ctx context.Context, Req *user_center.TestLoginReq, callOptions ...callopt.Option) (r *user_center.TestLoginRsp, err error)
-	GoogleLogin(ctx context.Context, Req *user_center.GooglePlayLoginReq, callOptions ...callopt.Option) (r *user_center.GooglePlayLoginRsp, err error)
 	GoogleOauthCallback(ctx context.Context, Req *user_center.GoogleOAuthCallbackReq, callOptions ...callopt.Option) (r *user_center.GoogleOAuthCallbackRsp, err error)
 	GoogleOauthExchange(ctx context.Context, Req *user_center.GoogleOAuthExchangeReq, callOptions ...callopt.Option) (r *user_center.GoogleOAuthExchangeRsp, err error)
 }
@@ -61,11 +60,6 @@ func (p *kUserCenterServiceClient) UserInfo(ctx context.Context, Req *user_cente
 func (p *kUserCenterServiceClient) TestLogin(ctx context.Context, Req *user_center.TestLoginReq, callOptions ...callopt.Option) (r *user_center.TestLoginRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.TestLogin(ctx, Req)
-}
-
-func (p *kUserCenterServiceClient) GoogleLogin(ctx context.Context, Req *user_center.GooglePlayLoginReq, callOptions ...callopt.Option) (r *user_center.GooglePlayLoginRsp, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GoogleLogin(ctx, Req)
 }
 
 func (p *kUserCenterServiceClient) GoogleOauthCallback(ctx context.Context, Req *user_center.GoogleOAuthCallbackReq, callOptions ...callopt.Option) (r *user_center.GoogleOAuthCallbackRsp, err error) {

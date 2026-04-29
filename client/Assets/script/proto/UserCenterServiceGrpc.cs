@@ -18,8 +18,6 @@ namespace UserCenterService {
     static readonly grpc::Marshaller<global::UserCenter.UserInfoRsp> __Marshaller_user_center_UserInfoRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.UserInfoRsp.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.TestLoginReq> __Marshaller_user_center_TestLoginReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.TestLoginReq.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.TestLoginRsp> __Marshaller_user_center_TestLoginRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.TestLoginRsp.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::UserCenter.GooglePlayLoginReq> __Marshaller_user_center_GooglePlayLoginReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GooglePlayLoginReq.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::UserCenter.GooglePlayLoginRsp> __Marshaller_user_center_GooglePlayLoginRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GooglePlayLoginRsp.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.GoogleOAuthCallbackReq> __Marshaller_user_center_GoogleOAuthCallbackReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GoogleOAuthCallbackReq.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.GoogleOAuthCallbackRsp> __Marshaller_user_center_GoogleOAuthCallbackRsp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GoogleOAuthCallbackRsp.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::UserCenter.GoogleOAuthExchangeReq> __Marshaller_user_center_GoogleOAuthExchangeReq = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::UserCenter.GoogleOAuthExchangeReq.Parser.ParseFrom);
@@ -45,13 +43,6 @@ namespace UserCenterService {
         "test_login",
         __Marshaller_user_center_TestLoginReq,
         __Marshaller_user_center_TestLoginRsp);
-
-    static readonly grpc::Method<global::UserCenter.GooglePlayLoginReq, global::UserCenter.GooglePlayLoginRsp> __Method_google_login = new grpc::Method<global::UserCenter.GooglePlayLoginReq, global::UserCenter.GooglePlayLoginRsp>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "google_login",
-        __Marshaller_user_center_GooglePlayLoginReq,
-        __Marshaller_user_center_GooglePlayLoginRsp);
 
     static readonly grpc::Method<global::UserCenter.GoogleOAuthCallbackReq, global::UserCenter.GoogleOAuthCallbackRsp> __Method_google_oauth_callback = new grpc::Method<global::UserCenter.GoogleOAuthCallbackReq, global::UserCenter.GoogleOAuthCallbackRsp>(
         grpc::MethodType.Unary,
@@ -105,17 +96,6 @@ namespace UserCenterService {
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::UserCenter.TestLoginRsp> test_login(global::UserCenter.TestLoginReq request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      /// <summary>
-      ///Google Play登录
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::UserCenter.GooglePlayLoginRsp> google_login(global::UserCenter.GooglePlayLoginReq request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -300,50 +280,6 @@ namespace UserCenterService {
         return CallInvoker.AsyncUnaryCall(__Method_test_login, null, options, request);
       }
       /// <summary>
-      ///Google Play登录
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::UserCenter.GooglePlayLoginRsp google_login(global::UserCenter.GooglePlayLoginReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return google_login(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      ///Google Play登录
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::UserCenter.GooglePlayLoginRsp google_login(global::UserCenter.GooglePlayLoginReq request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_google_login, null, options, request);
-      }
-      /// <summary>
-      ///Google Play登录
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::UserCenter.GooglePlayLoginRsp> google_loginAsync(global::UserCenter.GooglePlayLoginReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return google_loginAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      ///Google Play登录
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::UserCenter.GooglePlayLoginRsp> google_loginAsync(global::UserCenter.GooglePlayLoginReq request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_google_login, null, options, request);
-      }
-      /// <summary>
       ///Google OAuth callback
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
@@ -446,7 +382,6 @@ namespace UserCenterService {
           .AddMethod(__Method_login, serviceImpl.login)
           .AddMethod(__Method_user_info, serviceImpl.user_info)
           .AddMethod(__Method_test_login, serviceImpl.test_login)
-          .AddMethod(__Method_google_login, serviceImpl.google_login)
           .AddMethod(__Method_google_oauth_callback, serviceImpl.google_oauth_callback)
           .AddMethod(__Method_google_oauth_exchange, serviceImpl.google_oauth_exchange).Build();
     }

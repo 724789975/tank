@@ -47,15 +47,7 @@ message TestLoginReq {
 	TapInfo tapInfo = 1;
 }
 
-message GooglePlayLoginReq {
-	string token = 1;
-}
 
-message GooglePlayLoginRsp {
-	common.ErrorCode code = 1;
-	string           msg  = 2;
-	TapInfo          tapInfo = 3;
-}
 
 message TestLoginRsp {
 	common.ErrorCode code = 1;

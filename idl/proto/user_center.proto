@@ -90,3 +90,17 @@ message GoogleOAuthExchangeRsp {
 	}
 	Data data = 3;
 }
+
+message GoogleLoginReq {
+	string openid  = 1;
+	string avatar  = 2;
+	string gender  = 3;
+	string name    = 4;
+	string unionid = 5;
+}
+
+message GoogleLoginRsp {
+	common.ErrorCode code = 1;
+	string           msg  = 2;
+	TapInfo          tapInfo = 3;
+}

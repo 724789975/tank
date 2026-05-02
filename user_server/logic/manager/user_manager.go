@@ -260,6 +260,113 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 	return resp, nil
 }
 
+func (x *UserManager) GoogleLogin(ctx context.Context, req *user_center.GoogleLoginReq) (resp *user_center.GoogleLoginRsp, err error) {
+	resp = &user_center.GoogleLoginRsp{
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
+	}
+
+	// 使用Lua脚本确保原子操作，防止并发重复创建
+	luaScript := `
+	local google_platform_key = KEYS[1]
+	local openid_arg = ARGV[1]
+	local avatar = ARGV[2]
+	local gender = ARGV[3]
+	local name = ARGV[4]
+	local unionid = ARGV[5]
+
+	-- 首先尝试从googlePlatformKey获取openid
+	local saved_openid = redis.call('GET', google_platform_key)
+	local openid = saved_openid
+	if openid == false or openid == nil then
+		-- 如果没有保存的openid，则使用传入的openid
+		openid = openid_arg
+	end
+
+	-- 构建用户信息key
+	local user_info_key = 'user_info:' .. openid
+
+	-- 检查用户是否存在
+	local exists = redis.call('HEXISTS', user_info_key, 'openid')
+	if exists == 1 then
+		-- 用户存在，更新googlePlatformKey为当前openid
+		redis.call('SET', google_platform_key, openid)
+		-- 返回用户信息
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {1, user_info}
+	else
+		-- 用户不存在，创建新用户
+		redis.call('SET', google_platform_key, openid)
+		redis.call('HSET', user_info_key,
+			'avatar', avatar,
+			'gender', gender,
+			'name', name,
+			'openid', openid,
+			'unionid', unionid)
+		-- 返回创建的用户信息
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {0, user_info}
+	end
+	`
+
+	googlePlatformKey := fmt.Sprintf("%s:%s", redis_google_play, req.Openid)
+
+	keys := []string{googlePlatformKey}
+	args := []interface{}{
+		req.Openid,
+		req.Avatar,
+		req.Gender,
+		req.Name,
+		req.Unionid,
+	}
+
+	result, err := common_redis.GetRedis().Eval(ctx, luaScript, keys, args).Result()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[GOOGLE-LOGIN-LUA-ERROR] 执行Lua脚本错误: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "lua script execution failed"
+		return resp, err
+	}
+
+	// 解析Lua脚本返回结果
+	resultArray, ok := result.([]interface{})
+	if !ok {
+		klog.CtxErrorf(ctx, "[GOOGLE-LOGIN-LUA-ERROR] 无效的lua结果格式")
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "invalid lua result format"
+		return resp, nil
+	}
+
+	userExists := resultArray[0].(int64)
+	// 解析用户信息
+	userInfoArray := resultArray[1].([]interface{})
+	userInfo := make(map[string]string)
+	for i := 0; i < len(userInfoArray); i += 2 {
+		key := userInfoArray[i].(string)
+		value := userInfoArray[i+1].(string)
+		userInfo[key] = value
+	}
+
+	if userExists == 1 {
+		// 用户存在
+		resp.Msg = "user exists"
+	} else {
+		// 用户不存在，已创建新用户
+		resp.Msg = "user created"
+	}
+
+	// 设置用户信息到响应中
+	resp.TapInfo = &user_center.TapInfo{
+		Avatar:  userInfo["avatar"],
+		Gender:  userInfo["gender"],
+		Name:    userInfo["name"],
+		Openid:  userInfo["openid"],
+		Unionid: userInfo["unionid"],
+	}
+
+	return resp, nil
+}
+
 func (x *UserManager) GoogleOauthCallback(ctx context.Context, req *user_center.GoogleOAuthCallbackReq) (resp *user_center.GoogleOAuthCallbackRsp, err error) {
 	resp = &user_center.GoogleOAuthCallbackRsp{
 		Code: common.ErrorCode_OK,

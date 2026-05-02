@@ -146,3 +146,7 @@ func (x *UserService) GoogleOauthCallback(ctx context.Context, req *user_center.
 func (x *UserService) GoogleOauthExchange(ctx context.Context, req *user_center.GoogleOAuthExchangeReq) (resp *user_center.GoogleOAuthExchangeRsp, err error) {
 	return manager.GetUserManager().GoogleOauthExchange(ctx, req)
 }
+
+func (x *UserService) GoogleLogin(ctx context.Context, req *user_center.GoogleLoginReq) (resp *user_center.GoogleLoginRsp, err error) {
+	return manager.GetUserManager().GoogleLogin(ctx, req)
+}

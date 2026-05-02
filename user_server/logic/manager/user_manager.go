@@ -43,14 +43,14 @@ func GetUserManager() *UserManager {
 		key := "user_svr:snowflake:node"
 		n, err := common_redis.GetRedis().Incr(context.Background(), key).Result()
 		if err != nil {
-			klog.Fatal("[USER-MANAGER-INIT] UserManager: gen uuid creator err: %v", err)
+			klog.Fatal("[USER-MANAGER-INIT] UserManager: 生成UUID创建者错误: %v", err)
 		}
 
 		nodeIdx := n % (1 << snowflake.NodeBits)
 		if node, err := snowflake.NewNode(nodeIdx); err != nil {
-			klog.Fatal("[USER-MANAGER-NODE] UserManager: gen uuid creator err: %v", err)
+			klog.Fatal("[USER-MANAGER-NODE] UserManager: 生成UUID创建者错误: %v", err)
 		} else {
-			klog.Infof("[USER-MANAGER-NODE-OK] UserManager: gen uuid creator success, node: %d", nodeIdx)
+			klog.Infof("[USER-MANAGER-NODE-OK] UserManager: 生成UUID创建者成功, 节点: %d", nodeIdx)
 			IdClient = node
 		}
 	})
@@ -74,19 +74,19 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 	if realId == "" {
 		tapResp, err := tap.GetHandle(ctx, req.Kid, req.MacKey, common_config.Get("tap.base_info_uri").(string))
 		if err != nil {
-			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-ERROR] tap GetHandle err: %v", err)
+			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-ERROR] tap GetHandle 错误: %v", err)
 			resp.Code = common.ErrorCode_USER_LOGIN_TAP_ERROR
 			return nil, err
 		}
 		tapBaseInfo := user_center.TapBaseInfo{}
 		err = protojson.Unmarshal([]byte(tapResp), &tapBaseInfo)
 		if err != nil {
-			klog.CtxErrorf(ctx, "[USER-LOGIN-UNMARSHAL] tap UnmarshalTo err: %v", err)
+			klog.CtxErrorf(ctx, "[USER-LOGIN-UNMARSHAL] tap UnmarshalTo 错误: %v", err)
 			resp.Code = common.ErrorCode_USER_LOGIN_UNMARSHAL
 			return nil, err
 		}
 		if !tapBaseInfo.Success {
-			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle failed")
+			klog.CtxErrorf(ctx, "[USER-LOGIN-TAP-FAIL] tap GetHandle 失败")
 			resp.Code = common.ErrorCode_USER_LOGIN_TAP_FAIL
 			return resp, nil
 		}
@@ -111,9 +111,7 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 
 	any := &anypb.Any{}
 	err = any.MarshalFrom(test)
-	if err != nil {
-		return nil, err
-	}
+	if err != nil {return nil, err}
 
 	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
 		Id:  userId,
@@ -131,7 +129,7 @@ func (x *UserManager) UserInfo(ctx context.Context, req *user_center.UserInfoReq
 
 	userInfo := common_redis.GetRedis().HGetAll(ctx, fmt.Sprintf("%s:%s", redis_user_info_key, req.Openid)).Val()
 
-	//检查redis是否有该用户信息
+	// 检查redis中是否存在该用户信息
 	if _, ok := userInfo["openid"]; !ok {
 		resp.Code = common.ErrorCode_USER_INFO_NOT_FOUND
 		resp.Msg = "user info not found"
@@ -168,21 +166,21 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 	local name = ARGV[4]
 	local unionid = ARGV[5]
 
-	-- 先尝试从 testPlatformKey 获取 openid
+	-- 首先尝试从testPlatformKey获取openid
 	local saved_openid = redis.call('GET', test_platform_key)
 	local openid = saved_openid
 	if openid == false or openid == nil then
-		-- 如果没有保存的 openid，则使用传入的 openid
+		-- 如果没有保存的openid，则使用传入的openid
 		openid = openid_arg
 	end
 
-	-- 构建用户信息 key
+	-- 构建用户信息key
 	local user_info_key = 'user_info:' .. openid
 
 	-- 检查用户是否存在
 	local exists = redis.call('HEXISTS', user_info_key, 'openid')
 	if exists == 1 then
-		-- 用户存在，更新 testPlatformKey 为当前 openid
+		-- 用户存在，更新testPlatformKey为当前openid
 		redis.call('SET', test_platform_key, openid)
 		-- 返回用户信息
 		local user_info = redis.call('HGETALL', user_info_key)
@@ -190,11 +188,11 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 	else
 		-- 用户不存在，创建新用户
 		redis.call('SET', test_platform_key, openid)
-		redis.call('HSET', user_info_key, 
-			'avatar', avatar, 
-			'gender', gender, 
-			'name', name, 
-			'openid', openid, 
+		redis.call('HSET', user_info_key,
+			'avatar', avatar,
+			'gender', gender,
+			'name', name,
+			'openid', openid,
 			'unionid', unionid)
 		-- 返回创建的用户信息
 		local user_info = redis.call('HGETALL', user_info_key)
@@ -215,7 +213,7 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 
 	result, err := common_redis.GetRedis().Eval(ctx, luaScript, keys, args).Result()
 	if err != nil {
-		klog.CtxErrorf(ctx, "[TEST-LOGIN-LUA-ERROR] eval lua script err: %v", err)
+		klog.CtxErrorf(ctx, "[TEST-LOGIN-LUA-ERROR] 执行Lua脚本错误: %v", err)
 		resp.Code = common.ErrorCode_FAILED
 		resp.Msg = "lua script execution failed"
 		return resp, err
@@ -224,7 +222,7 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 	// 解析Lua脚本返回结果
 	resultArray, ok := result.([]interface{})
 	if !ok {
-		klog.CtxErrorf(ctx, "[TEST-LOGIN-LUA-ERROR] invalid lua result format")
+		klog.CtxErrorf(ctx, "[TEST-LOGIN-LUA-ERROR] 无效的lua结果格式")
 		resp.Code = common.ErrorCode_FAILED
 		resp.Msg = "invalid lua result format"
 		return resp, nil
@@ -269,9 +267,9 @@ func (x *UserManager) GoogleOauthCallback(ctx context.Context, req *user_center.
 	}
 
 	if req.Code == "" {
-		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-CALLBACK-ERROR] code is empty")
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-CALLBACK-ERROR] code为空")
 		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
-		resp.Msg = "code is empty"
+		resp.Msg = "code为空"
 		return resp, nil
 	}
 	resp.Data = &user_center.GoogleOAuthCallbackRsp_Data{Code: req.Code}
@@ -291,9 +289,9 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 	}()
 
 	if req.Code == "" {
-		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] code is empty")
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] code为空")
 		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
-		resp.Msg = "code is empty"
+		resp.Msg = "code为空"
 		return resp, nil
 	}
 
@@ -325,7 +323,7 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
-		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] marshal request body err: %v", err)
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] 序列化请求体错误: %v", err)
 		resp.Code = common.ErrorCode_FAILED
 		resp.Msg = "marshal request body failed"
 		return resp, nil
@@ -333,7 +331,9 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 
 	httpResp, err := http.Post(tokenURL, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] post request err: %v", err)
+		// 将请求以curl的方式打印出来
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] post请求curl: %s", fmt.Sprintf("curl -X POST -H \"Content-Type: application/json\" -d %s %s", string(jsonData), tokenURL))
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] post请求错误: %v", err)
 		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_VERIFY_FAILED
 		resp.Msg = "failed to exchange code"
 		return resp, nil
@@ -342,14 +342,14 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 
 	body, err := io.ReadAll(httpResp.Body)
 	if err != nil {
-		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] read response body err: %v", err)
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] 读取响应体错误: %v", err)
 		resp.Code = common.ErrorCode_FAILED
 		resp.Msg = "read response body failed"
 		return resp, nil
 	}
 
 	if httpResp.StatusCode != http.StatusOK {
-		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] http status: %d, body: %s", httpResp.StatusCode, string(body))
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] http状态: %d, body: %s", httpResp.StatusCode, string(body))
 		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_VERIFY_FAILED
 		resp.Msg = fmt.Sprintf("token exchange failed with status %d", httpResp.StatusCode)
 		return resp, nil
@@ -358,29 +358,29 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 	var tokenResp googleTokenResponse
 	err = json.Unmarshal(body, &tokenResp)
 	if err != nil {
-		klog.Errorf("[GOOGLE-OAUTH-EXCHANGE-ERROR] unmarshal token response err: %v", err)
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] 反序列化token响应错误: %v", err)
 		resp.Code = common.ErrorCode_FAILED
 		resp.Msg = "unmarshal token response failed"
 		return resp, nil
 	}
 
 	if tokenResp.IdToken == "" {
-		klog.Error("[GOOGLE-OAUTH-EXCHANGE-ERROR] id_token is empty")
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] id_token为空")
 		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
-		resp.Msg = "id_token is empty"
+		resp.Msg = "id_token为空"
 		return resp, nil
 	}
 
 	googleUserInfo, err := verifyGoogleToken(ctx, tokenResp.IdToken)
 	if err != nil {
-		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] verify google token err: %v", err)
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] 验证google token错误: %v", err)
 		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_VERIFY_FAILED
 		resp.Msg = "failed to verify google token"
 		return resp, nil
 	}
 
 	if googleUserInfo.Openid == "" {
-		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] invalid google user info")
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-ERROR] 无效的google用户信息")
 		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
 		resp.Msg = "invalid google user info"
 		return resp, nil
@@ -405,11 +405,11 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 		return {1, user_info}
 	else
 		redis.call('SET', google_platform_key, openid)
-		redis.call('HSET', user_info_key, 
-			'avatar', avatar, 
-			'gender', gender, 
-			'name', name, 
-			'openid', openid, 
+		redis.call('HSET', user_info_key,
+			'avatar', avatar,
+			'gender', gender,
+			'name', name,
+			'openid', openid,
 			'unionid', unionid)
 		local user_info = redis.call('HGETALL', user_info_key)
 		return {0, user_info}
@@ -429,7 +429,7 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 
 	result, err := common_redis.GetRedis().Eval(ctx, luaScript, keys, args).Result()
 	if err != nil {
-		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-LUA-ERROR] eval lua script err: %v", err)
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-LUA-ERROR] 执行Lua脚本错误: %v", err)
 		resp.Code = common.ErrorCode_FAILED
 		resp.Msg = "lua script execution failed"
 		return resp, err
@@ -437,7 +437,7 @@ func (x *UserManager) GoogleOauthExchange(ctx context.Context, req *user_center.
 
 	resultArray, ok := result.([]interface{})
 	if !ok {
-		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-LUA-ERROR] invalid lua result format")
+		klog.CtxErrorf(ctx, "[GOOGLE-OAUTH-EXCHANGE-LUA-ERROR] 无效的lua结果格式")
 		resp.Code = common.ErrorCode_FAILED
 		resp.Msg = "invalid lua result format"
 		return resp, nil
@@ -486,20 +486,20 @@ type googleTokenResponse struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-// verifyGoogleToken 验证 Google token 并获取用户信息
+// verifyGoogleToken 验证Google token并获取用户信息
 func verifyGoogleToken(ctx context.Context, token string) (*user_center.TapInfo, error) {
-	// 从配置中获取 Google 客户端 ID
-	// 实际实现中应该从配置文件或环境变量中获取
+	// 从配置中获取Google客户端ID
+	// 实际实现中，应该从配置文件或环境变量中获取
 	googleClientID := common_config.Get("google.client_id").(string)
 	if googleClientID == "" {
-		// 如果没有配置客户端 ID，使用默认值（仅用于测试）
+		// 如果没有配置客户端ID，使用默认值（仅用于测试）
 		googleClientID = "YOUR_GOOGLE_CLIENT_ID"
 	}
 
-	// 验证 Google ID token
+	// 验证Google ID token
 	payload, err := idtoken.Validate(ctx, token, googleClientID)
 	if err != nil {
-		klog.Errorf("[GOOGLE-TOKEN-VALIDATE-ERROR] validate google token err: %v", err)
+		klog.CtxErrorf(ctx, "[GOOGLE-TOKEN-VALIDATE-ERROR] 验证google token错误: %v", err)
 		return nil, err
 	}
 
@@ -508,26 +508,26 @@ func verifyGoogleToken(ctx context.Context, token string) (*user_center.TapInfo,
 	name := ""
 	avatar := ""
 
-	// 从 claims 中提取姓名
+	// 从claims中提取姓名
 	if nameVal, ok := payload.Claims["name"]; ok {
 		if nameStr, ok := nameVal.(string); ok {
 			name = nameStr
 		}
 	}
 
-	// 从 claims 中提取头像
+	// 从claims中提取头像
 	if pictureVal, ok := payload.Claims["picture"]; ok {
 		if pictureStr, ok := pictureVal.(string); ok {
 			avatar = pictureStr
 		}
 	}
 
-	// 构建并返回 TapInfo，确保所有字段都有值
+	// 构建并返回TapInfo，确保所有字段都有值
 	return &user_center.TapInfo{
 		Avatar:  avatar,
-		Gender:  "", // Google 登录不提供性别信息，设置为空字符串
+		Gender:  "", // Google登录不提供性别信息，设置为空字符串
 		Name:    name,
 		Openid:  userID,
-		Unionid: "", // Google 登录不提供 unionid 信息，设置为空字符串
+		Unionid: "", // Google登录不提供unionid信息，设置为空字符串
 	}, nil
 }

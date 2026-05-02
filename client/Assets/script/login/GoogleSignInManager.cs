@@ -45,8 +45,7 @@ public class GoogleSignInManager : MonoBehaviour
     }
 
     [Header("Google OAuth 配置")]
-    [SerializeField] private string clientId = "1";
-    [SerializeField] private string cS= "G";
+    [SerializeField] private string clientId = "1061525001536-hblht7k9otpaeaoksrdrvnj7om2emnt5.apps.googleusercontent.com";
     [SerializeField] private string redirectUri = "http://quchifan.wang:30080/api/1.0/get/user_server/google_oauth_callback";
     [SerializeField] private string scope = "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
     [SerializeField] private string tokenEndpoint = "https://oauth2.googleapis.com/token";
@@ -92,6 +91,8 @@ public class GoogleSignInManager : MonoBehaviour
     {
         loginUIRoot = new GameObject("GoogleLoginUI");
         loginUIRoot.transform.SetParent(transform);
+        loginUIRoot.transform.localPosition = Vector3.zero;
+        loginUIRoot.transform.localScale = Vector3.one;
 
         Canvas canvas = loginUIRoot.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -108,11 +109,15 @@ public class GoogleSignInManager : MonoBehaviour
         panelRect.anchorMin = Vector2.zero;
         panelRect.anchorMax = Vector2.one;
         panelRect.sizeDelta = Vector2.zero;
+        panelRect.localPosition = Vector3.zero;
+        panelRect.localScale = Vector3.one;
 
         GameObject titleObj = new GameObject("Title");
         titleObj.transform.SetParent(panelObj.transform);
+        titleObj.transform.localScale = Vector3.one;
         Text titleText = titleObj.AddComponent<Text>();
-        titleText.text = "Google 授权登录";
+        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        titleText.text = "Google login";
         titleText.fontSize = 24;
         titleText.alignment = TextAnchor.MiddleCenter;
         titleText.color = Color.white;
@@ -120,20 +125,25 @@ public class GoogleSignInManager : MonoBehaviour
         titleRect.anchorMin = new Vector2(0.2f, 0.7f);
         titleRect.anchorMax = new Vector2(0.8f, 0.85f);
         titleRect.sizeDelta = Vector2.zero;
+        titleRect.localPosition = Vector3.zero;
 
         GameObject codeLabelObj = new GameObject("CodeLabel");
         codeLabelObj.transform.SetParent(panelObj.transform);
+        codeLabelObj.transform.localScale = Vector3.one;
         Text codeLabelText = codeLabelObj.AddComponent<Text>();
-        codeLabelText.text = "请输入授权码:";
+        codeLabelText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        codeLabelText.text = "enter code:";
         codeLabelText.fontSize = 16;
         codeLabelText.color = Color.white;
         RectTransform codeLabelRect = codeLabelObj.GetComponent<RectTransform>();
         codeLabelRect.anchorMin = new Vector2(0.1f, 0.45f);
         codeLabelRect.anchorMax = new Vector2(0.9f, 0.55f);
         codeLabelRect.sizeDelta = Vector2.zero;
+        codeLabelRect.localPosition = Vector3.zero;
 
         GameObject inputObj = new GameObject("CodeInputField");
         inputObj.transform.SetParent(panelObj.transform);
+        inputObj.transform.localScale = Vector3.one;
         codeInputField = inputObj.AddComponent<InputField>();
         codeInputField.characterLimit = 500;
         codeInputField.contentType = InputField.ContentType.Standard;
@@ -144,7 +154,7 @@ public class GoogleSignInManager : MonoBehaviour
         codeInputField.targetGraphic = inputImage;
 
         Text inputPlaceholder = CreateTextObject("Placeholder", inputObj.transform);
-        inputPlaceholder.text = "请粘贴授权码...";
+        inputPlaceholder.text = "parse code...";
         inputPlaceholder.color = Color.gray;
         codeInputField.placeholder = inputPlaceholder;
 
@@ -157,9 +167,11 @@ public class GoogleSignInManager : MonoBehaviour
         inputRect.anchorMin = new Vector2(0.1f, 0.3f);
         inputRect.anchorMax = new Vector2(0.9f, 0.42f);
         inputRect.sizeDelta = Vector2.zero;
+        inputRect.localPosition = Vector3.zero;
 
         GameObject buttonObj = new GameObject("ConfirmButton");
         buttonObj.transform.SetParent(panelObj.transform);
+        buttonObj.transform.localScale = Vector3.one;
         confirmButton = buttonObj.AddComponent<Button>();
         confirmButton.interactable = true;
 
@@ -168,7 +180,7 @@ public class GoogleSignInManager : MonoBehaviour
         confirmButton.targetGraphic = buttonImage;
 
         Text buttonText = CreateTextObject("ButtonText", buttonObj.transform);
-        buttonText.text = "确认";
+        buttonText.text = "commit";
         buttonText.fontSize = 18;
         buttonText.color = Color.white;
         buttonText.alignment = TextAnchor.MiddleCenter;
@@ -177,12 +189,15 @@ public class GoogleSignInManager : MonoBehaviour
         buttonRect.anchorMin = new Vector2(0.3f, 0.1f);
         buttonRect.anchorMax = new Vector2(0.7f, 0.22f);
         buttonRect.sizeDelta = Vector2.zero;
+        buttonRect.localPosition = Vector3.zero;
 
         confirmButton.onClick.AddListener(OnConfirmButtonClicked);
 
         GameObject statusObj = new GameObject("StatusText");
         statusObj.transform.SetParent(panelObj.transform);
+        statusObj.transform.localScale = Vector3.one;
         statusText = statusObj.AddComponent<Text>();
+        statusText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         statusText.text = "请在浏览器中完成授权后，粘贴授权码";
         statusText.fontSize = 14;
         statusText.color = Color.yellow;
@@ -191,6 +206,7 @@ public class GoogleSignInManager : MonoBehaviour
         statusRect.anchorMin = new Vector2(0.1f, 0.02f);
         statusRect.anchorMax = new Vector2(0.9f, 0.08f);
         statusRect.sizeDelta = Vector2.zero;
+        statusRect.localPosition = Vector3.zero;
 
         UpdateURLText();
     }
@@ -199,8 +215,15 @@ public class GoogleSignInManager : MonoBehaviour
     {
         GameObject obj = new GameObject(name);
         obj.transform.SetParent(parent);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localScale = Vector3.one;
         Text text = obj.AddComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        RectTransform rect = obj.GetComponent<RectTransform>();
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.sizeDelta = Vector2.zero;
+        rect.localPosition = Vector3.zero;
         return text;
     }
 
@@ -259,7 +282,7 @@ public class GoogleSignInManager : MonoBehaviour
         isLoading = true;
         UpdateLoadingUI(true);
 
-        string url = "http://quchifan.wang:30080/api/1.0/get/user_server/google_oauth_exchange"
+        string url = "http://127.0.0.1:8080/api/1.0/get/user_server/google_oauth_exchange"
             + "?code=" + Uri.EscapeDataString(code)
             + "&codeVerifier=" + Uri.EscapeDataString(codeVerifier);
 
@@ -267,6 +290,11 @@ public class GoogleSignInManager : MonoBehaviour
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.timeout = 30;
+        request.certificateHandler = new AcceptAllCertificates();
+
+        // 另外，需要在项目设置中允许不安全连接
+        // Edit → Project Settings → Player → Other Settings
+        // "Allow downloads over HTTP" 设置为 "Always allowed"
 
         yield return request.SendWebRequest();
 
@@ -442,4 +470,12 @@ public class GoogleUserInfo
     public string family_name;
     public string picture;
     public string locale;
+}
+
+public class AcceptAllCertificates : CertificateHandler
+{
+    protected override bool ValidateCertificate(byte[] certificateData)
+    {
+        return true;
+    }
 }

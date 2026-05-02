@@ -26,11 +26,14 @@ func main() {
 	service.GetUserService().ListenAndServe(ctx)
 	rpc.InitRpc()
 
+	klog.CtxInfof(ctx, "[USER-SVR-START] user server started")
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	s := <-quit
 	switch s {
 	case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP:
+		klog.CtxInfof(ctx, "[USER-SVR-SHUTDOWN] user server shutting down, signal: %v", s)
 		cancel()
 	default:
 	}

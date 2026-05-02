@@ -770,6 +770,148 @@ func (x *GoogleOAuthExchangeRsp) GetData() *GoogleOAuthExchangeRsp_Data {
 	return nil
 }
 
+type GoogleLoginReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Openid  string `protobuf:"bytes,1,opt,name=openid,proto3" json:"openid,omitempty"`
+	Avatar  string `protobuf:"bytes,2,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	Gender  string `protobuf:"bytes,3,opt,name=gender,proto3" json:"gender,omitempty"`
+	Name    string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Unionid string `protobuf:"bytes,5,opt,name=unionid,proto3" json:"unionid,omitempty"`
+}
+
+func (x *GoogleLoginReq) Reset() {
+	*x = GoogleLoginReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_user_center_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GoogleLoginReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GoogleLoginReq) ProtoMessage() {}
+
+func (x *GoogleLoginReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_user_center_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GoogleLoginReq.ProtoReflect.Descriptor instead.
+func (*GoogleLoginReq) Descriptor() ([]byte, []int) {
+	return file_proto_user_center_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GoogleLoginReq) GetOpenid() string {
+	if x != nil {
+		return x.Openid
+	}
+	return ""
+}
+
+func (x *GoogleLoginReq) GetAvatar() string {
+	if x != nil {
+		return x.Avatar
+	}
+	return ""
+}
+
+func (x *GoogleLoginReq) GetGender() string {
+	if x != nil {
+		return x.Gender
+	}
+	return ""
+}
+
+func (x *GoogleLoginReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *GoogleLoginReq) GetUnionid() string {
+	if x != nil {
+		return x.Unionid
+	}
+	return ""
+}
+
+type GoogleLoginRsp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code    common.ErrorCode `protobuf:"varint,1,opt,name=code,proto3,enum=common.ErrorCode" json:"code,omitempty"`
+	Msg     string           `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	TapInfo *TapInfo         `protobuf:"bytes,3,opt,name=tapInfo,proto3" json:"tapInfo,omitempty"`
+}
+
+func (x *GoogleLoginRsp) Reset() {
+	*x = GoogleLoginRsp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_user_center_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GoogleLoginRsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GoogleLoginRsp) ProtoMessage() {}
+
+func (x *GoogleLoginRsp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_user_center_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GoogleLoginRsp.ProtoReflect.Descriptor instead.
+func (*GoogleLoginRsp) Descriptor() ([]byte, []int) {
+	return file_proto_user_center_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GoogleLoginRsp) GetCode() common.ErrorCode {
+	if x != nil {
+		return x.Code
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *GoogleLoginRsp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *GoogleLoginRsp) GetTapInfo() *TapInfo {
+	if x != nil {
+		return x.TapInfo
+	}
+	return nil
+}
+
 type UserInfoRsp_Data struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -781,7 +923,7 @@ type UserInfoRsp_Data struct {
 func (x *UserInfoRsp_Data) Reset() {
 	*x = UserInfoRsp_Data{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_user_center_proto_msgTypes[12]
+		mi := &file_proto_user_center_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -794,7 +936,7 @@ func (x *UserInfoRsp_Data) String() string {
 func (*UserInfoRsp_Data) ProtoMessage() {}
 
 func (x *UserInfoRsp_Data) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_center_proto_msgTypes[12]
+	mi := &file_proto_user_center_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -828,7 +970,7 @@ type TestLoginRsp_Data struct {
 func (x *TestLoginRsp_Data) Reset() {
 	*x = TestLoginRsp_Data{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_user_center_proto_msgTypes[13]
+		mi := &file_proto_user_center_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -841,7 +983,7 @@ func (x *TestLoginRsp_Data) String() string {
 func (*TestLoginRsp_Data) ProtoMessage() {}
 
 func (x *TestLoginRsp_Data) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_center_proto_msgTypes[13]
+	mi := &file_proto_user_center_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -875,7 +1017,7 @@ type GoogleOAuthCallbackRsp_Data struct {
 func (x *GoogleOAuthCallbackRsp_Data) Reset() {
 	*x = GoogleOAuthCallbackRsp_Data{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_user_center_proto_msgTypes[14]
+		mi := &file_proto_user_center_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -888,7 +1030,7 @@ func (x *GoogleOAuthCallbackRsp_Data) String() string {
 func (*GoogleOAuthCallbackRsp_Data) ProtoMessage() {}
 
 func (x *GoogleOAuthCallbackRsp_Data) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_center_proto_msgTypes[14]
+	mi := &file_proto_user_center_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -923,7 +1065,7 @@ type GoogleOAuthExchangeRsp_Data struct {
 func (x *GoogleOAuthExchangeRsp_Data) Reset() {
 	*x = GoogleOAuthExchangeRsp_Data{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_user_center_proto_msgTypes[15]
+		mi := &file_proto_user_center_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -936,7 +1078,7 @@ func (x *GoogleOAuthExchangeRsp_Data) String() string {
 func (*GoogleOAuthExchangeRsp_Data) ProtoMessage() {}
 
 func (x *GoogleOAuthExchangeRsp_Data) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_center_proto_msgTypes[15]
+	mi := &file_proto_user_center_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1066,10 +1208,26 @@ var file_proto_user_center_proto_rawDesc = []byte{
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x2e, 0x0a,
 	0x07, 0x74, 0x61, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14,
 	0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e, 0x54, 0x61, 0x70,
-	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x07, 0x74, 0x61, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x23, 0x5a,
-	0x21, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x6b, 0x69, 0x74,
-	0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74,
-	0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x07, 0x74, 0x61, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x86, 0x01,
+	0x0a, 0x0e, 0x47, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71,
+	0x12, 0x16, 0x0a, 0x06, 0x6f, 0x70, 0x65, 0x6e, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x6f, 0x70, 0x65, 0x6e, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x76, 0x61, 0x74,
+	0x61, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x76, 0x61, 0x74, 0x61, 0x72,
+	0x12, 0x16, 0x0a, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a, 0x07,
+	0x75, 0x6e, 0x69, 0x6f, 0x6e, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x75,
+	0x6e, 0x69, 0x6f, 0x6e, 0x69, 0x64, 0x22, 0x79, 0x0a, 0x0e, 0x47, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12,
+	0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73,
+	0x67, 0x12, 0x2e, 0x0a, 0x07, 0x74, 0x61, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x14, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72,
+	0x2e, 0x54, 0x61, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x07, 0x74, 0x61, 0x70, 0x49, 0x6e, 0x66,
+	0x6f, 0x42, 0x23, 0x5a, 0x21, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72,
+	0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x5f,
+	0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1084,7 +1242,7 @@ func file_proto_user_center_proto_rawDescGZIP() []byte {
 	return file_proto_user_center_proto_rawDescData
 }
 
-var file_proto_user_center_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_proto_user_center_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_proto_user_center_proto_goTypes = []interface{}{
 	(*LoginReq)(nil),                    // 0: user_center.LoginReq
 	(*TapInfo)(nil),                     // 1: user_center.TapInfo
@@ -1098,33 +1256,37 @@ var file_proto_user_center_proto_goTypes = []interface{}{
 	(*GoogleOAuthCallbackRsp)(nil),      // 9: user_center.GoogleOAuthCallbackRsp
 	(*GoogleOAuthExchangeReq)(nil),      // 10: user_center.GoogleOAuthExchangeReq
 	(*GoogleOAuthExchangeRsp)(nil),      // 11: user_center.GoogleOAuthExchangeRsp
-	(*UserInfoRsp_Data)(nil),            // 12: user_center.UserInfoRsp.Data
-	(*TestLoginRsp_Data)(nil),           // 13: user_center.TestLoginRsp.Data
-	(*GoogleOAuthCallbackRsp_Data)(nil), // 14: user_center.GoogleOAuthCallbackRsp.Data
-	(*GoogleOAuthExchangeRsp_Data)(nil), // 15: user_center.GoogleOAuthExchangeRsp.Data
-	(common.ErrorCode)(0),               // 16: common.ErrorCode
+	(*GoogleLoginReq)(nil),              // 12: user_center.GoogleLoginReq
+	(*GoogleLoginRsp)(nil),              // 13: user_center.GoogleLoginRsp
+	(*UserInfoRsp_Data)(nil),            // 14: user_center.UserInfoRsp.Data
+	(*TestLoginRsp_Data)(nil),           // 15: user_center.TestLoginRsp.Data
+	(*GoogleOAuthCallbackRsp_Data)(nil), // 16: user_center.GoogleOAuthCallbackRsp.Data
+	(*GoogleOAuthExchangeRsp_Data)(nil), // 17: user_center.GoogleOAuthExchangeRsp.Data
+	(common.ErrorCode)(0),               // 18: common.ErrorCode
 }
 var file_proto_user_center_proto_depIdxs = []int32{
 	1,  // 0: user_center.TapBaseInfo.data:type_name -> user_center.TapInfo
-	16, // 1: user_center.LoginRsp.code:type_name -> common.ErrorCode
+	18, // 1: user_center.LoginRsp.code:type_name -> common.ErrorCode
 	1,  // 2: user_center.LoginRsp.tapInfo:type_name -> user_center.TapInfo
-	16, // 3: user_center.UserInfoRsp.code:type_name -> common.ErrorCode
-	12, // 4: user_center.UserInfoRsp.data:type_name -> user_center.UserInfoRsp.Data
+	18, // 3: user_center.UserInfoRsp.code:type_name -> common.ErrorCode
+	14, // 4: user_center.UserInfoRsp.data:type_name -> user_center.UserInfoRsp.Data
 	1,  // 5: user_center.TestLoginReq.tapInfo:type_name -> user_center.TapInfo
-	16, // 6: user_center.TestLoginRsp.code:type_name -> common.ErrorCode
-	13, // 7: user_center.TestLoginRsp.data:type_name -> user_center.TestLoginRsp.Data
-	16, // 8: user_center.GoogleOAuthCallbackRsp.code:type_name -> common.ErrorCode
-	14, // 9: user_center.GoogleOAuthCallbackRsp.data:type_name -> user_center.GoogleOAuthCallbackRsp.Data
-	16, // 10: user_center.GoogleOAuthExchangeRsp.code:type_name -> common.ErrorCode
-	15, // 11: user_center.GoogleOAuthExchangeRsp.data:type_name -> user_center.GoogleOAuthExchangeRsp.Data
-	1,  // 12: user_center.UserInfoRsp.Data.tapInfo:type_name -> user_center.TapInfo
-	1,  // 13: user_center.TestLoginRsp.Data.tapInfo:type_name -> user_center.TapInfo
-	1,  // 14: user_center.GoogleOAuthExchangeRsp.Data.tapInfo:type_name -> user_center.TapInfo
-	15, // [15:15] is the sub-list for method output_type
-	15, // [15:15] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	18, // 6: user_center.TestLoginRsp.code:type_name -> common.ErrorCode
+	15, // 7: user_center.TestLoginRsp.data:type_name -> user_center.TestLoginRsp.Data
+	18, // 8: user_center.GoogleOAuthCallbackRsp.code:type_name -> common.ErrorCode
+	16, // 9: user_center.GoogleOAuthCallbackRsp.data:type_name -> user_center.GoogleOAuthCallbackRsp.Data
+	18, // 10: user_center.GoogleOAuthExchangeRsp.code:type_name -> common.ErrorCode
+	17, // 11: user_center.GoogleOAuthExchangeRsp.data:type_name -> user_center.GoogleOAuthExchangeRsp.Data
+	18, // 12: user_center.GoogleLoginRsp.code:type_name -> common.ErrorCode
+	1,  // 13: user_center.GoogleLoginRsp.tapInfo:type_name -> user_center.TapInfo
+	1,  // 14: user_center.UserInfoRsp.Data.tapInfo:type_name -> user_center.TapInfo
+	1,  // 15: user_center.TestLoginRsp.Data.tapInfo:type_name -> user_center.TapInfo
+	1,  // 16: user_center.GoogleOAuthExchangeRsp.Data.tapInfo:type_name -> user_center.TapInfo
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_proto_user_center_proto_init() }
@@ -1278,7 +1440,7 @@ func file_proto_user_center_proto_init() {
 			}
 		}
 		file_proto_user_center_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserInfoRsp_Data); i {
+			switch v := v.(*GoogleLoginReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1290,7 +1452,7 @@ func file_proto_user_center_proto_init() {
 			}
 		}
 		file_proto_user_center_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TestLoginRsp_Data); i {
+			switch v := v.(*GoogleLoginRsp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1302,7 +1464,7 @@ func file_proto_user_center_proto_init() {
 			}
 		}
 		file_proto_user_center_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GoogleOAuthCallbackRsp_Data); i {
+			switch v := v.(*UserInfoRsp_Data); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1314,6 +1476,30 @@ func file_proto_user_center_proto_init() {
 			}
 		}
 		file_proto_user_center_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TestLoginRsp_Data); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_user_center_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GoogleOAuthCallbackRsp_Data); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_user_center_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GoogleOAuthExchangeRsp_Data); i {
 			case 0:
 				return &v.state
@@ -1332,7 +1518,7 @@ func file_proto_user_center_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_user_center_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

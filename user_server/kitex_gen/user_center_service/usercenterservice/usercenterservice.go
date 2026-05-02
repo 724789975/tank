@@ -51,6 +51,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"google_login": kitex.NewMethodInfo(
+		googleLoginHandler,
+		newGoogleLoginArgs,
+		newGoogleLoginResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -672,6 +679,117 @@ func (p *GoogleOauthExchangeResult) GetResult() interface{} {
 	return p.Success
 }
 
+func googleLoginHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user_center.GoogleLoginReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user_center_service.UserCenterService).GoogleLogin(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GoogleLoginArgs:
+		success, err := handler.(user_center_service.UserCenterService).GoogleLogin(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GoogleLoginResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGoogleLoginArgs() interface{} {
+	return &GoogleLoginArgs{}
+}
+
+func newGoogleLoginResult() interface{} {
+	return &GoogleLoginResult{}
+}
+
+type GoogleLoginArgs struct {
+	Req *user_center.GoogleLoginReq
+}
+
+func (p *GoogleLoginArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GoogleLoginArgs) Unmarshal(in []byte) error {
+	msg := new(user_center.GoogleLoginReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GoogleLoginArgs_Req_DEFAULT *user_center.GoogleLoginReq
+
+func (p *GoogleLoginArgs) GetReq() *user_center.GoogleLoginReq {
+	if !p.IsSetReq() {
+		return GoogleLoginArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GoogleLoginArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GoogleLoginArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GoogleLoginResult struct {
+	Success *user_center.GoogleLoginRsp
+}
+
+var GoogleLoginResult_Success_DEFAULT *user_center.GoogleLoginRsp
+
+func (p *GoogleLoginResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GoogleLoginResult) Unmarshal(in []byte) error {
+	msg := new(user_center.GoogleLoginRsp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GoogleLoginResult) GetSuccess() *user_center.GoogleLoginRsp {
+	if !p.IsSetSuccess() {
+		return GoogleLoginResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GoogleLoginResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user_center.GoogleLoginRsp)
+}
+
+func (p *GoogleLoginResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GoogleLoginResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -727,6 +845,16 @@ func (p *kClient) GoogleOauthExchange(ctx context.Context, Req *user_center.Goog
 	_args.Req = Req
 	var _result GoogleOauthExchangeResult
 	if err = p.c.Call(ctx, "google_oauth_exchange", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GoogleLogin(ctx context.Context, Req *user_center.GoogleLoginReq) (r *user_center.GoogleLoginRsp, err error) {
+	var _args GoogleLoginArgs
+	_args.Req = Req
+	var _result GoogleLoginResult
+	if err = p.c.Call(ctx, "google_login", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

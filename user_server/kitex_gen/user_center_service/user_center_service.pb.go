@@ -29,7 +29,7 @@ var file_proto_user_center_service_proto_rawDesc = []byte{
 	0x6f, 0x12, 0x13, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x5f, 0x73,
 	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x1a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x73,
 	0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
-	0x9f, 0x03, 0x0a, 0x11, 0x55, 0x73, 0x65, 0x72, 0x43, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x53, 0x65,
+	0xeb, 0x03, 0x0a, 0x11, 0x55, 0x73, 0x65, 0x72, 0x43, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x53, 0x65,
 	0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x37, 0x0a, 0x05, 0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x15,
 	0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e, 0x4c, 0x6f, 0x67,
 	0x69, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x15, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e,
@@ -55,10 +55,15 @@ var file_proto_user_center_service_proto_rawDesc = []byte{
 	0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x23, 0x2e, 0x75, 0x73, 0x65,
 	0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e, 0x47, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x4f,
 	0x41, 0x75, 0x74, 0x68, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x73, 0x70, 0x22,
-	0x00, 0x42, 0x2b, 0x5a, 0x29, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72,
-	0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x5f,
-	0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x00, 0x12, 0x4a, 0x0a, 0x0c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x5f, 0x6c, 0x6f, 0x67, 0x69,
+	0x6e, 0x12, 0x1b, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e,
+	0x47, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x1b,
+	0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e, 0x47, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x73, 0x70, 0x22, 0x00, 0x42, 0x2b, 0x5a,
+	0x29, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x6b, 0x69, 0x74,
+	0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74,
+	0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var file_proto_user_center_service_proto_goTypes = []interface{}{
@@ -67,28 +72,32 @@ var file_proto_user_center_service_proto_goTypes = []interface{}{
 	(*user_center.TestLoginReq)(nil),           // 2: user_center.TestLoginReq
 	(*user_center.GoogleOAuthCallbackReq)(nil), // 3: user_center.GoogleOAuthCallbackReq
 	(*user_center.GoogleOAuthExchangeReq)(nil), // 4: user_center.GoogleOAuthExchangeReq
-	(*user_center.LoginRsp)(nil),               // 5: user_center.LoginRsp
-	(*user_center.UserInfoRsp)(nil),            // 6: user_center.UserInfoRsp
-	(*user_center.TestLoginRsp)(nil),           // 7: user_center.TestLoginRsp
-	(*user_center.GoogleOAuthCallbackRsp)(nil), // 8: user_center.GoogleOAuthCallbackRsp
-	(*user_center.GoogleOAuthExchangeRsp)(nil), // 9: user_center.GoogleOAuthExchangeRsp
+	(*user_center.GoogleLoginReq)(nil),         // 5: user_center.GoogleLoginReq
+	(*user_center.LoginRsp)(nil),               // 6: user_center.LoginRsp
+	(*user_center.UserInfoRsp)(nil),            // 7: user_center.UserInfoRsp
+	(*user_center.TestLoginRsp)(nil),           // 8: user_center.TestLoginRsp
+	(*user_center.GoogleOAuthCallbackRsp)(nil), // 9: user_center.GoogleOAuthCallbackRsp
+	(*user_center.GoogleOAuthExchangeRsp)(nil), // 10: user_center.GoogleOAuthExchangeRsp
+	(*user_center.GoogleLoginRsp)(nil),         // 11: user_center.GoogleLoginRsp
 }
 var file_proto_user_center_service_proto_depIdxs = []int32{
-	0, // 0: user_center_service.UserCenterService.login:input_type -> user_center.LoginReq
-	1, // 1: user_center_service.UserCenterService.user_info:input_type -> user_center.UserInfoReq
-	2, // 2: user_center_service.UserCenterService.test_login:input_type -> user_center.TestLoginReq
-	3, // 3: user_center_service.UserCenterService.google_oauth_callback:input_type -> user_center.GoogleOAuthCallbackReq
-	4, // 4: user_center_service.UserCenterService.google_oauth_exchange:input_type -> user_center.GoogleOAuthExchangeReq
-	5, // 5: user_center_service.UserCenterService.login:output_type -> user_center.LoginRsp
-	6, // 6: user_center_service.UserCenterService.user_info:output_type -> user_center.UserInfoRsp
-	7, // 7: user_center_service.UserCenterService.test_login:output_type -> user_center.TestLoginRsp
-	8, // 8: user_center_service.UserCenterService.google_oauth_callback:output_type -> user_center.GoogleOAuthCallbackRsp
-	9, // 9: user_center_service.UserCenterService.google_oauth_exchange:output_type -> user_center.GoogleOAuthExchangeRsp
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: user_center_service.UserCenterService.login:input_type -> user_center.LoginReq
+	1,  // 1: user_center_service.UserCenterService.user_info:input_type -> user_center.UserInfoReq
+	2,  // 2: user_center_service.UserCenterService.test_login:input_type -> user_center.TestLoginReq
+	3,  // 3: user_center_service.UserCenterService.google_oauth_callback:input_type -> user_center.GoogleOAuthCallbackReq
+	4,  // 4: user_center_service.UserCenterService.google_oauth_exchange:input_type -> user_center.GoogleOAuthExchangeReq
+	5,  // 5: user_center_service.UserCenterService.google_login:input_type -> user_center.GoogleLoginReq
+	6,  // 6: user_center_service.UserCenterService.login:output_type -> user_center.LoginRsp
+	7,  // 7: user_center_service.UserCenterService.user_info:output_type -> user_center.UserInfoRsp
+	8,  // 8: user_center_service.UserCenterService.test_login:output_type -> user_center.TestLoginRsp
+	9,  // 9: user_center_service.UserCenterService.google_oauth_callback:output_type -> user_center.GoogleOAuthCallbackRsp
+	10, // 10: user_center_service.UserCenterService.google_oauth_exchange:output_type -> user_center.GoogleOAuthExchangeRsp
+	11, // 11: user_center_service.UserCenterService.google_login:output_type -> user_center.GoogleLoginRsp
+	6,  // [6:12] is the sub-list for method output_type
+	0,  // [0:6] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_proto_user_center_service_proto_init() }
@@ -125,4 +134,5 @@ type UserCenterService interface {
 	TestLogin(ctx context.Context, req *user_center.TestLoginReq) (res *user_center.TestLoginRsp, err error)
 	GoogleOauthCallback(ctx context.Context, req *user_center.GoogleOAuthCallbackReq) (res *user_center.GoogleOAuthCallbackRsp, err error)
 	GoogleOauthExchange(ctx context.Context, req *user_center.GoogleOAuthExchangeReq) (res *user_center.GoogleOAuthExchangeRsp, err error)
+	GoogleLogin(ctx context.Context, req *user_center.GoogleLoginReq) (res *user_center.GoogleLoginRsp, err error)
 }

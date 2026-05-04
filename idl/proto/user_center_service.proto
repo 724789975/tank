@@ -6,21 +6,24 @@ package user_center_service;
 option go_package = "user_center_service";
 
 service UserCenterService {
-    //µÇÂ¼
+    //ç™»å½•
     rpc login(user_center.LoginReq) returns (user_center.LoginRsp){};
 
-    //»ñÈ¡ÓÃ»§ĞÅÏ¢
+    //è·å–ç”¨æˆ·ä¿¡æ¯
     rpc user_info(user_center.UserInfoReq) returns (user_center.UserInfoRsp){};
 
-    //²âÊÔµÇÂ¼
+    //æµ‹è¯•ç™»å½•
     rpc test_login(user_center.TestLoginReq) returns (user_center.TestLoginRsp){};
 
     //Google OAuth callback
     rpc google_oauth_callback(user_center.GoogleOAuthCallbackReq) returns (user_center.GoogleOAuthCallbackRsp){};
 
-    //Google OAuth ÊÚÈ¨Âë½»»»
+    //Google OAuth æˆæƒç äº¤æ¢
     rpc google_oauth_exchange(user_center.GoogleOAuthExchangeReq) returns (user_center.GoogleOAuthExchangeRsp){};
 
-    //GoogleµÇÂ¼
+    //Googleç™»å½•
     rpc google_login(user_center.GoogleLoginReq) returns (user_center.GoogleLoginRsp){};
+
+    //Appleç™»å½•
+    rpc apple_login(user_center.AppleLoginReq) returns (user_center.AppleLoginRsp){};
 }

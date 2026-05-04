@@ -56,8 +56,12 @@ namespace UserCenter {
             "Bm9wZW5pZBgBIAEoCRIOCgZhdmF0YXIYAiABKAkSDgoGZ2VuZGVyGAMgASgJ",
             "EgwKBG5hbWUYBCABKAkSDwoHdW5pb25pZBgFIAEoCSJlCg5Hb29nbGVMb2dp",
             "blJzcBIfCgRjb2RlGAEgASgOMhEuY29tbW9uLkVycm9yQ29kZRILCgNtc2cY",
-            "AiABKAkSJQoHdGFwSW5mbxgDIAEoCzIULnVzZXJfY2VudGVyLlRhcEluZm9C",
-            "DVoLdXNlcl9jZW50ZXJiBnByb3RvMw=="));
+            "AiABKAkSJQoHdGFwSW5mbxgDIAEoCzIULnVzZXJfY2VudGVyLlRhcEluZm8i",
+            "QQoNQXBwbGVMb2dpblJlcRIVCg1pZGVudGl0eVRva2VuGAEgASgJEhkKEWF1",
+            "dGhvcml6YXRpb25Db2RlGAIgASgJImQKDUFwcGxlTG9naW5Sc3ASHwoEY29k",
+            "ZRgBIAEoDjIRLmNvbW1vbi5FcnJvckNvZGUSCwoDbXNnGAIgASgJEiUKB3Rh",
+            "cEluZm8YAyABKAsyFC51c2VyX2NlbnRlci5UYXBJbmZvQg1aC3VzZXJfY2Vu",
+            "dGVyYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -74,7 +78,9 @@ namespace UserCenter {
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.GoogleOAuthExchangeReq), global::UserCenter.GoogleOAuthExchangeReq.Parser, new[]{ "Code", "CodeVerifier" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.GoogleOAuthExchangeRsp), global::UserCenter.GoogleOAuthExchangeRsp.Parser, new[]{ "Code", "Msg", "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.GoogleOAuthExchangeRsp.Types.Data), global::UserCenter.GoogleOAuthExchangeRsp.Types.Data.Parser, new[]{ "Token", "TapInfo" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.GoogleLoginReq), global::UserCenter.GoogleLoginReq.Parser, new[]{ "Openid", "Avatar", "Gender", "Name", "Unionid" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.GoogleLoginRsp), global::UserCenter.GoogleLoginRsp.Parser, new[]{ "Code", "Msg", "TapInfo" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.GoogleLoginRsp), global::UserCenter.GoogleLoginRsp.Parser, new[]{ "Code", "Msg", "TapInfo" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.AppleLoginReq), global::UserCenter.AppleLoginReq.Parser, new[]{ "IdentityToken", "AuthorizationCode" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::UserCenter.AppleLoginRsp), global::UserCenter.AppleLoginRsp.Parser, new[]{ "Code", "Msg", "TapInfo" }, null, null, null)
           }));
     }
     #endregion
@@ -3290,6 +3296,354 @@ namespace UserCenter {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GoogleLoginRsp other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Code != 0) {
+        Code = other.Code;
+      }
+      if (other.Msg.Length != 0) {
+        Msg = other.Msg;
+      }
+      if (other.tapInfo_ != null) {
+        if (tapInfo_ == null) {
+          tapInfo_ = new global::UserCenter.TapInfo();
+        }
+        TapInfo.MergeFrom(other.TapInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            code_ = (global::Common.ErrorCode) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            Msg = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (tapInfo_ == null) {
+              tapInfo_ = new global::UserCenter.TapInfo();
+            }
+            input.ReadMessage(tapInfo_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class AppleLoginReq : pb::IMessage<AppleLoginReq> {
+    private static readonly pb::MessageParser<AppleLoginReq> _parser = new pb::MessageParser<AppleLoginReq>(() => new AppleLoginReq());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<AppleLoginReq> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[14]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AppleLoginReq() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AppleLoginReq(AppleLoginReq other) : this() {
+      identityToken_ = other.identityToken_;
+      authorizationCode_ = other.authorizationCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AppleLoginReq Clone() {
+      return new AppleLoginReq(this);
+    }
+
+    /// <summary>Field number for the "identityToken" field.</summary>
+    public const int IdentityTokenFieldNumber = 1;
+    private string identityToken_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string IdentityToken {
+      get { return identityToken_; }
+      set {
+        identityToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "authorizationCode" field.</summary>
+    public const int AuthorizationCodeFieldNumber = 2;
+    private string authorizationCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string AuthorizationCode {
+      get { return authorizationCode_; }
+      set {
+        authorizationCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as AppleLoginReq);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(AppleLoginReq other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (IdentityToken != other.IdentityToken) return false;
+      if (AuthorizationCode != other.AuthorizationCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (IdentityToken.Length != 0) hash ^= IdentityToken.GetHashCode();
+      if (AuthorizationCode.Length != 0) hash ^= AuthorizationCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (IdentityToken.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(IdentityToken);
+      }
+      if (AuthorizationCode.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(AuthorizationCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (IdentityToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(IdentityToken);
+      }
+      if (AuthorizationCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AuthorizationCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(AppleLoginReq other) {
+      if (other == null) {
+        return;
+      }
+      if (other.IdentityToken.Length != 0) {
+        IdentityToken = other.IdentityToken;
+      }
+      if (other.AuthorizationCode.Length != 0) {
+        AuthorizationCode = other.AuthorizationCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            IdentityToken = input.ReadString();
+            break;
+          }
+          case 18: {
+            AuthorizationCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class AppleLoginRsp : pb::IMessage<AppleLoginRsp> {
+    private static readonly pb::MessageParser<AppleLoginRsp> _parser = new pb::MessageParser<AppleLoginRsp>(() => new AppleLoginRsp());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<AppleLoginRsp> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::UserCenter.UserCenterReflection.Descriptor.MessageTypes[15]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AppleLoginRsp() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AppleLoginRsp(AppleLoginRsp other) : this() {
+      code_ = other.code_;
+      msg_ = other.msg_;
+      tapInfo_ = other.tapInfo_ != null ? other.tapInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AppleLoginRsp Clone() {
+      return new AppleLoginRsp(this);
+    }
+
+    /// <summary>Field number for the "code" field.</summary>
+    public const int CodeFieldNumber = 1;
+    private global::Common.ErrorCode code_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Common.ErrorCode Code {
+      get { return code_; }
+      set {
+        code_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "msg" field.</summary>
+    public const int MsgFieldNumber = 2;
+    private string msg_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Msg {
+      get { return msg_; }
+      set {
+        msg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "tapInfo" field.</summary>
+    public const int TapInfoFieldNumber = 3;
+    private global::UserCenter.TapInfo tapInfo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::UserCenter.TapInfo TapInfo {
+      get { return tapInfo_; }
+      set {
+        tapInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as AppleLoginRsp);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(AppleLoginRsp other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Code != other.Code) return false;
+      if (Msg != other.Msg) return false;
+      if (!object.Equals(TapInfo, other.TapInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Code != 0) hash ^= Code.GetHashCode();
+      if (Msg.Length != 0) hash ^= Msg.GetHashCode();
+      if (tapInfo_ != null) hash ^= TapInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Code != 0) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Code);
+      }
+      if (Msg.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Msg);
+      }
+      if (tapInfo_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(TapInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Code != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Code);
+      }
+      if (Msg.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Msg);
+      }
+      if (tapInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TapInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(AppleLoginRsp other) {
       if (other == null) {
         return;
       }

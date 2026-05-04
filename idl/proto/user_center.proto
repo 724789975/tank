@@ -104,3 +104,14 @@ message GoogleLoginRsp {
 	string           msg  = 2;
 	TapInfo          tapInfo = 3;
 }
+
+message AppleLoginReq {
+	string identityToken = 1;
+	string authorizationCode = 2;
+}
+
+message AppleLoginRsp {
+	common.ErrorCode code = 1;
+	string           msg  = 2;
+	TapInfo          tapInfo = 3;
+}

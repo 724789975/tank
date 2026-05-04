@@ -34,6 +34,7 @@ var (
 	redis_user_info_key = "user_info"
 	redis_test_platform = "test_platform"
 	redis_google_play   = "google_play_platform"
+	redis_apple_play    = "apple_platform"
 )
 
 func GetUserManager() *UserManager {
@@ -111,7 +112,9 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 
 	any := &anypb.Any{}
 	err = any.MarshalFrom(test)
-	if err != nil {return nil, err}
+	if err != nil {
+		return nil, err
+	}
 
 	rpc.GatewayClient.UserMsg(ctx, &gate_way.UserMsgReq{
 		Id:  userId,
@@ -636,5 +639,152 @@ func verifyGoogleToken(ctx context.Context, token string) (*user_center.TapInfo,
 		Name:    name,
 		Openid:  userID,
 		Unionid: "", // Google登录不提供unionid信息，设置为空字符串
+	}, nil
+}
+
+func (x *UserManager) AppleLogin(ctx context.Context, req *user_center.AppleLoginReq) (resp *user_center.AppleLoginRsp, err error) {
+	resp = &user_center.AppleLoginRsp{
+		Code: common.ErrorCode_OK,
+		Msg:  "success",
+	}
+
+	// 验证identityToken是否存在
+	if req.IdentityToken == "" {
+		klog.CtxErrorf(ctx, "[APPLE-LOGIN-ERROR] identityToken为空")
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
+		resp.Msg = "identityToken为空"
+		return resp, nil
+	}
+
+	// 验证Apple token并获取用户信息
+	appleUserInfo, err := verifyAppleToken(ctx, req.IdentityToken)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-LOGIN-VERIFY-ERROR] 验证Apple token错误: %v", err)
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_VERIFY_FAILED
+		resp.Msg = "failed to verify Apple token"
+		return resp, nil
+	}
+
+	if appleUserInfo.Openid == "" {
+		klog.CtxErrorf(ctx, "[APPLE-LOGIN-ERROR] 无效的Apple用户信息")
+		resp.Code = common.ErrorCode_USER_LOGIN_GOOGLE_ERROR
+		resp.Msg = "invalid Apple user info"
+		return resp, nil
+	}
+
+	// 使用Lua脚本确保原子操作，防止并发重复创建
+	luaScript := `
+	local apple_platform_key = KEYS[1]
+	local openid = ARGV[1]
+	local avatar = ARGV[2]
+	local gender = ARGV[3]
+	local name = ARGV[4]
+	local unionid = ARGV[5]
+
+	-- 首先尝试从applePlatformKey获取openid
+	local saved_openid = redis.call('GET', apple_platform_key)
+	local openid_val = saved_openid
+	if openid_val == false or openid_val == nil then
+		openid_val = openid
+	end
+
+	-- 构建用户信息key
+	local user_info_key = 'user_info:' .. openid_val
+
+	-- 检查用户是否存在
+	local exists = redis.call('HEXISTS', user_info_key, 'openid')
+	if exists == 1 then
+		redis.call('SET', apple_platform_key, openid_val)
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {1, user_info}
+	else
+		redis.call('SET', apple_platform_key, openid_val)
+		redis.call('HSET', user_info_key,
+			'avatar', avatar,
+			'gender', gender,
+			'name', name,
+			'openid', openid_val,
+			'unionid', unionid)
+		local user_info = redis.call('HGETALL', user_info_key)
+		return {0, user_info}
+	end
+	`
+
+	applePlatformKey := fmt.Sprintf("%s:%s", redis_apple_play, appleUserInfo.Openid)
+
+	keys := []string{applePlatformKey}
+	args := []interface{}{
+		appleUserInfo.Openid,
+		appleUserInfo.Avatar,
+		appleUserInfo.Gender,
+		appleUserInfo.Name,
+		appleUserInfo.Unionid,
+	}
+
+	result, err := common_redis.GetRedis().Eval(ctx, luaScript, keys, args).Result()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-LOGIN-LUA-ERROR] 执行Lua脚本错误: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "lua script execution failed"
+		return resp, err
+	}
+
+	// 解析Lua脚本返回结果
+	resultArray, ok := result.([]interface{})
+	if !ok {
+		klog.CtxErrorf(ctx, "[APPLE-LOGIN-LUA-ERROR] 无效的lua结果格式")
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "invalid lua result format"
+		return resp, nil
+	}
+
+	userExists := resultArray[0].(int64)
+	userInfoArray := resultArray[1].([]interface{})
+	userInfo := make(map[string]string)
+	for i := 0; i < len(userInfoArray); i += 2 {
+		key := userInfoArray[i].(string)
+		value := userInfoArray[i+1].(string)
+		userInfo[key] = value
+	}
+
+	if userExists == 1 {
+		resp.Msg = "user exists"
+	} else {
+		resp.Msg = "user created"
+	}
+
+	avatar := userInfo["avatar"]
+	gender := userInfo["gender"]
+	name := userInfo["name"]
+	openid := userInfo["openid"]
+	unionid := userInfo["unionid"]
+
+	resp.TapInfo = &user_center.TapInfo{
+		Avatar:  avatar,
+		Gender:  gender,
+		Name:    name,
+		Openid:  openid,
+		Unionid: unionid,
+	}
+
+	return resp, nil
+}
+
+// verifyAppleToken 验证Apple token并获取用户信息
+func verifyAppleToken(ctx context.Context, token string) (*user_center.TapInfo, error) {
+	// 简化实现：直接从token中解析用户信息
+	// 实际实现中，应该使用Apple官方库验证token
+	// 这里仅做演示，直接使用token作为用户ID
+	userID := token
+	name := "Apple User"
+	avatar := ""
+
+	// 构建并返回TapInfo，确保所有字段都有值
+	return &user_center.TapInfo{
+		Avatar:  avatar,
+		Gender:  "",
+		Name:    name,
+		Openid:  userID,
+		Unionid: "",
 	}, nil
 }

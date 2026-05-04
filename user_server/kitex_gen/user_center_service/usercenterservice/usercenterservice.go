@@ -58,6 +58,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"apple_login": kitex.NewMethodInfo(
+		appleLoginHandler,
+		newAppleLoginArgs,
+		newAppleLoginResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -790,6 +797,117 @@ func (p *GoogleLoginResult) GetResult() interface{} {
 	return p.Success
 }
 
+func appleLoginHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user_center.AppleLoginReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user_center_service.UserCenterService).AppleLogin(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *AppleLoginArgs:
+		success, err := handler.(user_center_service.UserCenterService).AppleLogin(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*AppleLoginResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newAppleLoginArgs() interface{} {
+	return &AppleLoginArgs{}
+}
+
+func newAppleLoginResult() interface{} {
+	return &AppleLoginResult{}
+}
+
+type AppleLoginArgs struct {
+	Req *user_center.AppleLoginReq
+}
+
+func (p *AppleLoginArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *AppleLoginArgs) Unmarshal(in []byte) error {
+	msg := new(user_center.AppleLoginReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var AppleLoginArgs_Req_DEFAULT *user_center.AppleLoginReq
+
+func (p *AppleLoginArgs) GetReq() *user_center.AppleLoginReq {
+	if !p.IsSetReq() {
+		return AppleLoginArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *AppleLoginArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *AppleLoginArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type AppleLoginResult struct {
+	Success *user_center.AppleLoginRsp
+}
+
+var AppleLoginResult_Success_DEFAULT *user_center.AppleLoginRsp
+
+func (p *AppleLoginResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *AppleLoginResult) Unmarshal(in []byte) error {
+	msg := new(user_center.AppleLoginRsp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *AppleLoginResult) GetSuccess() *user_center.AppleLoginRsp {
+	if !p.IsSetSuccess() {
+		return AppleLoginResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *AppleLoginResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user_center.AppleLoginRsp)
+}
+
+func (p *AppleLoginResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *AppleLoginResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -855,6 +973,16 @@ func (p *kClient) GoogleLogin(ctx context.Context, Req *user_center.GoogleLoginR
 	_args.Req = Req
 	var _result GoogleLoginResult
 	if err = p.c.Call(ctx, "google_login", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) AppleLogin(ctx context.Context, Req *user_center.AppleLoginReq) (r *user_center.AppleLoginRsp, err error) {
+	var _args AppleLoginArgs
+	_args.Req = Req
+	var _result AppleLoginResult
+	if err = p.c.Call(ctx, "apple_login", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

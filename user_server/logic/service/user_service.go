@@ -150,3 +150,7 @@ func (x *UserService) GoogleOauthExchange(ctx context.Context, req *user_center.
 func (x *UserService) GoogleLogin(ctx context.Context, req *user_center.GoogleLoginReq) (resp *user_center.GoogleLoginRsp, err error) {
 	return manager.GetUserManager().GoogleLogin(ctx, req)
 }
+
+func (x *UserService) AppleLogin(ctx context.Context, req *user_center.AppleLoginReq) (resp *user_center.AppleLoginRsp, err error) {
+	return manager.GetUserManager().AppleLogin(ctx, req)
+}

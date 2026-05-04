@@ -3,11 +3,18 @@ package manager
 import (
 	"bytes"
 	"context"
+	"crypto"
+	"crypto/rsa"
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/big"
 	"net/http"
+	"strings"
 	"sync"
+	"time"
 	common_config "user_server/config"
 	"user_server/kitex_gen/common"
 	"user_server/kitex_gen/gate_way"
@@ -269,6 +276,12 @@ func (x *UserManager) GoogleLogin(ctx context.Context, req *user_center.GoogleLo
 		Msg:  "success",
 	}
 
+	userId := ""
+	defer func() {
+		klog.CtxInfof(ctx, "[GOOGLE-LOGIN-RESULT] uuid: %s, resp: %d", userId, resp.Code)
+	}()
+
+	userId = ctx.Value("userId").(string)
 	// 使用Lua脚本确保原子操作，防止并发重复创建
 	luaScript := `
 	local google_platform_key = KEYS[1]
@@ -312,11 +325,11 @@ func (x *UserManager) GoogleLogin(ctx context.Context, req *user_center.GoogleLo
 	end
 	`
 
-	googlePlatformKey := fmt.Sprintf("%s:%s", redis_google_play, req.Openid)
+	googlePlatformKey := fmt.Sprintf("%s:%s", redis_google_play, userId)
 
 	keys := []string{googlePlatformKey}
 	args := []interface{}{
-		req.Openid,
+		userId,
 		req.Avatar,
 		req.Gender,
 		req.Name,
@@ -771,20 +784,163 @@ func (x *UserManager) AppleLogin(ctx context.Context, req *user_center.AppleLogi
 }
 
 // verifyAppleToken 验证Apple token并获取用户信息
-func verifyAppleToken(ctx context.Context, token string) (*user_center.TapInfo, error) {
-	// 简化实现：直接从token中解析用户信息
-	// 实际实现中，应该使用Apple官方库验证token
-	// 这里仅做演示，直接使用token作为用户ID
-	userID := token
-	name := "Apple User"
-	avatar := ""
+func verifyAppleToken(ctx context.Context, identityToken string) (*user_center.TapInfo, error) {
+	// Apple 公钥地址
+	const publicKeyURL = "https://appleid.apple.com/auth/keys"
 
-	// 构建并返回TapInfo，确保所有字段都有值
+	// 获取Apple公钥
+	resp, err := http.Get(publicKeyURL)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 获取Apple公钥失败: %v", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 读取Apple公钥响应失败: %v", err)
+		return nil, err
+	}
+
+	// 解析公钥列表
+	var appleKeys struct {
+		Keys []struct {
+			Kty string `json:"kty"`
+			Kid string `json:"kid"`
+			Use string `json:"use"`
+			Alg string `json:"alg"`
+			N   string `json:"n"`
+			E   string `json:"e"`
+		} `json:"keys"`
+	}
+	if err := json.Unmarshal(body, &appleKeys); err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解析Apple公钥失败: %v", err)
+		return nil, err
+	}
+
+	// 解析JWT token
+	parts := strings.Split(identityToken, ".")
+	if len(parts) != 3 {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 无效的JWT格式")
+		return nil, fmt.Errorf("invalid JWT format")
+	}
+
+	// 解析header获取kid
+	headerBytes, err := base64.RawURLEncoding.DecodeString(parts[0])
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解码JWT header失败: %v", err)
+		return nil, err
+	}
+
+	var header struct {
+		Kid string `json:"kid"`
+		Alg string `json:"alg"`
+	}
+	if err := json.Unmarshal(headerBytes, &header); err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解析JWT header失败: %v", err)
+		return nil, err
+	}
+
+	// 根据kid找到对应的公钥
+	var selectedKey *struct {
+		Kty string `json:"kty"`
+		Kid string `json:"kid"`
+		Use string `json:"use"`
+		Alg string `json:"alg"`
+		N   string `json:"n"`
+		E   string `json:"e"`
+	}
+	for i := range appleKeys.Keys {
+		if appleKeys.Keys[i].Kid == header.Kid {
+			selectedKey = &appleKeys.Keys[i]
+			break
+		}
+	}
+	if selectedKey == nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 未找到匹配的公钥, kid: %s", header.Kid)
+		return nil, fmt.Errorf("key not found for kid: %s", header.Kid)
+	}
+
+	// 解码N和E
+	nBytes, err := base64.RawURLEncoding.DecodeString(selectedKey.N)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解码N失败: %v", err)
+		return nil, err
+	}
+	eBytes, err := base64.RawURLEncoding.DecodeString(selectedKey.E)
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解码E失败: %v", err)
+		return nil, err
+	}
+
+	// 构建RSA公钥
+	n := new(big.Int).SetBytes(nBytes)
+	e := int(new(big.Int).SetBytes(eBytes).Int64())
+	publicKey := &rsa.PublicKey{N: n, E: e}
+
+	// 验证签名
+	signature, err := base64.RawURLEncoding.DecodeString(parts[2])
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解码签名失败: %v", err)
+		return nil, err
+	}
+
+	signedData := parts[0] + "." + parts[1]
+	h := sha256.New()
+	h.Write([]byte(signedData))
+	hashed := h.Sum(nil)
+
+	if err := rsa.VerifyPKCS1v15(publicKey, crypto.SHA256, hashed, signature); err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 签名验证失败: %v", err)
+		return nil, err
+	}
+
+	// 解析payload
+	payloadBytes, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解码payload失败: %v", err)
+		return nil, err
+	}
+
+	var claims struct {
+		Iss   string `json:"iss"`
+		Aud   string `json:"aud"`
+		Exp   int64  `json:"exp"`
+		Iat   int64  `json:"iat"`
+		Sub   string `json:"sub"`
+		Email string `json:"email"`
+		Nonce string `json:"nonce"`
+	}
+	if err := json.Unmarshal(payloadBytes, &claims); err != nil {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] 解析claims失败: %v", err)
+		return nil, err
+	}
+
+	// 验证issuer
+	if claims.Iss != "https://appleid.apple.com" {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] issuer验证失败: %s", claims.Iss)
+		return nil, fmt.Errorf("invalid issuer: %s", claims.Iss)
+	}
+
+	// 验证audience (应该匹配client_id)
+	appleClientID := common_config.Get("apple.client_id").(string)
+	if claims.Aud != appleClientID {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] audience验证失败: %s", claims.Aud)
+		return nil, fmt.Errorf("invalid audience: %s", claims.Aud)
+	}
+
+	// 验证过期时间
+	if claims.Exp < time.Now().Unix() {
+		klog.CtxErrorf(ctx, "[APPLE-TOKEN-VALIDATE] token已过期")
+		return nil, fmt.Errorf("token expired")
+	}
+
+	// 构建并返回TapInfo
 	return &user_center.TapInfo{
-		Avatar:  avatar,
+		Avatar:  "",
 		Gender:  "",
-		Name:    name,
-		Openid:  userID,
-		Unionid: "",
+		Name:    claims.Email,
+		Openid:  claims.Sub,
+		Unionid: claims.Sub,
 	}, nil
 }

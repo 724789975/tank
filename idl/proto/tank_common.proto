@@ -1,6 +1,8 @@
 syntax = "proto3";
 package tank_common;
 
+option go_package = "tank_common";
+
 message Vector3 {
     float x = 1;
     float y = 2;

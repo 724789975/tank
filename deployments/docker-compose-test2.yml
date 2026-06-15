@@ -1,0 +1,258 @@
+version: '3.8'
+
+services:
+  # 基础设施服务
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.10
+    container_name: etcd
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380
+      - ETCD_INITIAL_CLUSTER=default=http://etcd:2380
+      - ETCD_INITIAL_CLUSTER_STATE=new
+      - ETCD_NAME=default
+    volumes:
+      - etcd_data:/etcd-data
+    networks:
+      - tank-net
+
+  redis:
+    image: redis:7.2.5-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    networks:
+      - tank-net
+
+  nats:
+    image: nats:2.10.18-alpine
+    container_name: nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: nats-server --user root --pass ${NATS_PASSWORD}
+    networks:
+      - tank-net
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.56
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - tank-net
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.95.0
+    container_name: otel-collector
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "8889:8889"
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    depends_on:
+      - jaeger
+    networks:
+      - tank-net
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - otel-collector
+    networks:
+      - tank-net
+
+  # 微服务
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: gateway
+    ports:
+      - "8000:8080"
+      - "10001:11001"
+      - "12001:12001"
+    depends_on:
+      - etcd
+      - redis
+      - nats
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../gateway/etc:/app/etc
+    networks:
+      - tank-net
+
+  user-server:
+    build:
+      context: ../user_server
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: user-server
+    ports:
+      - "8001:8080"
+      - "10002:11001"
+    depends_on:
+      - etcd
+      - redis
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../user_server/etc:/app/etc
+    networks:
+      - tank-net
+
+  server-manager:
+    build:
+      context: ../server_manager
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: server-manager
+    ports:
+      - "8002:8080"
+      - "10003:11001"
+    depends_on:
+      - etcd
+      - redis
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../server_manager/etc:/app/etc
+    networks:
+      - tank-net
+
+  match-server:
+    build:
+      context: ../match_server
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: match-server
+    ports:
+      - "8003:8080"
+      - "10004:11001"
+    depends_on:
+      - etcd
+      - redis
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../match_server/etc:/app/etc
+    networks:
+      - tank-net
+
+  item-manager:
+    build:
+      context: ../item_manager
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: item-manager
+    ports:
+      - "8004:8080"
+      - "10005:11001"
+    depends_on:
+      - etcd
+      - redis
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../item_manager/etc:/app/etc
+    networks:
+      - tank-net
+
+  auction:
+    build:
+      context: ../auction
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: auction
+    ports:
+      - "8005:8081"
+      - "10006:11001"
+    depends_on:
+      - etcd
+      - redis
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../auction/etc:/app/etc
+    networks:
+      - tank-net
+
+  route:
+    build:
+      context: ../route
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: route
+    ports:
+      - "8006:8080"
+    depends_on:
+      - etcd
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../route/etc:/app/etc
+    networks:
+      - tank-net
+
+volumes:
+  etcd_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/../volumes/etcd_data
+      o: bind
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/../volumes/redis_data
+      o: bind
+  jaeger_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/../volumes/jaeger_data
+      o: bind
+
+networks:
+  tank-net:
+    driver: bridge

@@ -1,0 +1,48 @@
+# HTTP服务配置
+match_http:
+  addr: ":8080"
+
+# RPC服务配置
+match_rpc:
+  addr: "0.0.0.0:11001"
+  service_name: "match-server"
+
+# Redis配置
+redis:
+  addrs:
+    - "redis:6379"
+  password: "123#@!QAzx"
+
+# etcd配置
+etcd:
+  addrs:
+    - "etcd:2379"
+  username: ""
+  password: ""
+
+# Tracer配置
+tracer:
+  address: "otel-collector:4317"
+
+# 特定服务配置
+game:
+  addr: "115.190.230.47"
+  port: 10085
+
+gateway:
+  service_name: "gate-server"
+
+server_mgr:
+  service_name: "server-mgr"
+
+exe_path:
+  windows: ".\\etc\\windows.bat"
+  linux: "./etc/linux.sh"
+  ai_windows: ".\\etc\\ai_windows.bat"
+  ai_linux: "./etc/ai_linux.sh"
+
+pod:
+  game_server:
+    name: "game-server"
+    namespace: "tank"
+    image: "docker.io/library/game-server:v1.0.0"

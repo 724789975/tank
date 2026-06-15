@@ -1,0 +1,42 @@
+# HTTP服务配置
+user_http:
+  addr: ":8080"
+
+# RPC服务配置
+user_rpc:
+  addr: "0.0.0.0:11001"
+  service_name: "user-center"
+
+# Redis配置
+redis:
+  addrs:
+    - "redis:6379"
+  password: "123#@!QAzx"
+
+# etcd配置
+etcd:
+  addrs:
+    - "etcd:2379"
+  username: ""
+  password: ""
+
+# Tracer配置
+tracer:
+  address: "otel-collector:4317"
+
+# 特定服务配置
+game:
+  addr: "114.132.124.13"
+  port: 10085
+
+tap:
+  host: "open.tapapis.cn"
+  client_id: "oy5mqqrghbgdlrfmf4"
+  base_info_uri: "/account/profile/v1"
+
+gateway:
+  service_name: "gate-server"
+
+google:
+  client_id: "1061525001536-hblht7k9otpaeaoksrdrvnj7om2emnt5.apps.googleusercontent.com"
+  redirect_uri: "http://quchifan.wang:30080/api/1.0/get/user_server/google_oauth_callback"

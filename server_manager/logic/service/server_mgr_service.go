@@ -9,6 +9,7 @@ import (
 	"server_manager/etcd"
 	match_http "server_manager/http"
 	"server_manager/logic/manager"
+	"server_manager/rpc_middleware"
 	"sync"
 
 	"server_manager/kitex_gen/server_mgr"
@@ -72,6 +73,7 @@ func (s *ServerMgrService) ListenAndServe(ctx context.Context) {
 			}),
 			kitexserver.WithSuite(tracing.NewServerSuite()),
 			kitexserver.WithRegistry(etcd.GetEtcdClient()),
+			kitexserver.WithMiddleware(rpc_middleware.UserIdServerMiddleware),
 		)
 
 		return server

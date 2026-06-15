@@ -9,6 +9,7 @@ import (
 	"item_manager/kitex_gen/item"
 	"item_manager/kitex_gen/item_service/itemservice"
 	"item_manager/logic/manager"
+	"item_manager/rpc_middleware"
 	"net"
 	"net/http"
 	"sync"
@@ -71,6 +72,7 @@ func (s *ItemService) ListenAndServe(ctx context.Context) {
 			}),
 			kitexserver.WithSuite(tracing.NewServerSuite()),
 			kitexserver.WithRegistry(etcd.GetEtcdClient()),
+			kitexserver.WithMiddleware(rpc_middleware.UserIdServerMiddleware),
 		)
 
 		return server

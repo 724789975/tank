@@ -7,6 +7,7 @@ import (
 	common_config "route_module/config"
 	"route_module/etcd"
 	"route_module/kitex_gen/match_service/matchservice"
+	"route_module/rpc_middleware"
 
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -21,13 +22,18 @@ var (
 
 func InitMatchClient() (err error) {
 	once_match.Do(func() {
-		MatchClient, err = matchservice.NewClient(common_config.Get("match.service_name").(string), client.WithResolver(etcd.GetEtcdResolver()), client.WithSuite(tracing.NewClientSuite()))
+		MatchClient, err = matchservice.NewClient(
+			common_config.Get("match.service_name").(string),
+			client.WithResolver(etcd.GetEtcdResolver()),
+			client.WithSuite(tracing.NewClientSuite()),
+			client.WithMiddleware(rpc_middleware.UserIdClientMiddleware),
+		)
 		if err != nil {
 			klog.Error("[ROUTE-RPC-MATCH-INIT] Failed to initialize match client: ", err)
 			return
 		}
 		clients[common_config.Get("match.service_name").(string)] = func(ctx context.Context, rpc_name string, body_any *any1.Any) (error, *any1.Any) {
-			return CallRPC(MatchClient, rpc_name, ctx, body_any)
+			return callRPC(ctx, MatchClient, rpc_name, body_any)
 		}
 	})
 	return err

@@ -8,6 +8,7 @@ import (
 	"auction_module/kitex_gen/auction"
 	"auction_module/kitex_gen/auction_service/auctionservice"
 	"auction_module/logic/manager"
+	"auction_module/rpc_middleware"
 	"context"
 	"net"
 	nethttp "net/http"
@@ -71,6 +72,7 @@ func (s *AuctionService) ListenAndServe(ctx context.Context) {
 			}),
 			kitexserver.WithSuite(tracing.NewServerSuite()),
 			kitexserver.WithRegistry(etcd.GetEtcdClient()),
+			kitexserver.WithMiddleware(rpc_middleware.UserIdServerMiddleware),
 		)
 
 		return server

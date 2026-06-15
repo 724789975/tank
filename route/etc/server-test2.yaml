@@ -19,7 +19,7 @@ gateway:
 
 # user_center服务配置
 user_center:
-  service_name: "user_center"
+  service_name: "user-center"
 
 # match服务配置
 match:

@@ -52,7 +52,8 @@ func GetClient(serviceName string) (CB, error) {
 
 type RPCClient interface{}
 
-func CallRPC(client RPCClient, rpcName string, ctx context.Context, bodyAny *any1.Any) (error, *any1.Any) {
+func callRPC(ctx context.Context, client RPCClient, rpcName string, bodyAny *any1.Any) (error, *any1.Any) {
+
 	clientValue := reflect.ValueOf(client)
 	method := clientValue.MethodByName(rpcName)
 	if !method.IsValid() {

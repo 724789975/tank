@@ -10,6 +10,7 @@ import (
 	"gate_way_module/kitex_gen/gate_way"
 	"gate_way_module/kitex_gen/gateway_service/gatewayservice"
 	"gate_way_module/nats"
+	"gate_way_module/rpc_middleware"
 	"net"
 
 	_nats "github.com/nats-io/nats.go"
@@ -49,6 +50,7 @@ func InitGatewayService() {
 			}),
 			kitexserver.WithSuite(tracing.NewServerSuite()),
 			kitexserver.WithRegistry(etcd.GetEtcdClient()),
+			kitexserver.WithMiddleware(rpc_middleware.UserIdServerMiddleware),
 		)
 
 		return server

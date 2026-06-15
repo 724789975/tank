@@ -7,6 +7,7 @@ import (
 	"match_server/etcd"
 	match_http "match_server/http"
 	"match_server/logic/manager"
+	"match_server/rpc_middleware"
 	"net"
 	"net/http"
 	"sync"
@@ -72,6 +73,7 @@ func (s *MatchService) ListenAndServe(ctx context.Context) {
 			}),
 			kitexserver.WithSuite(tracing.NewServerSuite()),
 			kitexserver.WithRegistry(etcd.GetEtcdClient()),
+			kitexserver.WithMiddleware(rpc_middleware.UserIdServerMiddleware),
 		)
 
 		return server

@@ -75,7 +75,10 @@ func (s *RouteService) ginRoute(ctx *gin.Context) {
 
 	bodyAny := &any1.Any{Value: bodyBytes}
 
-	ginCtx := context.WithValue(ctx.Request.Context(), "userId", ctx.Value("userId").(string))
+	// 获取 userId 并设置到 context（支持跨 RPC 传递）
+	userId, _ := ctx.Value("userId").(string)
+	ginCtx := context.WithValue(ctx.Request.Context(), "userId", userId)
+
 	client, err := rpc.GetClient(serviceName)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"code": -1, "msg": err.Error()})

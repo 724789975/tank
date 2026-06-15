@@ -130,3 +130,16 @@ mkdir kitex_gen\auction_service\auctionservice
 .\bin\kitex -module route_module -type protobuf -no-fast-api proto/auction_service.proto
 rmdir /s /q ..\route\kitex_gen
 move .\kitex_gen ..\route\
+
+@REM delete previous generated files and go modules
+del go.mod
+del go.sum
+rmdir /s /q kitex_gen
+
+@REM Pre-create nested directories for service clients
+mkdir kitex_gen\user_center_service\usercenterservice
+
+@REM Generate route_test
+.\bin\kitex -module route_test -type protobuf -no-fast-api proto/user_center_service.proto
+rmdir /s /q ..\route_test\kitex_gen
+move .\kitex_gen ..\route_test\

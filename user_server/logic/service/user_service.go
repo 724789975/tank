@@ -10,6 +10,7 @@ import (
 	"user_server/etcd"
 	user_http "user_server/http"
 	"user_server/logic/manager"
+	"user_server/rpc_middleware"
 
 	"user_server/kitex_gen/user_center"
 	"user_server/kitex_gen/user_center_service/usercenterservice"
@@ -76,6 +77,7 @@ func (s *UserService) ListenAndServe(ctx context.Context) {
 			}),
 			kitexserver.WithSuite(tracing.NewServerSuite()),
 			kitexserver.WithRegistry(etcd.GetEtcdClient()),
+			kitexserver.WithMiddleware(rpc_middleware.UserIdServerMiddleware),
 		)
 
 		return server

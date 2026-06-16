@@ -71,12 +71,7 @@ func (x *UserManager) Login(ctx context.Context, req *user_center.LoginReq) (res
 		Msg:  "success",
 	}
 
-	userId := ""
-	defer func() {
-		klog.CtxInfof(ctx, "[USER-LOGIN-RESULT] uuid: %s, resp: %d", userId, resp.Code)
-	}()
-
-	userId = ctx.Value("userId").(string)
+	userId := ctx.Value("userId").(string)
 
 	realId := common_redis.GetRedis().Get(ctx, fmt.Sprintf("%s:%s", redis_taptap_str, userId)).Val()
 	if realId == "" {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	any1 "github.com/golang/protobuf/ptypes/any"
 	"google.golang.org/protobuf/proto"
 )
@@ -71,14 +72,17 @@ func callRPC(ctx context.Context, client RPCClient, rpcName string, bodyAny *any
 	}
 
 	req := reflect.New(reqType.Elem()).Interface()
-	if err := proto.Unmarshal(bodyAny.GetValue(), req.(proto.Message)); err != nil {
+	if err := bodyAny.UnmarshalTo(req.(proto.Message)); err != nil {
 		return fmt.Errorf("unmarshal request failed: %v", err), nil
 	}
+	klog.CtxInfof(ctx, "[ROUTE-REQUEST] req: %v", req)
 
 	results := method.Call([]reflect.Value{
 		reflect.ValueOf(ctx),
 		reflect.ValueOf(req),
 	})
+
+	klog.CtxInfof(ctx, "[ROUTE-REQUEST] results: %v", results)
 
 	if len(results) != 2 {
 		return fmt.Errorf("rpc method %s has unexpected return count", rpcName), nil

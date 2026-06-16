@@ -11,7 +11,9 @@ import (
 	route_http "route_module/http"
 	"route_module/rpc"
 
-	any1 "github.com/golang/protobuf/ptypes/any"
+	"github.com/bytedance/gopkg/cloud/metainfo"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/anypb"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
@@ -73,11 +75,16 @@ func (s *RouteService) ginRoute(ctx *gin.Context) {
 	}
 	defer ctx.Request.Body.Close()
 
-	bodyAny := &any1.Any{Value: bodyBytes}
+	bodyAny := &anypb.Any{}
+	if err := proto.Unmarshal(bodyBytes, bodyAny); err != nil {
+		klog.CtxErrorf(ctx.Request.Context(), "[ROUTE-LOG] unmarshal body error: %s", err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"code": -1, "msg": "unmarshal body failed"})
+		return
+	}
 
-	// 获取 userId 并设置到 context（支持跨 RPC 传递）
+	// 获取 userId 并使用 metainfo 设置到 context（支持跨 RPC 传递）
 	userId, _ := ctx.Value("userId").(string)
-	ginCtx := context.WithValue(ctx.Request.Context(), "userId", userId)
+	ginCtx := metainfo.WithValue(ctx.Request.Context(), "userId", userId)
 
 	client, err := rpc.GetClient(serviceName)
 	if err != nil {
@@ -85,6 +92,7 @@ func (s *RouteService) ginRoute(ctx *gin.Context) {
 		return
 	}
 
+	klog.CtxInfof(ctx.Request.Context(), "[ROUTE-REQUEST] bodyAny: %s", bodyAny.String())
 	err, resp := client(ginCtx, rpcMethod, bodyAny)
 	if err != nil {
 		ctx.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error()})

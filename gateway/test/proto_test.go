@@ -19,5 +19,6 @@ func TestExample(t *testing.T) {
 		t.Errorf("marshal %s failed, err: %v", lgp.String(), err)
 		return
 	}
+	t.Logf("any: %s", any.String())
 
 }

@@ -7,17 +7,12 @@ import (
 	"github.com/cloudwego/kitex/pkg/endpoint"
 )
 
-// userIdKey 用于 context 中存储 userId 的 key
-type userIdKey struct{}
-
-var userIdKeyInstance = userIdKey{}
-
-// userIdMetaKey 用于 metainfo 传递 userId 的 key
+// userIdMetaKey 用于 context 和 metainfo 中传递 userId 的 key
 const userIdMetaKey = "userId"
 
 // UserIdFromContext 从 context 中获取 userId
 func UserIdFromContext(ctx context.Context) string {
-	if v := ctx.Value(userIdKeyInstance); v != nil {
+	if v := ctx.Value(userIdMetaKey); v != nil {
 		return v.(string)
 	}
 	// 同时尝试从 metainfo 获取（服务端可能从 metadata 中读取）
@@ -32,7 +27,7 @@ func UserIdServerMiddleware(next endpoint.Endpoint) endpoint.Endpoint {
 	return func(ctx context.Context, req, resp interface{}) error {
 		// 从 metainfo 中获取 userId
 		if userId, ok := metainfo.GetValue(ctx, userIdMetaKey); ok {
-			ctx = context.WithValue(ctx, userIdKeyInstance, userId)
+			ctx = context.WithValue(ctx, userIdMetaKey, userId)
 		}
 		return next(ctx, req, resp)
 	}
@@ -40,6 +35,6 @@ func UserIdServerMiddleware(next endpoint.Endpoint) endpoint.Endpoint {
 
 // SetUserIdToContext 将 userId 设置到 context（支持跨 RPC 传递）
 func SetUserIdToContext(ctx context.Context, userId string) context.Context {
-	ctx = context.WithValue(ctx, userIdKeyInstance, userId)
+	ctx = context.WithValue(ctx, userIdMetaKey, userId)
 	return metainfo.WithValue(ctx, userIdMetaKey, userId)
 }

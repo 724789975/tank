@@ -12,7 +12,8 @@ import (
 
 	"route_test/kitex_gen/user_center"
 
-	"google.golang.org/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func TestLogin(t *testing.T) {
@@ -25,19 +26,27 @@ func TestLogin(t *testing.T) {
 
 	// ========== 2. 构建请求阶段 ==========
 	t.Logf("[STEP-1] Building LoginReq...")
-	req := &user_center.LoginReq{
-		Kid:    "test_kid",
-		MacKey: "test_mac_key",
+	req := &user_center.TestLoginReq{
+		TapInfo: &user_center.TapInfo{
+			Avatar:  "test_avatar",
+			Gender:  "test_nick_name",
+			Name:    "test_user_id",
+			Openid:  "test_open_id",
+			Unionid: "test_union_id",
+		},
 	}
-	t.Logf("[STEP-1] LoginReq created: Kid=%s, MacKey=%s", req.Kid, req.MacKey)
+	t.Logf("[STEP-1] LoginReq created: TapInfo=%v", req)
 
-	// 序列化为 Protobuf
-	reqBytes, err := proto.Marshal(req)
+	bodyAny := &anypb.Any{}
+	bodyAny.MarshalFrom(req)
+
+	// 使用 gogo/protobuf 的 proto.Marshal 序列化 Any
+	anyBytes, err := proto.Marshal(bodyAny)
 	if err != nil {
-		t.Errorf("[ERROR] Failed to marshal LoginReq: %v", err)
+		t.Errorf("[ERROR] Failed to marshal Any: %v", err)
 		return
 	}
-	t.Logf("[STEP-2] Request marshaled to protobuf, size: %d bytes", len(reqBytes))
+	t.Logf("[STEP-2] Request marshaled to protobuf, size: %d bytes", len(anyBytes))
 
 	// 构建 user-channel header
 	now := time.Now().Unix()
@@ -45,12 +54,12 @@ func TestLogin(t *testing.T) {
 	t.Logf("[STEP-3] UserChannel header created: %s", userChannel)
 
 	// 构建完整 URL
-	url := fmt.Sprintf("%s/api/1.0/public/route/user-center/Login", routeAddr)
+	url := fmt.Sprintf("%s/api/1.0/public/route/user-center/TestLogin", routeAddr)
 	t.Logf("[STEP-4] Target URL: %s", url)
 
 	// ========== 3. 发送请求阶段 ==========
 	t.Logf("[STEP-5] Creating HTTP request...")
-	httpReq, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBytes))
+	httpReq, err := http.NewRequest("POST", url, bytes.NewBuffer(anyBytes))
 	if err != nil {
 		t.Errorf("[ERROR] Failed to create HTTP request: %v", err)
 		return

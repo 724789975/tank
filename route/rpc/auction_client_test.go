@@ -50,12 +50,16 @@ func Test_CallRPC(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got2 := CallRPC(&AuctionClient, tt.rpcName, context.Background(), tt.bodyAny)
+			cb, err := GetClient("auction")
+			if err != nil {
+				t.Fatalf("GetClient failed: %v", err)
+			}
+			got, got2 := cb(context.Background(), tt.rpcName, tt.bodyAny)
 			if (got != nil) != tt.wantErr {
-				t.Errorf("CallRPC() error = %v, wantErr %v", got, tt.wantErr)
+				t.Errorf("cb() error = %v, wantErr %v", got, tt.wantErr)
 			}
 			if tt.wantValue && got2 == nil {
-				t.Errorf("CallRPC() got2 = nil, want non-nil")
+				t.Errorf("cb() got2 = nil, want non-nil")
 			}
 		})
 	}

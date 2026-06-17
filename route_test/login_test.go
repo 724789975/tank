@@ -20,7 +20,7 @@ func TestLogin(t *testing.T) {
 	// ========== 1. 配置阶段 ==========
 	routeAddr := os.Getenv("ROUTE_ADDR")
 	if routeAddr == "" {
-		routeAddr = "http://localhost:8006"
+		routeAddr = "http://quchifan.wang:30080"
 	}
 	t.Logf("[CONFIG] Route address: %s", routeAddr)
 

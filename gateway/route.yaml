@@ -59,6 +59,6 @@ spec:
           number: 8080
   - route:
     - destination:
-        host: kubernetes-dashboard-web.kubernetes-dashboard.svc.cluster.local  # Kubernetes Dashboard的Service名称
+        host: user-server.tank.svc.cluster.local
         port:
-          number: 80  # Service的端口号
+          number: 8080

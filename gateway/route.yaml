@@ -57,6 +57,14 @@ spec:
         host: server-mgr.tank.svc.cluster.local
         port:
           number: 8080
+  - match:
+    - uri:
+        prefix: /api/1.0/public/route_server/
+    route:
+    - destination:
+        host: route-server.tank.svc.cluster.local
+        port:
+          number: 8080
   - route:
     - destination:
         host: user-server.tank.svc.cluster.local

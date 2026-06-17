@@ -1,0 +1,42 @@
+http:
+  addr: ":8080"
+  service_name: "route-server"
+
+# etcd配置
+etcd:
+  addrs:
+    - "etcd.tank.svc.cluster.local:2379"
+  username: "root"
+  password: "123#@!QAzx"
+
+# Tracer配置
+tracer:
+  address: "otel-collector.open-telemetry-collector:4317"
+
+# gateway服务配置
+gateway:
+  service_name: "gateway"
+
+# user_center服务配置
+user_center:
+  service_name: "user-center"
+
+# match服务配置
+match:
+  service_name: "match"
+
+# server_mgr服务配置
+server_mgr:
+  service_name: "server_mgr"
+
+# item服务配置
+item:
+  service_name: "item"
+
+# tank_game服务配置
+tank_game:
+  service_name: "tank_game"
+
+# auction服务配置
+auction:
+  service_name: "auction"

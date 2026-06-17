@@ -55,3 +55,5 @@ client/build*
 
 go.sum
 /volumes/*
+auction/auction-server.tar.gz
+route/route-server.tar.gz

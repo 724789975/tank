@@ -59,7 +59,7 @@ spec:
           number: 8080
   - match:
     - uri:
-        prefix: /api/1.0/public/route_server/
+        prefix: /api/1.0/public/route/
     route:
     - destination:
         host: route-server.tank.svc.cluster.local

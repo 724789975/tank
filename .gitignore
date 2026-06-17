@@ -52,3 +52,6 @@ client/build*
 /idl/proto_gen/*.cs
 
 /out
+
+go.sum
+/volumes/*

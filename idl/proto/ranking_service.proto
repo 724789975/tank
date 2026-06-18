@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+import "proto/ranking.proto";
+package ranking_service;
+
+option go_package = "ranking_service";
+
+// 排行榜服务
+service RankingService {
+    // 更新用户分数
+    // 功能：设置指定用户在特定排行榜中的分数
+    // 原子性：确保分数更新操作的原子性，防止并发更新导致的数据不一致
+    // 响应：更新后的分数、排名、更新时间戳、操作结果状态码
+    rpc update_score(ranking.UpdateScoreReq) returns (ranking.UpdateScoreRsp);
+
+    // 获取用户当前排名
+    // 功能：根据用户ID和排行榜类型，实时获取用户当前排名及分数信息
+    // 响应：用户ID、当前排名、当前分数、同分数用户数量、排行榜总用户数
+    rpc get_user_rank(ranking.GetUserRankReq) returns (ranking.GetUserRankRsp);
+
+    // 获取排名区间
+    // 功能：根据指定的排行榜类型和名次范围，获取该区间内所有用户的排名信息
+    // 分页：当区间过大时（超过100条记录），需实现分页机制
+    // 响应：用户ID列表（按排名顺序）、每个用户的排名及分数、查询区间范围、总记录数
+    rpc get_rank_range(ranking.GetRankRangeReq) returns (ranking.GetRankRangeRsp);
+
+    // 批量获取用户排名
+    // 功能：批量查询多个用户在指定排行榜中的排名信息
+    // 限制：单次最多查询100个用户
+    rpc batch_get_user_rank(ranking.BatchGetUserRankReq) returns (ranking.BatchGetUserRankRsp);
+
+    // 获取排行榜统计信息
+    // 功能：获取指定排行榜的统计信息，包括总用户数、最高分、最低分、平均分等
+    rpc get_ranking_stats(ranking.GetRankingStatsReq) returns (ranking.GetRankingStatsRsp);
+}

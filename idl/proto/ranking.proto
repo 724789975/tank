@@ -1,0 +1,119 @@
+syntax = "proto3";
+option go_package = "ranking";
+package ranking;
+
+import "proto/common.proto";
+
+// 排行榜类型枚举
+enum RankingType {
+    RANKING_TYPE_UNKNOWN       = 0;  // 未知类型
+    RANKING_TYPE_SCORE         = 1;  // 积分排行榜
+    RANKING_TYPE_ACTIVITY      = 2;  // 活动排行榜
+    RANKING_TYPE_DAILY         = 3;  // 每日排行榜
+    RANKING_TYPE_WEEKLY        = 4;  // 每周排行榜
+    RANKING_TYPE_MONTHLY       = 5;  // 每月排行榜
+    RANKING_TYPE_ARENA         = 6;  // 竞技场排行榜
+    RANKING_TYPE_LEVEL         = 7;  // 等级排行榜
+}
+
+// 用户分数更新请求
+message UpdateScoreReq {
+    RankingType type    = 1;  // 排行榜类型
+    int64 score         = 2;  // 分数值（非负整数）
+    int64 timestamp     = 3;  // 时间戳（用于防重放攻击）
+}
+
+// 用户分数更新响应
+message UpdateScoreRsp {
+    common.ErrorCode code         = 1;  // 通用错误码
+    string msg                    = 2;  // 错误消息
+    string user_id                = 3;  // 用户ID
+    int64 score                   = 4;  // 更新后的分数
+    int64 rank                    = 5;  // 更新后的排名
+    int64 update_time             = 6;  // 更新时间戳（毫秒）
+}
+
+// 用户排名查询请求
+message GetUserRankReq {
+    string user_id      = 1;  // 用户ID
+    RankingType type    = 2;  // 排行榜类型
+}
+
+// 用户排名信息
+message UserRankInfo {
+    string user_id      = 1;  // 用户ID
+    int64 rank          = 2;  // 当前排名（从1开始）
+    int64 score         = 3;  // 当前分数
+    int64 same_score_count = 4;  // 同分数用户数量
+}
+
+// 用户排名查询响应
+message GetUserRankRsp {
+    common.ErrorCode code     = 1;  // 通用错误码
+    string msg                = 2;  // 错误消息
+    UserRankInfo rank_info    = 3;  // 用户排名信息
+    int64 total_count         = 4;  // 排行榜总用户数
+}
+
+// 排名区间查询请求
+message GetRankRangeReq {
+    RankingType type    = 1;  // 排行榜类型
+    int32 start_rank    = 2;  // 起始排名（从1开始）
+    int32 end_rank      = 3;  // 结束排名
+    int32 page          = 4;  // 页码（从1开始，用于分页）
+    int32 page_size     = 5;  // 每页大小（最大100）
+}
+
+// 排名条目
+message RankEntry {
+    string user_id      = 1;  // 用户ID
+    int64 rank          = 2;  // 排名
+    int64 score         = 3;  // 分数
+}
+
+// 排名区间查询响应
+message GetRankRangeRsp {
+    common.ErrorCode code       = 1;  // 通用错误码
+    string msg                  = 2;  // 错误消息
+    repeated RankEntry entries  = 3;  // 排名条目列表
+    int32 start_rank            = 4;  // 查询起始排名
+    int32 end_rank              = 5;  // 查询结束排名
+    int32 total_count           = 6;  // 总记录数
+    int32 current_page          = 7;  // 当前页码
+    int32 total_pages           = 8;  // 总页数
+}
+
+// 批量用户排名查询请求
+message BatchGetUserRankReq {
+    repeated string user_ids = 1;  // 用户ID列表（最多100个）
+    RankingType type         = 2;  // 排行榜类型
+}
+
+// 批量用户排名查询响应
+message BatchGetUserRankRsp {
+    common.ErrorCode code              = 1;  // 通用错误码
+    string msg                         = 2;  // 错误消息
+    repeated UserRankInfo rank_infos   = 3;  // 用户排名信息列表
+    int64 total_count                  = 4;  // 排行榜总用户数
+}
+
+// 获取排行榜统计信息请求
+message GetRankingStatsReq {
+    RankingType type    = 1;  // 排行榜类型
+}
+
+// 排行榜统计信息
+message RankingStats {
+    int64 total_users       = 1;  // 总用户数
+    int64 max_score         = 2;  // 最高分
+    int64 min_score         = 3;  // 最低分
+    int64 avg_score         = 4;  // 平均分
+    int64 last_update_time  = 5;  // 最后更新时间
+}
+
+// 获取排行榜统计信息响应
+message GetRankingStatsRsp {
+    common.ErrorCode code   = 1;  // 通用错误码
+    string msg              = 2;  // 错误消息
+    RankingStats stats      = 3;  // 统计信息
+}

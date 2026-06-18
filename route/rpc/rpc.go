@@ -42,6 +42,10 @@ func InitRpc() {
 	if err := InitAuctionClient(); err != nil {
 		panic(err)
 	}
+
+	if err := InitRankingClient(); err != nil {
+		panic(err)
+	}
 }
 
 func GetClient(serviceName string) (CB, error) {

@@ -83,4 +83,16 @@ enum ErrorCode {
     AUCTION_IDEMPOTENT_DUPLICATE      = 1304; // 幂等请求重复
     AUCTION_ORDER_ID_GENERATE_FAILED  = 1305; // 订单ID生成失败
     AUCTION_PROCESSING                = 1306; // 正在处理中
+    
+    // 排行榜服务相关错误
+    RANKING_INVALID_TYPE              = 1400; // 无效的排行榜类型
+    RANKING_INVALID_SCORE             = 1401; // 无效的分数值
+    RANKING_INVALID_USER_ID           = 1402; // 无效的用户ID
+    RANKING_INVALID_RANGE             = 1403; // 无效的查询范围
+    RANKING_USER_NOT_FOUND            = 1404; // 用户未在排行榜中
+    RANKING_REDIS_ERROR               = 1405; // Redis操作错误
+    RANKING_PERMISSION_DENIED         = 1406; // 权限不足
+    RANKING_PARAM_OUT_OF_RANGE        = 1407; // 参数超出范围
+    RANKING_CONCURRENT_UPDATE         = 1408; // 并发更新冲突
+    RANKING_BATCH_LIMIT_EXCEEDED      = 1409; // 批量查询数量超限
 }

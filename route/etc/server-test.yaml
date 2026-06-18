@@ -40,3 +40,7 @@ tank_game:
 # auction服务配置
 auction:
   service_name: "auction"
+
+# ranking服务配置
+ranking:
+  service_name: "ranking"

@@ -1,6 +1,6 @@
 # HTTP服务配置
 ranking_http:
-  addr: ":8082"
+  addr: ":8080"
 
 # RPC服务配置
 ranking_rpc:

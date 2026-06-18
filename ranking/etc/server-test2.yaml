@@ -1,6 +1,6 @@
 # HTTP服务配置
 ranking_http:
-  addr: ":8082"
+  addr: ":8080"
 
 # RPC服务配置
 ranking_rpc:
@@ -10,16 +10,16 @@ ranking_rpc:
 # Redis配置
 redis:
   addrs:
-    - "redis.tank.svc.cluster.local:6379"
-  password: ""
+    - "redis:6379"
+  password: "123#@!QAzx"
 
 # etcd配置
 etcd:
   addrs:
-    - "etcd.tank.svc.cluster.local:2379"
-  username: "root"
-  password: "123#@!QAzx"
+    - "etcd:2379"
+  username: ""
+  password: ""
 
 # Tracer配置
 tracer:
-  address: "otel-collector.open-telemetry-collector:4317"
+  address: "otel-collector:4317"

@@ -233,6 +233,28 @@ services:
     networks:
       - tank-net
 
+  ranking:
+    build:
+      context: ../ranking
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: ranking
+    ports:
+      - "8007:8080"
+      - "10007:11002"
+    depends_on:
+      - etcd
+      - redis
+      - otel-collector
+    environment:
+      - CONF_PATH=/app/etc
+      - CONF_FILE=server-test2.yaml
+    volumes:
+      - ../ranking/etc:/app/etc
+    networks:
+      - tank-net
+
 volumes:
   etcd_data:
     driver: local

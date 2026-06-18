@@ -6,7 +6,7 @@ ENV GOPROXY=https://goproxy.cn,direct
 
 # 1. 先复制依赖文件并下载（缓存优化层）
 COPY go.mod .
-RUN go mod download
+RUN go mod tidy
 
 # 2. 复制完整代码并构建
 COPY . .
@@ -24,6 +24,6 @@ COPY --from=builder /build/etc/* /app/etc/
 ENV  CONF_ENV_PATH /app/etc
 ENV  CONF_ENV_FILE server-${DEPLOYENV}.yaml
 RUN echo 'Asia/Shanghai' >/etc/timezone
-EXPOSE 8082
+EXPOSE 8080
 EXPOSE 11002
 CMD ["./application"]

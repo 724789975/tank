@@ -215,6 +215,7 @@ func InitUserMgr() {
 				any := &anypb.Any{}
 				err := proto.Unmarshal(msg.Data, any)
 				if err != nil {
+					GetUserMgr().removeOp(idx) // 失败时也要清理
 					klog.CtxErrorf(ctx, "[GATEWAY-USER-MSG-UNMARSHAL] unmarshal %s failed, err: %v", string(msg.Data), err)
 					return
 				}

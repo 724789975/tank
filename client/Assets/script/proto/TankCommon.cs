@@ -29,7 +29,7 @@ namespace TankCommon {
             "ZXJuaW9uEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgCEgkKAXcY",
             "BCABKAIiXgoJVHJhbnNmb3JtEiYKCHBvc2l0aW9uGAEgASgLMhQudGFua19j",
             "b21tb24uVmVjdG9yMxIpCghyb3RhdGlvbhgCIAEoCzIXLnRhbmtfY29tbW9u",
-            "LlF1YXRlcm5pb25iBnByb3RvMw=="));
+            "LlF1YXRlcm5pb25CDVoLdGFua19jb21tb25iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {

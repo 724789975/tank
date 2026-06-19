@@ -24,7 +24,7 @@ namespace Common {
     static CommonReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbirwCwoJRXJyb3JDb2RlEgYK",
+            "ChJwcm90by9jb21tb24ucHJvdG8SBmNvbW1vbiqcDgoJRXJyb3JDb2RlEgYK",
             "Ak9LEAASCgoGRkFJTEVEEAESFwoTQVVUSF9NSVNTSU5HX0hFQURFUhBkEhUK",
             "EUFVVEhfSU5WQUxJRF9KU09OEGUSFwoTQVVUSF9JTlZBTElEX1VTRVJJRBBm",
             "EhQKEEFVVEhfSU5WQUxJRF9FWFAQZxIWChJBVVRIX1RPS0VOX0VYUElSRUQQ",
@@ -58,7 +58,14 @@ namespace Common {
             "ChdBVUNUSU9OX09SREVSX05PVF9GT1VORBCWChIbChZBVUNUSU9OX1VTRVJf",
             "Tk9UX0ZPVU5EEJcKEiEKHEFVQ1RJT05fSURFTVBPVEVOVF9EVVBMSUNBVEUQ",
             "mAoSJQogQVVDVElPTl9PUkRFUl9JRF9HRU5FUkFURV9GQUlMRUQQmQoSFwoS",
-            "QVVDVElPTl9QUk9DRVNTSU5HEJoKQghaBmNvbW1vbmIGcHJvdG8z"));
+            "QVVDVElPTl9QUk9DRVNTSU5HEJoKEhkKFFJBTktJTkdfSU5WQUxJRF9UWVBF",
+            "EPgKEhoKFVJBTktJTkdfSU5WQUxJRF9TQ09SRRD5ChIcChdSQU5LSU5HX0lO",
+            "VkFMSURfVVNFUl9JRBD6ChIaChVSQU5LSU5HX0lOVkFMSURfUkFOR0UQ+woS",
+            "GwoWUkFOS0lOR19VU0VSX05PVF9GT1VORBD8ChIYChNSQU5LSU5HX1JFRElT",
+            "X0VSUk9SEP0KEh4KGVJBTktJTkdfUEVSTUlTU0lPTl9ERU5JRUQQ/goSHwoa",
+            "UkFOS0lOR19QQVJBTV9PVVRfT0ZfUkFOR0UQ/woSHgoZUkFOS0lOR19DT05D",
+            "VVJSRU5UX1VQREFURRCACxIhChxSQU5LSU5HX0JBVENIX0xJTUlUX0VYQ0VF",
+            "REVEEIELQghaBmNvbW1vbmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Common.ErrorCode), }, null));
@@ -288,6 +295,46 @@ namespace Common {
     /// 正在处理中
     /// </summary>
     [pbr::OriginalName("AUCTION_PROCESSING")] AuctionProcessing = 1306,
+    /// <summary>
+    /// 排行榜服务相关错误
+    /// </summary>
+    [pbr::OriginalName("RANKING_INVALID_TYPE")] RankingInvalidType = 1400,
+    /// <summary>
+    /// 无效的分数值
+    /// </summary>
+    [pbr::OriginalName("RANKING_INVALID_SCORE")] RankingInvalidScore = 1401,
+    /// <summary>
+    /// 无效的用户ID
+    /// </summary>
+    [pbr::OriginalName("RANKING_INVALID_USER_ID")] RankingInvalidUserId = 1402,
+    /// <summary>
+    /// 无效的查询范围
+    /// </summary>
+    [pbr::OriginalName("RANKING_INVALID_RANGE")] RankingInvalidRange = 1403,
+    /// <summary>
+    /// 用户未在排行榜中
+    /// </summary>
+    [pbr::OriginalName("RANKING_USER_NOT_FOUND")] RankingUserNotFound = 1404,
+    /// <summary>
+    /// Redis操作错误
+    /// </summary>
+    [pbr::OriginalName("RANKING_REDIS_ERROR")] RankingRedisError = 1405,
+    /// <summary>
+    /// 权限不足
+    /// </summary>
+    [pbr::OriginalName("RANKING_PERMISSION_DENIED")] RankingPermissionDenied = 1406,
+    /// <summary>
+    /// 参数超出范围
+    /// </summary>
+    [pbr::OriginalName("RANKING_PARAM_OUT_OF_RANGE")] RankingParamOutOfRange = 1407,
+    /// <summary>
+    /// 并发更新冲突
+    /// </summary>
+    [pbr::OriginalName("RANKING_CONCURRENT_UPDATE")] RankingConcurrentUpdate = 1408,
+    /// <summary>
+    /// 批量查询数量超限
+    /// </summary>
+    [pbr::OriginalName("RANKING_BATCH_LIMIT_EXCEEDED")] RankingBatchLimitExceeded = 1409,
   }
 
   #endregion

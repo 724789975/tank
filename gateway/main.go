@@ -6,6 +6,7 @@ import (
 	"gate_way_module/etcd"
 	"gate_way_module/nats"
 	common_redis "gate_way_module/redis"
+	"gate_way_module/rpc_client"
 	rpcservice "gate_way_module/rpc_service"
 	"gate_way_module/session"
 	"gate_way_module/session/isession"
@@ -44,6 +45,7 @@ func main() {
 	})
 
 	rpcservice.InitGatewayService()
+	rpc_client.InitRpc()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)

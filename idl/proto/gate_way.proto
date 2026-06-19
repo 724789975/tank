@@ -31,3 +31,12 @@ message UserMsgResp {
 	string id = 1;
 	common.ErrorCode code = 2;
 }
+
+// ClientMsgReq 客户端消息请求
+// 用于接收客户端发送的消息，包含服务名称、方法名称和消息内容
+// TODO: 实现消息处理逻辑，参考 user_mgr.go 中的监听模式进行开发
+message ClientMsgReq {
+	string service_name = 1;
+	string method = 2;
+	google.protobuf.Any data = 3;
+}

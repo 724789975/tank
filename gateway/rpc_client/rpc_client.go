@@ -1,4 +1,4 @@
-package rpc
+package rpc_client
 
 import (
 	"context"
@@ -15,23 +15,11 @@ type CB func(ctx context.Context, rpc_name string, body_any *any1.Any) (error, *
 var clients = make(map[string]CB)
 
 func InitRpc() {
-	if err := InitGateWayClient(); err != nil {
-		panic(err)
-	}
-
 	if err := InitUserCenterClient(); err != nil {
 		panic(err)
 	}
 
 	if err := InitMatchClient(); err != nil {
-		panic(err)
-	}
-
-	if err := InitServerMgrClient(); err != nil {
-		panic(err)
-	}
-
-	if err := InitItemClient(); err != nil {
 		panic(err)
 	}
 
@@ -43,9 +31,18 @@ func InitRpc() {
 		panic(err)
 	}
 
+	if err := InitItemClient(); err != nil {
+		panic(err)
+	}
+
 	if err := InitRankingClient(); err != nil {
 		panic(err)
 	}
+
+	if err := InitServerMgrClient(); err != nil {
+		panic(err)
+	}
+
 }
 
 func GetClient(serviceName string) (CB, error) {
@@ -79,14 +76,14 @@ func callRPC(ctx context.Context, client RPCClient, rpcName string, bodyAny *any
 	if err := bodyAny.UnmarshalTo(req.(proto.Message)); err != nil {
 		return fmt.Errorf("unmarshal request failed: %v", err), nil
 	}
-	klog.CtxInfof(ctx, "[ROUTE-REQUEST] req: %v", req)
+	klog.CtxInfof(ctx, "[GATEWAY-RPC-REQUEST] req: %v", req)
 
 	results := method.Call([]reflect.Value{
 		reflect.ValueOf(ctx),
 		reflect.ValueOf(req),
 	})
 
-	klog.CtxInfof(ctx, "[ROUTE-REQUEST] results: %v", results)
+	klog.CtxInfof(ctx, "[GATEWAY-RPC-RESPONSE] results: %v", results)
 
 	if len(results) != 2 {
 		return fmt.Errorf("rpc method %s has unexpected return count", rpcName), nil
@@ -97,14 +94,9 @@ func callRPC(ctx context.Context, client RPCClient, rpcName string, bodyAny *any
 		return errVal.Interface().(error), nil
 	}
 
-	rspVal := results[0]
-	if rspVal.IsNil() {
-		return nil, &any1.Any{}
-	}
-
 	anyr := &any1.Any{}
-	anyr.MarshalFrom(rspVal.Interface().(proto.Message))
-	klog.CtxInfof(ctx, "[ROUTE-REQUEST] rsp: %v", anyr)
+	anyr.MarshalFrom(results[0].Interface().(proto.Message))
+	klog.CtxInfof(ctx, "[GATEWAY-RPC-RESPONSE] rsp: %v", anyr)
 
 	return nil, anyr
 }

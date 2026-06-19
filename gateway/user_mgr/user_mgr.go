@@ -11,6 +11,8 @@ import (
 	msghandler "gate_way_module/msg_handler"
 	"gate_way_module/nats"
 	common_redis "gate_way_module/redis"
+	"gate_way_module/rpc_client"
+	"gate_way_module/rpc_middleware"
 	"gate_way_module/session/isession"
 	"gate_way_module/util"
 	"sync"
@@ -237,6 +239,61 @@ func InitUserMgr() {
 		// nats.GetNatsConn().Flush()
 		klog.Infof("[GATEWAY-NATS-PUBLISH] publish %s success", constant.UserLoginMsg)
 
+		return nil
+	})
+
+	// 注册 ClientMsgReq 处理器
+	clientMsgReqAny := &anypb.Any{}
+	clientMsgReqAny.MarshalFrom(&gate_way.ClientMsgReq{})
+	msghandler.RegisterHandler(clientMsgReqAny.TypeUrl, func(session isession.ISession, any *anypb.Any) error {
+		clientMsgReq := &gate_way.ClientMsgReq{}
+		if err := any.UnmarshalTo(clientMsgReq); err != nil {
+			klog.Errorf("[GATEWAY-CLIENT-MSG-UNMARSHAL] unmarshal %s failed, err: %v", any.TypeUrl, err)
+			return err
+		}
+
+		klog.Infof("[GATEWAY-CLIENT-MSG] recv service=%s method=%s", clientMsgReq.ServiceName, clientMsgReq.Method)
+
+		// 获取 userId 并设置到 context
+		ctx := context.Background()
+		if userId, ok := GetUserMgr().sessions.Get(session); ok {
+			ctx = rpc_middleware.SetUserIdToContext(ctx, userId)
+			klog.Infof("[GATEWAY-CLIENT-MSG] userId: %s", userId)
+		}
+
+		// 添加 trace span
+		ctx, span := otel.Tracer("rpc-client").Start(ctx, "rpc-client", trace.WithAttributes(
+			attribute.String("rpc.service", clientMsgReq.ServiceName),
+			attribute.String("rpc.method", clientMsgReq.Method),
+		))
+		defer span.End()
+
+		cb, err := rpc_client.GetClient(clientMsgReq.ServiceName)
+		if err != nil {
+			klog.Errorf("[GATEWAY-CLIENT-MSG-GET-CLIENT] get client %s failed, err: %v", clientMsgReq.ServiceName, err)
+			resp := &gate_way.UserMsgResp{
+				Code: common.ErrorCode_RPC_METHOD_NOT_FOUND,
+			}
+			respAny := &anypb.Any{}
+			respAny.MarshalFrom(resp)
+			session.Send(respAny)
+			return nil
+		}
+
+		err, respAny := cb(ctx, clientMsgReq.Method, clientMsgReq.Data)
+		if err != nil {
+			klog.Errorf("[GATEWAY-CLIENT-MSG-CALL-RPC] call %s.%s failed, err: %v", clientMsgReq.ServiceName, clientMsgReq.Method, err)
+			resp := &gate_way.UserMsgResp{
+				Code: common.ErrorCode_RPC_METHOD_HANDLER_ERROR,
+			}
+			respAny := &anypb.Any{}
+			respAny.MarshalFrom(resp)
+			session.Send(respAny)
+			return nil
+		}
+
+		// 发送 RPC 响应
+		session.Send(respAny)
 		return nil
 	})
 

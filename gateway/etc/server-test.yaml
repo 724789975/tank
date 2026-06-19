@@ -37,3 +37,25 @@ nats:
 ws:
   addr: "0.0.0.0:12001"
   uri: "/ws"
+
+# RPC服务名称配置
+user_center:
+  service_name: "user-center"
+
+match:
+  service_name: "match_server"
+
+tank_game:
+  service_name: "tank_game"
+
+auction:
+  service_name: "auction"
+
+item:
+  service_name: "item_manager"
+
+ranking:
+  service_name: "ranking"
+
+server_mgr:
+  service_name: "server_mgr"

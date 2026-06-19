@@ -1,3 +1,5 @@
+// Package usermgr 提供用户管理功能
+// 负责用户会话管理、登录流程处理以及 NATS 消息订阅管理
 package usermgr
 
 import (
@@ -25,19 +27,26 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
+// User 表示一个在线用户
+// 包含用户ID、会话信息和 NATS 订阅
 type User struct {
-	id      string
-	session isession.ISession
-	sub     *_nats.Subscription
+	id      string              // 用户唯一标识
+	session isession.ISession   // 用户的 WebSocket 会话
+	sub     *_nats.Subscription // NATS 消息订阅（用于接收用户消息）
 }
 
+// UserMgr 管理所有在线用户
+// 使用三个并发安全的 map 来管理用户、会话和操作回调
 type UserMgr struct {
-	users *util.RWMap[string, *User]
-
-	sessions *util.RWMap[isession.ISession, string]
-	ops      *util.RWMap[int64, func(ctx context.Context)]
+	users    *util.RWMap[string, *User]                    // 用户ID -> User 对象
+	sessions *util.RWMap[isession.ISession, string]        // Session -> 用户ID（反向映射）
+	ops      *util.RWMap[int64, func(ctx context.Context)] // 登录操作索引 -> 回调函数
 }
 
+// addUser 添加用户到管理器
+// userId: 用户ID
+// _session: 用户的 WebSocket 会话
+// _sub: 用户的 NATS 订阅
 func (u *UserMgr) addUser(userId string, _session isession.ISession, _sub *_nats.Subscription) {
 	u.users.Set(userId, &User{
 		id:      userId,
@@ -47,20 +56,32 @@ func (u *UserMgr) addUser(userId string, _session isession.ISession, _sub *_nats
 	u.sessions.Set(_session, userId)
 }
 
+// removeUser 移除用户
+// 会取消用户的 NATS 订阅并清理相关资源
+// userId: 要移除的用户ID
 func (u *UserMgr) removeUser(userId string) {
 	if user, ok := u.users.Get(userId); ok {
 		u.sessions.Delete(user.session)
-		user.sub.Unsubscribe()
+		// 取消 NATS 订阅
+		if err := user.sub.Unsubscribe(); err != nil {
+			klog.Errorf("[GATEWAY-UNSUBSCRIBE-FAIL] unsubscribe %s failed, err: %v", userId, err)
+		}
 	}
 	u.users.Delete(userId)
 }
 
+// RemoveSession 根据 Session 移除用户
+// 当 WebSocket 连接关闭时调用此方法清理用户信息
+// session: 要移除的会话
 func (u *UserMgr) RemoveSession(session isession.ISession) {
 	if userId, ok := u.sessions.Get(session); ok {
 		u.removeUser(userId)
 	}
 }
 
+// getUserSession 获取用户的会话
+// userId: 用户ID
+// 返回: 会话实例和是否存在
 func (u *UserMgr) getUserSession(userId string) (isession.ISession, bool) {
 	user, b := u.users.Get(userId)
 	if b {
@@ -69,14 +90,23 @@ func (u *UserMgr) getUserSession(userId string) (isession.ISession, bool) {
 	return nil, false
 }
 
+// addOp 添加登录操作回调
+// 在登录流程中使用，用于异步处理登录响应
+// idx: 操作索引（来自 Redis 的自增ID）
+// f: 回调函数
 func (u *UserMgr) addOp(idx int64, f func(ctx context.Context)) {
 	u.ops.Set(idx, f)
 }
 
+// removeOp 移除登录操作回调
+// idx: 操作索引
 func (u *UserMgr) removeOp(idx int64) {
 	u.ops.Delete(idx)
 }
 
+// getOp 获取登录操作回调
+// idx: 操作索引
+// 返回: 回调函数和是否存在
 func (u *UserMgr) getOp(idx int64) (func(ctx context.Context), bool) {
 	return u.ops.Get(idx)
 }

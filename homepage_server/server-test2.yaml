@@ -1,0 +1,20 @@
+homepage_http:
+  addr: ":8080"
+
+homepage_rpc:
+  addr: ":11001"
+  service_name: "homepage_service"
+
+redis:
+  addrs:
+    - "redis:6379"
+  password: "123#@!QAzx"
+
+etcd:
+  addrs:
+    - "etcd:2379"
+  username: ""
+  password: ""
+
+tracer:
+  address: "otel-collector:4317"

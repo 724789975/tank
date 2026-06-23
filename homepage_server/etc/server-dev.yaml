@@ -1,0 +1,18 @@
+homepage_http:
+  addr: ":8082"
+
+homepage_rpc:
+  addr: ":8882"
+  service_name: "homepage_service"
+
+redis:
+  addrs:
+    - "localhost:6379"
+  password: ""
+
+etcd:
+  addrs:
+    - "localhost:2379"
+
+tracer:
+  address: "localhost:4317"

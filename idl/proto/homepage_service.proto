@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "proto/homepage.proto";
+package homepage_service;
+
+option go_package = "homepage_service";
+
+service HomepageService {
+    rpc get_role_info(homepage.GetRoleInfoReq) returns (homepage.GetRoleInfoRsp){};
+    rpc update_role_exp(homepage.UpdateRoleExpReq) returns (homepage.UpdateRoleExpRsp){};
+}

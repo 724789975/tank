@@ -255,6 +255,26 @@ services:
     networks:
       - tank-net
 
+  homepage-server:
+    build:
+      context: ../homepage_server
+      dockerfile: Dockerfile
+      args:
+        DEPLOYENV: test2
+    container_name: homepage-server
+    ports:
+      - "8008:8080"
+      - "10008:11001"
+    depends_on:
+      - etcd
+      - redis
+      - otel-collector
+    environment:
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
+    networks:
+      - tank-net
+
 volumes:
   etcd_data:
     driver: local

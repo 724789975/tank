@@ -30,12 +30,26 @@ rmdir /s /q kitex_gen
 @REM Pre-create nested directories for service clients (workaround for kitex Windows bug)
 mkdir kitex_gen\user_center_service\usercenterservice
 mkdir kitex_gen\gateway_service\gatewayservice
+mkdir kitex_gen\homepage_service\homepageservice
 
 @REM Generate user_server
 .\bin\kitex -module user_server -type protobuf -no-fast-api proto/user_center_service.proto
 .\bin\kitex -module user_server -type protobuf -no-fast-api proto/gateway_service.proto
 rmdir /s /q ..\user_server\kitex_gen
 move .\kitex_gen ..\user_server\
+
+@REM delete previous generated files and go modules
+del go.mod
+del go.sum
+rmdir /s /q kitex_gen
+
+@REM Pre-create nested directories for homepage service
+mkdir kitex_gen\homepage_service\homepageservice
+
+@REM Generate homepage_server
+.\bin\kitex -module homepage_server -type protobuf -no-fast-api proto/homepage_service.proto
+rmdir /s /q ..\homepage_server\kitex_gen
+move .\kitex_gen ..\homepage_server\
 
 @REM delete previous generated files and go modules
 del go.mod

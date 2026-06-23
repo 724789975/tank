@@ -16,8 +16,8 @@ const (
 )
 
 const (
-	CONF_ENV_PATH     = "CONF_PATH"
-	CONF_ENV_FILE     = "CONF_FILE"
+	CONF_ENV_PATH     = "CONF_ENV_PATH"
+	CONF_ENV_FILE     = "CONF_ENV_FILE"
 	CONF_DEFAULT_PATH = "./etc"
 	CONF_DEFAULT_FILE = "server-dev.yaml"
 )

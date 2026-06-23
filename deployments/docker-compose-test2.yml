@@ -96,10 +96,8 @@ services:
       - nats
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../gateway/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 
@@ -118,10 +116,8 @@ services:
       - redis
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../user_server/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 
@@ -140,10 +136,8 @@ services:
       - redis
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../server_manager/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 
@@ -162,10 +156,8 @@ services:
       - redis
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../match_server/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 
@@ -184,10 +176,8 @@ services:
       - redis
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../item_manager/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 
@@ -206,10 +196,8 @@ services:
       - redis
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../auction/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 
@@ -226,10 +214,8 @@ services:
       - etcd
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../route/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 
@@ -248,10 +234,8 @@ services:
       - redis
       - otel-collector
     environment:
-      - CONF_PATH=/app/etc
-      - CONF_FILE=server-test2.yaml
-    volumes:
-      - ../ranking/etc:/app/etc
+      - CONF_ENV_PATH=/app/etc
+      - CONF_ENV_FILE=server-test2.yaml
     networks:
       - tank-net
 

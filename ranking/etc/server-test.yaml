@@ -4,7 +4,7 @@ ranking_http:
 
 # RPC服务配置
 ranking_rpc:
-  addr: "0.0.0.0:11002"
+  addr: "0.0.0.0:11001"
   service_name: "ranking"
 
 # Redis配置

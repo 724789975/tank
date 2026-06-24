@@ -228,7 +228,7 @@ services:
     container_name: ranking
     ports:
       - "8007:8080"
-      - "10007:11002"
+      - "10007:11001"
     depends_on:
       - etcd
       - redis

@@ -25,5 +25,5 @@ ENV  CONF_ENV_PATH /app/etc
 ENV  CONF_ENV_FILE server-${DEPLOYENV}.yaml
 RUN echo 'Asia/Shanghai' >/etc/timezone
 EXPOSE 8080
-EXPOSE 11002
+EXPOSE 11001
 CMD ["./application"]

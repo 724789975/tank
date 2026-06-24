@@ -65,6 +65,30 @@ spec:
         host: route-server.tank.svc.cluster.local
         port:
           number: 8080
+  - match:
+    - uri:
+        prefix: /api/1.0/public/auction/
+    route:
+    - destination:
+        host: auction-server.tank.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/1.0/public/item_manager/
+    route:
+    - destination:
+        host: item-manager.tank.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /api/1.0/public/homepage_server/
+    route:
+    - destination:
+        host: homepage-server.tank.svc.cluster.local
+        port:
+          number: 8080
   - route:
     - destination:
         host: user-server.tank.svc.cluster.local

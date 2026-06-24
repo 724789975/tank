@@ -1,10 +1,9 @@
-
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: server-mgr
-  name: server-mgr
+    app: auction-server
+  name: auction-server
   namespace: tank
 spec:
   type: ClusterIP
@@ -18,28 +17,28 @@ spec:
       protocol: TCP
       name: rpc
   selector:
-    app: server-mgr
+    app: auction-server
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server-mgr
+  name: auction-server
   namespace: tank
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: server-mgr
+      app: auction-server
   template:
     metadata:
       labels:
-        app: server-mgr
+        app: auction-server
     spec:
       containers:
-        - name: server-mgr
-          image: docker.io/library/server-mgr:v1.0.0
+        - name: auction-server
+          image: docker.io/library/auction-server:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

@@ -1,10 +1,9 @@
-
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: server-mgr
-  name: server-mgr
+    app: game-server
+  name: game-server
   namespace: tank
 spec:
   type: ClusterIP
@@ -17,29 +16,33 @@ spec:
       targetPort: 11001
       protocol: TCP
       name: rpc
+    - port: 10085
+      targetPort: 10085
+      protocol: TCP
+      name: game
   selector:
-    app: server-mgr
+    app: game-server
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server-mgr
+  name: game-server
   namespace: tank
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: server-mgr
+      app: game-server
   template:
     metadata:
       labels:
-        app: server-mgr
+        app: game-server
     spec:
       containers:
-        - name: server-mgr
-          image: docker.io/library/server-mgr:v1.0.0
+        - name: game-server
+          image: docker.io/library/game-server:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -47,6 +50,9 @@ spec:
               protocol: TCP
             - containerPort: 11001
               name: rpc
+              protocol: TCP
+            - containerPort: 10085
+              name: game
               protocol: TCP
           env:
             - name: DEPLOYENV

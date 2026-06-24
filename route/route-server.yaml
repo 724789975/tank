@@ -50,7 +50,7 @@ spec:
           env:
             - name: DEPLOYENV
               value: test
-            - name: CONF_PATH
+            - name: CONF_ENV_PATH
               value: /app/etc
-            - name: CONF_FILE
+            - name: CONF_ENV_FILE
               value: server-test.yaml

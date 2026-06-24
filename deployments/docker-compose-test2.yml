@@ -189,7 +189,7 @@ services:
         DEPLOYENV: test2
     container_name: auction
     ports:
-      - "8005:8081"
+      - "8005:8080"
       - "10006:11001"
     depends_on:
       - etcd

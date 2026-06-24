@@ -1,6 +1,6 @@
 # HTTP服务配置
 auction_http:
-  addr: ":8081"
+  addr: ":8080"
 
 # RPC服务配置
 auction_rpc:

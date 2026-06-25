@@ -23,5 +23,6 @@ spec:
         ]
       }
     forwardOriginalToken: true
-    headers:
-    - Authorization
+    fromHeaders:
+    - name: Authorization
+      prefix: "Bearer "

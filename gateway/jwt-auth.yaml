@@ -1,0 +1,27 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: jwt-auth
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  jwtRules:
+  - issuer: "tank-gateway"
+    jwks: |
+      {
+        "keys": [
+          {
+            "kty": "RSA",
+            "alg": "RS256",
+            "use": "sig",
+            "e": "AQAB",
+            "n": "AIvG638ZNUafDD2lN-QUvCEp2i5f9Z1Dlg-N8gPUeJSQo4aLG6W6dSWClF3D6wtRoC8XNFTEYvt0K7CNoIpAUcsC",
+            "kid": "tank-gateway-key"
+          }
+        ]
+      }
+    forwardOriginalToken: true
+    headers:
+    - Authorization

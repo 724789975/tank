@@ -1,0 +1,144 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: jwt-to-user-channel
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.filters.network.http_connection_manager
+            subFilter:
+              name: envoy.filters.http.router
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.lua
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+          inlineCode: |
+            -- Base64URL decoding helper
+            local function base64url_decode(data)
+              -- Replace URL-safe characters
+              data = data:gsub("-", "+"):gsub("_", "/")
+              -- Add padding if needed
+              local padding = #data % 4
+              if padding > 0 then
+                data = data .. string.rep("=", 4 - padding)
+              end
+              return data
+            end
+
+            -- Safe JSON parser with error handling
+            local function safe_parse_json(str)
+              local json = {}
+              local success, result = pcall(function()
+                -- Remove surrounding braces and whitespace
+                str = str:match("^%s*{(.*)}%s*$") or str
+                if str == "" then return {} end
+                
+                -- Parse key-value pairs
+                for key, value in str:gmatch('"?(%w+)"?%s*:%s*"?([^",}]*)"?') do
+                  if value:match("^%d+$") then
+                    json[key] = tonumber(value)
+                  elseif value == "true" then
+                    json[key] = true
+                  elseif value == "false" then
+                    json[key] = false
+                  elseif value:match("^%[.*%]$") then
+                    -- Skip arrays
+                  else
+                    json[key] = value
+                  end
+                end
+                return json
+              end)
+              
+              if success then
+                return result
+              else
+                return nil
+              end
+            end
+
+            function envoy_on_request(request_handle)
+              -- Only process JWT for /api/1.0/public/route/* paths
+              local path = request_handle:headers():get(":path") or ""
+              if not path:find("^/api/1.0/public/route/") then
+                return  -- Skip JWT processing for other paths
+              end
+              
+              local auth_header = request_handle:headers():get("Authorization")
+              
+              -- No Authorization header - reject request
+              if not auth_header then
+                request_handle:logWarn("Missing Authorization header for route path")
+                return
+              end
+              
+              local bearer_prefix = "Bearer "
+              local token = nil
+              
+              if auth_header:sub(1, #bearer_prefix) == bearer_prefix then
+                token = auth_header:sub(#bearer_prefix + 1)
+              else
+                token = auth_header
+              end
+              
+              token = token:match("^%s*(.-)%s*$")
+              
+              if not token or #token == 0 then
+                return
+              end
+              
+              local parts = {}
+              for part in token:gmatch("[^%.]+") do
+                table.insert(parts, part)
+              end
+              
+              if #parts < 2 then
+                request_handle:logWarn("Invalid JWT format: not enough parts")
+                return
+              end
+              
+              local payload_b64 = parts[2]
+              local payload_decoded = base64url_decode(payload_b64)
+              
+              -- Parse with error handling
+              local payload = safe_parse_json(payload_decoded)
+              
+              if not payload then
+                request_handle:logWarn("Failed to parse JWT payload as JSON")
+                return
+              end
+              
+              -- Safe extraction with fallback defaults
+              local ver = "v1"
+              local exp = payload.exp or 0
+              local iat = payload.iat or 0
+              local userId = payload.userId or payload.sub or ""
+              
+              -- Validate userId is not empty
+              if userId == "" then
+                request_handle:logWarn("JWT missing userId/sub claim")
+                return
+              end
+              
+              -- Build user-channel JSON
+              local user_channel = string.format(
+                '{"ver":"%s","exp":%s,"userId":"%s","iat":%s}',
+                tostring(ver),
+                tostring(exp),
+                tostring(userId),
+                tostring(iat)
+              )
+              
+              request_handle:headers():add("user-channel", user_channel)
+            end

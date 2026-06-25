@@ -1,0 +1,23 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: require-jwt
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  action: ALLOW
+  rules:
+  # JWT required for /api/1.0/public/route/* paths
+  - to:
+    - operation:
+        paths: ["/api/1.0/public/route/*"]
+    when:
+    - key: request.auth.presenter
+      values:
+      - "tank-gateway"
+  # Allow other paths without JWT
+  - to:
+    - operation:
+        notPaths: ["/api/1.0/public/route/*"]

@@ -17,7 +17,7 @@ spec:
             "alg": "RS256",
             "use": "sig",
             "e": "AQAB",
-            "n": "AIvG638ZNUafDD2lN-QUvCEp2i5f9Z1Dlg-N8gPUeJSQo4aLG6W6dSWClF3D6wtRoC8XNFTEYvt0K7CNoIpAUcsC",
+            "n": "ykv6d/HjVkVvDD2pTfhFLwimpovl/ll05g/jwD1eJSkjiGxvpbpfklgqRdw+sLUagvFzRUxGLvdCuwi6CKQFLxA",
             "kid": "tank-gateway-key"
           }
         ]

@@ -14,9 +14,8 @@ spec:
     - operation:
         paths: ["/api/1.0/public/route/*"]
     when:
-    - key: request.auth.presenter
-      values:
-      - "tank-gateway"
+    - key: request.auth.principal
+      notValues: [""]
   # Allow other paths without JWT
   - to:
     - operation:

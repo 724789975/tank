@@ -8,8 +8,7 @@ spec:
     matchLabels:
       istio: ingressgateway
   jwtRules:
-  - issuer: "tank-gateway"
-    jwks: |
+  - jwks: |
       {
         "keys": [
           {
@@ -17,7 +16,7 @@ spec:
             "alg": "RS256",
             "use": "sig",
             "e": "AQAB",
-            "n": "ykv6d/HjVkVvDD2pTfhFLwimpovl/ll05g/jwD1eJSkjiGxvpbpfklgqRdw+sLUagvFzRUxGLvdCuwi6CKQFLxA",
+            "n": "i8brfxk1Rp8MPaU35BS8ISnaLl_1nUOWD43yA9R4lJCjhosbpbp1JYKUXcPrC1GgLxc0VMRi-3QrsI2gikBRyw",
             "kid": "tank-gateway-key"
           }
         ]

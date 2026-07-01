@@ -9,14 +9,16 @@ spec:
       istio: ingressgateway
   action: ALLOW
   rules:
-  # JWT required for /api/1.0/public/route/* paths
   - to:
     - operation:
-        paths: ["/api/1.0/public/route/*"]
+        paths:
+        - /api/1.0/public/route/*
+        - /api/1.0/public/auction/Sell*
     when:
-    - key: request.auth.principal
-      notValues: [""]
-  # Allow other paths without JWT
+    - key: request.auth.claims[iss]
+      values: ["tank"]
   - to:
     - operation:
-        notPaths: ["/api/1.0/public/route/*"]
+        notPaths:
+        - /api/1.0/public/route/*
+        - /api/1.0/public/auction/Sell*

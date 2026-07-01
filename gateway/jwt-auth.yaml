@@ -8,7 +8,8 @@ spec:
     matchLabels:
       istio: ingressgateway
   jwtRules:
-  - jwks: |
+  - issuer: "tank"
+    jwks: |
       {
         "keys": [
           {
@@ -17,7 +18,7 @@ spec:
             "use": "sig",
             "e": "AQAB",
             "n": "i8brfxk1Rp8MPaU35BS8ISnaLl_1nUOWD43yA9R4lJCjhosbpbp1JYKUXcPrC1GgLxc0VMRi-3QrsI2gikBRyw",
-            "kid": "tank-gateway-key"
+            "kid": "5309aad74f6cd262"
           }
         ]
       }

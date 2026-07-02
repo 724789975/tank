@@ -5,7 +5,7 @@ WORKDIR /build
 ENV GOPROXY=https://goproxy.cn,direct 
 
 # 1. 先复制依赖文件并下载（缓存优化层）
-COPY go.mod go.sum ./
+COPY go.mod ./
 RUN go mod tidy
 
 # 2. 复制完整代码并构建

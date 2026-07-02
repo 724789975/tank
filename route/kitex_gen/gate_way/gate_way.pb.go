@@ -329,6 +329,72 @@ func (x *UserMsgResp) GetCode() common.ErrorCode {
 	return common.ErrorCode(0)
 }
 
+// ClientMsgReq 客户端消息请求
+// 用于接收客户端发送的消息，包含服务名称、方法名称和消息内容
+// TODO: 实现消息处理逻辑，参考 user_mgr.go 中的监听模式进行开发
+type ClientMsgReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ServiceName string    `protobuf:"bytes,1,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
+	Method      string    `protobuf:"bytes,2,opt,name=method,proto3" json:"method,omitempty"`
+	Data        *any1.Any `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *ClientMsgReq) Reset() {
+	*x = ClientMsgReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_gate_way_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ClientMsgReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClientMsgReq) ProtoMessage() {}
+
+func (x *ClientMsgReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_gate_way_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClientMsgReq.ProtoReflect.Descriptor instead.
+func (*ClientMsgReq) Descriptor() ([]byte, []int) {
+	return file_proto_gate_way_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ClientMsgReq) GetServiceName() string {
+	if x != nil {
+		return x.ServiceName
+	}
+	return ""
+}
+
+func (x *ClientMsgReq) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
+func (x *ClientMsgReq) GetData() *any1.Any {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 var File_proto_gate_way_proto protoreflect.FileDescriptor
 
 var file_proto_gate_way_proto_rawDesc = []byte{
@@ -356,9 +422,17 @@ var file_proto_gate_way_proto_rawDesc = []byte{
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x25, 0x0a, 0x04, 0x63, 0x6f,
 	0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
 	0x6e, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63, 0x6f, 0x64,
-	0x65, 0x42, 0x21, 0x5a, 0x1f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x5f, 0x6d, 0x6f, 0x64, 0x75, 0x6c,
-	0x65, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x67, 0x61, 0x74, 0x65,
-	0x5f, 0x77, 0x61, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x22, 0x73, 0x0a, 0x0c, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4d, 0x73, 0x67, 0x52, 0x65,
+	0x71, 0x12, 0x21, 0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x28, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79,
+	0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x21, 0x5a, 0x1f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x5f,
+	0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e,
+	0x2f, 0x67, 0x61, 0x74, 0x65, 0x5f, 0x77, 0x61, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -373,7 +447,7 @@ func file_proto_gate_way_proto_rawDescGZIP() []byte {
 	return file_proto_gate_way_proto_rawDescData
 }
 
-var file_proto_gate_way_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_proto_gate_way_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_proto_gate_way_proto_goTypes = []interface{}{
 	(*LoginRequest)(nil),     // 0: gate_way.LoginRequest
 	(*LoginResp)(nil),        // 1: gate_way.LoginResp
@@ -381,18 +455,20 @@ var file_proto_gate_way_proto_goTypes = []interface{}{
 	(*Test)(nil),             // 3: gate_way.Test
 	(*UserMsgReq)(nil),       // 4: gate_way.UserMsgReq
 	(*UserMsgResp)(nil),      // 5: gate_way.UserMsgResp
-	(common.ErrorCode)(0),    // 6: common.ErrorCode
-	(*any1.Any)(nil),         // 7: google.protobuf.Any
+	(*ClientMsgReq)(nil),     // 6: gate_way.ClientMsgReq
+	(common.ErrorCode)(0),    // 7: common.ErrorCode
+	(*any1.Any)(nil),         // 8: google.protobuf.Any
 }
 var file_proto_gate_way_proto_depIdxs = []int32{
-	6, // 0: gate_way.LoginResp.code:type_name -> common.ErrorCode
-	7, // 1: gate_way.UserMsgReq.msg:type_name -> google.protobuf.Any
-	6, // 2: gate_way.UserMsgResp.code:type_name -> common.ErrorCode
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	7, // 0: gate_way.LoginResp.code:type_name -> common.ErrorCode
+	8, // 1: gate_way.UserMsgReq.msg:type_name -> google.protobuf.Any
+	7, // 2: gate_way.UserMsgResp.code:type_name -> common.ErrorCode
+	8, // 3: gate_way.ClientMsgReq.data:type_name -> google.protobuf.Any
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_gate_way_proto_init() }
@@ -473,6 +549,18 @@ func file_proto_gate_way_proto_init() {
 				return nil
 			}
 		}
+		file_proto_gate_way_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ClientMsgReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -480,7 +568,7 @@ func file_proto_gate_way_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_gate_way_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

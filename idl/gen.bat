@@ -1,233 +1,41 @@
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\common.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\tank_common.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\tank_game.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\user_center.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\gate_way.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\match_proto.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\item.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen .\proto\ranking.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\tank_game_service.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\gateway_service.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\user_center_service.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\item_service.proto
-.\bin\protoc.exe --csharp_out=.\proto_gen --grpc_out=.\proto_gen --plugin=protoc-gen-grpc=.\bin\grpc_csharp_plugin.exe .\proto\ranking_service.proto
+@echo off
+echo ============================================
+echo           Generating all protocols
+echo ============================================
 
-copy .\proto_gen\*.cs ..\client\Assets\script\proto\
-@REM copy .\proto_gen\*.cs ..\server\Assets\script\proto\
+call gen\client.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM .\bin\protoc.exe --go_out=.\proto_gen .\proto\common.proto
-@REM .\bin\protoc.exe --go_out=.\proto_gen .\proto\user_center.proto
-@REM .\bin\protoc.exe --go_out=.\proto_gen .\proto\user_center_service.proto
+call gen\user_server.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM rmdir /s /q ..\user_server\proto
-@REM move .\proto_gen\user_server\proto ..\user_server\
+call gen\homepage_server.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
+call gen\gateway.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM Pre-create nested directories for service clients (workaround for kitex Windows bug)
-mkdir kitex_gen\user_center_service\usercenterservice
-mkdir kitex_gen\gateway_service\gatewayservice
-mkdir kitex_gen\homepage_service\homepageservice
+call gen\match_server.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM Generate user_server
-.\bin\kitex -module user_server -type protobuf -no-fast-api proto/user_center_service.proto
-.\bin\kitex -module user_server -type protobuf -no-fast-api proto/gateway_service.proto
-rmdir /s /q ..\user_server\kitex_gen
-move .\kitex_gen ..\user_server\
+call gen\server_manager.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
+call gen\item_manager.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM Pre-create nested directories for homepage service
-mkdir kitex_gen\homepage_service\homepageservice
+call gen\auction.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM Generate homepage_server
-.\bin\kitex -module homepage_server -type protobuf -no-fast-api proto/homepage_service.proto
-rmdir /s /q ..\homepage_server\kitex_gen
-move .\kitex_gen ..\homepage_server\
+call gen\route.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
+call gen\route_test.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
+call gen\ranking.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
 
-@REM Pre-create nested directories for gateway RPC clients
-mkdir kitex_gen\gateway_service\gatewayservice
-mkdir kitex_gen\user_center_service\usercenterservice
-mkdir kitex_gen\match_service\matchservice
-mkdir kitex_gen\tank_game_service\tankgameservice
-mkdir kitex_gen\auction_service\auctionservice
-mkdir kitex_gen\item_service\itemservice
-mkdir kitex_gen\ranking_service\rankingservice
-mkdir kitex_gen\server_mgr_service\servermgrservice
-
-@REM Generate RPC clients for gateway
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/gateway_service.proto
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/user_center_service.proto
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/match_service.proto
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/tank_game_service.proto
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/auction_service.proto
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/item_service.proto
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/ranking_service.proto
-.\bin\kitex -module gate_way_module -type protobuf -no-fast-api proto/server_mgr_service.proto
-rmdir /s /q ..\gateway\kitex_gen
-move .\kitex_gen ..\gateway\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\gateway_service\gatewayservice
-mkdir kitex_gen\match_service\matchservice
-mkdir kitex_gen\server_mgr_service\servermgrservice
-
-@REM Generate match_server
-.\bin\kitex -module match_server -type protobuf -no-fast-api proto/gateway_service.proto
-.\bin\kitex -module match_server -type protobuf -no-fast-api proto/match_service.proto
-.\bin\kitex -module match_server -type protobuf -no-fast-api proto/server_mgr_service.proto
-rmdir /s /q ..\match_server\kitex_gen
-move .\kitex_gen ..\match_server\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\server_mgr_service\servermgrservice
-mkdir kitex_gen\match_service\matchservice
-
-@REM Generate server_manager
-.\bin\kitex -module server_manager -type protobuf -no-fast-api proto/server_mgr_service.proto
-.\bin\kitex -module server_manager -type protobuf -no-fast-api proto/match_service.proto
-rmdir /s /q ..\server_manager\kitex_gen
-move .\kitex_gen ..\server_manager\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\item_service\itemservice
-
-@REM Generate item_manager
-.\bin\kitex -module item_manager -type protobuf -no-fast-api proto/item_service.proto
-rmdir /s /q ..\item_manager\kitex_gen
-move .\kitex_gen ..\item_manager\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\auction_service\auctionservice
-
-@REM Generate auction
-.\bin\kitex -module auction_module -type protobuf -no-fast-api proto/auction_service.proto
-rmdir /s /q ..\auction\kitex_gen
-move .\kitex_gen ..\auction\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\gateway_service\gatewayservice
-mkdir kitex_gen\user_center_service\usercenterservice
-mkdir kitex_gen\tank_game_service\tankgameservice
-mkdir kitex_gen\match_service\matchservice
-mkdir kitex_gen\server_mgr_service\servermgrservice
-mkdir kitex_gen\item_service\itemservice
-mkdir kitex_gen\auction_service\auctionservice
-
-@REM Generate route_module
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/gateway_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/user_center_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/tank_game_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/match_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/server_mgr_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/item_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/auction_service.proto
-rmdir /s /q ..\route\kitex_gen
-move .\kitex_gen ..\route\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\user_center_service\usercenterservice
-
-@REM Generate route_test
-.\bin\kitex -module route_test -type protobuf -no-fast-api proto/user_center_service.proto
-rmdir /s /q ..\route_test\kitex_gen
-move .\kitex_gen ..\route_test\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\ranking_service\rankingservice
-
-@REM Generate ranking
-.\bin\kitex -module ranking_module -type protobuf -no-fast-api proto/ranking_service.proto
-rmdir /s /q ..\ranking\kitex_gen
-move .\kitex_gen ..\ranking\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\gateway_service\gatewayservice
-mkdir kitex_gen\user_center_service\usercenterservice
-mkdir kitex_gen\tank_game_service\tankgameservice
-mkdir kitex_gen\match_service\matchservice
-mkdir kitex_gen\server_mgr_service\servermgrservice
-mkdir kitex_gen\item_service\itemservice
-mkdir kitex_gen\auction_service\auctionservice
-mkdir kitex_gen\ranking_service\rankingservice
-
-@REM Generate route_module
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/gateway_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/user_center_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/tank_game_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/match_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/server_mgr_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/item_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/auction_service.proto
-.\bin\kitex -module route_module -type protobuf -no-fast-api proto/ranking_service.proto
-rmdir /s /q ..\route\kitex_gen
-move .\kitex_gen ..\route\
-
-@REM delete previous generated files and go modules
-del go.mod
-del go.sum
-rmdir /s /q kitex_gen
-
-@REM Pre-create nested directories for service clients
-mkdir kitex_gen\user_center_service\usercenterservice
-
-@REM Generate route_test
-.\bin\kitex -module route_test -type protobuf -no-fast-api proto/user_center_service.proto
-rmdir /s /q ..\route_test\kitex_gen
-move .\kitex_gen ..\route_test\
+echo ============================================
+echo           All protocols generated
+echo ============================================

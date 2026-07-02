@@ -31,7 +31,9 @@ namespace GateWay {
             "ASABKAkSCwoDaWR4GAIgASgDIhQKBFRlc3QSDAoEdGVzdBgBIAEoCSI7CgpV",
             "c2VyTXNnUmVxEgoKAmlkGAEgASgJEiEKA21zZxgCIAEoCzIULmdvb2dsZS5w",
             "cm90b2J1Zi5BbnkiOgoLVXNlck1zZ1Jlc3ASCgoCaWQYASABKAkSHwoEY29k",
-            "ZRgCIAEoDjIRLmNvbW1vbi5FcnJvckNvZGVCCloIZ2F0ZV93YXliBnByb3Rv",
+            "ZRgCIAEoDjIRLmNvbW1vbi5FcnJvckNvZGUiWAoMQ2xpZW50TXNnUmVxEhQK",
+            "DHNlcnZpY2VfbmFtZRgBIAEoCRIOCgZtZXRob2QYAiABKAkSIgoEZGF0YRgD",
+            "IAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnlCCloIZ2F0ZV93YXliBnByb3Rv",
             "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, global::Common.CommonReflection.Descriptor, },
@@ -41,7 +43,8 @@ namespace GateWay {
             new pbr::GeneratedClrTypeInfo(typeof(global::GateWay.NatsLoginRequest), global::GateWay.NatsLoginRequest.Parser, new[]{ "Id", "Idx" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GateWay.Test), global::GateWay.Test.Parser, new[]{ "Test_" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GateWay.UserMsgReq), global::GateWay.UserMsgReq.Parser, new[]{ "Id", "Msg" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GateWay.UserMsgResp), global::GateWay.UserMsgResp.Parser, new[]{ "Id", "Code" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::GateWay.UserMsgResp), global::GateWay.UserMsgResp.Parser, new[]{ "Id", "Code" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GateWay.ClientMsgReq), global::GateWay.ClientMsgReq.Parser, new[]{ "ServiceName", "Method", "Data" }, null, null, null)
           }));
     }
     #endregion
@@ -904,6 +907,202 @@ namespace GateWay {
           }
           case 16: {
             code_ = (global::Common.ErrorCode) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// ClientMsgReq 客户端消息请求
+  /// 用于接收客户端发送的消息，包含服务名称、方法名称和消息内容
+  /// TODO: 实现消息处理逻辑，参考 user_mgr.go 中的监听模式进行开发
+  /// </summary>
+  public sealed partial class ClientMsgReq : pb::IMessage<ClientMsgReq> {
+    private static readonly pb::MessageParser<ClientMsgReq> _parser = new pb::MessageParser<ClientMsgReq>(() => new ClientMsgReq());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ClientMsgReq> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::GateWay.GateWayReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ClientMsgReq() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ClientMsgReq(ClientMsgReq other) : this() {
+      serviceName_ = other.serviceName_;
+      method_ = other.method_;
+      data_ = other.data_ != null ? other.data_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ClientMsgReq Clone() {
+      return new ClientMsgReq(this);
+    }
+
+    /// <summary>Field number for the "service_name" field.</summary>
+    public const int ServiceNameFieldNumber = 1;
+    private string serviceName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ServiceName {
+      get { return serviceName_; }
+      set {
+        serviceName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "method" field.</summary>
+    public const int MethodFieldNumber = 2;
+    private string method_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Method {
+      get { return method_; }
+      set {
+        method_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Any data_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.WellKnownTypes.Any Data {
+      get { return data_; }
+      set {
+        data_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ClientMsgReq);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ClientMsgReq other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ServiceName != other.ServiceName) return false;
+      if (Method != other.Method) return false;
+      if (!object.Equals(Data, other.Data)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ServiceName.Length != 0) hash ^= ServiceName.GetHashCode();
+      if (Method.Length != 0) hash ^= Method.GetHashCode();
+      if (data_ != null) hash ^= Data.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (ServiceName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ServiceName);
+      }
+      if (Method.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Method);
+      }
+      if (data_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (ServiceName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceName);
+      }
+      if (Method.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Method);
+      }
+      if (data_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Data);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ClientMsgReq other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ServiceName.Length != 0) {
+        ServiceName = other.ServiceName;
+      }
+      if (other.Method.Length != 0) {
+        Method = other.Method;
+      }
+      if (other.data_ != null) {
+        if (data_ == null) {
+          data_ = new global::Google.Protobuf.WellKnownTypes.Any();
+        }
+        Data.MergeFrom(other.Data);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            ServiceName = input.ReadString();
+            break;
+          }
+          case 18: {
+            Method = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (data_ == null) {
+              data_ = new global::Google.Protobuf.WellKnownTypes.Any();
+            }
+            input.ReadMessage(data_);
             break;
           }
         }

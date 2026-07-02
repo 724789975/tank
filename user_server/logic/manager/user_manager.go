@@ -12,6 +12,7 @@ import (
 	"io"
 	"math/big"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -25,6 +26,7 @@ import (
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/golang-jwt/jwt/v5"
 	idtoken "google.golang.org/api/idtoken"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -42,6 +44,7 @@ var (
 	redis_test_platform = "test_platform"
 	redis_google_play   = "google_play_platform"
 	redis_apple_play    = "apple_platform"
+	jwtPrivateKey       *rsa.PrivateKey
 )
 
 func GetUserManager() *UserManager {
@@ -61,6 +64,18 @@ func GetUserManager() *UserManager {
 			klog.Infof("[USER-MANAGER-NODE-OK] UserManager: 生成UUID创建者成功, 节点: %d", nodeIdx)
 			IdClient = node
 		}
+
+		data, err := os.ReadFile("./etc/private.pem")
+		if err != nil {
+			klog.Fatal("[USER-MANAGER-JWT] UserManager: 读取JWT私钥失败: %v", err)
+		}
+
+		jwtPrivateKey, err = jwt.ParseRSAPrivateKeyFromPEM(data)
+		if err != nil {
+			klog.Fatal("[USER-MANAGER-JWT] UserManager: 解析JWT私钥失败: %v", err)
+		}
+
+		klog.Infof("[USER-MANAGER-JWT-OK] UserManager: JWT私钥加载成功")
 	})
 	return &user_mgr
 }
@@ -251,6 +266,15 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 		resp.Msg = "user created"
 	}
 
+	// 生成JWT Token
+	token, err := generateJWTToken(userInfo["openid"])
+	if err != nil {
+		klog.CtxErrorf(ctx, "[TEST-LOGIN-JWT-ERROR] 生成JWT Token错误: %v", err)
+		resp.Code = common.ErrorCode_FAILED
+		resp.Msg = "generate jwt token failed"
+		return resp, err
+	}
+
 	// 设置用户信息到响应中
 	resp.Data = &user_center.TestLoginRsp_Data{
 		TapInfo: &user_center.TapInfo{
@@ -260,9 +284,32 @@ func (x *UserManager) TestLogin(ctx context.Context, req *user_center.TestLoginR
 			Openid:  userInfo["openid"],
 			Unionid: userInfo["unionid"],
 		},
+		Token: token,
 	}
 
 	return resp, nil
+}
+
+func generateJWTToken(userId string) (string, error) {
+	if jwtPrivateKey == nil {
+		return "", fmt.Errorf("JWT私钥未初始化")
+	}
+
+	claims := jwt.MapClaims{
+		"iss":    "tank",
+		"ver":    "v1",
+		"exp":    time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"userId": userId,
+		"iat":    time.Now().Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+	tokenString, err := token.SignedString(jwtPrivateKey)
+	if err != nil {
+		return "", fmt.Errorf("签名失败: %w", err)
+	}
+
+	return tokenString, nil
 }
 
 func (x *UserManager) GoogleLogin(ctx context.Context, req *user_center.GoogleLoginReq) (resp *user_center.GoogleLoginRsp, err error) {

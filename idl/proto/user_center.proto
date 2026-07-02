@@ -47,13 +47,12 @@ message TestLoginReq {
 	TapInfo tapInfo = 1;
 }
 
-
-
 message TestLoginRsp {
 	common.ErrorCode code = 1;
 	string           msg  = 2;
 	message Data {
 		TapInfo tapInfo = 1;
+		string  token   = 2;
 	}
 	Data data = 3;
 }

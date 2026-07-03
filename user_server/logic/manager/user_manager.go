@@ -309,7 +309,7 @@ func generateJWTToken(userId string) (string, error) {
 		return "", fmt.Errorf("签名失败: %w", err)
 	}
 
-	return tokenString, nil
+	return "Bearer " + tokenString, nil
 }
 
 func (x *UserManager) GoogleLogin(ctx context.Context, req *user_center.GoogleLoginReq) (resp *user_center.GoogleLoginRsp, err error) {

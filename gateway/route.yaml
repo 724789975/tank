@@ -89,6 +89,14 @@ spec:
         host: homepage-server.tank.svc.cluster.local
         port:
           number: 8080
+  - match:
+    - uri:
+        prefix: /api/1.0/public/ranking/
+    route:
+    - destination:
+        host: ranking-server.tank.svc.cluster.local
+        port:
+          number: 8080
   - route:
     - destination:
         host: user-server.tank.svc.cluster.local

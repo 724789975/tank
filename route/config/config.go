@@ -1,10 +1,10 @@
 package common_config
 
 import (
-	"log"
 	"os"
 	"path"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/spf13/viper"
 )
 
@@ -42,10 +42,10 @@ func LoadConfig() error {
 
 	viper.SetConfigFile(path.Join(confPath, confFile))
 
-	log.Println("load config file: ", viper.ConfigFileUsed())
+	klog.Infof("[CONFIG-LOAD] load config file: %s", viper.ConfigFileUsed())
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal("failed to read config file", err.Error())
+		klog.Fatalf("[CONFIG-LOAD-FAIL] failed to read config file: %v", err)
 	}
 
 	return nil

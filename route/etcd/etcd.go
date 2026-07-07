@@ -6,6 +6,7 @@ import (
 	common_config "route_module/config"
 
 	"github.com/cloudwego/kitex/pkg/discovery"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/registry"
 	_etcd "github.com/kitex-contrib/registry-etcd"
 )
@@ -24,12 +25,14 @@ func initEtcd() {
 		}
 		r, err := _etcd.NewEtcdRegistryWithAuth(addrs, common_config.Get("etcd.username").(string), common_config.Get("etcd.password").(string))
 		if err != nil {
+			klog.Fatalf("[ETCD-REGISTRY-INIT-FAIL] Failed to create etcd registry: %v", err)
 			panic(err)
 		}
 		etcdClient = r
 
 		r2, err := _etcd.NewEtcdResolverWithAuth(addrs, common_config.Get("etcd.username").(string), common_config.Get("etcd.password").(string))
 		if err != nil {
+			klog.Fatalf("[ETCD-RESOLVER-INIT-FAIL] Failed to create etcd resolver: %v", err)
 			panic(err)
 		}
 		etcdResolver = r2

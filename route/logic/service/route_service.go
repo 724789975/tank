@@ -88,6 +88,7 @@ func (s *RouteService) ginRoute(ctx *gin.Context) {
 
 	client, err := rpc.GetClient(serviceName)
 	if err != nil {
+		klog.CtxErrorf(ctx.Request.Context(), "[ROUTE-GIN-ROUTE-CLIENT-FAIL] Failed to get client for service %s: %v", serviceName, err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"code": -1, "msg": err.Error()})
 		return
 	}
@@ -95,6 +96,7 @@ func (s *RouteService) ginRoute(ctx *gin.Context) {
 	klog.CtxInfof(ctx.Request.Context(), "[ROUTE-REQUEST] bodyAny: %s", bodyAny.String())
 	err, resp := client(ginCtx, rpcMethod, bodyAny)
 	if err != nil {
+		klog.CtxErrorf(ctx.Request.Context(), "[ROUTE-GIN-ROUTE-RPC-FAIL] RPC call failed for service %s method %s: %v", serviceName, rpcMethod, err)
 		ctx.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error()})
 		return
 	}

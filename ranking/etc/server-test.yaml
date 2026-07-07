@@ -10,16 +10,16 @@ ranking_rpc:
 # Redis配置
 redis:
   addrs:
-    - "redis:6379"
-  password: ""
+    - "redis.tank.svc.cluster.local:6389"
+  password: "123#@!QAzx"
 
 # etcd配置
 etcd:
   addrs:
-    - "etcd:2379"
-  username: ""
-  password: ""
+    - "etcd.tank.svc.cluster.local:2379"
+  username: "root"
+  password: "123#@!QAzx"
 
 # Tracer配置
 tracer:
-  address: "otel-collector:4317"
+  address: "otel-collector.open-telemetry-collector:4317"

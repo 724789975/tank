@@ -9,7 +9,7 @@ using UnityEngine;
 public class AsyncWebRequest
 {
 	/// <summary>
-	/// Òì²½GETÇëÇó
+	/// å¼‚æ­¥GETè¯·æ±‚
 	/// </summary>
 	/// <param name="url"></param>
 	/// <param name="requestComplete"></param>
@@ -26,40 +26,40 @@ public class AsyncWebRequest
 		HttpClient client = new HttpClient();
 		try
 		{
-			// ·¢ËÍGETÇëÇó»ñÈ¡ÏìÓ¦
+			// å‘é€GETè¯·æ±‚è·å–å“åº”
 			HttpResponseMessage response = await client.GetAsync(url);
-			// Èç¹ûÏìÓ¦³É¹¦
+			// å¦‚æœå“åº”æˆåŠŸ
 			if (response.IsSuccessStatusCode)
 			{
-				// ¶ÁÈ¡ÏìÓ¦Ìå²¢ÉèÖÃ½á¹ûÎªtrueºÍÏìÓ¦Ìå
+				// è¯»å–å“åº”ä½“å¹¶è®¾ç½®ç»“æœä¸ºtrueå’Œå“åº”ä½“
 				byte[] responseBody = await response.Content.ReadAsByteArrayAsync();
 				tcs.SetResult((true, responseBody));
 			}
-			// Èç¹ûÏìÓ¦Ê§°Ü
+			// å¦‚æœå“åº”å¤±è´¥
 			else
 			{
-				// ÉèÖÃ½á¹ûÎªfalseºÍÏìÓ¦Ô­Òò
+				// è®¾ç½®ç»“æœä¸ºfalseå’Œå“åº”åŸå› 
 				tcs.SetResult((false, null));
-				Debug.LogError("ÇëÇóÊ§°Ü");
+				Debug.LogError("è¯·æ±‚å¤±è´¥");
 			}
 		}
-		// ²¶»ñËùÓĞÒì³£²¢ÉèÖÃ½á¹ûÎªfalseºÍÒì³£ÏûÏ¢
+		// æ•è·æ‰€æœ‰å¼‚å¸¸å¹¶è®¾ç½®ç»“æœä¸ºfalseå’Œå¼‚å¸¸æ¶ˆæ¯
 		catch (Exception ex)
 		{
 			Debug.LogError(ex);
 			tcs.SetResult((false, null));
 		}
-		// ²»¹ÜÊÇ·ñ·¢ÉúÒì³££¬×îºó¶¼ÊÍ·Å HttpClient µÄ×ÊÔ´
+		// ä¸ç®¡æ˜¯å¦å‘ç”Ÿå¼‚å¸¸ï¼Œæœ€åéƒ½é‡Šæ”¾ HttpClient çš„èµ„æº
 		finally
 		{
 			client.Dispose();
 		}
-		// ·µ»ØÒì²½ÈÎÎñµÄ½á¹û
+		// è¿”å›å¼‚æ­¥ä»»åŠ¡çš„ç»“æœ
 		return await tcs.Task;
 	}
 
 	/// <summary>
-	/// Òì²½POSTÇëÇó
+	/// å¼‚æ­¥POSTè¯·æ±‚
 	/// </summary>
 	/// <param name="url"></param>
 	/// <param name="postData"></param>
@@ -78,10 +78,10 @@ public class AsyncWebRequest
 		{
 			try
 			{
-				// ´´½¨StringContent¶ÔÏóÊ±£¬ÏÔÊ½ÉèÖÃContent-Type
+				// åˆ›å»ºStringContentå¯¹è±¡æ—¶ï¼Œæ˜¾å¼è®¾ç½®Content-Type
 				StringContent content = new StringContent(postData, Encoding.UTF8, "application/json");
 
-				// Ìí¼Ó¶îÍâµÄÇëÇóÍ·£¬µ«ÅÅ³ıContent-Type
+				// æ·»åŠ é¢å¤–çš„è¯·æ±‚å¤´ï¼Œä½†æ’é™¤Content-Type
 				if (requestHeaders != null)
 				{
 					foreach (var header in requestHeaders.Where(h => h.Key.ToLower() != "content-type"))
@@ -89,10 +89,10 @@ public class AsyncWebRequest
 						client.DefaultRequestHeaders.Add(header.Key, header.Value);
 					}
 				}
-				// ·¢ËÍPOSTÇëÇó
+				// å‘é€POSTè¯·æ±‚
 				HttpResponseMessage response = await client.PostAsync(url, content);
 
-				// ÅĞ¶ÏÇëÇóÊÇ·ñ³É¹¦
+				// åˆ¤æ–­è¯·æ±‚æ˜¯å¦æˆåŠŸ
 				if (response.IsSuccessStatusCode)
 				{
 					var responseBody = await response.Content.ReadAsByteArrayAsync();
@@ -100,7 +100,7 @@ public class AsyncWebRequest
 				}
 				else
 				{
-					Debug.LogError($"ÇëÇóÊ§°Ü,´íÎóÂë: {(int)response.StatusCode}");
+					Debug.LogError($"è¯·æ±‚å¤±è´¥,é”™è¯¯ç : {(int)response.StatusCode}");
 					tcs.SetResult((false, Encoding.UTF8.GetBytes(response.ReasonPhrase)));
 				}
 			}

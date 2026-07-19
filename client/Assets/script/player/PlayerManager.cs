@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using FxNet.Dll;
 #if UNITY_SERVER && !AI_RUNNING
 using PLAYERDATA = ServerPlayer;
 #else
@@ -80,9 +81,9 @@ public class PlayerManager : Singleton<PlayerManager>
 				((NetServer.Laputa)players[id].session).Close();
 			}
 #else
-            if ((IntPtr)(players[id].session)!= IntPtr.Zero)
+            if (players[id].session != null)
             {
-				fxnetlib.dllimport.DLLImport.Close((IntPtr)players[id].session);
+				FxNetApi.Close((Connector)players[id].session);
             }
 #endif
 #endif
@@ -104,7 +105,7 @@ public class PlayerManager : Singleton<PlayerManager>
                 players[id].session = null;
 			}
 #else
-            if ((IntPtr)(players[id].session)!= IntPtr.Zero)
+            if (players[id].session != null)
             {
 				sessions.Remove(players[id].session);
 				players[id].session = null;;
@@ -126,7 +127,7 @@ public class PlayerManager : Singleton<PlayerManager>
         }
     }
 
-    public void AfterCloseCallback(IntPtr pConnector)
+    public void AfterCloseCallback(Connector pConnector)
     {
 #if UNITY_SERVER && !AI_RUNNING
         sessions.TryGetValue(pConnector, out string id);
@@ -135,7 +136,7 @@ public class PlayerManager : Singleton<PlayerManager>
             players.TryGetValue(id, out PLAYERDATA data);
             if (data!= null)
             {
-                data.session = IntPtr.Zero;
+                data.session = null;
             }
         }
         sessions.Remove(pConnector);

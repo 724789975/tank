@@ -29,12 +29,12 @@ public class AIStart : MonoBehaviour
 						instance = FindObjectOfType<AIStart>();
 						if (instance == null)
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							instance = singletonObject.AddComponent<AIStart>();
 							singletonObject.name = typeof(AIStart).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}

@@ -41,7 +41,7 @@ public class UserCenterClient : MonoBehaviour
 				});
 				return;
 			}
-			// ¸ù¾İÈ¨ÖØËæ»úÑ¡ÔñÒ»¸ö·şÎñ
+			// æ ¹æ®æƒé‡éšæœºé€‰æ‹©ä¸€ä¸ªæœåŠ¡
 			int totalWeight = 0;
 			foreach (var item in services.Values)
 			{
@@ -81,7 +81,7 @@ public class UserCenterClient : MonoBehaviour
 	UserCenterService.UserCenterService.UserCenterServiceClient client = null;
 
 	static UserCenterClient instance;
-	// ¹«¹²·ÃÎÊ½Ó¿Ú
+	// å…¬å…±è®¿é—®æ¥å£
 	public static UserCenterClient Instance
 	{
 		get
@@ -95,12 +95,12 @@ public class UserCenterClient : MonoBehaviour
 						instance = FindObjectOfType<UserCenterClient>();
 						if (instance == null)
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							instance = singletonObject.AddComponent<UserCenterClient>();
 							singletonObject.name = typeof(UserCenterClient).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}

@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityWebSocket;
+using FxNet;
+using FxNet.Dll;
 
 public class NetClient : MonoBehaviour
 {
@@ -11,8 +14,8 @@ public class NetClient : MonoBehaviour
     {
 #if CLIENT_WS
 #else
-		fxnetlib.dllimport.DLLImport.StartIOModule();
-		fxnetlib.dllimport.DLLImport.SetLogCallback(OnLogCallback);
+		FxNetApi.StartIOModule();
+		FxNetApi.SetLogCallback(OnLogCallback);
 #endif
 		MsgProcess.Instance.RegisterHandler(typeof(ClientMsg));
 	}
@@ -22,7 +25,10 @@ public class NetClient : MonoBehaviour
     {
 #if CLIENT_WS
 #else
-		fxnetlib.dllimport.DLLImport.ProcessIOModule();
+#if SINGLE_THREAD
+		FxNetInterface.ProcSingleThread();
+#endif
+		FxNetInterface.ProcessMessageEvents();
 		int count = msgs.Count;
 		for (int i = 0; i < count; i++)
 		{
@@ -42,10 +48,10 @@ public class NetClient : MonoBehaviour
 	void OnApplicationQuit()
 	{
 #if UNITY_EDITOR && !CLIENT_WS
-		fxnetlib.dllimport.DLLImport.StopAllSockets();
+		FxNetInterface.CloseAllSockets();
 		for (int i = 0; i < 20; i++)
 		{
-			fxnetlib.dllimport.DLLImport.ProcessIOModule();
+			FxNetInterface.ProcessMessageEvents();
 		}
 #endif
 	}
@@ -53,32 +59,32 @@ public class NetClient : MonoBehaviour
 #if CLIENT_WS
 	protected void OnOpen(object sender, OpenEventArgs e)
 	{
-		Debug.Log("Client WebSocketÁ¬½Ó³É¹¦");
+		Debug.Log("Client WebSocketè¿æ¥æˆåŠŸ");
 		PlayerControl.Instance.StartGame();
 	}
 
 	protected void OnMessage(object sender, MessageEventArgs e)
 	{
 		Any any = Any.Parser.ParseFrom(e.RawData);
-		//Debug.Log("client WebSocketÊÕµ½ÏûÏ¢ÀàĞÍ£º" + any.TypeUrl);
+		//Debug.Log("client WebSocketæ”¶åˆ°æ¶ˆæ¯ç±»å‹ï¼š" + any.TypeUrl);
 		MsgProcess.Instance.ProcessMessage(sender, any);
 	}
 
 	protected void OnError(object sender, ErrorEventArgs e)
 	{
-		Debug.LogError("Client WebSocketÁ¬½Ó´íÎó£º" + e.Message);
+		Debug.LogError("Client WebSocketè¿æ¥é”™è¯¯ï¼š" + e.Message);
 	}
 
 	protected void OnClose(object sender, CloseEventArgs e)
 	{
 		if(!needReconnect)
 		{
-			Debug.Log("Client WebSocketÁ¬½ÓÒÑ¹Ø±Õ");
+			Debug.Log("Client WebSocketè¿æ¥å·²å…³é—­");
 			return;
 		}
 		webSocket.CloseAsync();
 		webSocket = null;
-		Debug.Log("Client WebSocketÁ¬½ÓÒÑ¹Ø±Õ");
+		Debug.Log("Client WebSocketè¿æ¥å·²å…³é—­");
 		TimerU.Instance.AddTask(3f, () =>
 		{
 			Reconnect();
@@ -89,31 +95,28 @@ public class NetClient : MonoBehaviour
 	{
 		if (!needReconnect)
 		{
-			Debug.Log("Client WebSocketÁ¬½ÓÒÑ¹Ø±Õ ²»ĞèÖØÁ¬");
+			Debug.Log("Client WebSocketè¿æ¥å·²å…³é—­ ä¸éœ€é‡è¿");
 			return;
 		}
 		if (webSocket == null || webSocket.ReadyState != WebSocketState.Open)
 		{
 			TimerU.Instance.AddTask(3f, Reconnect);
-			Debug.Log("Client WebSocketÁ¬½Ó¶Ï¿ª£¬³¢ÊÔÖØĞÂÁ¬½Ó");
+			Debug.Log("Client WebSocketè¿æ¥æ–­å¼€ï¼Œå°è¯•é‡æ–°è¿æ¥");
 			Instance.Create();
 			Instance.Connect();
 		}
 	}
 #else
-	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnLogCallback))]
-	static void OnLogCallback (byte[] pData, int dwLen)
+	static void OnLogCallback(string log, int len)
 	{
-		string logMessage = System.Text.Encoding.UTF8.GetString(pData, 0, dwLen);
-		Debug.Log(logMessage);
+		Debug.Log(log);
 	}
 
-	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnRecvCallback))]
-	static void OnRecvCallback(IntPtr pConnector, byte[] pData, uint nLen)
+	static void OnRecvCallback(Connector pConnector, byte[] pData, int nLen)
 	{
 		try
 		{
-			Any anyMessage = Any.Parser.ParseFrom(pData, 0, (int)nLen);
+			Any anyMessage = Any.Parser.ParseFrom(pData, 0, nLen);
 			instance.msgs.Add(delegate ()
 			{
 				MsgProcess.Instance.ProcessMessage(pConnector, anyMessage);
@@ -125,8 +128,7 @@ public class NetClient : MonoBehaviour
 		}
 	}
 
-	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnConnectedCallback))]
-	static void OnConnectedCallback(IntPtr pConnector)
+	static void OnConnectedCallback(Connector pConnector)
 	{
 		Debug.LogFormat("{0} connected", pConnector);
 		foreach (var action in instance.onConnected)
@@ -135,17 +137,15 @@ public class NetClient : MonoBehaviour
 		}
 	}
 
-	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnErrorCallback))]
-	static void OnErrorCallback(IntPtr pConnector, IntPtr nLen)
+	static void OnErrorCallback(Connector pConnector, int error)
 	{
 		Debug.LogFormat("connector destroy {0}", pConnector);
 	}
 
-	[MonoPInvokeCallback(typeof(fxnetlib.dllimport.DLLImport.OnCloseCallback))]
-	static void OnCloseCallback(IntPtr pConnector)
+	static void OnCloseCallback(Connector pConnector)
 	{
 		Debug.Log("connector destroy");
-		fxnetlib.dllimport.DLLImport.DestroyConnector(pConnector);
+		FxNetApi.DestroyConnector(pConnector);
 
 		if (instance.needReconnect)
 		{
@@ -158,7 +158,7 @@ public class NetClient : MonoBehaviour
 		{
 			if (instance.connector == pConnector)
 			{
-				instance.connector = IntPtr.Zero;
+				instance.connector = null;
 				instance.onConnected.Clear();
 			}
 		}
@@ -170,16 +170,16 @@ public class NetClient : MonoBehaviour
 #if CLIENT_WS
 		string serverUrl = $"ws://{Config.Instance.serverIP}:{Config.Instance.port}/game";
 
-		// ´´½¨Ò»¸öĞÂµÄWebSocketÊµÀı²¢ÓëÖ¸¶¨URL½¨Á¢Á¬½Ó
+		// åˆ›å»ºä¸€ä¸ªæ–°çš„WebSocketå®ä¾‹å¹¶ä¸æŒ‡å®šURLå»ºç«‹è¿æ¥
 		webSocket = new WebSocket(serverUrl);
 
-		// ×¢²áÊÂ¼ş»Øµ÷
+		// æ³¨å†Œäº‹ä»¶å›è°ƒ
 		webSocket.OnOpen += OnOpen;
 		webSocket.OnMessage += OnMessage;
 		webSocket.OnError += OnError;
 		webSocket.OnClose += OnClose;
 #else
-		connector = fxnetlib.dllimport.DLLImport.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
+		connector = FxNetApi.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 #endif
 		needReconnect = true;
 	}
@@ -194,12 +194,12 @@ public class NetClient : MonoBehaviour
 		}
 		webSocket.ConnectAsync();
 #else
-		if (connector == IntPtr.Zero)
+		if (connector == null)
 		{
 			Debug.LogError("connector is null");
 			return;
 		}
-		fxnetlib.dllimport.DLLImport.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+		FxNetApi.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
 #endif
 	}
 
@@ -214,13 +214,13 @@ public class NetClient : MonoBehaviour
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
 		webSocket.SendAsync(messageBytes);
 #else
-		if (connector == IntPtr.Zero)
+		if (connector == null)
 		{
 			Debug.LogError("connector is null");
 			return;
 		}
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
-		fxnetlib.dllimport.DLLImport.Send(connector, messageBytes, (uint)messageBytes.Length);
+		FxNetApi.Send(connector, messageBytes, messageBytes.Length);
 #endif
 	}
 
@@ -249,9 +249,9 @@ public class NetClient : MonoBehaviour
 		webSocket.CloseAsync();
 		webSocket = null;
 #else
-		if(connector != IntPtr.Zero)
+		if(connector != null)
 		{
-			fxnetlib.dllimport.DLLImport.Close(connector);
+			FxNetApi.Close(connector);
 		}
 #endif
 		needReconnect = false;
@@ -270,12 +270,12 @@ public class NetClient : MonoBehaviour
 						instance = FindObjectOfType<NetClient>();
 						if (instance == null)
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							instance = singletonObject.AddComponent<NetClient>();
 							singletonObject.name = typeof(NetClient).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}
@@ -292,9 +292,9 @@ public class NetClient : MonoBehaviour
 #if CLIENT_WS
 	WebSocket webSocket;
 #else
-	IntPtr connector = IntPtr.Zero;
-	List<P> msgs = new List<P>();
+	Connector connector;
 	delegate void P();
+	List<P> msgs = new List<P>();
 	List<Action> onConnected = new List<Action>();
 #endif
 	bool needReconnect = true;

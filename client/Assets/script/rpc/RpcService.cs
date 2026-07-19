@@ -8,12 +8,12 @@ public class RpcService : MonoBehaviour
     {
 		Grpc.Core.Server server = new Grpc.Core.Server
 		{
-			//·şÎñ¶Ë½Ó¿ÚÏûÏ¢´¦ÀíÀà
+			//æœåŠ¡ç«¯æ¥å£æ¶ˆæ¯å¤„ç†ç±»
 			Services = { TankGameService.TankGameService.BindService(new ServicerImpl()) },
-			//·şÎñ¶Ëip¡¢¶Ë¿Ú¡¢±£ÃÜÀàĞÍ
+			//æœåŠ¡ç«¯ipã€ç«¯å£ã€ä¿å¯†ç±»å‹
 			Ports = { new Grpc.Core.ServerPort("0.0.0.0", Config.Instance.rpcPort, Grpc.Core.ServerCredentials.Insecure) }
 		};
-		//¿ªÊ¼ÕìÌı
+		//å¼€å§‹ä¾¦å¬
 		server.Start();
 		Debug.Log("RpcService Start");
 	}
@@ -26,7 +26,7 @@ public class RpcService : MonoBehaviour
 
 
 	static RpcService instance;
-	// ¹«¹²·ÃÎÊ½Ó¿Ú
+	// å…¬å…±è®¿é—®æ¥å£
 	public static RpcService Instance
 	{
 		get
@@ -40,12 +40,12 @@ public class RpcService : MonoBehaviour
 						instance = FindObjectOfType<RpcService>();
 						if (instance == null)
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							instance = singletonObject.AddComponent<RpcService>();
 							singletonObject.name = typeof(RpcService).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}

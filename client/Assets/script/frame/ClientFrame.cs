@@ -76,19 +76,19 @@ public class ClientFrame : MonoBehaviour
             return;
         }
 
-        // Éè¼ÆÒ»¸öÆ½»¬µÄÍ¬²½ËÙÂÊ¼ÆËã·½Ê½
-        // 1. »ùÓÚÂäºóÊ±¼äµÄ±ÈÀı¼ÆËãÍ¬²½ËÙÂÊ
-        // 2. ÏŞÖÆ×î´óµ÷Õû·ù¶È£¬±ÜÃâÊ±¼ä±ä»¯¹ı¿ì
-        float maxSyncRate = 0.9999f; // ×î´óµ÷Õû±ÈÀı (¡À99.99%)
-        float syncFactor = 0.1f;  // Í¬²½ÏµÊı£¬¿ØÖÆµ÷ÕûËÙ¶È
+        // è®¾è®¡ä¸€ä¸ªå¹³æ»‘çš„åŒæ­¥é€Ÿç‡è®¡ç®—æ–¹å¼
+        // 1. åŸºäºè½åæ—¶é—´çš„æ¯”ä¾‹è®¡ç®—åŒæ­¥é€Ÿç‡
+        // 2. é™åˆ¶æœ€å¤§è°ƒæ•´å¹…åº¦ï¼Œé¿å…æ—¶é—´å˜åŒ–è¿‡å¿«
+        float maxSyncRate = 0.9999f; // æœ€å¤§è°ƒæ•´æ¯”ä¾‹ (Â±99.99%)
+        float syncFactor = 0.1f;  // åŒæ­¥ç³»æ•°ï¼Œæ§åˆ¶è°ƒæ•´é€Ÿåº¦
         
-        // ¸ù¾İÊ±¼ä²î¼ÆËãÍ¬²½ËÙÂÊ
+        // æ ¹æ®æ—¶é—´å·®è®¡ç®—åŒæ­¥é€Ÿç‡
         syncRate = lagBehind * syncFactor;
         
-        // ÏŞÖÆÍ¬²½ËÙÂÊµÄ×î´óÖµ
+        // é™åˆ¶åŒæ­¥é€Ÿç‡çš„æœ€å¤§å€¼
         syncRate = Mathf.Clamp(syncRate, -maxSyncRate, maxSyncRate);
         
-        // ¸üĞÂÑÓ³ÙÖµ
+        // æ›´æ–°å»¶è¿Ÿå€¼
         latency = Latency;
     }
 
@@ -99,5 +99,5 @@ public class ClientFrame : MonoBehaviour
 
     float updateTime = 0;
 
-	public float syncRate = 0f; // µ÷ÕûÊ±¼äÂÖµÄ¿ìÂı
+	public float syncRate = 0f; // è°ƒæ•´æ—¶é—´è½®çš„å¿«æ…¢
 }

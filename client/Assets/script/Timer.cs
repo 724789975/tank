@@ -42,7 +42,7 @@ public class TimerU : MonoBehaviour
 		return task;
 	}
 
-	// ¹«¹²·ÃÎÊ½Ó¿Ú
+	// å…¬å…±è®¿é—®æ¥å£
 	public static TimerU Instance
 	{
 		get
@@ -56,12 +56,12 @@ public class TimerU : MonoBehaviour
 						instance = FindObjectOfType<TimerU>();
 						if (instance == null)
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							instance = singletonObject.AddComponent<TimerU>();
 							singletonObject.name = typeof(TimerU).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}

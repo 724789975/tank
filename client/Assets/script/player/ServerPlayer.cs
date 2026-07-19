@@ -9,7 +9,7 @@ using PLAYERDATA = ServerPlayer;
 [Serializable]
 public class ServerPlayer : PlayerData
 {
-	public object session = IntPtr.Zero;
+	public object session = null;
 	public float SyncTime = 0;
 	public Vector3 lastPos = Vector3.zero;
 	public float speedCheckDelate = 0;

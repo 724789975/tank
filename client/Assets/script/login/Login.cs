@@ -54,39 +54,39 @@ public class Login : MonoBehaviour
     {
 		GateWayNet.Instance.ToString();
 #if USE_TAP_LOGIN
-		// ºËĞÄÅäÖÃ ÏêÏ¸²ÎÊı¼û [TapTapSDK]
+		// æ ¸å¿ƒé…ç½® è¯¦ç»†å‚æ•°è§ [TapTapSDK]
 		TapTapSdkOptions coreOptions = new TapTapSdkOptions()
-		{  // ¿Í»§¶Ë ID£¬¿ª·¢ÕßºóÌ¨»ñÈ¡
+		{  // å®¢æˆ·ç«¯ IDï¼Œå¼€å‘è€…åå°è·å–
 			clientId = "oy5mqqrghbgdlrfmf4",
-			// ¿Í»§¶ËÁîÅÆ£¬¿ª·¢ÕßºóÌ¨»ñÈ¡
+			// å®¢æˆ·ç«¯ä»¤ç‰Œï¼Œå¼€å‘è€…åå°è·å–
 			clientToken = "bs8IwOTzg5mbjcl08nOkkLgSbh8f1kEGM6EOHoMs",
-			// µØÇø£¬CN Îª¹úÄÚ£¬Overseas Îªº£Íâ
+			// åœ°åŒºï¼ŒCN ä¸ºå›½å†…ï¼ŒOverseas ä¸ºæµ·å¤–
 			region = TapTapRegionType.CN,
-			// ÓïÑÔ£¬Ä¬ÈÏÎª Auto£¬Ä¬ÈÏÇé¿öÏÂ£¬¹úÄÚÎª zh_Hans£¬º£ÍâÎª en
+			// è¯­è¨€ï¼Œé»˜è®¤ä¸º Autoï¼Œé»˜è®¤æƒ…å†µä¸‹ï¼Œå›½å†…ä¸º zh_Hansï¼Œæµ·å¤–ä¸º en
 			preferredLanguage = TapTapLanguageType.zh_Hans,
-			// ÊÇ·ñ¿ªÆôÈÕÖ¾£¬Release °æ±¾ÇëÉèÖÃÎª false
+			// æ˜¯å¦å¼€å¯æ—¥å¿—ï¼ŒRelease ç‰ˆæœ¬è¯·è®¾ç½®ä¸º false
 			//enableLog = true
 		};
-		// TapSDK ³õÊ¼»¯
+		// TapSDK åˆå§‹åŒ–
 		TapTapSDK.Init(coreOptions);
 
 		try
 		{
-			// ¶¨ÒåÊÚÈ¨·¶Î§
+			// å®šä¹‰æˆæƒèŒƒå›´
 			List<string> scopes = new List<string>
 			{
 				TapTapLogin.TAP_LOGIN_SCOPE_PUBLIC_PROFILE
 			};
-			// ·¢Æğ Tap µÇÂ¼
+			// å‘èµ· Tap ç™»å½•
 			TapTapLogin.Instance.LoginWithScopes(scopes.ToArray()).ContinueWith(task =>
 			{
 				if (task.IsFaulted)
 				{
-					Debug.Log($"µÇÂ¼Ê§°Ü£¬³öÏÖÒì³££º{task.Exception}");
+					Debug.Log($"ç™»å½•å¤±è´¥ï¼Œå‡ºç°å¼‚å¸¸ï¼š{task.Exception}");
 				}
 				else
 				{
-					Debug.Log($"µÇÂ¼³É¹¦£¬µ±Ç°ÓÃ»§ ID£º{task.Result.ToJson()}");
+					Debug.Log($"ç™»å½•æˆåŠŸï¼Œå½“å‰ç”¨æˆ· IDï¼š{task.Result.ToJson()}");
 
 					lock (Lock)
 					{
@@ -126,12 +126,12 @@ public class Login : MonoBehaviour
 									{
 										if (!ok)
 										{
-											Debug.Log($"µÇÂ¼Ê§°Ü£¬·şÎñÆ÷ÏìÓ¦Òì³££º{response}");
+											Debug.Log($"ç™»å½•å¤±è´¥ï¼ŒæœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 										}
 										else
 										{
 											string responseStr = Encoding.UTF8.GetString(response);
-											Debug.Log($"µÇÂ¼³É¹¦£¬·şÎñÆ÷ÏìÓ¦£º{responseStr}");
+											Debug.Log($"ç™»å½•æˆåŠŸï¼ŒæœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 											UserCenter.LoginRsp rsp = UserCenter.LoginRsp.Parser.ParseJson(responseStr);
 											AccountInfo.Instance.SetAccount(rsp.TapInfo);
 											//Config.Instance.serverIP = rsp.ServerAddr;
@@ -151,16 +151,16 @@ public class Login : MonoBehaviour
 		}
 		catch (TaskCanceledException)
 		{
-			Debug.Log("ÓÃ»§È¡ÏûµÇÂ¼");
+			Debug.Log("ç”¨æˆ·å–æ¶ˆç™»å½•");
 		}
 		catch (System.Exception exception)
 		{
-			Debug.Log($"µÇÂ¼Ê§°Ü£¬³öÏÖÒì³££º{exception}");
+			Debug.Log($"ç™»å½•å¤±è´¥ï¼Œå‡ºç°å¼‚å¸¸ï¼š{exception}");
 		}
 #elif USE_GOOGLE_LOGIN
 		GoogleSignInManager.Instance.StartLogin();
 #else
-		//AccountInfo.Instance.SetAccount(new UserCenter.TapInfo() { Avatar = "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80", Gender = "", Name = "ÀäË®ÅİÃæ", Openid = "mzw0536knQSO+bhbdL6dtw==", Unionid = "SnwhJ5s2EURKCKt0LBsDLw==" });
+		//AccountInfo.Instance.SetAccount(new UserCenter.TapInfo() { Avatar = "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80", Gender = "", Name = "å†·æ°´æ³¡é¢", Openid = "mzw0536knQSO+bhbdL6dtw==", Unionid = "SnwhJ5s2EURKCKt0LBsDLw==" });
 
 		//Config.Instance.serverIP = "10.0.12.176";
 		//Config.Instance.port = 10085;

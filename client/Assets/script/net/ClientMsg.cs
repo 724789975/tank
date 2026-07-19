@@ -180,24 +180,24 @@ public class ClientMsg : MonoBehaviour
             return;
         }
 
-        string notice = $"Íæ¼Ò <color=#00FF00>{tankKilled.Name}</color> ÒÑ±» <color=#F00000>{tankKiller.Name}</color> »÷»Ù";
+        string notice = $"ç©å®¶ <color=#00FF00>{tankKilled.Name}</color> å·²è¢« <color=#F00000>{tankKiller.Name}</color> å‡»æ¯";
         if (tankKilled.ID == tankKiller.ID)
         {
-            notice = $"Íæ¼Ò <color=#00FF00>{tankKilled.Name}</color> ×Ô±¬ÁË";
+            notice = $"ç©å®¶ <color=#00FF00>{tankKilled.Name}</color> è‡ªçˆ†äº†";
             if (tankKiller.ID == AccountInfo.Instance.Account.Openid)
             {
-                notice = $"<color=#00FF00>Äã</color> ×Ô±¬ÁË";
+                notice = $"<color=#00FF00>ä½ </color> è‡ªçˆ†äº†";
             }
         }
         else
         {
             if (tankKiller.ID == AccountInfo.Instance.Account.Openid)
             {
-                notice = $"<color=#00FF00>Äã</color> »÷»ÙÁË <color=#F00000>{tankKilled.Name}</color>";
+                notice = $"<color=#00FF00>ä½ </color> å‡»æ¯äº† <color=#F00000>{tankKilled.Name}</color>";
             }
             else if (tankKilled.ID == AccountInfo.Instance.Account.Openid)
 			{
-				notice = $"<color=#00FF00>Äã</color>±» <color=#F00000>{tankKiller.Name}</color> »÷»ÙÁË";
+				notice = $"<color=#00FF00>ä½ </color>è¢« <color=#F00000>{tankKiller.Name}</color> å‡»æ¯äº†";
             }
         }
 
@@ -218,7 +218,7 @@ public class ClientMsg : MonoBehaviour
         return;
 #else
         TankGame.GameOverNtf gameOverNtf = anyMessage.Unpack<TankGame.GameOverNtf>();
-		string notice = $"ÓÎÏ·½áÊø£¬Äã»ñµÃÁËÊ¤Àû";
+		string notice = $"æ¸¸æˆç»“æŸï¼Œä½ è·å¾—äº†èƒœåˆ©";
 		PlayerControl.Instance.ShowNotice(notice);
 
         NetClient.Instance.Disconnect();

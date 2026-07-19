@@ -17,25 +17,25 @@ public class Match : MonoBehaviour
 			.WithMediaId(1014652)
 			.WithMediaName("pongpongpong")
 			.WithMediaKey("f9DNEKTt194oz4zyr4XuIA1vbW3XIA4dV3e4qwh6eZGf6waPEPp3DF8W4pFz0Sxh")
-			.EnableDebug(true)       // Ä¬ÈÏ¹Ø±Õ£¬ÈçÐè²é¿´ÈÕÖ¾Çë¸ÄÎª true
-			.ShakeEnabled(true)       // Ä¬ÈÏÆôÓÃÒ¡Ò»Ò¡
+			.EnableDebug(true)       // é»˜è®¤å…³é—­ï¼Œå¦‚éœ€æŸ¥çœ‹æ—¥å¿—è¯·æ”¹ä¸º true
+			.ShakeEnabled(true)       // é»˜è®¤å¯ç”¨æ‘‡ä¸€æ‘‡
 			.Build();
 
 		DirichletSdk.Init(
 			config,
 			onSuccess: result =>
 			{
-				Debug.Log($"Dirichlet ³õÊ¼»¯³É¹¦: {result.Message}");
+				Debug.Log($"Dirichlet åˆå§‹åŒ–æˆåŠŸ: {result.Message}");
 			},
 			onFailure: error =>
 			{
-				Debug.LogError($"Dirichlet ³õÊ¼»¯Ê§°Ü: {error.Code} {error.Message}");
+				Debug.LogError($"Dirichlet åˆå§‹åŒ–å¤±è´¥: {error.Code} {error.Message}");
 			}
 		);
 
 		if (!DirichletSdk.IsInitialized)
 		{
-			Debug.LogWarning("Dirichlet SDK ÉÐÎ´³õÊ¼»¯Íê³É");
+			Debug.LogWarning("Dirichlet SDK å°šæœªåˆå§‹åŒ–å®Œæˆ");
 		}
 
 		string version = DirichletSdk.GetVersion();
@@ -73,12 +73,12 @@ public class Match : MonoBehaviour
 		{
 			if (!ok)
 			{
-				Debug.Log($"Æ¥ÅäÇëÇóÊ§°Ü£¬·þÎñÆ÷ÏìÓ¦Òì³££º{response}");
+				Debug.Log($"åŒ¹é…è¯·æ±‚å¤±è´¥ï¼ŒæœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 			}
 			else
 			{
 				string responseStr = Encoding.UTF8.GetString(response);
-				Debug.Log($"Æ¥ÅäÇëÇó³É¹¦£¬·þÎñÆ÷ÏìÓ¦£º{responseStr}");
+				Debug.Log($"åŒ¹é…è¯·æ±‚æˆåŠŸï¼ŒæœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 				MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
 			}
 		});
@@ -108,12 +108,12 @@ public class Match : MonoBehaviour
 		{
 			if (!ok)
 			{
-				Debug.Log($"pveÇëÇóÊ§°Ü£¬·þÎñÆ÷ÏìÓ¦Òì³££º{response}");
+				Debug.Log($"pveè¯·æ±‚å¤±è´¥ï¼ŒæœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 			}
 			else
 			{
 				string responseStr = Encoding.UTF8.GetString(response);
-				Debug.Log($"pveÇëÇó³É¹¦£¬·þÎñÆ÷ÏìÓ¦£º{responseStr}");
+				Debug.Log($"pveè¯·æ±‚æˆåŠŸï¼ŒæœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 				MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
 			}
 		});
@@ -126,17 +126,17 @@ public class Match : MonoBehaviour
 		var request = new DirichletAdRequest.Builder()
 		.WithSpaceId(1050830)
 		.WithUserId(SystemInfo.deviceUniqueIdentifier)
-		.WithRewardName("½ð±Ò")
+		.WithRewardName("é‡‘å¸")
 		.WithRewardAmount(100)
 		.WithExtra1("level-5")
-		.WithExpressViewSize(1080, 1920)   // Splash/Banner ¿ÉÑ¡
+		.WithExpressViewSize(1080, 1920)   // Splash/Banner å¯é€‰
 		.Build();
 		adNative.LoadRewardVideoAd(request,
 			onLoaded: ad =>
 			{
 				rewardAd = ad;
-				rewardAd.Shown += () => Debug.Log("¼¤ÀøÊÓÆµÕ¹Ê¾");
-				rewardAd.Clicked += () => Debug.Log("¼¤ÀøÊÓÆµµã»÷");
+				rewardAd.Shown += () => Debug.Log("æ¿€åŠ±è§†é¢‘å±•ç¤º");
+				rewardAd.Clicked += () => Debug.Log("æ¿€åŠ±è§†é¢‘ç‚¹å‡»");
 				rewardAd.RewardVerified += args =>
 				{
 					if (args.IsVerified)
@@ -145,7 +145,7 @@ public class Match : MonoBehaviour
 					}
 					else
 					{
-						Debug.LogWarning($"½±ÀøÑéÖ¤Ê§°Ü: {args.Code} {args.Message}");
+						Debug.LogWarning($"å¥–åŠ±éªŒè¯å¤±è´¥: {args.Code} {args.Message}");
 					}
 				};
 				rewardAd.Closed += () =>
@@ -155,7 +155,7 @@ public class Match : MonoBehaviour
 				};
 				rewardAd.Show();
 			},
-			onFailure: error => Debug.LogError($"¼¤ÀøÊÓÆµ¼ÓÔØÊ§°Ü {error.Code}:{error.Message}"));
+			onFailure: error => Debug.LogError($"æ¿€åŠ±è§†é¢‘åŠ è½½å¤±è´¥ {error.Code}:{error.Message}"));
 	}
 
 	public GameObject advertisement;

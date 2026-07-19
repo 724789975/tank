@@ -51,12 +51,12 @@ public class EtcdUtil : MonoBehaviour
 			isLogin = false;
 			if (!ok)
 			{
-				Debug.Log($"µÇÂ¼etcdÊ§°Ü£¬·şÎñÆ÷ÏìÓ¦Òì³££º{response}");
+				Debug.Log($"ç™»å½•etcdå¤±è´¥ï¼ŒæœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 			}
 			else
 			{
 				string responseStr = System.Text.Encoding.UTF8.GetString(response);
-				Debug.Log($"µÇÂ¼etcd³É¹¦£¬·şÎñÆ÷ÏìÓ¦£º{responseStr}");
+				Debug.Log($"ç™»å½•etcdæˆåŠŸï¼ŒæœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 				AuthResp authResp = JsonUtility.FromJson<AuthResp>(responseStr);
 				
 				foreach (Action<string, bool> op in ops)
@@ -92,11 +92,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"ÇëÇóetcd£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+			Debug.Log($"è¯·æ±‚etcdï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"ÇëÇóetcd »ñÈ¡tokenÊ§°Ü£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+				Debug.Log($"è¯·æ±‚etcd è·å–tokenå¤±è´¥ï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 				return;
 			}
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
@@ -104,12 +104,12 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"ÇëÇóetcdÊ§°Ü£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦Òì³££º{response}");
+					Debug.Log($"è¯·æ±‚etcdå¤±è´¥ï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"ÇëÇóetcd³É¹¦£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦£º{responseStr}");
+					Debug.Log($"è¯·æ±‚etcdæˆåŠŸï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 				}
 			});
 		});
@@ -137,11 +137,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"ÇëÇóetcd£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+			Debug.Log($"è¯·æ±‚etcdï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"ÇëÇóetcd »ñÈ¡tokenÊ§°Ü£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+				Debug.Log($"è¯·æ±‚etcd è·å–tokenå¤±è´¥ï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 				callback(null, false);
 				return;
 			}
@@ -151,13 +151,13 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"ÇëÇóetcdÊ§°Ü£¬{url}£¬²ÎÊı{pbody} ·şÎñÆ÷ÏìÓ¦Òì³££º{response}");
+					Debug.Log($"è¯·æ±‚etcdå¤±è´¥ï¼Œ{url}ï¼Œå‚æ•°{pbody} æœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 					callback(null, false);
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"ÇëÇóetcd³É¹¦£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦£º{responseStr}");
+					Debug.Log($"è¯·æ±‚etcdæˆåŠŸï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 					Dictionary<string, object> ret = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseStr);
 					Dictionary<string, string> keyValues = new Dictionary<string, string>();
 					if (ret.TryGetValue("kvs", out object kvs))
@@ -196,19 +196,19 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"ÇëÇóetcd£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+			Debug.Log($"è¯·æ±‚etcdï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
 			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
 			{
 				if (!ok)
 				{
-					Debug.Log($"ÇëÇóetcdÊ§°Ü£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦Òì³££º{response}");
+					Debug.Log($"è¯·æ±‚etcdå¤±è´¥ï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"ÇëÇóetcd³É¹¦£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦£º{responseStr}");
+					Debug.Log($"è¯·æ±‚etcdæˆåŠŸï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 				}
 			});
 		};
@@ -227,11 +227,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"ÇëÇóetcd£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+			Debug.Log($"è¯·æ±‚etcdï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"ÇëÇóetcd »ñÈ¡tokenÊ§°Ü£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+				Debug.Log($"è¯·æ±‚etcd è·å–tokenå¤±è´¥ï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 				return;
 			}
 
@@ -240,12 +240,12 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"ÇëÇóetcdÊ§°Ü£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦Òì³££º{response}");
+					Debug.Log($"è¯·æ±‚etcdå¤±è´¥ï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"ÇëÇóetcd³É¹¦£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦£º{responseStr}");
+					Debug.Log($"è¯·æ±‚etcdæˆåŠŸï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 
 					Dictionary<string, object> ret = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseStr);
 					a(token, ret["ID"].ToString());
@@ -271,11 +271,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"ÇëÇóetcd£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+			Debug.Log($"è¯·æ±‚etcdï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"ÇëÇóetcd »ñÈ¡tokenÊ§°Ü£¬{url}£¬ÇëÇó²ÎÊı£º{pbody}");
+				Debug.Log($"è¯·æ±‚etcd è·å–tokenå¤±è´¥ï¼Œ{url}ï¼Œè¯·æ±‚å‚æ•°ï¼š{pbody}");
 				return;
 			}
 
@@ -284,12 +284,12 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"ÇëÇóetcdÊ§°Ü£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦Òì³££º{response}");
+					Debug.Log($"è¯·æ±‚etcdå¤±è´¥ï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”å¼‚å¸¸ï¼š{response}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"ÇëÇóetcd³É¹¦£¬{url}£¬ ·şÎñÆ÷ÏìÓ¦£º{responseStr}");
+					Debug.Log($"è¯·æ±‚etcdæˆåŠŸï¼Œ{url}ï¼Œ æœåŠ¡å™¨å“åº”ï¼š{responseStr}");
 				}
 			});
 		});
@@ -302,7 +302,7 @@ public class EtcdUtil : MonoBehaviour
 	List<Action<string, bool>> ops = new List<Action<string, bool>>();
 
 	static EtcdUtil instance;
-	// ¹«¹²·ÃÎÊ½Ó¿Ú
+	// å…¬å…±è®¿é—®æ¥å£
 	public static EtcdUtil Instance
 	{
 		get
@@ -316,12 +316,12 @@ public class EtcdUtil : MonoBehaviour
 						instance = FindObjectOfType<EtcdUtil>();
 						if (instance == null)
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							instance = singletonObject.AddComponent<EtcdUtil>();
 							singletonObject.name = typeof(EtcdUtil).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}

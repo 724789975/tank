@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "com.dlxl.fxnet": "https://github.com/724789975/fxnet.git?path=fxnet4unity#dllforunity",
-    "com.google.external-dependency-manager": "1.2.186",
+    "com.google.external-dependency-manager": "1.2.188",
     "com.oddworm.commandline": "https://github.com/pschraut/UnityCommandLine.git#1.2.0",
     "com.psygames.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#upm",
+    "com.fxnet.network": "https://github.com/724789975/fxnet.git?path=/network/Packages/com.fxnet.network#unity",
     "com.taptap.sdk.core": "4.8.2",
     "com.taptap.sdk.login": "4.9.5",
     "com.unity.2d.pixel-perfect": "5.1.1",

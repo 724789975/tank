@@ -42,7 +42,7 @@ public class BulletManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// »ñÈ¡ÓëÖ¸¶¨Î»ÖÃ×î½üµÄnum¸ö×Óµ¯
+	/// è·å–ä¸æŒ‡å®šä½ç½®æœ€è¿‘çš„numä¸ªå­å¼¹
 	/// </summary>
 	/// <param name="position"></param>
 	/// <param name="num"></param>

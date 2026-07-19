@@ -23,10 +23,10 @@ public class GateWayNet : MonoBehaviour
 	{
 		string serverUrl = "ws://115.190.230.47:32001/ws";
 
-		// ´´½¨Ò»¸öĞÂµÄWebSocketÊµÀı²¢ÓëÖ¸¶¨URL½¨Á¢Á¬½Ó
+		// åˆ›å»ºä¸€ä¸ªæ–°çš„WebSocketå®ä¾‹å¹¶ä¸æŒ‡å®šURLå»ºç«‹è¿æ¥
 		webSocket = new WebSocket(serverUrl);
 
-		// ×¢²áÊÂ¼ş»Øµ÷
+		// æ³¨å†Œäº‹ä»¶å›è°ƒ
 		webSocket.OnOpen += Instance.OnOpen;
 		webSocket.OnMessage += Instance.OnMessage;
 		webSocket.OnError += Instance.OnError;
@@ -40,7 +40,7 @@ public class GateWayNet : MonoBehaviour
 
 	protected void OnOpen(object sender, OpenEventArgs e)
 	{
-		Debug.Log("WebSocketÁ¬½Ó³É¹¦");
+		Debug.Log("WebSocketè¿æ¥æˆåŠŸ");
 
 		GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
 		loginRequest.Id = AccountInfo.Instance.Account.Openid;
@@ -51,20 +51,20 @@ public class GateWayNet : MonoBehaviour
 	protected void OnMessage(object sender, MessageEventArgs e)
 	{
 		Any any = Any.Parser.ParseFrom(e.RawData);
-		Debug.Log("WebSocketÊÕµ½ÏûÏ¢ÀàĞÍ£º" + any.TypeUrl);
+		Debug.Log("WebSocketæ”¶åˆ°æ¶ˆæ¯ç±»å‹ï¼š" + any.TypeUrl);
 		WSMsgProcess.Instance.ProcessMessage(sender, any);
 	}
 
 	protected void OnError(object sender, ErrorEventArgs e)
 	{
-		Debug.LogError($"WebSocketÁ¬½Ó´íÎó£º{e.Message}\n {(e.Exception != null ? e.Exception.StackTrace : string.Empty)}");
+		Debug.LogError($"WebSocketè¿æ¥é”™è¯¯ï¼š{e.Message}\n {(e.Exception != null ? e.Exception.StackTrace : string.Empty)}");
 	}
 
 	protected void OnClose(object sender, CloseEventArgs e)
 	{
 		webSocket.CloseAsync();
 		webSocket = null;
-		Debug.Log("WebSocketÁ¬½ÓÒÑ¹Ø±Õ");
+		Debug.Log("WebSocketè¿æ¥å·²å…³é—­");
 		TimerU.Instance.AddTask(3f, () => 
 		{
 			Reconnect();
@@ -76,7 +76,7 @@ public class GateWayNet : MonoBehaviour
 		if(webSocket == null || webSocket.ReadyState != WebSocketState.Open)
 		{
 			TimerU.Instance.AddTask(3f, Reconnect);
-			Debug.Log("WebSocketÁ¬½Ó¶Ï¿ª£¬³¢ÊÔÖØĞÂÁ¬½Ó");
+			Debug.Log("WebSocketè¿æ¥æ–­å¼€ï¼Œå°è¯•é‡æ–°è¿æ¥");
 			Instance.Create();
 			Instance.Connect();
 		}
@@ -97,12 +97,12 @@ public class GateWayNet : MonoBehaviour
 						instance = FindObjectOfType<GateWayNet>();
 						if (instance == null)
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							instance = singletonObject.AddComponent<GateWayNet>();
 							singletonObject.name = typeof(GateWayNet).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}

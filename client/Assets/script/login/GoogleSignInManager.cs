@@ -11,9 +11,9 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 
 /// <summary>
-/// Google µÇÂ¼¹ÜÀíÀà
-/// ¹¦ÄÜ£ºÊµÏÖ Google OAuth 2.0 µÇÂ¼Á÷³Ì£¬»ñÈ¡ÓÃ»§ĞÅÏ¢
-/// Ö§³ÖÆ½Ì¨£ºWindows¡¢Android¡¢iOS µÈ Unity Ö§³ÖµÄÆ½Ì¨
+/// Google ç™»å½•ç®¡ç†ç±»
+/// åŠŸèƒ½ï¼šå®ç° Google OAuth 2.0 ç™»å½•æµç¨‹ï¼Œè·å–ç”¨æˆ·ä¿¡æ¯
+/// æ”¯æŒå¹³å°ï¼šWindowsã€Androidã€iOS ç­‰ Unity æ”¯æŒçš„å¹³å°
 /// </summary>
 public class GoogleSignInManager : MonoBehaviour
 {
@@ -44,7 +44,7 @@ public class GoogleSignInManager : MonoBehaviour
         }
     }
 
-    [Header("Google OAuth ÅäÖÃ")]
+    [Header("Google OAuth é…ç½®")]
     [SerializeField] private string clientId = "1061525001536-hblht7k9otpaeaoksrdrvnj7om2emnt5.apps.googleusercontent.com";
     [SerializeField] private string redirectUri = "http://quchifan.wang:30080/api/1.0/get/user_server/google_oauth_callback";
     [SerializeField] private string scope = "openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
@@ -198,7 +198,7 @@ public class GoogleSignInManager : MonoBehaviour
         statusObj.transform.localScale = Vector3.one;
         statusText = statusObj.AddComponent<Text>();
         statusText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        statusText.text = "ÇëÔÚä¯ÀÀÆ÷ÖĞÍê³ÉÊÚÈ¨ºó£¬Õ³ÌùÊÚÈ¨Âë";
+        statusText.text = "è¯·åœ¨æµè§ˆå™¨ä¸­å®Œæˆæˆæƒåï¼Œç²˜è´´æˆæƒç ";
         statusText.fontSize = 14;
         statusText.color = Color.yellow;
         statusText.alignment = TextAnchor.MiddleCenter;
@@ -244,12 +244,12 @@ public class GoogleSignInManager : MonoBehaviour
             + "&code_challenge=" + Uri.EscapeDataString(codeChallenge)
             + "&code_challenge_method=S256";
 
-        Debug.Log("ÊÚÈ¨ URL: " + authUrl);
+        Debug.Log("æˆæƒ URL: " + authUrl);
         Application.OpenURL(authUrl);
 
         if (statusText != null)
         {
-            statusText.text = "ÇëÔÚä¯ÀÀÆ÷ÖĞÍê³ÉÊÚÈ¨ºó£¬Õ³ÌùÊÚÈ¨Âëµ½ÉÏ·½ÊäÈë¿ò";
+            statusText.text = "è¯·åœ¨æµè§ˆå™¨ä¸­å®Œæˆæˆæƒåï¼Œç²˜è´´æˆæƒç åˆ°ä¸Šæ–¹è¾“å…¥æ¡†";
         }
     }
 
@@ -264,13 +264,13 @@ public class GoogleSignInManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(code))
         {
-            ShowError("ÊÚÈ¨Âë²»ÄÜÎª¿Õ");
+            ShowError("æˆæƒç ä¸èƒ½ä¸ºç©º");
             return;
         }
 
         if (code.Length < 10)
         {
-            ShowError("ÊÚÈ¨Âë¸ñÊ½²»ÕıÈ·");
+            ShowError("æˆæƒç æ ¼å¼ä¸æ­£ç¡®");
             return;
         }
 
@@ -286,15 +286,15 @@ public class GoogleSignInManager : MonoBehaviour
             + "?code=" + Uri.EscapeDataString(code)
             + "&codeVerifier=" + Uri.EscapeDataString(codeVerifier);
 
-        Debug.Log("ÇëÇó URL: " + url);
+        Debug.Log("è¯·æ±‚ URL: " + url);
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.timeout = 30;
         request.certificateHandler = new AcceptAllCertificates();
 
-        // ÁíÍâ£¬ĞèÒªÔÚÏîÄ¿ÉèÖÃÖĞÔÊĞí²»°²È«Á¬½Ó
-        // Edit ¡ú Project Settings ¡ú Player ¡ú Other Settings
-        // "Allow downloads over HTTP" ÉèÖÃÎª "Always allowed"
+        // å¦å¤–ï¼Œéœ€è¦åœ¨é¡¹ç›®è®¾ç½®ä¸­å…è®¸ä¸å®‰å…¨è¿æ¥
+        // Edit â†’ Project Settings â†’ Player â†’ Other Settings
+        // "Allow downloads over HTTP" è®¾ç½®ä¸º "Always allowed"
 
         yield return request.SendWebRequest();
 
@@ -304,7 +304,7 @@ public class GoogleSignInManager : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             string responseText = request.downloadHandler.text;
-            Debug.Log("ÏìÓ¦: " + responseText);
+            Debug.Log("å“åº”: " + responseText);
 
             try
             {
@@ -327,24 +327,24 @@ public class GoogleSignInManager : MonoBehaviour
                     OnLoginStatusChanged?.Invoke(true);
                     OnUserInfoReceived?.Invoke(CurrentUser);
 
-                    Debug.Log("µÇÂ¼³É¹¦£¡ÓÃ»§: " + CurrentUser.name);
+                    Debug.Log("ç™»å½•æˆåŠŸï¼ç”¨æˆ·: " + CurrentUser.name);
                     DestroyLoginUI();
                 }
                 else
                 {
-                    ShowError("µÇÂ¼Ê§°Ü: " + rsp.Msg);
+                    ShowError("ç™»å½•å¤±è´¥: " + rsp.Msg);
                     OnErrorOccurred?.Invoke(rsp.Msg);
                 }
             }
             catch (Exception e)
             {
-                ShowError("½âÎöÏìÓ¦Ê§°Ü: " + e.Message);
-                OnErrorOccurred?.Invoke("½âÎöÏìÓ¦Ê§°Ü: " + e.Message);
+                ShowError("è§£æå“åº”å¤±è´¥: " + e.Message);
+                OnErrorOccurred?.Invoke("è§£æå“åº”å¤±è´¥: " + e.Message);
             }
         }
         else
         {
-            string errorMsg = "ÇëÇóÊ§°Ü: " + request.error;
+            string errorMsg = "è¯·æ±‚å¤±è´¥: " + request.error;
             ShowError(errorMsg);
             OnErrorOccurred?.Invoke(errorMsg);
             Debug.LogError(errorMsg);
@@ -365,7 +365,7 @@ public class GoogleSignInManager : MonoBehaviour
 
         if (statusText != null)
         {
-            statusText.text = loading ? "ÕıÔÚÑéÖ¤ÊÚÈ¨Âë..." : "ÇëÔÚä¯ÀÀÆ÷ÖĞÍê³ÉÊÚÈ¨ºó£¬Õ³ÌùÊÚÈ¨Âëµ½ÉÏ·½ÊäÈë¿ò";
+            statusText.text = loading ? "æ­£åœ¨éªŒè¯æˆæƒç ..." : "è¯·åœ¨æµè§ˆå™¨ä¸­å®Œæˆæˆæƒåï¼Œç²˜è´´æˆæƒç åˆ°ä¸Šæ–¹è¾“å…¥æ¡†";
             statusText.color = loading ? Color.cyan : Color.yellow;
         }
     }
@@ -457,7 +457,7 @@ public class GoogleSignInManager : MonoBehaviour
 }
 
 /// <summary>
-/// Google ÓÃ»§ĞÅÏ¢Àà
+/// Google ç”¨æˆ·ä¿¡æ¯ç±»
 /// </summary>
 [Serializable]
 public class GoogleUserInfo

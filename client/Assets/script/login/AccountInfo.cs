@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class AccountInfo : MonoBehaviour
 {
-	// ¹«¹²·ÃÎÊ½Ó¿Ú
+	// å…¬å…±è®¿é—®æ¥å£
 	public static AccountInfo Instance
 	{
 		get
@@ -20,12 +20,12 @@ public class AccountInfo : MonoBehaviour
 						_instance = FindObjectOfType<AccountInfo>();
 						if (_instance == null )
 						{
-							// ´´½¨ĞÂµÄÊµÀı
+							// åˆ›å»ºæ–°çš„å®ä¾‹
 							GameObject singletonObject = new GameObject();
 							_instance = singletonObject.AddComponent<AccountInfo>();
 							singletonObject.name = typeof(AccountInfo).ToString();
 
-							// È·±£µ¥Àı²»»á±»Ïú»Ù
+							// ç¡®ä¿å•ä¾‹ä¸ä¼šè¢«é”€æ¯
 							DontDestroyOnLoad(singletonObject);
 						}
 					}
@@ -36,7 +36,7 @@ public class AccountInfo : MonoBehaviour
 		}
 	}
 
-	// ·ÀÖ¹Í¨¹ı¹¹Ôìº¯Êı´´½¨ÊµÀı
+	// é˜²æ­¢é€šè¿‡æ„é€ å‡½æ•°åˆ›å»ºå®ä¾‹
 	private AccountInfo() { }
 	
 	// Start is called before the first frame update
@@ -61,7 +61,7 @@ public class AccountInfo : MonoBehaviour
 			//	{
 			//		Avatar = "https://img3.tapimg.com/default_avatars/aba00206f8642b0bbef01ef8f271e9da.jpg?imageMogr2/auto-orient/strip/thumbnail/!270x270r/gravity/Center/crop/270x270/format/jpg/interlace/1/quality/80",
 			//		Gender = "",
-			//		Name = "ÀäË®ÅİÃæ",
+			//		Name = "å†·æ°´æ³¡é¢",
 			//		Openid = "mzw0536knQSO+bhbdL6dtw==",
 			//		Unionid = "SnwhJ5s2EURKCKt0LBsDLw=="
 			//	};
@@ -87,9 +87,9 @@ public class AccountInfo : MonoBehaviour
 		}
     }
 
-	// µ¥ÀıÊµÀı
+	// å•ä¾‹å®ä¾‹
 	static AccountInfo _instance;
-	// Ïß³ÌËø£¬È·±£Ïß³Ì°²È«
+	// çº¿ç¨‹é”ï¼Œç¡®ä¿çº¿ç¨‹å®‰å…¨
 	static readonly object Lock = new object();
 	UserCenter.TapInfo account = new UserCenter.TapInfo();
 

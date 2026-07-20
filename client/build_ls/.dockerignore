@@ -1,0 +1,10 @@
+# 不需要打进镜像的文件
+Dockerfile
+.dockerignore
+build-server.bat
+build-server-ws.bat
+build-image.bat
+build.log
+build_ws.log
+*.tar.gz
+*_BurstDebugInformation_DoNotShip

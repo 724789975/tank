@@ -57,3 +57,5 @@ go.sum
 /volumes/*
 auction/auction-server.tar.gz
 route/route-server.tar.gz
+ranking/ranking-server.tar.gz
+client/UserSettings/Layouts/default-2022.dwlt

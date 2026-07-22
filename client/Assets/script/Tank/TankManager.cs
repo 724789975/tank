@@ -7,9 +7,9 @@ public class TankManager : MonoBehaviour
     void Start()
     {
 #if UNITY_SERVER && !AI_RUNNING
-        Debug.Log("server model");
+        Debug.Log("[TankManager][Start] running in server model");
 #else
-        Debug.Log("client model");
+        Debug.Log("[TankManager][Start] running in client model");
 #endif
 		instance = this;
 	}
@@ -23,7 +23,7 @@ public class TankManager : MonoBehaviour
 	{
 		if (GetTank(id))
 		{
-			Debug.LogWarning($"already in map {id}");
+			Debug.LogWarning($"[TankManager][AddTank] tank already in map, id={id}");
 			isAdd = false;
 			return GetTank(id);
 		}
@@ -35,6 +35,7 @@ public class TankManager : MonoBehaviour
 
 		instanceMap.Add(id, tankInstance.GetComponent<TankInstance>());
 		isAdd = true;
+		Debug.Log($"[TankManager][AddTank] tank created, id={id} name={name} total={instanceMap.Count}");
 		return instanceMap[id];
 	}
 
@@ -42,7 +43,7 @@ public class TankManager : MonoBehaviour
 	{
 		if (instanceMap.ContainsKey(id))
 		{
-			Debug.Log($"remove tank {id}");
+			Debug.Log($"[TankManager][RemoveTank] removing tank, id={id}");
 			Destroy(instanceMap[id].gameObject);
 			instanceMap.Remove(id);
 		}

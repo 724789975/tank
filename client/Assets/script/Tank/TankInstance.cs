@@ -33,7 +33,7 @@ public class TankInstance : MonoBehaviour
             {
 				rebornTime = 0;
 				GetComponent<BoxCollider>().enabled = true;
-				Debug.Log($"Tank {ID} reborn protection ended.");
+				Debug.Log($"[TankInstance][Update] tank reborn protection ended, id={ID}");
                 isDead = false;
 			}
         }
@@ -42,7 +42,7 @@ public class TankInstance : MonoBehaviour
         ServerPlayer playerData = PlayerManager.Instance.GetPlayer(ID);
         if (playerData == null)
         {
-            Debug.Log($"get player error {ID}");
+            Debug.LogWarning($"[TankInstance][Update] player not found on server, id={ID}");
             offLineTime += Time.deltaTime;
             onLine = false;
             return;
@@ -61,7 +61,7 @@ public class TankInstance : MonoBehaviour
 		ClientPlayer clientPlayer = PlayerManager.Instance.GetPlayer(ID);
 		if (clientPlayer == null)
 		{
-			Debug.LogWarning($"get player error {ID}");
+			Debug.LogWarning($"[TankInstance][Update] player not found on client, id={ID}");
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class TankInstance : MonoBehaviour
 				rebornTime = 0;
 				gameObject.GetComponent<MeshRenderer>().enabled = true;
 				gameObject.GetComponentInChildren<MeshRenderer>().enabled = true;
-				Debug.Log($"Tank {ID} reborn protection ended.");
+				Debug.Log($"[TankInstance][Update] tank reborn protection ended, id={ID}");
 			}
 		}
 
@@ -184,6 +184,6 @@ public class TankInstance : MonoBehaviour
     int hp = 0;
 
 #if UNITY_SERVER && !AI_RUNNING
-    public float offLineTime;
+    [System.NonSerialized] public float offLineTime;
 #endif
 }

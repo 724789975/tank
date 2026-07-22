@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -9,23 +10,27 @@ using UnityEngine;
 /// <summary>
 /// Linux 专用服务器（Dedicated Server）打包脚本。
 ///
-/// 提供两个命令行入口（均输出到 build_ls/tank.x86_64，构建前会清理旧产物）：
-/// - ServerBuild.BuildLinuxServer   : 非 CLIENT_WS 版本（FxNet 网络库）
-/// - ServerBuild.BuildLinuxServerWS : CLIENT_WS 版本（WebSocketSharp 网络库）
+/// 提供四个命令行入口（各自输出前会清理目标目录的旧产物）：
+/// - ServerBuild.BuildLinuxServer   : 游戏服务器，非 CLIENT_WS（FxNet），场景 server.unity，输出 build_ls/tank.x86_64
+/// - ServerBuild.BuildLinuxServerWS : 游戏服务器，CLIENT_WS（WebSocketSharp），场景 server.unity，输出 build_ls/tank.x86_64
+/// - ServerBuild.BuildLinuxAI       : AI 机器人，非 CLIENT_WS（FxNet），场景 ai.unity，输出 build_lai/tank.x86_64
+/// - ServerBuild.BuildLinuxAIWS     : AI 机器人，CLIENT_WS（WebSocketSharp），场景 ai.unity，输出 build_lai/tank.x86_64
 ///
 /// 关键点：
 /// 1. 目标平台 StandaloneLinux64（x86_64）。
 /// 2. 使用 StandaloneBuildSubtarget.Server 构建专用服务器，该子目标会自动定义 UNITY_SERVER 宏。
-/// 3. 主场景为 Assets/scene/server.unity。
-/// 4. 默认输出到 build_ls 目录（与 Dockerfile 中的可执行文件名一致）。
-/// 5. 两个入口分别确定性地开启/关闭 CLIENT_WS（临时修改 Scripting Define Symbols），构建结束后还原，避免污染工程设置。
+/// 3. AI 机器人额外开启 AI_RUNNING 宏（与 UNITY_SERVER 同时生效）。
+/// 4. 各入口确定性地开启/关闭 CLIENT_WS、AI_RUNNING（临时修改 Scripting Define Symbols），构建结束后还原，避免污染工程设置。
 /// </summary>
 public static class ServerBuild
 {
-    // 主场景（专用服务器场景）
+    // 游戏服务器场景
     private const string k_ServerScene = "Assets/scene/server.unity";
 
-    // 可执行文件名，需与 build_ls/Dockerfile 中 chmod +x ./tank.x86_64 保持一致（WS 与非 WS 版本共用）
+    // AI 机器人场景
+    private const string k_AiScene = "Assets/scene/ai.unity";
+
+    // 可执行文件名，需与 Dockerfile 中 chmod +x ./tank.x86_64 保持一致（各版本共用，构建前清理）
     private const string k_ExecutableName = "tank.x86_64";
 
     // 命令行覆盖输出路径的参数名
@@ -34,34 +39,54 @@ public static class ServerBuild
     // CLIENT_WS 宏（WebSocketSharp 网络库）
     private const string k_ClientWsDefine = "CLIENT_WS";
 
+    // AI_RUNNING 宏（AI 机器人）
+    private const string k_AiRunningDefine = "AI_RUNNING";
+
     /// <summary>
-    /// 由 build_ls/build-server.bat 通过 -executeMethod 调用的入口。
-    /// 非 CLIENT_WS 版本（FxNet 网络库）。
+    /// 由 build_ls/build-server.bat 调用：游戏服务器，非 CLIENT_WS（FxNet 网络库）。
     /// </summary>
     public static void BuildLinuxServer()
     {
-        BuildInternal(k_ExecutableName, enableClientWs: false);
+        BuildInternal(k_ServerScene, "build_ls", k_ExecutableName, enableClientWs: false, enableAiRunning: false);
     }
 
     /// <summary>
-    /// 由 build_ls/build-server-ws.bat 通过 -executeMethod 调用的入口。
-    /// CLIENT_WS 版本（WebSocketSharp 网络库）。
+    /// 由 build_ls/build-server-ws.bat 调用：游戏服务器，CLIENT_WS（WebSocketSharp 网络库）。
     /// </summary>
     public static void BuildLinuxServerWS()
     {
-        BuildInternal(k_ExecutableName, enableClientWs: true);
+        BuildInternal(k_ServerScene, "build_ls", k_ExecutableName, enableClientWs: true, enableAiRunning: false);
+    }
+
+    /// <summary>
+    /// 由 build_lai/build-ai.bat 调用：AI 机器人，非 CLIENT_WS（FxNet 网络库）。
+    /// </summary>
+    public static void BuildLinuxAI()
+    {
+        BuildInternal(k_AiScene, "build_lai", k_ExecutableName, enableClientWs: false, enableAiRunning: true);
+    }
+
+    /// <summary>
+    /// 由 build_lai/build-ai-ws.bat 调用：AI 机器人，CLIENT_WS（WebSocketSharp 网络库）。
+    /// </summary>
+    public static void BuildLinuxAIWS()
+    {
+        BuildInternal(k_AiScene, "build_lai", k_ExecutableName, enableClientWs: true, enableAiRunning: true);
     }
 
     /// <summary>
     /// 共用的构建实现。
     /// </summary>
+    /// <param name="scene">主场景路径。</param>
+    /// <param name="outputSubDir">默认输出目录（项目根下的子目录，如 build_ls / build_lai）。</param>
     /// <param name="executableName">默认输出的可执行文件名。</param>
-    /// <param name="enableClientWs">true 追加 CLIENT_WS（WebSocketSharp），false 移除 CLIENT_WS（FxNet）；构建后会还原工程原有设置。</param>
-    private static void BuildInternal(string executableName, bool enableClientWs)
+    /// <param name="enableClientWs">true 开启 CLIENT_WS（WebSocketSharp），false 关闭（FxNet）。</param>
+    /// <param name="enableAiRunning">true 开启 AI_RUNNING（AI 机器人），false 关闭（游戏服务器）。</param>
+    private static void BuildInternal(string scene, string outputSubDir, string executableName, bool enableClientWs, bool enableAiRunning)
     {
-        // 默认输出：<项目根>/build_ls/<executableName>
+        // 默认输出：<项目根>/<outputSubDir>/<executableName>
         var outputPath = Path.GetFullPath(
-            Path.Combine(Application.dataPath, "..", "build_ls", executableName));
+            Path.Combine(Application.dataPath, "..", outputSubDir, executableName));
 
         // 允许通过命令行覆盖输出路径
         var args = Environment.GetCommandLineArgs();
@@ -90,24 +115,14 @@ public static class ServerBuild
         var namedTarget = NamedBuildTarget.Server;
         var originalDefines = PlayerSettings.GetScriptingDefineSymbols(namedTarget);
 
-        // 确定性地开启/关闭 CLIENT_WS，使两个构建入口互相独立，不受工程既有设置影响
+        // 确定性地开启/关闭 CLIENT_WS、AI_RUNNING，使各构建入口互相独立，不受工程既有设置影响
         var defineList = originalDefines
             .Split(';')
             .Where(s => !string.IsNullOrWhiteSpace(s))
             .ToList();
-        bool definesChanged;
-        if (enableClientWs)
-        {
-            definesChanged = !defineList.Contains(k_ClientWsDefine);
-            if (definesChanged)
-            {
-                defineList.Add(k_ClientWsDefine);
-            }
-        }
-        else
-        {
-            definesChanged = defineList.Remove(k_ClientWsDefine);
-        }
+        var definesChanged = false;
+        definesChanged |= SetDefine(defineList, k_ClientWsDefine, enableClientWs);
+        definesChanged |= SetDefine(defineList, k_AiRunningDefine, enableAiRunning);
 
         BuildReport report = null;
         try
@@ -125,7 +140,7 @@ public static class ServerBuild
 
             var options = new BuildPlayerOptions
             {
-                scenes = new[] { k_ServerScene },
+                scenes = new[] { scene },
                 locationPathName = outputPath,
                 target = BuildTarget.StandaloneLinux64,
                 targetGroup = BuildTargetGroup.Standalone,
@@ -133,7 +148,7 @@ public static class ServerBuild
                 options = BuildOptions.None,
             };
 
-            Debug.Log($"[ServerBuild] Building Linux dedicated server (CLIENT_WS={enableClientWs}) -> {outputPath}");
+            Debug.Log($"[ServerBuild] Building Linux dedicated server (CLIENT_WS={enableClientWs}, AI_RUNNING={enableAiRunning}) -> {outputPath}");
             report = BuildPipeline.BuildPlayer(options);
         }
         finally
@@ -207,5 +222,23 @@ public static class ServerBuild
         {
             Directory.Delete(path, recursive: true);
         }
+    }
+
+    /// <summary>
+    /// 确定性地设置某个宏的开关状态；返回是否发生了变化（用于构建后还原）。
+    /// </summary>
+    private static bool SetDefine(List<string> defineList, string define, bool enabled)
+    {
+        if (enabled)
+        {
+            if (defineList.Contains(define))
+            {
+                return false;
+            }
+            defineList.Add(define);
+            return true;
+        }
+
+        return defineList.Remove(define);
     }
 }

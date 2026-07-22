@@ -22,28 +22,28 @@ public class WSMsg : MonoBehaviour
 	static void Tesst(object sender, Any anyMessage)
 	{
 		GateWay.Test test = anyMessage.Unpack<GateWay.Test>();
-		Debug.Log(test.ToString());
+		Debug.Log($"[WSMsg][Test] received test message: {test}");
 	}
 
 	[WSHandler("gate_way.LoginResp")]
 	static void LoginResp(object sender, Any anyMessage)
 	{
 		GateWay.LoginResp test = anyMessage.Unpack<GateWay.LoginResp>();
-		Debug.Log(test.ToString());
+		Debug.Log($"[WSMsg][LoginResp] received login response: {test}");
 	}
 
 	[WSHandler("match_proto.GameInfo")]
 	static void GameInfo(object sender, Any anyMessage)
 	{
 		MatchProto.MatchInfoNtf info = anyMessage.Unpack<MatchProto.MatchInfoNtf>();
-		Debug.Log(info.ToString());
+		Debug.Log($"[WSMsg][GameInfo] received match info: {info}");
 	}
 
 	[WSHandler("match_proto.GameInfoNtf")]
 	static void GameInfoNtf(object sender, Any anyMessage)
 	{
 		MatchProto.GameInfoNtf info = anyMessage.Unpack<MatchProto.GameInfoNtf>();
-		Debug.Log(info.ToString());
+		Debug.Log($"[WSMsg][GameInfoNtf] match complete, gameAddr={info.GameAddr} gamePort={info.GamePort}, loading tank scene");
 
 		Config.Instance.serverIP = info.GameAddr;
 		Config.Instance.port = (ushort)info.GamePort;

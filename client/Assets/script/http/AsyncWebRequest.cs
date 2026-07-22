@@ -40,13 +40,13 @@ public class AsyncWebRequest
 			{
 				// 设置结果为false和响应原因
 				tcs.SetResult((false, null));
-				Debug.LogError("请求失败");
+				Debug.LogError($"[AsyncWebRequest][Get] request failed, url={url} statusCode={(int)response.StatusCode}");
 			}
 		}
 		// 捕获所有异常并设置结果为false和异常消息
 		catch (Exception ex)
 		{
-			Debug.LogError(ex);
+			Debug.LogError($"[AsyncWebRequest][Get] request exception, url={url}, exception={ex.Message}\n{ex.StackTrace}");
 			tcs.SetResult((false, null));
 		}
 		// 不管是否发生异常，最后都释放 HttpClient 的资源
@@ -100,12 +100,13 @@ public class AsyncWebRequest
 				}
 				else
 				{
-					Debug.LogError($"请求失败,错误码: {(int)response.StatusCode}");
+					Debug.LogError($"[AsyncWebRequest][Post] request failed, url={url} statusCode={(int)response.StatusCode} reason={response.ReasonPhrase}");
 					tcs.SetResult((false, Encoding.UTF8.GetBytes(response.ReasonPhrase)));
 				}
 			}
 			catch (Exception ex)
 			{
+				Debug.LogError($"[AsyncWebRequest][Post] request exception, url={url}, exception={ex.Message}\n{ex.StackTrace}");
 				tcs.SetResult((false, Encoding.UTF8.GetBytes(ex.Message)));
 			}
 		}

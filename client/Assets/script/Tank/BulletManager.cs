@@ -19,6 +19,11 @@ public class BulletManager : MonoBehaviour
 	{
 		UInt32 id = nextId++;
 		GameObject g = Resources.Load<GameObject>("prafab/bullet");
+		if (g == null)
+		{
+			Debug.LogError($"[BulletManager][AddBullet] load prefab 'prafab/bullet' failed, ownerId={ownerId}");
+			return null;
+		}
 		GameObject bulletInstance = Instantiate(g);
 		bulletInstance.transform.position = position;
 		bulletInstance.transform.rotation = rotation;

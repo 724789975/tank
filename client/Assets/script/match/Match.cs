@@ -25,21 +25,21 @@ public class Match : MonoBehaviour
 			config,
 			onSuccess: result =>
 			{
-				Debug.Log($"Dirichlet 初始化成功: {result.Message}");
+				Debug.Log($"[Match][Start] Dirichlet init success: {result.Message}");
 			},
 			onFailure: error =>
 			{
-				Debug.LogError($"Dirichlet 初始化失败: {error.Code} {error.Message}");
+				Debug.LogError($"[Match][Start] Dirichlet init failed: {error.Code} {error.Message}");
 			}
 		);
 
 		if (!DirichletSdk.IsInitialized)
 		{
-			Debug.LogWarning("Dirichlet SDK 尚未初始化完成");
+			Debug.LogWarning("[Match][Start] Dirichlet SDK not initialized yet");
 		}
 
 		string version = DirichletSdk.GetVersion();
-		Debug.Log($"Dirichlet SDK Version: {version}");
+		Debug.Log($"[Match][Start] Dirichlet SDK version: {version}");
 #endif
 	}
 
@@ -67,18 +67,18 @@ public class Match : MonoBehaviour
 			{ "user-channel", userChannelBody }
 		};
 
-		Debug.Log($"userChannelBody {userChannelBody}");
+		Debug.Log($"[Match][StartMatch] requesting match, userChannel={userChannelBody}");
 
 		asyncWebRequest.Post("http://115.190.230.47:30080/api/1.0/public/match_server/match", "{}", headers, (ok, response) =>
 		{
 			if (!ok)
 			{
-				Debug.Log($"匹配请求失败，服务器响应异常：{response}");
+				Debug.LogError($"[Match][StartMatch] match request failed, response={(response != null ? Encoding.UTF8.GetString(response) : "null")}");
 			}
 			else
 			{
 				string responseStr = Encoding.UTF8.GetString(response);
-				Debug.Log($"匹配请求成功，服务器响应：{responseStr}");
+				Debug.Log($"[Match][StartMatch] match request success, response={responseStr}");
 				MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
 			}
 		});
@@ -102,18 +102,18 @@ public class Match : MonoBehaviour
 			{ "user-channel", userChannelBody }
 		};
 
-		Debug.Log($"userChannelBody {userChannelBody}");
+		Debug.Log($"[Match][PVE] requesting pve, userChannel={userChannelBody}");
 
 		asyncWebRequest.Post("http://115.190.230.47:30080/api/1.0/public/match_server/pve", "{}", headers, (ok, response) =>
 		{
 			if (!ok)
 			{
-				Debug.Log($"pve请求失败，服务器响应异常：{response}");
+				Debug.LogError($"[Match][PVE] pve request failed, response={(response != null ? Encoding.UTF8.GetString(response) : "null")}");
 			}
 			else
 			{
 				string responseStr = Encoding.UTF8.GetString(response);
-				Debug.Log($"pve请求成功，服务器响应：{responseStr}");
+				Debug.Log($"[Match][PVE] pve request success, response={responseStr}");
 				MatchProto.MatchResp rsp = MatchProto.MatchResp.Parser.ParseJson(responseStr);
 			}
 		});
@@ -145,7 +145,7 @@ public class Match : MonoBehaviour
 					}
 					else
 					{
-						Debug.LogWarning($"奖励验证失败: {args.Code} {args.Message}");
+						Debug.LogWarning($"[Match][LoadRewardAd] reward verify failed: {args.Code} {args.Message}");
 					}
 				};
 				rewardAd.Closed += () =>
@@ -155,7 +155,7 @@ public class Match : MonoBehaviour
 				};
 				rewardAd.Show();
 			},
-			onFailure: error => Debug.LogError($"激励视频加载失败 {error.Code}:{error.Message}"));
+			onFailure: error => Debug.LogError($"[Match][LoadRewardAd] reward video load failed {error.Code}:{error.Message}"));
 	}
 
 	public GameObject advertisement;

@@ -34,12 +34,12 @@ public class ServerMsg : MonoBehaviour
 	{
 #if UNITY_SERVER && !AI_RUNNING
 		TankGame.LoginReq loginReq = anyMessage.Unpack<TankGame.LoginReq>();
-		Debug.Log($"OnLoginReq {loginReq.Name} {loginReq.Id}");
+		Debug.Log($"[ServerMsg][LoginReq] login request received, name={loginReq.Name} id={loginReq.Id}");
 
 		UserCenter.UserInfoRsp resp = UserCenterClient.Instance.Client.user_info(new UserCenter.UserInfoReq { Openid = loginReq.Id });
 		if (resp.Code != 0)
 		{
-			Debug.LogError($"get resp error {loginReq.Id}");
+			Debug.LogError($"[ServerMsg][LoginReq] user_info query failed, id={loginReq.Id} code={resp.Code}");
 			return;
 		}
 
@@ -52,14 +52,14 @@ public class ServerMsg : MonoBehaviour
 		{
 			//踢出老用户
 			PlayerManager.Instance.RemovePlayer(playerData.Id);
-			Debug.Log("kick old player");
+			Debug.Log($"[ServerMsg][LoginReq] kick old player, id={playerData.Id}");
 			bRemovePlayer = true;
 		}
 		if (PlayerManager.Instance.AddPlayer(resp.Data.TapInfo.Openid, new ServerPlayer() { Id = resp.Data.TapInfo.Openid, Name = resp.Data.TapInfo.Name,
 			session = pConnector,
 		}))
 		{
-			Debug.Log("into players");
+			Debug.Log($"[ServerMsg][LoginReq] player added, id={resp.Data.TapInfo.Openid} name={resp.Data.TapInfo.Name}");
 			loginRspMessage.Code = 0;
 			loginRspMessage.Msg = "Login successful";
 			NetServer.Instance.SendMessage(pConnector, loginRspMessage);
@@ -85,7 +85,7 @@ public class ServerMsg : MonoBehaviour
 
 			byte[] messageBytes2 = Any.Pack(playerApperanceNtf).ToByteArray();
 			NetServer.Instance.SendMessage(pConnector, messageBytes2);
-			Debug.Log("send appearance");
+			Debug.Log($"[ServerMsg][LoginReq] appearance sent, id={resp.Data.TapInfo.Openid} hp={tankInstance.HP}");
 
 			TankGame.GameStateNtf state_ntf = new TankGame.GameStateNtf();
 			state_ntf.State = Status.Instance.status;
@@ -121,6 +121,7 @@ public class ServerMsg : MonoBehaviour
 		{
 			loginRspMessage.Code = Common.ErrorCode.Failed;
 			loginRspMessage.Msg = "Duplicate login";
+			Debug.LogWarning($"[ServerMsg][LoginReq] duplicate login rejected, id={resp.Data.TapInfo.Openid}");
 			NetServer.Instance.SendMessage(pConnector, loginRspMessage);
 		}
 #endif
@@ -133,7 +134,7 @@ public class ServerMsg : MonoBehaviour
 		TankGame.PlayerStateSyncReq playerStateSyncReq = anyMessage.Unpack<TankGame.PlayerStateSyncReq>();
 		ServerPlayer playerData = PlayerManager.Instance.GetPlayerBySession(pConnector);
 		if (playerData == null) {
-			Debug.LogWarning($"Player data not found: {pConnector}");
+			Debug.LogWarning($"[ServerMsg][PlayerStateSyncReq] player data not found, connector={pConnector}");
 			return;
 		}
 
@@ -141,7 +142,7 @@ public class ServerMsg : MonoBehaviour
 		TankInstance tankInstance = TankManager.Instance.GetTank(playerData.Id);
 		if (tankInstance == null)
 		{
-			Debug.LogWarning($"Tank instance not found: {playerData.Id}");
+			Debug.LogWarning($"[ServerMsg][PlayerStateSyncReq] tank instance not found, id={playerData.Id}");
 			return;
 		}
 
@@ -153,7 +154,7 @@ public class ServerMsg : MonoBehaviour
 				Vector3 np = new Vector3(playerStateSyncReq.Transform.Position.X, playerStateSyncReq.Transform.Position.Y, playerStateSyncReq.Transform.Position.Z);
 				if (Vector3.Distance(playerData.lastPos, np) > tankInstance.speed * playerData.speedCheckDelate * 1.01f)
 				{
-					Debug.LogWarning($"Position jump too large from {playerData.lastPos} to {np}, distance {Vector3.Distance(playerData.lastPos, np)}, max {tankInstance.speed * playerData.speedCheckDelate * 1.01f}");
+					Debug.LogWarning($"[ServerMsg][PlayerStateSyncReq] position jump too large, id={playerData.Id} from={playerData.lastPos} to={np} distance={Vector3.Distance(playerData.lastPos, np)} max={tankInstance.speed * playerData.speedCheckDelate * 1.01f}");
 				}
 				else
 				{
@@ -198,14 +199,14 @@ public class ServerMsg : MonoBehaviour
 		ServerPlayer playerData = PlayerManager.Instance.GetPlayerBySession(pConnector);
 		if (playerData == null)
 		{
-			Debug.LogWarning($"Player data not found: {pConnector}");
+			Debug.LogWarning($"[ServerMsg][PlayerShootReq] player data not found, connector={pConnector}");
 			return;
 		}
 		TankManager.Instance.GetTank(playerData.Id);
 		TankInstance tankInstance = TankManager.Instance.GetTank(playerData.Id);
 		if (tankInstance == null)
 		{
-			Debug.LogWarning($"Tank instance not found: {playerData.Id}");
+			Debug.LogWarning($"[ServerMsg][PlayerShootReq] tank instance not found, id={playerData.Id}");
 			return;
 		}
 		tankInstance.Shoot(playerData.Id, new Vector3(playerShootReq.Transform.Position.X, playerShootReq.Transform.Position.Y, playerShootReq.Transform.Position.Z), new Quaternion(playerShootReq.Transform.Rotation.X, playerShootReq.Transform.Rotation.Y, playerShootReq.Transform.Rotation.Z, playerShootReq.Transform.Rotation.W), Config.Instance.speed);

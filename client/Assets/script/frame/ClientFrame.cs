@@ -66,6 +66,7 @@ public class ClientFrame : MonoBehaviour
             start = true;
             currentTime = serverTime + latency / 2f;
             latency = Latency;
+            Debug.Log($"[ClientFrame][CorrectFrame] frame started, serverTime={serverTime} currentTime={currentTime} latency={latency}");
             return;
         }
         float lagBehind = serverTime - currentTime;

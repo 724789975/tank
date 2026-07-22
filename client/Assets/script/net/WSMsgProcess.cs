@@ -19,11 +19,18 @@ public class WSMsgProcess : Singleton<WSMsgProcess>
 		if (handlerDict.ContainsKey(name))
 		{
 			var method = handlerDict[name];
-			method(sender, msg);
+			try
+			{
+				method(sender, msg);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError($"[WSMsg][ProcessMessage] handle gateway message failed, name={name}, exception={e.Message}\n{e.StackTrace}");
+			}
 		}
 		else
 		{
-			UnityEngine.Debug.LogError($"gate: No handler for message: {name}");
+			UnityEngine.Debug.LogError($"[WSMsg][ProcessMessage] no handler for gateway message: {name}");
 		}
 	}
 

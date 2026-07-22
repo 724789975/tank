@@ -14,18 +14,18 @@ public class Status : MonoBehaviour
         status = TankGame.GameState.None;
 #if UNITY_SERVER && !AI_RUNNING
         status = TankGame.GameState.Ready;
-        Debug.Log("Server is Ready");
+        Debug.Log("[Status][Start] server state -> Ready");
         stateTime = TimerU.Instance.AddTask(10, () => {
             status = TankGame.GameState.Fight;
-            Debug.Log("Server is Fight");
+            Debug.Log("[Status][Start] server state -> Fight");
 
             stateTime = TimerU.Instance.AddTask(3 * 60, () => {
                 status = TankGame.GameState.End;
-				Debug.Log("Server will be shutdown in 10 seconds");
+				Debug.Log("[Status][Start] server state -> End, will shutdown in 10 seconds");
                 stateTime = TimerU.Instance.AddTask(10, () =>
                 {
                     status = TankGame.GameState.Destory;
-                    Debug.Log("Server is Destory");
+                    Debug.Log("[Status][Start] server state -> Destory");
                     OnStatusChange?.Invoke(status, stateTime);
                 }).time;
                 OnStatusChange?.Invoke(status, stateTime);

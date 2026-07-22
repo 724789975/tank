@@ -39,7 +39,7 @@ public class ClientMsg : MonoBehaviour
     static void LoginRsp(object pConnection, Any anyMessage)
     {
         TankGame.LoginRsp loginRsp = anyMessage.Unpack<TankGame.LoginRsp>();
-        Debug.Log($"OnLoginRsp {loginRsp.Code} {loginRsp.Msg}");
+        Debug.Log($"[ClientMsg][LoginRsp] login response received, code={loginRsp.Code} msg={loginRsp.Msg}");
     }
 
     [RpcHandler("tank_game.PlayerApperanceNtf")]
@@ -51,10 +51,10 @@ public class ClientMsg : MonoBehaviour
         tankInstance.ID = playerApperanceNtf.Id;
         tankInstance.HP = playerApperanceNtf.Hp;
         tankInstance.rebornTime = playerApperanceNtf.RebornProtectTime - ClientFrame.Instance.CurrentTime;
-        Debug.Log($"OnPlayerApperanceNtf {playerApperanceNtf.ToString()} {tankInstance.rebornTime} {ClientFrame.Instance.CurrentTime}");
+        Debug.Log($"[ClientMsg][PlayerApperanceNtf] tank appeared, id={playerApperanceNtf.Id} name={playerApperanceNtf.Name} hp={playerApperanceNtf.Hp} rebornTime={tankInstance.rebornTime} currentTime={ClientFrame.Instance.CurrentTime}");
         if (PlayerManager.Instance.AddPlayer(playerApperanceNtf.Id, new PLAYERDATA() { Id = playerApperanceNtf.Id, Name = playerApperanceNtf.Name }))
         {
-            Debug.Log($"Player added successfully: {playerApperanceNtf.Id}");
+            Debug.Log($"[ClientMsg][PlayerApperanceNtf] player added successfully, id={playerApperanceNtf.Id}");
             if (playerApperanceNtf.Transform != null)
             {
                 if (playerApperanceNtf.Transform.Position != null)
@@ -69,7 +69,7 @@ public class ClientMsg : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Failed to add player {playerApperanceNtf.Id} {playerApperanceNtf.Name}, ID already exists");
+            Debug.LogWarning($"[ClientMsg][PlayerApperanceNtf] failed to add player, id={playerApperanceNtf.Id} name={playerApperanceNtf.Name}, ID already exists");
         }
     }
 
@@ -82,7 +82,7 @@ public class ClientMsg : MonoBehaviour
         PLAYERDATA playerData = PlayerManager.Instance.GetPlayer(playerStateNtf.Id);
         if (playerData == null)
         {
-            Debug.LogWarning($"Player data not found: {playerStateNtf.Id}");
+            Debug.LogWarning($"[ClientMsg][PlayerStateNtf] player data not found, id={playerStateNtf.Id}");
             return;
 		}
 
@@ -114,14 +114,14 @@ public class ClientMsg : MonoBehaviour
 		PLAYERDATA playerData = PlayerManager.Instance.GetPlayer(playerStateNtf.Id);
 		if (playerData == null)
 		{
-			Debug.LogWarning($"Player data not found: {playerStateNtf.Id}");
+			Debug.LogWarning($"[ClientMsg][PlayerShootNtf] player data not found, id={playerStateNtf.Id}");
 			return;
 		}
 
         TankInstance tankInstance = TankManager.Instance.GetTank(playerData.Id);
         if (tankInstance == null)
         {
-            Debug.LogWarning($"Tank instance not found: {playerData.Id}");
+            Debug.LogWarning($"[ClientMsg][PlayerShootNtf] tank instance not found, id={playerData.Id}");
             return;
 		}
         tankInstance.Shoot(playerStateNtf.Id, new Vector3(playerStateNtf.Transform.Position.X, playerStateNtf.Transform.Position.Y, playerStateNtf.Transform.Position.Z), new Quaternion(playerStateNtf.Transform.Rotation.X, playerStateNtf.Transform.Rotation.Y, playerStateNtf.Transform.Rotation.Z, playerStateNtf.Transform.Rotation.W), playerStateNtf.Speed);
@@ -152,7 +152,7 @@ public class ClientMsg : MonoBehaviour
         TankInstance tankInstance = TankManager.Instance.GetTank(tankHpSyncNtf.Id);
         if (tankInstance == null)
         {
-            Debug.LogWarning($"Tank instance not found: {tankHpSyncNtf.Id}");
+            Debug.LogWarning($"[ClientMsg][TankHpSyncNtf] tank instance not found, id={tankHpSyncNtf.Id}");
             return;
         }
         tankInstance.HP = tankHpSyncNtf.Hp;
@@ -168,7 +168,7 @@ public class ClientMsg : MonoBehaviour
         TankInstance tankKilled = TankManager.Instance.GetTank(playerDieNtf.KilledId);
         if (tankKilled == null)
         {
-            Debug.LogWarning($"Tank instance not found: {playerDieNtf.KilledId}");
+            Debug.LogWarning($"[ClientMsg][PlayerDieNtf] killed tank instance not found, killedId={playerDieNtf.KilledId}");
             return;
         }
         tankKilled.rebornTime = playerDieNtf.RebornProtectTime - ClientFrame.Instance.CurrentTime;
@@ -176,7 +176,7 @@ public class ClientMsg : MonoBehaviour
         TankInstance tankKiller = TankManager.Instance.GetTank(playerDieNtf.KillerId);
         if (tankKiller == null)
         {
-            Debug.LogWarning($"Tank instance not found: {playerDieNtf.KillerId}");
+            Debug.LogWarning($"[ClientMsg][PlayerDieNtf] killer tank instance not found, killerId={playerDieNtf.KillerId}");
             return;
         }
 
@@ -203,7 +203,7 @@ public class ClientMsg : MonoBehaviour
 
         PlayerControl.Instance.ShowNotice(notice);
 
-        Debug.Log($"OnPlayerDieNtf {playerDieNtf.ToString()} {tankKilled.rebornTime} {ClientFrame.Instance.CurrentTime}");
+        Debug.Log($"[ClientMsg][PlayerDieNtf] player died, killedId={playerDieNtf.KilledId} killerId={playerDieNtf.KillerId} rebornTime={tankKilled.rebornTime} currentTime={ClientFrame.Instance.CurrentTime}");
 #endif
     }
 
@@ -239,7 +239,7 @@ public class ClientMsg : MonoBehaviour
         TankGame.GameStateNtf gameStateNtf = anyMessage.Unpack<TankGame.GameStateNtf>();
         Status.Instance.status = gameStateNtf.State;
         Status.Instance.stateTime = gameStateNtf.Time;
-        Debug.Log($"OnGameStateNtf {gameStateNtf.ToString()}");
+        Debug.Log($"[ClientMsg][GameStateNtf] game state changed, state={gameStateNtf.State} time={gameStateNtf.Time}");
         instance.readyNotice.SetActive(gameStateNtf.State == TankGame.GameState.Ready);
 #endif
     }

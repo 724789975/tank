@@ -44,19 +44,19 @@ public class EtcdUtil : MonoBehaviour
 
 		string body = JsonConvert.SerializeObject(AuthData);
 
-		Debug.Log($"AuthData {body}");
+		Debug.Log($"[Etcd][EtcdOperator] authenticating, addr={etcdAddr} user={etcdUserName}");
 
 		asyncWebRequest.Post(AuthUrl, body, new Dictionary<string, string> { }, (ok, response) =>
 		{
 			isLogin = false;
 			if (!ok)
 			{
-				Debug.Log($"登录etcd失败，服务器响应异常：{response}");
+				Debug.LogError($"[Etcd][EtcdOperator] etcd auth failed, response={(response != null ? System.Text.Encoding.UTF8.GetString(response) : "null")}");
 			}
 			else
 			{
 				string responseStr = System.Text.Encoding.UTF8.GetString(response);
-				Debug.Log($"登录etcd成功，服务器响应：{responseStr}");
+				Debug.Log($"[Etcd][EtcdOperator] etcd auth success, response={responseStr}");
 				AuthResp authResp = JsonUtility.FromJson<AuthResp>(responseStr);
 				
 				foreach (Action<string, bool> op in ops)
@@ -67,7 +67,7 @@ public class EtcdUtil : MonoBehaviour
 					}
 					catch(System.Exception e)
 					{
-						Debug.LogException(e);
+						Debug.LogError($"[Etcd][EtcdOperator] etcd operator callback failed, exception={e.Message}\n{e.StackTrace}");
 					}
 				}
 			}
@@ -92,11 +92,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+			Debug.Log($"[Etcd] request, url={url} body={pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				Debug.LogError($"[Etcd] get token failed, url={url} body={pbody}");
 				return;
 			}
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
@@ -104,12 +104,12 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+					Debug.LogError($"[Etcd] request failed, url={url} response={(response != null ? System.Text.Encoding.UTF8.GetString(response) : "null")}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+					Debug.Log($"[Etcd] request success, url={url} response={responseStr}");
 				}
 			});
 		});
@@ -137,11 +137,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+			Debug.Log($"[Etcd] request, url={url} body={pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				Debug.LogError($"[Etcd] get token failed, url={url} body={pbody}");
 				callback(null, false);
 				return;
 			}
@@ -151,13 +151,13 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"请求etcd失败，{url}，参数{pbody} 服务器响应异常：{response}");
+					Debug.LogError($"[Etcd][Get] request failed, url={url} body={pbody} response={(response != null ? System.Text.Encoding.UTF8.GetString(response) : "null")}");
 					callback(null, false);
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+					Debug.Log($"[Etcd] request success, url={url} response={responseStr}");
 					Dictionary<string, object> ret = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseStr);
 					Dictionary<string, string> keyValues = new Dictionary<string, string>();
 					if (ret.TryGetValue("kvs", out object kvs))
@@ -196,19 +196,19 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+			Debug.Log($"[Etcd] request, url={url} body={pbody}");
 
 			AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
 			asyncWebRequest.Post(url, pbody, header, (ok, response) =>
 			{
 				if (!ok)
 				{
-					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+					Debug.LogError($"[Etcd] request failed, url={url} response={(response != null ? System.Text.Encoding.UTF8.GetString(response) : "null")}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+					Debug.Log($"[Etcd] request success, url={url} response={responseStr}");
 				}
 			});
 		};
@@ -227,11 +227,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+			Debug.Log($"[Etcd] request, url={url} body={pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				Debug.LogError($"[Etcd] get token failed, url={url} body={pbody}");
 				return;
 			}
 
@@ -240,12 +240,12 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+					Debug.LogError($"[Etcd] request failed, url={url} response={(response != null ? System.Text.Encoding.UTF8.GetString(response) : "null")}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+					Debug.Log($"[Etcd] request success, url={url} response={responseStr}");
 
 					Dictionary<string, object> ret = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseStr);
 					a(token, ret["ID"].ToString());
@@ -271,11 +271,11 @@ public class EtcdUtil : MonoBehaviour
 			};
 
 			string pbody = JsonConvert.SerializeObject(body);
-			Debug.Log($"请求etcd，{url}，请求参数：{pbody}");
+			Debug.Log($"[Etcd] request, url={url} body={pbody}");
 
 			if (!succeed)
 			{
-				Debug.Log($"请求etcd 获取token失败，{url}，请求参数：{pbody}");
+				Debug.LogError($"[Etcd] get token failed, url={url} body={pbody}");
 				return;
 			}
 
@@ -284,12 +284,12 @@ public class EtcdUtil : MonoBehaviour
 			{
 				if (!ok)
 				{
-					Debug.Log($"请求etcd失败，{url}， 服务器响应异常：{response}");
+					Debug.LogError($"[Etcd] request failed, url={url} response={(response != null ? System.Text.Encoding.UTF8.GetString(response) : "null")}");
 				}
 				else
 				{
 					string responseStr = System.Text.Encoding.UTF8.GetString(response);
-					Debug.Log($"请求etcd成功，{url}， 服务器响应：{responseStr}");
+					Debug.Log($"[Etcd] request success, url={url} response={responseStr}");
 				}
 			});
 		});

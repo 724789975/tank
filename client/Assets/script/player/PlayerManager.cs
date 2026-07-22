@@ -20,10 +20,11 @@ public class PlayerManager : Singleton<PlayerManager>
         if (!players.ContainsKey(id))
         {
             players.Add(id, data);
+            Debug.Log($"[PlayerManager][AddPlayer] player added, id={id} name={data?.Name} total={players.Count}");
         }
         else
         {
-            Debug.LogWarning($"Player ID {id} already exists, cannot add again.");
+            Debug.LogWarning($"[PlayerManager][AddPlayer] player ID {id} already exists, cannot add again");
         }
 #if UNITY_SERVER && !AI_RUNNING
         if(data.session != null)
@@ -48,7 +49,7 @@ public class PlayerManager : Singleton<PlayerManager>
         {
             return data;
         }
-        Debug.LogWarning($"Player data with ID {id} not found.");
+        Debug.LogWarning($"[PlayerManager][GetPlayer] player data with ID {id} not found");
         return null;
     }
 
@@ -71,7 +72,7 @@ public class PlayerManager : Singleton<PlayerManager>
 	/// <returns>是否移除成功</returns>
 	public bool RemovePlayer(string id)
     {
-        Debug.Log($"Removing player data with ID {id}.");
+        Debug.Log($"[PlayerManager][RemovePlayer] removing player data, id={id}");
         if (players.ContainsKey(id))
         {
 #if UNITY_SERVER && !AI_RUNNING
@@ -89,12 +90,12 @@ public class PlayerManager : Singleton<PlayerManager>
 #endif
 			return RemovePlayer2(id);
         }
-        Debug.Log($"Player data with ID {id} not found, cannot remove.");
+        Debug.Log($"[PlayerManager][RemovePlayer] player data with ID {id} not found, cannot remove");
         return false;
     }
 	public bool RemovePlayer2(string id)
 	{
-		Debug.Log($"Removing2 player data with ID {id}.");
+		Debug.Log($"[PlayerManager][RemovePlayer2] removing player data, id={id}");
 		if (players.ContainsKey(id))
 		{
 #if UNITY_SERVER && !AI_RUNNING
@@ -114,7 +115,7 @@ public class PlayerManager : Singleton<PlayerManager>
 #endif
 			return players.Remove(id);
 		}
-		Debug.Log($"Player data with ID {id} not found, cannot remove.");
+		Debug.Log($"[PlayerManager][RemovePlayer2] player data with ID {id} not found, cannot remove");
 		return false;
 	}
 

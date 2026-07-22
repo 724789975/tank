@@ -82,11 +82,11 @@ public class Login : MonoBehaviour
 			{
 				if (task.IsFaulted)
 				{
-					Debug.Log($"登录失败，出现异常：{task.Exception}");
+					Debug.LogError($"[Login][login] tap login failed, exception={task.Exception}");
 				}
 				else
 				{
-					Debug.Log($"登录成功，当前用户 ID：{task.Result.ToJson()}");
+					Debug.Log($"[Login][login] tap login success, user={task.Result.ToJson()}");
 
 					lock (Lock)
 					{
@@ -99,7 +99,7 @@ public class Login : MonoBehaviour
 							};
 							string body = JsonUtility.ToJson(postData);
 
-							Debug.Log($"postData {body}");
+							Debug.Log($"[Login][login] built postData body={body}");
 							AsyncWebRequest asyncWebRequest = new AsyncWebRequest();
 
 							UserChannel userChannel = new UserChannel()
@@ -116,7 +116,7 @@ public class Login : MonoBehaviour
 								{ "user-channel", userChannelBody }
 							};
 
-							Debug.Log($"userChannelBody {userChannelBody}");
+							Debug.Log($"[Login][login] built userChannel body={userChannelBody}");
 
 							lock (Lock)
 							{
@@ -126,12 +126,12 @@ public class Login : MonoBehaviour
 									{
 										if (!ok)
 										{
-											Debug.Log($"登录失败，服务器响应异常：{response}");
+											Debug.LogError($"[Login][login] user_server login failed, response={(response != null ? Encoding.UTF8.GetString(response) : "null")}");
 										}
 										else
 										{
 											string responseStr = Encoding.UTF8.GetString(response);
-											Debug.Log($"登录成功，服务器响应：{responseStr}");
+											Debug.Log($"[Login][login] user_server login success, response={responseStr}");
 											UserCenter.LoginRsp rsp = UserCenter.LoginRsp.Parser.ParseJson(responseStr);
 											AccountInfo.Instance.SetAccount(rsp.TapInfo);
 											//Config.Instance.serverIP = rsp.ServerAddr;
@@ -151,11 +151,11 @@ public class Login : MonoBehaviour
 		}
 		catch (TaskCanceledException)
 		{
-			Debug.Log("用户取消登录");
+			Debug.LogWarning("[Login][login] user cancelled login");
 		}
 		catch (System.Exception exception)
 		{
-			Debug.Log($"登录失败，出现异常：{exception}");
+			Debug.LogError($"[Login][login] login failed, exception={exception.Message}\n{exception.StackTrace}");
 		}
 #elif USE_GOOGLE_LOGIN
 		GoogleSignInManager.Instance.StartLogin();

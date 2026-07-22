@@ -38,7 +38,7 @@ public class NetClient : MonoBehaviour
 			}
 			catch (Exception e)
 			{
-				Debug.LogError($"error on update: {e.Message}\n{e.StackTrace}");
+				Debug.LogError($"[Net][Update] execute queued message failed, index={i}/{count}, exception={e.Message}\n{e.StackTrace}");
 			}
 		}
 		msgs.Clear();
@@ -59,32 +59,38 @@ public class NetClient : MonoBehaviour
 #if CLIENT_WS
 	protected void OnOpen(object sender, OpenEventArgs e)
 	{
-		Debug.Log("Client WebSocket连接成功");
+		Debug.Log($"[Net][OnOpen] client websocket connected, serverIP={Config.Instance.serverIP} port={Config.Instance.port}, start game");
 		PlayerControl.Instance.StartGame();
 	}
 
 	protected void OnMessage(object sender, MessageEventArgs e)
 	{
-		Any any = Any.Parser.ParseFrom(e.RawData);
-		//Debug.Log("client WebSocket收到消息类型：" + any.TypeUrl);
-		MsgProcess.Instance.ProcessMessage(sender, any);
+		try
+		{
+			Any any = Any.Parser.ParseFrom(e.RawData);
+			MsgProcess.Instance.ProcessMessage(sender, any);
+		}
+		catch (Exception ex)
+		{
+			Debug.LogError($"[Net][OnMessage] parse client websocket message failed, len={(e.RawData != null ? e.RawData.Length : 0)}, exception={ex.Message}\n{ex.StackTrace}");
+		}
 	}
 
 	protected void OnError(object sender, ErrorEventArgs e)
 	{
-		Debug.LogError("Client WebSocket连接错误：" + e.Message);
+		Debug.LogError($"[Net][OnError] client websocket error: {e.Message}");
 	}
 
 	protected void OnClose(object sender, CloseEventArgs e)
 	{
 		if(!needReconnect)
 		{
-			Debug.Log("Client WebSocket连接已关闭");
+			Debug.Log($"[Net][OnClose] client websocket closed, needReconnect=false, code={e.Code} reason={e.Reason}");
 			return;
 		}
 		webSocket.CloseAsync();
 		webSocket = null;
-		Debug.Log("Client WebSocket连接已关闭");
+		Debug.LogWarning($"[Net][OnClose] client websocket closed unexpectedly, code={e.Code} reason={e.Reason}, will retry in 3s");
 		TimerU.Instance.AddTask(3f, () =>
 		{
 			Reconnect();
@@ -95,13 +101,13 @@ public class NetClient : MonoBehaviour
 	{
 		if (!needReconnect)
 		{
-			Debug.Log("Client WebSocket连接已关闭 不需重连");
+			Debug.Log("[Net][Reconnect] skip reconnect, needReconnect=false");
 			return;
 		}
 		if (webSocket == null || webSocket.ReadyState != WebSocketState.Open)
 		{
 			TimerU.Instance.AddTask(3f, Reconnect);
-			Debug.Log("Client WebSocket连接断开，尝试重新连接");
+			Debug.LogWarning("[Net][Reconnect] client websocket disconnected, trying to reconnect");
 			Instance.Create();
 			Instance.Connect();
 		}
@@ -109,7 +115,7 @@ public class NetClient : MonoBehaviour
 #else
 	static void OnLogCallback(string log, int len)
 	{
-		Debug.Log(log);
+		Debug.Log($"[Net][OnLogCallback] fxnet: {log}");
 	}
 
 	static void OnRecvCallback(Connector pConnector, byte[] pData, int nLen)
@@ -124,13 +130,13 @@ public class NetClient : MonoBehaviour
 		}
 		catch (Exception e)
 		{
-			Debug.LogError($"Failed to parse message: {e.Message}\n{e.StackTrace}");
+			Debug.LogError($"[Net][OnRecvCallback] parse received message failed, connector={pConnector} len={nLen}, exception={e.Message}\n{e.StackTrace}");
 		}
 	}
 
 	static void OnConnectedCallback(Connector pConnector)
 	{
-		Debug.LogFormat("{0} connected", pConnector);
+		Debug.Log($"[Net][OnConnectedCallback] connector connected: {pConnector}, invoke {instance.onConnected.Count} onConnected callbacks");
 		foreach (var action in instance.onConnected)
 		{
 			action();
@@ -139,12 +145,12 @@ public class NetClient : MonoBehaviour
 
 	static void OnErrorCallback(Connector pConnector, int error)
 	{
-		Debug.LogFormat("connector destroy {0}", pConnector);
+		Debug.LogError($"[Net][OnErrorCallback] connector error, connector={pConnector} error={error}");
 	}
 
 	static void OnCloseCallback(Connector pConnector)
 	{
-		Debug.Log("connector destroy");
+		Debug.LogWarning($"[Net][OnCloseCallback] connector closed: {pConnector}, needReconnect={instance.needReconnect}");
 		FxNetApi.DestroyConnector(pConnector);
 
 		if (instance.needReconnect)
@@ -182,6 +188,7 @@ public class NetClient : MonoBehaviour
 		connector = FxNetApi.CreateConnector(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 #endif
 		needReconnect = true;
+		Debug.Log($"[Net][Create] connector/websocket created, serverIP={Config.Instance.serverIP} port={Config.Instance.port}");
 	}
 
 	public void Connect()
@@ -189,17 +196,23 @@ public class NetClient : MonoBehaviour
 #if CLIENT_WS
 		if (webSocket == null)
 		{
-			Debug.Log("webSocket is null");
+			Debug.LogError("[Net][Connect] connect failed: webSocket is null, call Create() first");
 			return;
 		}
+		Debug.Log($"[Net][Connect] connecting websocket to {Config.Instance.serverIP}:{Config.Instance.port}");
 		webSocket.ConnectAsync();
 #else
 		if (connector == null)
 		{
-			Debug.LogError("connector is null");
+			Debug.LogError("[Net][Connect] connect failed: connector is null, call Create() first");
 			return;
 		}
+		Debug.Log($"[Net][Connect] tcp connecting to {Config.Instance.serverIP}:{Config.Instance.port}");
+#if AI_RUNING
 		FxNetApi.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+#else
+		FxNetApi.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+#endif
 #endif
 	}
 
@@ -208,7 +221,7 @@ public class NetClient : MonoBehaviour
 #if CLIENT_WS
 		if (webSocket == null)
 		{
-			Debug.Log("webSocket is null");
+			Debug.LogError($"[Net][SendMessage] send failed: webSocket is null, msgType={message?.Descriptor?.FullName}");
 			return;
 		}
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
@@ -216,7 +229,7 @@ public class NetClient : MonoBehaviour
 #else
 		if (connector == null)
 		{
-			Debug.LogError("connector is null");
+			Debug.LogError($"[Net][SendMessage] send failed: connector is null, msgType={message?.Descriptor?.FullName}");
 			return;
 		}
 		byte[] messageBytes = Any.Pack(message).ToByteArray();
@@ -245,6 +258,7 @@ public class NetClient : MonoBehaviour
 
 	public void Disconnect()
 	{
+		Debug.Log("[Net][Disconnect] disconnect requested, needReconnect set to false");
 #if CLIENT_WS
 		webSocket.CloseAsync();
 		webSocket = null;

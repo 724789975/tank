@@ -24,13 +24,14 @@ public class NetServer : MonoBehaviour
 		wsServer = new WebSocketSharp.Server.WebSocketServer(Config.Instance.port);
 		wsServer.AddWebSocketService<Laputa>("/game");
 		wsServer.Start();
-		Debug.Log($"WebSocket server started at {wsServer.Address}, port {wsServer.Port}, path {wsServer.WebSocketServices.Paths.ElementAt(0)}");
+		Debug.Log($"[NetSvr][Start] websocket server started at {wsServer.Address}, port={wsServer.Port}, path={wsServer.WebSocketServices.Paths.ElementAt(0)}");
 #else
 		FxNetApi.StartIOModule();
 		FxNetApi.SetLogCallback(OnLogCallback);
 		FxNetApi.CreateSessionMaker(OnRecvCallback, OnConnectedCallback, OnErrorCallback, OnCloseCallback);
 		FxNetApi.TcpListen("0.0.0.0", Config.Instance.port);
 		FxNetApi.UdpListen("0.0.0.0", Config.Instance.port);
+		Debug.Log($"[NetSvr][Start] fxnet server listening on 0.0.0.0:{Config.Instance.port} (tcp+udp)");
 #endif
 		MsgProcess.Instance.RegisterHandler(typeof(ServerMsg));
 	}
@@ -63,7 +64,7 @@ public class NetServer : MonoBehaviour
 			}
 			catch (Exception e)
 			{
-				Debug.LogError($"Error executing message processing delegate: {e.Message}\n{e.StackTrace}");
+				Debug.LogError($"[NetSvr][Update] execute queued message failed, index={i}/{count}, exception={e.Message}\n{e.StackTrace}");
 			}
 		}
 	}
@@ -85,12 +86,12 @@ public class NetServer : MonoBehaviour
 	{
 		protected override void OnOpen()
 		{
-			Debug.Log("Laputa opened");
+			Debug.Log($"[NetSvr][OnOpen] session opened, id={ID}");
 		}
 
 		protected override void OnClose(WebSocketSharp.CloseEventArgs e)
 		{
-			Debug.Log($"Laputa closed {e.Reason}");
+			Debug.Log($"[NetSvr][OnClose] session closed, id={ID} reason={e.Reason} code={e.Code}");
 #if UNITY_SERVER && !AI_RUNNING
 			PLAYERDATA playerData = PlayerManager.Instance.GetPlayerBySession(this);
 			if (playerData != null)
@@ -102,7 +103,7 @@ public class NetServer : MonoBehaviour
 
 		protected override void OnError(WebSocketSharp.ErrorEventArgs e)
 		{
-			Debug.LogError($"Laputa error: {e.Message}\n{e.Exception.ToString()}");
+			Debug.LogError($"[NetSvr][OnError] session error, id={ID} message={e.Message}\n{e.Exception}");
 		}
 
 		protected override void OnMessage(WebSocketSharp.MessageEventArgs evnt)
@@ -120,7 +121,7 @@ public class NetServer : MonoBehaviour
 			}
 			catch (Exception e)
 			{
-				Debug.LogError($"Failed to parse message: {e.Message}\n{e.StackTrace}");
+				Debug.LogError($"[NetSvr][OnMessage] parse session message failed, id={ID} len={(evnt.RawData != null ? evnt.RawData.Length : 0)}, exception={e.Message}\n{e.StackTrace}");
 			}
 		}
 
@@ -138,7 +139,7 @@ public class NetServer : MonoBehaviour
 #else
 	static void OnLogCallback(string log, int len)
 	{
-		Debug.Log(log);
+		Debug.Log($"[NetSvr][OnLogCallback] fxnet: {log}");
 	}
 
 	static void OnRecvCallback(Connector pConnector, byte[] pData, int nLen)
@@ -154,23 +155,23 @@ public class NetServer : MonoBehaviour
 		}
 		catch (Exception e)
 		{
-			Debug.LogError($"Failed to parse message: {e.Message}\n{e.StackTrace}");
+			Debug.LogError($"[NetSvr][OnRecvCallback] parse received message failed, connector={pConnector} len={nLen}, exception={e.Message}\n{e.StackTrace}");
 		}
 	}
 
 	static void OnConnectedCallback(Connector pConnector)
 	{
-		Debug.LogFormat("{0} connected", pConnector);
+		Debug.Log($"[NetSvr][OnConnectedCallback] connector connected: {pConnector}");
 	}
 
 	static void OnErrorCallback(Connector pConnector, int error)
 	{
-		Debug.LogFormat("connector destroy {0}", pConnector);
+		Debug.LogError($"[NetSvr][OnErrorCallback] connector error, connector={pConnector} error={error}");
 	}
 
 	static void OnCloseCallback(Connector pConnector)
 	{
-		Debug.Log("connector destroy");
+		Debug.LogWarning($"[NetSvr][OnCloseCallback] connector closed: {pConnector}");
 		FxNetApi.DestroyConnector(pConnector);
 		PlayerManager.Instance.AfterCloseCallback(pConnector);
 	}
@@ -187,14 +188,14 @@ public class NetServer : MonoBehaviour
 #if CLIENT_WS
 		if (pSession == null)
 		{
-			Debug.LogError("session is null");
+			Debug.LogError($"[NetSvr][SendMessage] send failed: session is null, len={(messageBytes != null ? messageBytes.Length : 0)}");
 			return;
 		}
 		((Laputa)pSession).Send(messageBytes);
 #else
 		if (pSession == null)
 		{
-			Debug.LogError("connector is null");
+			Debug.LogError($"[NetSvr][SendMessage] send failed: connector is null, len={(messageBytes != null ? messageBytes.Length : 0)}");
 			return;
 		}
 		FxNetApi.Send((Connector)pSession, messageBytes, messageBytes.Length);
@@ -209,7 +210,7 @@ public class NetServer : MonoBehaviour
 #else
 		if (pSession == null)
 		{
-			Debug.LogError("connector is null");
+			Debug.LogError("[NetSvr][CloseSession] close failed: connector is null");
 			return;
 		}
 		FxNetApi.Close((Connector)pSession);

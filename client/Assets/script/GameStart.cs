@@ -31,7 +31,7 @@ public class GameStart : MonoBehaviour
 		standard_width = 960;
 		standard_height = 540;
 #endif
-		Debug.LogFormat("Set Screen Resolution to {0}x{1}", standard_width, standard_height);
+		Debug.LogFormat("[GameStart][OnRuntimeMethodLoad] set screen resolution to {0}x{1}", standard_width, standard_height);
 		Screen.SetResolution(Convert.ToInt32(standard_width), Convert.ToInt32(standard_height), false);
 
 		// Use commandline options passed to the application
@@ -47,12 +47,12 @@ public class GameStart : MonoBehaviour
 		else
 		{
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-			Debug.LogWarningFormat("Could not find commandline file '{0}'.", path);
+			Debug.LogWarningFormat("[GameStart][OnRuntimeMethodLoad] could not find commandline file '{0}'", path);
 #endif
 		}
 
 		// Initialize the CommandLine
-		Debug.Log("CommandLine: " + text);
+		Debug.Log("[GameStart][OnRuntimeMethodLoad] CommandLine: " + text);
 		Oddworm.Framework.CommandLine.Init(text);
 
 		GameStart.Instance.ToString();
@@ -72,7 +72,7 @@ public class GameStart : MonoBehaviour
 		Config.Instance.serviceName = Oddworm.Framework.CommandLine.GetString("-service_name", "123456");
 
 		Config.Instance.serverIP = Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1");
-		Debug.Log(Config.Instance.serverIP);
+		Debug.Log($"[GameStart][BeforeSceneLoad] serverIP={Config.Instance.serverIP}");
 
 		EtcdUtil.Instance.etcdAddr = Oddworm.Framework.CommandLine.GetString("-etcd_addr", "");
 		EtcdUtil.Instance.etcdUserName = Oddworm.Framework.CommandLine.GetString("-etcd_user_name", "");
@@ -89,7 +89,7 @@ public class GameStart : MonoBehaviour
 			}
 		}
 
-		Debug.Log($"local ip {Config.Instance.localIp}");
+		Debug.Log($"[GameStart][BeforeSceneLoad] localIp={Config.Instance.localIp}");
 
 		GameStart.Instance.ToString();
 #if UNITY_SERVER && !AI_RUNNING

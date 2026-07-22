@@ -23,18 +23,18 @@ public class UserCenterClient : MonoBehaviour
 			Dictionary<string, DiscoveryInfo> services = new Dictionary<string, DiscoveryInfo>();
 			if (!succeed)
 			{
-				Debug.LogError("get etcd keys failed");
+				Debug.LogError("[UserCenterClient][discovery] get etcd keys failed");
 				return;
 			}
 			foreach (var item in result)
 			{
-				Debug.Log(item.Key + " " + item.Value);
+				Debug.Log($"[UserCenterClient][discovery] found service entry, key={item.Key} value={item.Value}");
 				services[item.Key] = JsonUtility.FromJson<DiscoveryInfo>(item.Value);
 			}
 
 			if (services.Count == 0)
 			{
-				Debug.LogError("no user-center service found, check etcd server or try again later");
+				Debug.LogError("[UserCenterClient][discovery] no user-center service found, check etcd server or try again later");
 				TimerU.Instance.AddTask(80, () =>
 				{
 					discovery();
@@ -61,10 +61,10 @@ public class UserCenterClient : MonoBehaviour
 			}
 			if (info == null)
 			{
-				Debug.LogError($"no user-center service found, random weight error, [{randomWeight}, {totalWeight}]");
+				Debug.LogError($"[UserCenterClient][discovery] no user-center service found, random weight error, [{randomWeight}, {totalWeight}]");
 				return;
 			}
-			Debug.Log($"discovery user-center service {info.address}");
+			Debug.Log($"[UserCenterClient][discovery] selected user-center service, address={info.address}");
 			Grpc.Core.Channel channel = new Grpc.Core.Channel(info.address, Grpc.Core.ChannelCredentials.Insecure);
 			client = new UserCenterService.UserCenterService.UserCenterServiceClient(channel);
 		});

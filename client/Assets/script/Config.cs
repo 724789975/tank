@@ -25,7 +25,7 @@ public class Config : MonoBehaviour
         bottom = -4.8f;
 #endif
 
-        Debug.Log($"left: {left}, right: {right}, top: {top}, bottom: {bottom}");
+        Debug.Log($"[Config][Start] scene bounds set, left={left} right={right} top={top} bottom={bottom}");
     }
 
     // Update is called once per frame

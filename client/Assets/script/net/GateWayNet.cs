@@ -22,6 +22,7 @@ public class GateWayNet : MonoBehaviour
 	void Create()
 	{
 		string serverUrl = "ws://115.190.230.47:32001/ws";
+		Debug.Log($"[Gateway][Create] creating websocket, url={serverUrl}");
 
 		// 创建一个新的WebSocket实例并与指定URL建立连接
 		webSocket = new WebSocket(serverUrl);
@@ -35,12 +36,13 @@ public class GateWayNet : MonoBehaviour
 
 	public void Connect()
 	{
+		Debug.Log("[Gateway][Connect] connecting to gateway");
 		webSocket.ConnectAsync();
 	}
 
 	protected void OnOpen(object sender, OpenEventArgs e)
 	{
-		Debug.Log("WebSocket连接成功");
+		Debug.Log($"[Gateway][OnOpen] connected, send login request, openid={AccountInfo.Instance.Account.Openid}");
 
 		GateWay.LoginRequest loginRequest = new GateWay.LoginRequest();
 		loginRequest.Id = AccountInfo.Instance.Account.Openid;
@@ -50,21 +52,28 @@ public class GateWayNet : MonoBehaviour
 
 	protected void OnMessage(object sender, MessageEventArgs e)
 	{
-		Any any = Any.Parser.ParseFrom(e.RawData);
-		Debug.Log("WebSocket收到消息类型：" + any.TypeUrl);
-		WSMsgProcess.Instance.ProcessMessage(sender, any);
+		try
+		{
+			Any any = Any.Parser.ParseFrom(e.RawData);
+			Debug.Log($"[Gateway][OnMessage] recv message, typeUrl={any.TypeUrl}");
+			WSMsgProcess.Instance.ProcessMessage(sender, any);
+		}
+		catch (System.Exception ex)
+		{
+			Debug.LogError($"[Gateway][OnMessage] parse gateway message failed, len={(e.RawData != null ? e.RawData.Length : 0)}, exception={ex.Message}\n{ex.StackTrace}");
+		}
 	}
 
 	protected void OnError(object sender, ErrorEventArgs e)
 	{
-		Debug.LogError($"WebSocket连接错误：{e.Message}\n {(e.Exception != null ? e.Exception.StackTrace : string.Empty)}");
+		Debug.LogError($"[Gateway][OnError] websocket error: {e.Message}\n{(e.Exception != null ? e.Exception.StackTrace : string.Empty)}");
 	}
 
 	protected void OnClose(object sender, CloseEventArgs e)
 	{
 		webSocket.CloseAsync();
 		webSocket = null;
-		Debug.Log("WebSocket连接已关闭");
+		Debug.LogWarning($"[Gateway][OnClose] websocket closed, code={e.Code} reason={e.Reason}, will retry in 3s");
 		TimerU.Instance.AddTask(3f, () => 
 		{
 			Reconnect();
@@ -76,7 +85,7 @@ public class GateWayNet : MonoBehaviour
 		if(webSocket == null || webSocket.ReadyState != WebSocketState.Open)
 		{
 			TimerU.Instance.AddTask(3f, Reconnect);
-			Debug.Log("WebSocket连接断开，尝试重新连接");
+			Debug.LogWarning("[Gateway][Reconnect] websocket disconnected, trying to reconnect");
 			Instance.Create();
 			Instance.Connect();
 		}
@@ -115,11 +124,17 @@ public class GateWayNet : MonoBehaviour
 
 	public void SendGW(byte[] message)
 	{
+		if (webSocket == null)
+		{
+			Debug.LogError($"[Gateway][SendGW] send failed: webSocket is null, len={(message != null ? message.Length : 0)}");
+			return;
+		}
 		webSocket.SendAsync(message);
 	}
 
 	public void Close()
 	{
+		Debug.Log("[Gateway][Close] close gateway websocket");
 		webSocket.CloseAsync();
 	}
 

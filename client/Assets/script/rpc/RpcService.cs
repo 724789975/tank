@@ -15,7 +15,7 @@ public class RpcService : MonoBehaviour
 		};
 		//开始侦听
 		server.Start();
-		Debug.Log("RpcService Start");
+		Debug.Log($"[RpcService][Start] grpc service started, port={Config.Instance.rpcPort}");
 	}
 
     // Update is called once per frame

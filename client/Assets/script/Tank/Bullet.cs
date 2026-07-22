@@ -58,14 +58,14 @@ public class Bullet : MonoBehaviour
             TankInstance tankInstance = collision.gameObject.GetComponent<TankInstance>();
             if (tankInstance == null)
             {
-                Debug.LogWarning("find tankinstance error");
+                Debug.LogWarning($"[Bullet][OnCollisionEnter] hit object tagged Tank but TankInstance component missing, bulletId={bulletId} ownerId={ownerId}");
             }
             else
             {
                 if (tankInstance.rebornTime > 0)
                 {
                     // 坦克处于重生保护时间，不受伤害
-                    Debug.Log($"Tank {tankInstance.ID} is in reborn protection.");
+                    Debug.Log($"[Bullet][OnCollisionEnter] target in reborn protection, no damage, targetId={tankInstance.ID} bulletId={bulletId} ownerId={ownerId}");
                     return;
 				}
 				tankInstance.HP -= 10;
@@ -83,7 +83,7 @@ public class Bullet : MonoBehaviour
                 if (tankInstance.HP <= 0)
                 {
                     // 坦克死亡处理
-                    Debug.Log($"Tank {tankInstance.ID} is destroyed!");
+                    Debug.Log($"[Bullet][OnCollisionEnter] tank destroyed, targetId={tankInstance.ID} killerId={ownerId}");
                     TankGame.PlayerDieNtf dieNtf = new TankGame.PlayerDieNtf() { KilledId = tankInstance.ID, KillerId = ownerId};
                     dieNtf.RebornProtectTime = ServerFrame.Instance.CurrentTime + Config.Instance.rebornProtectionTime;
                     byte[] dieBytes = Any.Pack(dieNtf).ToByteArray();
@@ -99,12 +99,12 @@ public class Bullet : MonoBehaviour
 						NetServer.Instance.SendMessage(p.session, tankHpBytes);
                     });
                     tankInstance.rebornTime = Config.Instance.rebornProtectionTime;
-                    Debug.Log($"Tank {tankInstance.ID} will be in reborn protection until {tankInstance.rebornTime}");
+                    Debug.Log($"[Bullet][OnCollisionEnter] target entering reborn protection, targetId={tankInstance.ID} rebornTime={tankInstance.rebornTime}");
                     tankInstance.GetComponent<BoxCollider>().enabled = false;
 				}
 
             }
-            Debug.Log($"Bullet {ownerId}:{bulletId} hit tank {tankInstance.ID}, HP:{tankInstance.HP}");
+            Debug.Log($"[Bullet][OnCollisionEnter] bullet hit tank, bulletId={bulletId} ownerId={ownerId} targetId={tankInstance.ID} targetHp={tankInstance.HP}");
 			//Debug.Log($"Bullet {bulletId} collided with {collision.gameObject.name} tag {collision.gameObject.tag}, destroying bullet.");
 			TankGame.BulletDestoryNtf bulletDestoryNtf = new TankGame.BulletDestoryNtf();
 			bulletDestoryNtf.Id = bulletId;

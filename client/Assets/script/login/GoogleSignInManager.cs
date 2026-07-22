@@ -244,7 +244,7 @@ public class GoogleSignInManager : MonoBehaviour
             + "&code_challenge=" + Uri.EscapeDataString(codeChallenge)
             + "&code_challenge_method=S256";
 
-        Debug.Log("授权 URL: " + authUrl);
+        Debug.Log($"[GoogleSignIn][StartLogin] opening authorization URL: {authUrl}");
         Application.OpenURL(authUrl);
 
         if (statusText != null)
@@ -286,7 +286,7 @@ public class GoogleSignInManager : MonoBehaviour
             + "?code=" + Uri.EscapeDataString(code)
             + "&codeVerifier=" + Uri.EscapeDataString(codeVerifier);
 
-        Debug.Log("请求 URL: " + url);
+        Debug.Log($"[GoogleSignIn][ExchangeCodeCoroutine] requesting token exchange, url={url}");
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.timeout = 30;
@@ -304,7 +304,7 @@ public class GoogleSignInManager : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             string responseText = request.downloadHandler.text;
-            Debug.Log("响应: " + responseText);
+            Debug.Log($"[GoogleSignIn][ExchangeCodeCoroutine] exchange response received: {responseText}");
 
             try
             {
@@ -327,7 +327,7 @@ public class GoogleSignInManager : MonoBehaviour
                     OnLoginStatusChanged?.Invoke(true);
                     OnUserInfoReceived?.Invoke(CurrentUser);
 
-                    Debug.Log("登录成功！用户: " + CurrentUser.name);
+                    Debug.Log($"[GoogleSignIn][ExchangeCodeCoroutine] login success, user={CurrentUser.name}");
                     DestroyLoginUI();
                 }
                 else
@@ -347,7 +347,7 @@ public class GoogleSignInManager : MonoBehaviour
             string errorMsg = "请求失败: " + request.error;
             ShowError(errorMsg);
             OnErrorOccurred?.Invoke(errorMsg);
-            Debug.LogError(errorMsg);
+            Debug.LogError($"[GoogleSignIn][ExchangeCodeCoroutine] request failed, error={request.error}");
         }
     }
 
@@ -377,7 +377,7 @@ public class GoogleSignInManager : MonoBehaviour
             statusText.text = message;
             statusText.color = Color.red;
         }
-        Debug.LogError(message);
+        Debug.LogError($"[GoogleSignIn][ShowError] {message}");
     }
 
     private void DestroyLoginUI()

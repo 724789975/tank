@@ -90,6 +90,19 @@ public class GameStart : MonoBehaviour
 		AccountInfo.Instance.Account.Openid = AccountInfo.Instance.Account.Openid == "" ? Oddworm.Framework.CommandLine.GetString("-openid", "mzw0536knQSO+bhbdL6dtw==") : AccountInfo.Instance.Account.Openid;
 		AccountInfo.Instance.Account.Unionid = AccountInfo.Instance.Account.Unionid == "" ? Oddworm.Framework.CommandLine.GetString("-unionid", "SnwhJ5s2EURKCKt0LBsDLw==") : AccountInfo.Instance.Account.Unionid;
 
+#if UNITY_EDITOR && !AI_RUNNING
+		// test2 本地调试: 编辑器内真人玩家改用 test_openid 账号, 避免与容器 ai-client 的默认账号
+		// (mzw0536knQSO+bhbdL6dtw==) 撞号——两者 openid 相同会在 game-server 端被 kick old player 互踢下线.
+		// 仅 UNITY_EDITOR 生效: ai-client(AI_RUNNING) 与 android 正式包不受影响. test_openid 已存在于 user-center redis.
+		if (AccountInfo.Instance.Account.Openid == "mzw0536knQSO+bhbdL6dtw==")
+		{
+			AccountInfo.Instance.Account.Openid = "test_openid";
+			AccountInfo.Instance.Account.Name = "test_name";
+			AccountInfo.Instance.Account.Unionid = "test_unionid";
+			Debug.Log("[GameStart][BeforeSceneLoad] editor player account overridden to test_openid to avoid collision with ai-client");
+		}
+#endif
+
 		Config.Instance.serviceName = Oddworm.Framework.CommandLine.GetString("-service_name", "123456");
 
 		Config.Instance.serverIP = Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1");

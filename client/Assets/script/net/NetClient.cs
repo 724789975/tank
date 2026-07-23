@@ -153,20 +153,27 @@ public class NetClient : MonoBehaviour
 		Debug.LogWarning($"[Net][OnCloseCallback] connector closed: {pConnector}, needReconnect={instance.needReconnect}");
 		FxNetApi.DestroyConnector(pConnector);
 
+		// pConnector 已被销毁, 清空指向它的引用, 避免后续在已销毁的 connector 上继续操作
+		if (instance.connector == pConnector)
+		{
+			instance.connector = null;
+		}
+
 		if (instance.needReconnect)
 		{
-			TimerU.Instance.AddTask(3f, () =>
+			// game-server 容器启动后 Docker 会立即发布端口, 但容器内 Unity 服务端需数秒后才真正
+			// 监听 10085; 玩家过早连接会被 Docker 代理接受后立即关闭(EOF). 重连前必须重新 Create()
+			// 出新的 connector(旧的已 Destroy), 否则 Connect() 会作用在已销毁的 connector 上而静默失败.
+			// 用 1s 短间隔重试, 以便在 game-server 就绪(约 5s 启动窗口)后尽快连上, 避免玩家过早停止.
+			TimerU.Instance.AddTask(1f, () =>
 			{
+				instance.Create();
 				instance.Connect();
 			});
 		}
 		else
 		{
-			if (instance.connector == pConnector)
-			{
-				instance.connector = null;
-				instance.onConnected.Clear();
-			}
+			instance.onConnected.Clear();
 		}
 	}
 #endif

@@ -78,6 +78,27 @@ services:
     networks:
       - tank-net
 
+  # 本地 API 网关(镜像 k8s istio ingress): 单一入口, 按路径路由到各微服务
+  api-gateway:
+    image: nginx:1.27-alpine
+    container_name: api-gateway
+    ports:
+      - "30080:80"
+    volumes:
+      - ./nginx-test2.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - gateway
+      - user-server
+      - server-manager
+      - match-server
+      - item-manager
+      - auction
+      - route
+      - ranking
+      - homepage-server
+    networks:
+      - tank-net
+
   # 微服务
   gateway:
     build:

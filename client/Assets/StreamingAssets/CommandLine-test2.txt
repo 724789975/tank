@@ -1,1 +1,4 @@
 -etcd_addr etcd:2379
+-server_ip 127.0.0.1
+-gateway_url "ws://127.0.0.1:30080/ws"
+-http_base_url "http://127.0.0.1:30080"

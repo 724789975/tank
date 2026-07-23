@@ -21,7 +21,7 @@ public class GateWayNet : MonoBehaviour
 
 	void Create()
 	{
-		string serverUrl = "ws://115.190.230.47:32001/ws";
+		string serverUrl = Config.Instance.gatewayUrl;
 		Debug.Log($"[Gateway][Create] creating websocket, url={serverUrl}");
 
 		// 创建一个新的WebSocket实例并与指定URL建立连接

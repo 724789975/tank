@@ -95,6 +95,14 @@ public class GameStart : MonoBehaviour
 		Config.Instance.serverIP = Oddworm.Framework.CommandLine.GetString("-server_ip", "127.0.0.1");
 		Debug.Log($"[GameStart][BeforeSceneLoad] serverIP={Config.Instance.serverIP}");
 
+		// 网关登录地址按环境注入(见 CommandLine-<env>.txt), 缺省回退到本地 test2 网关
+		Config.Instance.gatewayUrl = Oddworm.Framework.CommandLine.GetString("-gateway_url", Config.Instance.gatewayUrl);
+		Debug.Log($"[GameStart][BeforeSceneLoad] gatewayUrl={Config.Instance.gatewayUrl}");
+
+		// 公共 HTTP API 基地址按环境注入(登录/匹配等)
+		Config.Instance.httpBaseUrl = Oddworm.Framework.CommandLine.GetString("-http_base_url", Config.Instance.httpBaseUrl);
+		Debug.Log($"[GameStart][BeforeSceneLoad] httpBaseUrl={Config.Instance.httpBaseUrl}");
+
 		EtcdUtil.Instance.etcdAddr = Oddworm.Framework.CommandLine.GetString("-etcd_addr", "");
 		EtcdUtil.Instance.etcdUserName = Oddworm.Framework.CommandLine.GetString("-etcd_user_name", "");
 		EtcdUtil.Instance.etcdPassword = Oddworm.Framework.CommandLine.GetString("-etcd_password", "");

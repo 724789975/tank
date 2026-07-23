@@ -91,6 +91,10 @@ public class Config : MonoBehaviour
     private float sceneLimit = 0.2f;
 
     public string serverIP = "0.0.0.0";
+    // 网关 WebSocket 地址(客户端登录入口), 由命令行参数 -gateway_url 按环境注入
+    public string gatewayUrl = "ws://127.0.0.1:12001/ws";
+    // 公共 HTTP API 基地址(登录/匹配等, 经 route 服务), 由命令行参数 -http_base_url 按环境注入
+    public string httpBaseUrl = "http://127.0.0.1:8006";
     public ushort port = 10085;
     public ushort rpcPort = 10086;
     public float speed = 3f;

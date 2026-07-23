@@ -1,3 +1,5 @@
 -etcd_addr etcd.tank.svc.cluster.local:2379
 -etcd_user_name root
 -etcd_password 123#@!QAzx
+-gateway_url "ws://115.190.230.47:32001/ws"
+-http_base_url "http://115.190.230.47:30080"

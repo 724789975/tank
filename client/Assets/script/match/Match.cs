@@ -69,7 +69,7 @@ public class Match : MonoBehaviour
 
 		Debug.Log($"[Match][StartMatch] requesting match, userChannel={userChannelBody}");
 
-		asyncWebRequest.Post("http://115.190.230.47:30080/api/1.0/public/match_server/match", "{}", headers, (ok, response) =>
+		asyncWebRequest.Post(Config.Instance.httpBaseUrl + "/api/1.0/public/match_server/match", "{}", headers, (ok, response) =>
 		{
 			if (!ok)
 			{
@@ -104,7 +104,7 @@ public class Match : MonoBehaviour
 
 		Debug.Log($"[Match][PVE] requesting pve, userChannel={userChannelBody}");
 
-		asyncWebRequest.Post("http://115.190.230.47:30080/api/1.0/public/match_server/pve", "{}", headers, (ok, response) =>
+		asyncWebRequest.Post(Config.Instance.httpBaseUrl + "/api/1.0/public/match_server/pve", "{}", headers, (ok, response) =>
 		{
 			if (!ok)
 			{

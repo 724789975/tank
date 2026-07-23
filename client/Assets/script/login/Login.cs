@@ -122,7 +122,7 @@ public class Login : MonoBehaviour
 							{
 								loginCallback.Add(() =>
 								{
-									asyncWebRequest.Post("http://115.190.230.47:30080/api/1.0/public/user_server/login", body, headers, (ok, response) =>
+									asyncWebRequest.Post(Config.Instance.httpBaseUrl + "/api/1.0/public/user_server/login", body, headers, (ok, response) =>
 									{
 										if (!ok)
 										{

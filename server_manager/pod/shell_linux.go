@@ -3,8 +3,11 @@ package pod
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
+	"os/exec"
 	common_config "server_manager/config"
+	"strings"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -16,11 +19,53 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+const (
+	// gameServerPort 与 k8s Job/Service 中暴露的游戏服务端口保持一致
+	gameServerPort = 10085
+	// deployEnvTest2 表示 test2 环境, 该环境使用 Docker 容器化部署而非 k8s
+	deployEnvTest2 = "test2"
+	// defaultDockerNetwork docker-compose 默认网络名(未配置 pod.docker.network 时使用)
+	defaultDockerNetwork = "tank-net"
+)
+
 var (
 	clientset *kubernetes.Clientset
 )
 
+// isDockerDeploy 判断当前是否为 Docker 容器化部署环境.
+// 当 DEPLOYENV 环境变量为 "test2" 时, 使用 Docker 启动 game-server / ai-client,
+// 其它环境仍然使用 k8s API 部署.
+func isDockerDeploy() bool {
+	return os.Getenv("DEPLOYENV") == deployEnvTest2
+}
+
+// dockerNetwork 返回容器需要加入的 docker 网络, 保证 game-server / ai-client
+// 可以访问 etcd / redis 等基础设施服务.
+func dockerNetwork() string {
+	if v, ok := common_config.Get("pod.docker.network").(string); ok && v != "" {
+		return v
+	}
+	return defaultDockerNetwork
+}
+
+// allocateHostPort 在宿主机上申请一个空闲 TCP 端口, 用于将容器内的
+// gameServerPort 映射到宿主机, 类似 k8s NodePort 的作用.
+func allocateHostPort() (int32, error) {
+	l, err := net.Listen("tcp", ":0")
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return int32(l.Addr().(*net.TCPAddr).Port), nil
+}
+
 func init() {
+	// test2 环境通过 Docker 部署, 无需初始化 k8s 客户端
+	if isDockerDeploy() {
+		klog.CtxInfof(context.Background(), "[POD-INIT-000] docker deploy mode (DEPLOYENV=test2), skip kubernetes clientset init")
+		return
+	}
+
 	kubeconfig := os.Getenv("KUBECONFIG")
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
@@ -154,6 +199,78 @@ func create_svc(ctx context.Context, job *batchv1.Job) (err error, svc *corev1.S
 	return err, svc
 }
 
+// startGameServerDocker 在 test2 环境下通过 Docker 启动 game-server 容器实例.
+// 将容器内 gameServerPort 同时以 TCP/UDP 发布到宿主机的同一空闲端口,
+// 供真人客户端(宿主机原生)通过 127.0.0.1:hostPort 访问.
+// 返回的 addr 仅用于 ai-client(同处 docker 网络的容器), 故返回容器名 podName,
+// 让 ai-client 通过 docker 内嵌 DNS 解析容器名, 直连 game-server 容器内部端口.
+func startGameServerDocker(ctx context.Context, podName string, image string, params []string) (err error, addr string, tcpPort int32, udpPort int32) {
+	hostPort, err := allocateHostPort()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[POD-DOCKER-001] failed to allocate host port for game server, podName: %s, error: %v", podName, err)
+		return err, "", 0, 0
+	}
+
+	args := []string{
+		"run", "-d",
+		"--name", podName,
+		"--network", dockerNetwork(),
+		"--label", "auto-clean=true",
+		// 传递 DEPLOYENV, 使容器内 Unity server 选择对应的 CommandLine-<env>.txt 参数文件
+		"-e", "DEPLOYENV=" + os.Getenv("DEPLOYENV"),
+		"-p", fmt.Sprintf("%d:%d/tcp", hostPort, gameServerPort),
+		"-p", fmt.Sprintf("%d:%d/udp", hostPort, gameServerPort),
+		image,
+		"./tank.x86_64",
+	}
+	args = append(args, params...)
+
+	klog.CtxInfof(ctx, "[POD-DOCKER-002] starting game server via docker, podName: %s, image: %s, hostPort: %d, args: %v", podName, image, hostPort, args)
+
+	out, err := exec.CommandContext(ctx, "docker", args...).CombinedOutput()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[POD-DOCKER-003] failed to start game server container, podName: %s, error: %v, output: %s", podName, err, string(out))
+		return err, "", 0, 0
+	}
+
+	// addr 仅供 ai-client(同一 docker 网络内的容器)使用, 返回 game-server 容器名,
+	// ai-client 通过 docker 内嵌 DNS 解析容器名并连接容器内部端口(gameServerPort);
+	// 真人客户端不使用此 addr(其地址来自 match-server 的 game.addr 配置).
+	addr = podName
+	klog.CtxInfof(ctx, "[POD-DOCKER-004] successfully started game server container, podName: %s, containerID: %s, addr(for ai-client): %s, hostPort(for player): %d",
+		podName, strings.TrimSpace(string(out)), addr, hostPort)
+	// tcpPort/udpPort 返回宿主机发布端口(hostPort), 供真人客户端经 127.0.0.1:hostPort 连接.
+	return nil, addr, hostPort, hostPort
+}
+
+// startAiClientDocker 在 test2 环境下通过 Docker 启动 ai-client 容器实例.
+// ai-client 作为客户端主动连接游戏服务, 无需对外暴露端口,
+// 运行结束后自动清理(--rm).
+func startAiClientDocker(ctx context.Context, podName string, image string, params []string) (err error) {
+	args := []string{
+		"run", "-d", "--rm",
+		"--name", podName,
+		"--network", dockerNetwork(),
+		"--label", "auto-clean=true",
+		// 传递 DEPLOYENV, 使容器内 Unity 客户端选择对应的 CommandLine-<env>.txt 参数文件
+		"-e", "DEPLOYENV=" + os.Getenv("DEPLOYENV"),
+		image,
+		"./tank.x86_64",
+	}
+	args = append(args, params...)
+
+	klog.CtxInfof(ctx, "[POD-DOCKER-005] starting ai client via docker, podName: %s, image: %s, args: %v", podName, image, args)
+
+	out, err := exec.CommandContext(ctx, "docker", args...).CombinedOutput()
+	if err != nil {
+		klog.CtxErrorf(ctx, "[POD-DOCKER-006] failed to start ai client container, podName: %s, error: %v, output: %s", podName, err, string(out))
+		return err
+	}
+
+	klog.CtxInfof(ctx, "[POD-DOCKER-007] successfully started ai client container, podName: %s, containerID: %s", podName, strings.TrimSpace(string(out)))
+	return nil
+}
+
 func StartGameServer(ctx context.Context, id int64, params []string) (err error, clusterIP string, tcpPort int32, udpPort int32) {
 	podName := fmt.Sprintf("%s-%d", common_config.Get("pod.game_server.name").(string), id)
 	image := common_config.Get("pod.game_server.image").(string)
@@ -162,6 +279,12 @@ func StartGameServer(ctx context.Context, id int64, params []string) (err error,
 	params = append(params, podName)
 
 	klog.CtxInfof(ctx, "[POD-START-009] starting game server, id: %d, podName: %s, image: %s, params: %v", id, podName, image, params)
+
+	// test2 环境使用 Docker 容器化部署, 非 test2 仍使用 k8s API
+	if isDockerDeploy() {
+		klog.CtxInfof(ctx, "[POD-START-009-DOCKER] DEPLOYENV=test2, deploy game server via docker, id: %d, podName: %s", id, podName)
+		return startGameServerDocker(ctx, podName, image, params)
+	}
 
 	err, job := create_job(ctx, podName, common_config.Get("pod.game_server.namespace").(string), image, params)
 	if err != nil {
@@ -185,6 +308,12 @@ func StartAiClient(ctx context.Context, id int64, params []string) (err error, c
 	image := common_config.Get("pod.ai_client.image").(string)
 
 	klog.CtxInfof(ctx, "[POD-START-012] starting ai client, id: %d, podName: %s, image: %s, params: %s", id, podName, image, params)
+
+	// test2 环境使用 Docker 容器化部署, 非 test2 仍使用 k8s API
+	if isDockerDeploy() {
+		klog.CtxInfof(ctx, "[POD-START-012-DOCKER] DEPLOYENV=test2, deploy ai client via docker, id: %d, podName: %s", id, podName)
+		return startAiClientDocker(ctx, podName, image, params), "", 0, 0
+	}
 
 	err, _ = create_job(ctx, podName, common_config.Get("pod.ai_client.namespace").(string), image, params)
 	if err != nil {

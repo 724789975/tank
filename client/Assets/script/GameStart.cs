@@ -39,7 +39,28 @@ public class GameStart : MonoBehaviour
 
 		// Load the commandline file content.
 		// You need to adjust the path to where the file is located in your project.
-		var path = System.IO.Path.Combine(Application.streamingAssetsPath, "CommandLine.txt");
+		// 根据 DEPLOYENV 环境变量读取不同的命令行参数文件(添加环境后缀), 例如 test2 -> CommandLine-test2.txt;
+		// 未设置环境变量或对应环境文件不存在时, 回退到默认的 CommandLine.txt
+		var commandLineFile = "CommandLine.txt";
+		var deployEnv = System.Environment.GetEnvironmentVariable("DEPLOYENV");
+		if (!string.IsNullOrEmpty(deployEnv))
+		{
+			var envFile = string.Format("CommandLine-{0}.txt", deployEnv);
+			var envFilePath = System.IO.Path.Combine(Application.streamingAssetsPath, envFile);
+			if (System.IO.File.Exists(envFilePath))
+			{
+				commandLineFile = envFile;
+			}
+			else
+			{
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+				Debug.LogWarningFormat("[GameStart][OnRuntimeMethodLoad] env commandline file '{0}' not found, fallback to '{1}'", envFilePath, commandLineFile);
+#endif
+			}
+		}
+
+		var path = System.IO.Path.Combine(Application.streamingAssetsPath, commandLineFile);
+		Debug.LogFormat("[GameStart][OnRuntimeMethodLoad] DEPLOYENV='{0}', using commandline file '{1}'", deployEnv, path);
 		if (System.IO.File.Exists(path))
 		{
 			text += System.IO.File.ReadAllText(path);

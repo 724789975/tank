@@ -26,7 +26,9 @@ tracer:
 
 # 特定服务配置
 game:
-  addr: "115.190.230.47"
+  # test2 本地 docker: 真人客户端与 game-server 在同一宿主机, 客户端经 127.0.0.1:hostPort 连接
+  # (端口 hostPort 由 server-mgr 启动 game-server 时动态发布, 通过 CreateServer 返回)
+  addr: "127.0.0.1"
   port: 10085
 
 gateway:

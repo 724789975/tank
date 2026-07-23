@@ -208,10 +208,32 @@ public class NetClient : MonoBehaviour
 			return;
 		}
 		Debug.Log($"[Net][Connect] tcp connecting to {Config.Instance.serverIP}:{Config.Instance.port}");
+		// FxNet 原生 TCP 连接需要数字 IP, 不会自动解析域名;
+		// 若 serverIP 是域名(如 test2 环境返回的 pod.server_addr=quchifan.wang), 先解析为 IPv4 地址
+		string connectAddr = Config.Instance.serverIP;
+		if (!System.Net.IPAddress.TryParse(connectAddr, out _))
+		{
+			try
+			{
+				foreach (var addr in System.Net.Dns.GetHostAddresses(connectAddr))
+				{
+					if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+					{
+						connectAddr = addr.ToString();
+						break;
+					}
+				}
+				Debug.Log($"[Net][Connect] resolved domain {Config.Instance.serverIP} -> {connectAddr}");
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"[Net][Connect] resolve domain {Config.Instance.serverIP} failed: {e.Message}");
+			}
+		}
 #if AI_RUNING
-		FxNetApi.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+		FxNetApi.TcpConnect(connector, connectAddr, Config.Instance.port);
 #else
-		FxNetApi.TcpConnect(connector, Config.Instance.serverIP, Config.Instance.port);
+		FxNetApi.TcpConnect(connector, connectAddr, Config.Instance.port);
 #endif
 #endif
 	}

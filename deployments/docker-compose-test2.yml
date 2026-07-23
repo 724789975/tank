@@ -138,6 +138,11 @@ services:
     environment:
       - CONF_ENV_PATH=/app/etc
       - CONF_ENV_FILE=server-test2.yaml
+      # test2 环境下通过 Docker 而非 k8s 启动 game-server / ai-client
+      - DEPLOYENV=test2
+    volumes:
+      # 挂载 docker.sock, 使 server-manager 可以通过宿主机 Docker 守护进程启动容器
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - tank-net
 

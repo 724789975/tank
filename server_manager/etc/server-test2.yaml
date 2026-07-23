@@ -35,12 +35,23 @@ exe_path:
   ai_linux: "./etc/ai_linux.sh"
 
 pod:
-  server_addr: "quchifan.wang"
+  # test2 本地 docker 部署下两类客户端的连接地址来源不同, 故 server_addr 已不再被代码使用:
+  #   1) 真人客户端(宿主机原生)——地址来自 match-server 配置 game.addr(同宿主机填 127.0.0.1),
+  #      端口为 game-server 发布到宿主机的 hostPort(StartGameServer 动态返回);
+  #   2) ai-client(同处 docker 网络的容器)——地址为 game-server 容器名(startGameServerDocker 自动返回),
+  #      经 docker 内嵌 DNS 解析, 直连容器内部端口 10085.
+  server_addr: "127.0.0.1"
+  # test2 环境通过 Docker 部署 game-server / ai-client, 需加入 docker-compose 创建的网络,
+  # 以便访问 etcd / redis 等基础设施 (compose 目录为 deployments, 网络名为 deployments_tank-net)
+  docker:
+    network: "deployments_tank-net"
   game_server:
     name: "game-server"
     namespace: "tank"
-    image: "docker.io/library/game-server:v1.0.0"
+    # test2 使用本地构建的镜像 tag (docker images 中实际存在的 game-server:v1.0.0), 避免从远程仓库拉取
+    image: "game-server:v1.0.0"
   ai_client:
     name: "ai-client"
     namespace: "tank"
-    image: "docker.io/library/ai-client:v1.0.0"
+    # test2 使用本地构建的镜像 tag (docker images 中实际存在的 ai-client:v1.0.0), 避免从远程仓库拉取
+    image: "ai-client:v1.0.0"

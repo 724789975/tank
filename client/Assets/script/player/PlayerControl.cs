@@ -7,6 +7,13 @@ public class PlayerControl : MonoBehaviour
     {
         instance = this;
 		NetClient.Instance.Create();
+#if CLIENT_WS
+		// WS 模式下 StartGame 由 NetClient.OnOpen 触发
+#else
+		// FxNet 模式下连接成功回调(OnConnectedCallback)只遍历 onConnected 列表,
+		// 不会自动触发登录; 需显式注册 StartGame, 否则 Ping/LoginReq 永不发送
+		NetClient.Instance.AddOnConnected(StartGame);
+#endif
         NetClient.Instance.Connect();
         Debug.Log("PlayerControl Start");
 	}

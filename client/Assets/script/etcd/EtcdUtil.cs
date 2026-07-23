@@ -26,6 +26,20 @@ public class EtcdUtil : MonoBehaviour
 
 	public void EtcdOperator(Action<string, bool> op)
 	{
+		// etcd 用户名为空时(如 test2 未开启认证的本地 etcd), 跳过认证,
+		// 直接以空 token 执行回调; 否则无认证 etcd 会对认证请求返回 400
+		if (string.IsNullOrEmpty(etcdUserName))
+		{
+			try
+			{
+				op("", true);
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError($"[Etcd][EtcdOperator] etcd operator callback failed, exception={e.Message}\n{e.StackTrace}");
+			}
+			return;
+		}
 		if (isLogin)
 		{
 			ops.Add(op);

@@ -52,7 +52,17 @@ func (s *ServerManager) CreateServer(ctx context.Context, req *server_mgr.Create
 		klog.CtxInfof(ctx, "[SERVER-MGR-CREATE-004] resp: %d", resp.Code)
 	}()
 
-	if err1, clusterIP, tcpPort, _ := pod.StartGameServer(ctx, idClient.Generate().Int64(), []string{"-etcd_addr", common_config.Get("etcd.addrs").([]interface{})[0].(string), "-etcd_user_name", common_config.Get("etcd.username").(string), "-etcd_password", common_config.Get("etcd.password").(string)}); err1 != nil {
+	// etcd 用户名/密码为空时(如 test2 未开启认证的本地 etcd)不追加空参数,
+	// 否则空参数会被 docker/Unity 命令行折叠丢弃, 导致 Unity 端 Oddworm 解析器
+	// 把后一个 flag 误当作前一个 flag 的值(如 user=-etcd_password)
+	gameParams := []string{"-etcd_addr", common_config.Get("etcd.addrs").([]interface{})[0].(string)}
+	if etcdUser := common_config.Get("etcd.username").(string); etcdUser != "" {
+		gameParams = append(gameParams, "-etcd_user_name", etcdUser)
+	}
+	if etcdPwd := common_config.Get("etcd.password").(string); etcdPwd != "" {
+		gameParams = append(gameParams, "-etcd_password", etcdPwd)
+	}
+	if err1, clusterIP, tcpPort, _ := pod.StartGameServer(ctx, idClient.Generate().Int64(), gameParams); err1 != nil {
 		klog.CtxErrorf(ctx, "[SERVER-MGR-CREATE-007] CreateServer: failed to start game server, error: %v", err1)
 		resp.Code = common.ErrorCode_SERVER_MGR_CREATE_FAILED
 		resp.Msg = "failed to start game server"

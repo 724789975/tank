@@ -86,6 +86,12 @@ public class AsyncWebRequest
 				{
 					foreach (var header in requestHeaders.Where(h => h.Key.ToLower() != "content-type"))
 					{
+						// 跳过空值请求头(如无认证 etcd 场景下 Authorization 为空),
+						// 否则 HttpClient.DefaultRequestHeaders.Add 会抛 "The format of value '' is invalid."
+						if (string.IsNullOrEmpty(header.Value))
+						{
+							continue;
+						}
 						client.DefaultRequestHeaders.Add(header.Key, header.Value);
 					}
 				}

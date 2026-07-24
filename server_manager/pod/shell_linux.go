@@ -192,7 +192,31 @@ func create_svc(ctx context.Context, job *batchv1.Job) (err error, svc *corev1.S
 
 	if err != nil {
 		klog.CtxErrorf(ctx, "[POD-CREATE-007] failed to create service, podName: %s, namespace: %s, error: %v", podName, namespace, err)
+		return err, svc
 	}
+
+	// K8s 默认为 TCP / UDP 端口各分配不同的随机 NodePort, 但客户端只会拿到一个 GamePort(TCP NodePort).
+	// 客户端已改用 UDP 连接, 若仍按 TCP 的 NodePort 下发, UDP 报文会打到错误端口而连不上.
+	// 这里把 UDP 端口的 NodePort 对齐到 TCP 端口(同一 Service 内不同协议允许共享同一 NodePort),
+	// 使 TCP/UDP 对外发布在同一端口号, 客户端无论用哪种协议都能用同一 GamePort 连接.
+	if len(svc.Spec.Ports) >= 2 && svc.Spec.Ports[0].NodePort != svc.Spec.Ports[1].NodePort {
+		tcpNodePort := svc.Spec.Ports[0].NodePort
+		svc.Spec.Ports[1].NodePort = tcpNodePort
+		updated, uerr := clientset.CoreV1().Services(namespace).Update(ctx, svc, metav1.UpdateOptions{})
+		if uerr != nil {
+			klog.CtxErrorf(ctx, "[POD-CREATE-009] failed to align udp nodePort to tcp nodePort, podName: %s, tcpNodePort: %d, error: %v", podName, tcpNodePort, uerr)
+			// Update 失败时 Service 已创建成功, 若不清理会残留并占用 NodePort,
+			// 还会让同名 podName 的后续 Create 因名称冲突而持续失败, 故 best-effort 删除.
+			if derr := clientset.CoreV1().Services(namespace).Delete(ctx, svc.Name, metav1.DeleteOptions{}); derr != nil {
+				klog.CtxErrorf(ctx, "[POD-CREATE-010] failed to cleanup service after update failure, podName: %s, error: %v", podName, derr)
+			} else {
+				klog.CtxInfof(ctx, "[POD-CREATE-011] cleaned up service after update failure, podName: %s", podName)
+			}
+			return uerr, nil
+		}
+		svc = updated
+	}
+
 	klog.CtxInfof(ctx, "[POD-CREATE-008] successfully created service, podName: %s, serviceName: %s, clusterIP: %s, tcpPort: %d, udpPort: %d",
 		podName, svc.Name, svc.Spec.ClusterIP, svc.Spec.Ports[0].NodePort, svc.Spec.Ports[1].NodePort)
 

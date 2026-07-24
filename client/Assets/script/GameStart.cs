@@ -43,6 +43,10 @@ public class GameStart : MonoBehaviour
 		// 未设置环境变量或对应环境文件不存在时, 回退到默认的 CommandLine.txt
 		var commandLineFile = "CommandLine.txt";
 		var deployEnv = System.Environment.GetEnvironmentVariable("DEPLOYENV");
+#if UNITY_ANDROID && !UNITY_EDITOR
+		// Android 正式包(非编辑器): 固定使用 test 环境命令行参数文件
+		commandLineFile = "CommandLine-test.txt";
+#else
 		if (!string.IsNullOrEmpty(deployEnv))
 		{
 			var envFile = string.Format("CommandLine-{0}.txt", deployEnv);
@@ -58,6 +62,7 @@ public class GameStart : MonoBehaviour
 #endif
 			}
 		}
+#endif
 
 		var path = System.IO.Path.Combine(Application.streamingAssetsPath, commandLineFile);
 		Debug.LogFormat("[GameStart][OnRuntimeMethodLoad] DEPLOYENV='{0}', using commandline file '{1}'", deployEnv, path);

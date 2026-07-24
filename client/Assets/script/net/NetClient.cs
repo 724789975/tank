@@ -214,8 +214,8 @@ public class NetClient : MonoBehaviour
 			Debug.LogError("[Net][Connect] connect failed: connector is null, call Create() first");
 			return;
 		}
-		Debug.Log($"[Net][Connect] tcp connecting to {Config.Instance.serverIP}:{Config.Instance.port}");
-		// FxNet 原生 TCP 连接需要数字 IP, 不会自动解析域名;
+		Debug.Log($"[Net][Connect] preparing to connect to {Config.Instance.serverIP}:{Config.Instance.port}");
+		// FxNet 原生连接需要数字 IP, 不会自动解析域名;
 		// 若 serverIP 是域名(如 test2 环境返回的 pod.server_addr=quchifan.wang), 先解析为 IPv4 地址
 		string connectAddr = Config.Instance.serverIP;
 		if (!System.Net.IPAddress.TryParse(connectAddr, out _))
@@ -237,10 +237,17 @@ public class NetClient : MonoBehaviour
 				Debug.LogError($"[Net][Connect] resolve domain {Config.Instance.serverIP} failed: {e.Message}");
 			}
 		}
-#if AI_RUNING
+#if AI_RUNNING
+		Debug.Log($"[Net][Connect] tcp connecting to {connectAddr}:{Config.Instance.port}");
 		FxNetApi.TcpConnect(connector, connectAddr, Config.Instance.port);
 #else
+#if UNITY_ANDROID && !UNITY_EDITOR
+		Debug.Log($"[Net][Connect] udp connecting to {connectAddr}:{Config.Instance.port}");
+		FxNetApi.UdpConnect(connector, connectAddr, Config.Instance.port);
+#else
+		Debug.Log($"[Net][Connect] tcp connecting to {connectAddr}:{Config.Instance.port}");
 		FxNetApi.TcpConnect(connector, connectAddr, Config.Instance.port);
+#endif
 #endif
 #endif
 	}

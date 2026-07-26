@@ -11,8 +11,8 @@ using UnityEngine;
 /// Android 客户端（APK）打包脚本。
 ///
 /// 提供两个命令行入口（各自输出前会清理目标目录的旧产物）：
-/// - AndroidBuild.BuildAndroid   : 非 CLIENT_WS（FxNet 网络库），输出 build_android/tank.apk
-/// - AndroidBuild.BuildAndroidWS : CLIENT_WS（WebSocketSharp 网络库），输出 build_android/tank.apk
+/// - AndroidBuild.BuildAndroid   : 非 CLIENT_WS（FxNet 网络库），输出 build_android/pongpongpong.apk
+/// - AndroidBuild.BuildAndroidWS : CLIENT_WS（WebSocketSharp 网络库），输出 build_android/pongpongpong.apk
 ///
 /// 关键点：
 /// 1. 目标平台 BuildTarget.Android（普通移动客户端，非专用服务器）。
@@ -33,8 +33,9 @@ public static class AndroidBuild
         "Assets/scene/tank.unity",
     };
 
-    // 输出 APK 文件名（各网络模式共用，构建前清理）
-    private const string k_ApkName = "tank.apk";
+    // 输出 APK 文件名（各网络模式共用，构建前清理）；
+    // 与 Player Settings 的 productName / applicationIdentifier（com.denglixiaoliu.pongpongpong）保持一致
+    private const string k_ApkName = "pongpongpong.apk";
 
     // 默认输出目录（项目根下）
     private const string k_OutputSubDir = "build_android";

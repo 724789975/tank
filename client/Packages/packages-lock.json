@@ -7,15 +7,15 @@
       "dependencies": {},
       "url": "https://packages.unity.cn"
     },
-    "com.dlxl.fxnet": {
-      "version": "https://github.com/724789975/fxnet.git?path=fxnet4unity#dllforunity",
+    "com.fxnet.network": {
+      "version": "https://github.com/724789975/fxnet.git?path=/network/Packages/com.fxnet.network#unity",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "93da7a25af866e8bf61572db85d57b67fb532705"
+      "hash": "093cc58ee3f4562a13ccb88368277514dab54f24"
     },
     "com.google.external-dependency-manager": {
-      "version": "1.2.186",
+      "version": "1.2.188",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -186,16 +186,15 @@
       "url": "https://packages.unity.cn"
     },
     "com.unity.ml-agents": {
-      "version": "3.0.0",
+      "version": "file:com.unity.ml-agents",
       "depth": 0,
-      "source": "registry",
+      "source": "embedded",
       "dependencies": {
         "com.unity.sentis": "2.1.0",
         "com.unity.modules.imageconversion": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.physics": "1.0.0"
-      },
-      "url": "https://packages.unity.cn"
+      }
     },
     "com.unity.ml-agents.extensions": {
       "version": "file:com.unity.ml-agents.extensions",

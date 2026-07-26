@@ -1,9 +1,9 @@
 {
   "dependencies": {
+    "com.fxnet.network": "https://github.com/724789975/fxnet.git?path=/network/Packages/com.fxnet.network#unity",
     "com.google.external-dependency-manager": "1.2.188",
     "com.oddworm.commandline": "https://github.com/pschraut/UnityCommandLine.git#1.2.0",
     "com.psygames.unitywebsocket": "https://github.com/psygames/UnityWebSocket.git#upm",
-    "com.fxnet.network": "https://github.com/724789975/fxnet.git?path=/network/Packages/com.fxnet.network#unity",
     "com.taptap.sdk.core": "4.8.2",
     "com.taptap.sdk.login": "4.9.5",
     "com.unity.2d.pixel-perfect": "5.1.1",
@@ -17,7 +17,6 @@
     "com.unity.ide.visualstudio": "2.0.25",
     "com.unity.ide.vscode": "1.2.5",
     "com.unity.inputsystem": "1.14.2",
-    "com.unity.ml-agents": "3.0.0",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.postprocessing": "3.4.0",
     "com.unity.recorder": "4.0.3",

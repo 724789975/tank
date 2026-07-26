@@ -8,6 +8,11 @@ REM  - Target : Android (APK)
 REM  - Net    : WebSocketSharp (CLIENT_WS on)
 REM  - Scenes : login.unity (main) + match.unity + tank.unity
 REM  - Output : build_android/tank.apk (cleaned before build)
+REM  - Package name / signing follow Player Settings (same as Editor build).
+REM    If a custom keystore is enabled in Player Settings, set env vars
+REM    ANDROID_KEYSTORE_PASS (and optional ANDROID_KEYALIAS_PASS) before
+REM    running this script; otherwise the build fails instead of silently
+REM    falling back to the debug signature.
 REM ============================================================
 
 REM Unity editor path (edit if your version/install location differs)

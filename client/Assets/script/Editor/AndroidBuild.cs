@@ -19,6 +19,9 @@ using UnityEngine;
 /// 2. 主场景为 login.unity（构建索引 0），并包含它会跳转加载的 match.unity、tank.unity。
 /// 3. 不使用 UNITY_SERVER / AI_RUNNING 宏（那是服务器/AI 机器人专用）。
 /// 4. 各入口确定性地开启/关闭 CLIENT_WS（临时修改 Scripting Define Symbols），构建结束后还原，避免污染工程设置。
+/// 5. 包名与签名完全跟随用户在 Player Settings 中的配置，脚本不做任何覆盖；
+///    若启用了自定义 keystore，batchmode 下密码需通过环境变量 ANDROID_KEYSTORE_PASS /
+///    ANDROID_KEYALIAS_PASS 提供（Unity 不持久化密码），缺失时直接报错而不是静默回退到 debug 签名。
 /// </summary>
 public static class AndroidBuild
 {
@@ -41,6 +44,10 @@ public static class AndroidBuild
 
     // CLIENT_WS 宏（WebSocketSharp 网络库）
     private const string k_ClientWsDefine = "CLIENT_WS";
+
+    // 自定义 keystore 密码的环境变量名（Unity 不会把密码持久化到 ProjectSettings，batchmode 下需外部传入）
+    private const string k_KeystorePassEnv = "ANDROID_KEYSTORE_PASS";
+    private const string k_KeyaliasPassEnv = "ANDROID_KEYALIAS_PASS";
 
     /// <summary>
     /// 由 build_android/build-android.bat 调用：Android 客户端，非 CLIENT_WS（FxNet 网络库）。
@@ -87,6 +94,13 @@ public static class AndroidBuild
 
         // 打包前清理上一次的构建产物，避免不同版本残留文件混在一起
         CleanPreviousBuild(outputDir, Path.GetFileName(outputPath));
+
+        // 包名与签名跟随用户的 Player Settings；启用自定义 keystore 时补齐密码，保证签名与用户设置一致
+        if (!ApplyUserPackageAndSigningSettings())
+        {
+            EditorApplication.Exit(1);
+            return;
+        }
 
         // Android 的 Scripting Define Symbols 存储在 NamedBuildTarget.Android 下
         var namedTarget = NamedBuildTarget.Android;
@@ -148,6 +162,48 @@ public static class AndroidBuild
             Console.Error.WriteLine(error);
             EditorApplication.Exit(1);
         }
+    }
+
+    /// <summary>
+    /// 校验并应用用户在 Player Settings 中配置的包名与签名，保证命令行构建产物与编辑器内构建一致：
+    /// - 包名：直接使用 Player Settings 中的 applicationIdentifier，不做覆盖，仅输出日志便于核对；
+    /// - 签名：未启用自定义 keystore 时与编辑器一致使用 debug keystore；
+    ///   启用时因 Unity 不持久化密码，需从环境变量读取并填入，缺失则报错终止（避免静默回退成 debug 签名）。
+    /// </summary>
+    /// <returns>true 表示签名配置就绪，可以继续构建；false 表示配置缺失，构建应终止。</returns>
+    private static bool ApplyUserPackageAndSigningSettings()
+    {
+        var packageName = PlayerSettings.GetApplicationIdentifier(NamedBuildTarget.Android);
+        Debug.Log($"[AndroidBuild] Package name (from Player Settings): {packageName}");
+
+        if (!PlayerSettings.Android.useCustomKeystore)
+        {
+            // 与编辑器内直接 Build 一致：使用 Unity 默认 debug keystore 签名
+            Debug.Log("[AndroidBuild] Custom keystore disabled in Player Settings, signing with default debug keystore");
+            return true;
+        }
+
+        // keystore 路径与 alias 已随 ProjectSettings 保存，这里只需补齐密码
+        var keystoreName = PlayerSettings.Android.keystoreName;
+        var keyaliasName = PlayerSettings.Android.keyaliasName;
+        var keystorePass = Environment.GetEnvironmentVariable(k_KeystorePassEnv);
+        var keyaliasPass = Environment.GetEnvironmentVariable(k_KeyaliasPassEnv);
+
+        if (string.IsNullOrEmpty(keystorePass))
+        {
+            var error = $"[AndroidBuild] Player Settings 启用了自定义 keystore（{keystoreName}, alias: {keyaliasName}），" +
+                        $"但未提供密码。请先设置环境变量 {k_KeystorePassEnv}（及可选的 {k_KeyaliasPassEnv}）后再运行打包脚本，" +
+                        "否则产物签名将与用户设置不符。";
+            Debug.LogError(error);
+            Console.Error.WriteLine(error);
+            return false;
+        }
+
+        PlayerSettings.Android.keystorePass = keystorePass;
+        // alias 密码未单独提供时，按常见做法与 keystore 密码相同
+        PlayerSettings.Android.keyaliasPass = string.IsNullOrEmpty(keyaliasPass) ? keystorePass : keyaliasPass;
+        Debug.Log($"[AndroidBuild] Signing with custom keystore from Player Settings: {keystoreName} (alias: {keyaliasName})");
+        return true;
     }
 
     /// <summary>

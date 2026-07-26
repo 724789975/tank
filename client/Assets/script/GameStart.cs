@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 using Dirichlet.Mediation;
 using System.Net.Sockets;
 using System.Net;
@@ -66,9 +67,11 @@ public class GameStart : MonoBehaviour
 
 		var path = System.IO.Path.Combine(Application.streamingAssetsPath, commandLineFile);
 		Debug.LogFormat("[GameStart][OnRuntimeMethodLoad] DEPLOYENV='{0}', using commandline file '{1}'", deployEnv, path);
-		if (System.IO.File.Exists(path))
+		// Android 真机上 StreamingAssets 位于 APK 内, System.IO 无法访问, 统一走 ReadStreamingAssetsText 读取
+		var fileText = ReadStreamingAssetsText(path);
+		if (fileText != null)
 		{
-			text += System.IO.File.ReadAllText(path);
+			text += fileText;
 		}
 		else
 		{
@@ -85,6 +88,43 @@ public class GameStart : MonoBehaviour
 		TimerU.Instance.ToString();
 		EtcdUtil.Instance.ToString();
 		Config.Instance.ToString();
+	}
+
+	/// <summary>
+	/// 读取 StreamingAssets 下的文本文件, 失败或文件不存在时返回 null。
+	/// Android 真机上该目录在 APK 压缩包内(jar:file://...!/assets/), System.IO 无法访问,
+	/// 需改用 UnityWebRequest 读取; 初始化阶段无法使用协程, 故同步自旋等待完成
+	/// (文件在 APK 本地, 读取耗时极短, 并设 5 秒超时保护)。
+	/// </summary>
+	static string ReadStreamingAssetsText(string path)
+	{
+#if UNITY_ANDROID && !UNITY_EDITOR
+		using (var request = UnityWebRequest.Get(path))
+		{
+			request.SendWebRequest();
+			var watch = System.Diagnostics.Stopwatch.StartNew();
+			while (!request.isDone)
+			{
+				if (watch.ElapsedMilliseconds > 5000)
+				{
+					Debug.LogWarningFormat("[GameStart][ReadStreamingAssetsText] read '{0}' timeout", path);
+					return null;
+				}
+			}
+			if (request.result != UnityWebRequest.Result.Success)
+			{
+				Debug.LogWarningFormat("[GameStart][ReadStreamingAssetsText] read '{0}' failed: {1}", path, request.error);
+				return null;
+			}
+			return request.downloadHandler.text;
+		}
+#else
+		if (!System.IO.File.Exists(path))
+		{
+			return null;
+		}
+		return System.IO.File.ReadAllText(path);
+#endif
 	}
 
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

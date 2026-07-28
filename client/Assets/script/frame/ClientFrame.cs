@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Design;
+using TMPro;
 using UnityEngine;
 
 public class ClientFrame : MonoBehaviour
@@ -91,6 +93,10 @@ public class ClientFrame : MonoBehaviour
         
         // 更新延迟值
         latency = Latency;
+        if (latencyText != null)
+        {
+            latencyText.text = $"{latency * 1000f:F0}ms";
+        }
     }
 
 	static ClientFrame instane;
@@ -101,4 +107,6 @@ public class ClientFrame : MonoBehaviour
     float updateTime = 0;
 
 	public float syncRate = 0f; // 调整时间轮的快慢
+
+    public TextMeshProUGUI latencyText;
 }
